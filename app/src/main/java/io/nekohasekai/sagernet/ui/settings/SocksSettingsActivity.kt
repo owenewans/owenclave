@@ -16,12 +16,7 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
     override fun createEntity() = SOCKSBean()
 
     override fun init() {
-        DataStore.profileName = ""
-        DataStore.serverAddress = ""
-        DataStore.serverPort = "1080"
-        DataStore.serverUsername = ""
-        DataStore.serverPassword = ""
-        DataStore.serverUdp = false
+        init(SOCKSBean.DEFAULT_BEAN)
     }
 
     override fun init(bean: SOCKSBean) {

@@ -3,9 +3,21 @@ package io.nekohasekai.sagernet.fmt.socks;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
+import org.jetbrains.annotations.NotNull;
+
 import io.nekohasekai.sagernet.fmt.AbstractBean;
+import io.nekohasekai.sagernet.fmt.KryoConverters;
 
 public class SOCKSBean extends AbstractBean {
+
+    public static SOCKSBean DEFAULT_BEAN = new SOCKSBean() {{
+        name = "";
+        serverAddress = "127.0.0.1";
+        serverPort = 1080;
+        username = "";
+        password = "";
+        udp = false;
+    }};
 
     public String username;
     public String password;
@@ -28,4 +40,11 @@ public class SOCKSBean extends AbstractBean {
         password = input.readString();
         udp = input.readBoolean();
     }
+
+    @NotNull
+    @Override
+    public SOCKSBean clone() {
+        return KryoConverters.socksDeserialize(KryoConverters.serialize(this));
+    }
+
 }
