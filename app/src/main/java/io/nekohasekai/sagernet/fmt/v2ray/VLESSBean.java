@@ -27,55 +27,23 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 import org.jetbrains.annotations.NotNull;
 
 import cn.hutool.core.util.StrUtil;
-import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
-public class VLESSBean extends AbstractBean {
+public class VLESSBean extends AbstractV2RayBean {
 
     public static VLESSBean DEFAULT_BEAN = new VLESSBean() {{
         serverPort = 1080;
         initDefaultValues();
     }};
 
-    public String uuid;
     public String encryption;
 
-    public String network;
-    public String headerType;
-
-    public String requestHost;
-    public String path;
-
-    public String sni;
-    public boolean tls;
-
+    @Override
     public void initDefaultValues() {
-        if (StrUtil.isBlank(name)) {
-            name = "";
-        }
-        if (StrUtil.isBlank(serverAddress)) {
-            serverAddress = "";
-        }
-        if (StrUtil.isBlank(uuid)) {
-            uuid = "";
-        }
+        super.initDefaultValues();
+
         if (StrUtil.isBlank(encryption)) {
             encryption = "none";
-        }
-        if (StrUtil.isBlank(network)) {
-            network = "tcp";
-        }
-        if (StrUtil.isBlank(headerType)) {
-            headerType = "none";
-        }
-        if (StrUtil.isBlank(requestHost)) {
-            requestHost = "";
-        }
-        if (StrUtil.isBlank(path)) {
-            path = "";
-        }
-        if (StrUtil.isBlank(sni)) {
-            sni = "";
         }
     }
 
@@ -83,34 +51,14 @@ public class VLESSBean extends AbstractBean {
     public void serialize(ByteBufferOutput output) {
         output.writeInt(0);
         super.serialize(output);
-        output.writeString(uuid);
         output.writeString(encryption);
-
-        output.writeString(network);
-        output.writeString(headerType);
-
-        output.writeString(requestHost);
-        output.writeString(path);
-
-        output.writeString(sni);
-        output.writeBoolean(tls);
     }
 
     @Override
     public void deserialize(ByteBufferInput input) {
         int version = input.readInt();
         super.deserialize(input);
-        uuid = input.readString();
         encryption = input.readString();
-
-        network = input.readString();
-        headerType = input.readString();
-
-        requestHost = input.readString();
-        path = input.readString();
-
-        sni = input.readString();
-        tls = input.readBoolean();
     }
 
     @NotNull
