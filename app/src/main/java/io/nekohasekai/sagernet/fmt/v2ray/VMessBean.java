@@ -32,30 +32,51 @@ import io.nekohasekai.sagernet.fmt.KryoConverters;
 
 public class VMessBean extends AbstractBean {
 
+    public static VMessBean DEFAULT_BEAN = new VMessBean() {{
+        serverPort = 1080;
+        initDefaultValues();
+    }};
+
     public String uuid;
-    public String path;
+    public String security;
 
-    public String tag;
-    public boolean tls;
+    public int alterId;
     public String network;
-    public int kcpUpLinkCapacity;
-    public int kcpDownLinkCapacity;
-    public String header;
-    public int mux;
-
-    // custom
+    public String headerType;
 
     public String requestHost;
-    public String sni;
-    public String security;
-    public int alterId;
+    public String path;
 
-    protected void initDefaultValues() {
-        if (StrUtil.isBlank(network)) {
-            network = "tls";
+    public String sni;
+    public boolean tls;
+
+    public void initDefaultValues() {
+        if (StrUtil.isBlank(name)) {
+            name = "";
+        }
+        if (StrUtil.isBlank(serverAddress)) {
+            serverAddress = "";
+        }
+        if (StrUtil.isBlank(uuid)) {
+            uuid = "";
         }
         if (StrUtil.isBlank(security)) {
             security = "auto";
+        }
+        if (StrUtil.isBlank(network)) {
+            network = "tcp";
+        }
+        if (StrUtil.isBlank(headerType)) {
+            headerType = "none";
+        }
+        if (StrUtil.isBlank(requestHost)) {
+            requestHost = "";
+        }
+        if (StrUtil.isBlank(path)) {
+            path = "";
+        }
+        if (StrUtil.isBlank(sni)) {
+            sni = "";
         }
     }
 
@@ -64,19 +85,17 @@ public class VMessBean extends AbstractBean {
         output.writeInt(0);
         super.serialize(output);
         output.writeString(uuid);
-        output.writeString(tag);
-        output.writeBoolean(tls);
-        output.writeString(network);
-        output.writeInt(kcpUpLinkCapacity);
-        output.writeInt(kcpDownLinkCapacity);
-        output.writeString(header);
-        output.writeInt(mux);
-
-        // custom
-        output.writeString(requestHost);
-        output.writeString(sni);
         output.writeString(security);
+
         output.writeInt(alterId);
+        output.writeString(network);
+        output.writeString(headerType);
+
+        output.writeString(requestHost);
+        output.writeString(path);
+
+        output.writeString(sni);
+        output.writeBoolean(tls);
     }
 
     @Override
@@ -84,19 +103,17 @@ public class VMessBean extends AbstractBean {
         int version = input.readInt();
         super.deserialize(input);
         uuid = input.readString();
-        tag = input.readString();
-        tls = input.readBoolean();
-        network = input.readString();
-        kcpUpLinkCapacity = input.readInt();
-        kcpDownLinkCapacity = input.readInt();
-        header = input.readString();
-        mux = input.readInt();
-
-        // custom
-        requestHost = input.readString();
-        sni = input.readString();
         security = input.readString();
+
         alterId = input.readInt();
+        network = input.readString();
+        headerType = input.readString();
+
+        requestHost = input.readString();
+        path = input.readString();
+
+        sni = input.readString();
+        tls = input.readBoolean();
     }
 
     @NotNull
