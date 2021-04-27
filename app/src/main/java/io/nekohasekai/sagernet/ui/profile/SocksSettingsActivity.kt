@@ -35,7 +35,7 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
     override fun createEntity() = SOCKSBean()
 
     override fun init() {
-        SOCKSBean.DEFAULT_BEAN.init()
+        SOCKSBean().apply { initDefaultValues() }.init()
     }
 
     override fun SOCKSBean.init() {
@@ -45,6 +45,8 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
         DataStore.serverUsername = username
         DataStore.serverPassword = password
         DataStore.serverUdp = udp
+        DataStore.serverTLS = tls
+        DataStore.serverSNI = sni
     }
 
     override fun SOCKSBean.serialize() {
@@ -54,6 +56,8 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
         username = DataStore.serverUsername
         password = DataStore.serverPassword
         udp = DataStore.serverUdp
+        tls = DataStore.serverTLS
+        sni = DataStore.serverSNI
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

@@ -43,16 +43,12 @@ public class TrojanBean extends AbstractBean {
     public String password;
     public String sni;
 
+    @Override
     public void initDefaultValues() {
-        if (StrUtil.isNotBlank(serverAddress)) {
-            serverAddress = "";
-        }
-        if (StrUtil.isNotBlank(password)) {
-            password = "";
-        }
-        if (StrUtil.isNotBlank(sni)) {
-            sni = "";
-        }
+        super.initDefaultValues();
+
+        if (password == null) password = "";
+        if (sni == null) sni = "";
     }
 
     @Override
