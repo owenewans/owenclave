@@ -21,7 +21,6 @@
 
 package io.nekohasekai.sagernet.ui
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.preference.EditTextPreference
@@ -38,7 +37,7 @@ import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 
 class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
-    private lateinit var isProxyApps: SwitchPreference
+    private lateinit var listener: (BaseService.State) -> Unit
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.preferenceDataStore = DataStore.configurationStore
@@ -48,39 +47,15 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val directBootAware = findPreference<SwitchPreference>(Key.DIRECT_BOOT_AWARE)!!
         val portSocks5 = findPreference<EditTextPreference>(Key.SOCKS_PORT)!!
         val speedInterval = findPreference<Preference>(Key.SPEED_INTERVAL)!!
-
         val serviceMode = findPreference<Preference>(Key.SERVICE_MODE)!!
-        val routeMode = findPreference<Preference>(Key.ROUTE_MODE)!!
         val allowAccess = findPreference<Preference>(Key.ALLOW_ACCESS)!!
-        val ipv6Route = findPreference<Preference>(Key.IPV6_ROUTE)!!
-        val preferIpv6 = findPreference<Preference>(Key.PREFER_IPV6)!!
-
         val requireHttp = findPreference<SwitchPreference>(Key.REQUIRE_HTTP)!!
         val portHttp = findPreference<EditTextPreference>(Key.HTTP_PORT)!!
-        val forceShadowsocksRust =
-            findPreference<SwitchPreference>(Key.FORCE_SHADOWSOCKS_RUST)!!
-
-        val remoteDns = findPreference<Preference>(Key.REMOTE_DNS)!!
-        val enableLocalDns = findPreference<SwitchPreference>(Key.ENABLE_LOCAL_DNS)!!
-        val portLocalDns = findPreference<EditTextPreference>(Key.LOCAL_DNS_PORT)!!
-        val domesticDns = findPreference<EditTextPreference>(Key.DOMESTIC_DNS)!!
-
-        val wsMaxEarlyData = findPreference<EditTextPreference>(Key.WS_MAX_EARLY_DATA)!!
-        val wsBrowserForwarding = findPreference<SwitchPreference>(Key.WS_BROWSER_FORWARDING)!!
 
         portSocks5.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
-        portLocalDns.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         portHttp.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
-        wsMaxEarlyData.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
 
         val currServiceMode = DataStore.serviceMode
-        isProxyApps = findPreference(Key.PROXY_APPS)!!
-        isProxyApps.isEnabled = currServiceMode == Key.MODE_VPN
-        isProxyApps.setOnPreferenceChangeListener { _, newValue ->
-            startActivity(Intent(activity, AppManagerActivity::class.java))
-            if (newValue as Boolean) DataStore.dirty = true
-            newValue
-        }
         val metedNetwork = findPreference<Preference>(Key.METERED_NETWORK)!!
         if (Build.VERSION.SDK_INT >= 28) {
             metedNetwork.isEnabled = currServiceMode == Key.MODE_VPN
@@ -88,7 +63,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             metedNetwork.remove()
         }
 
-        val listener: (BaseService.State) -> Unit = {
+        listener = {
             val stopped = it == BaseService.State.Stopped
             val sMode = DataStore.serviceMode
 
@@ -100,41 +75,21 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 portSocks5.isEnabled = stopped
                 requireHttp.isEnabled = stopped
                 portHttp.isEnabled = stopped
-                forceShadowsocksRust.isEnabled = stopped
 
-                isProxyApps.isEnabled = sMode == Key.MODE_VPN && stopped
                 metedNetwork.isEnabled = sMode == Key.MODE_VPN && stopped
 
-                routeMode.isEnabled = stopped
                 allowAccess.isEnabled = stopped
-                remoteDns.isEnabled = stopped
-                enableLocalDns.isEnabled = stopped
-                portLocalDns.isEnabled = stopped
-                domesticDns.isEnabled = stopped
-                ipv6Route.isEnabled = stopped
-                preferIpv6.isEnabled = stopped
-                wsMaxEarlyData.isEnabled = stopped
-                wsBrowserForwarding.isEnabled = stopped
             }
         }
-
-        listener((activity as MainActivity).state)
-        MainActivity.stateListener = listener
-        serviceMode.onPreferenceChangeListener =
-            Preference.OnPreferenceChangeListener { _, newValue ->
-                listView.post {
-                    isProxyApps.isEnabled = newValue == Key.MODE_VPN
-                }
-                true
-            }
 
     }
 
     override fun onResume() {
         super.onResume()
 
-        if (::isProxyApps.isInitialized) {
-            isProxyApps.isChecked = DataStore.proxyApps // fetch proxyApps updated by AppManager
+        if (::listener.isInitialized) {
+            MainActivity.stateListener = listener
+            listener((activity as MainActivity).state)
         }
     }
 
