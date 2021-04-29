@@ -29,38 +29,28 @@ import org.jetbrains.annotations.NotNull;
 import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
-public class VMessBean extends AbstractV2RayBean {
+public class VMessBean extends StandardV2RayBean {
 
-    public static VMessBean DEFAULT_BEAN = new VMessBean() {{
-        serverPort = 1080;
-        initDefaultValues();
-    }};
-
-    public String security;
     public int alterId;
 
     @Override
     public void initDefaultValues() {
         super.initDefaultValues();
 
-        if (StrUtil.isBlank(security)) {
-            security = "auto";
+        if (StrUtil.isBlank(encryption)) {
+            encryption = "auto";
         }
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
         super.serialize(output);
-
-        output.writeString(security);
         output.writeInt(alterId);
     }
 
     @Override
     public void deserialize(ByteBufferInput input) {
         super.deserialize(input);
-
-        security = input.readString();
         alterId = input.readInt();
     }
 
