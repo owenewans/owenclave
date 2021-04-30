@@ -29,6 +29,8 @@ fun parseHttp(link: String): HttpBean {
     val httpUrl = link.replace("naive+https://", "https://").toHttpUrlOrNull()
         ?: error("Invalid http(s) link: $link")
 
+    if (httpUrl.encodedPath != "/") error("Not http proxy")
+
     return HttpBean().apply {
         serverAddress = httpUrl.host
         serverPort = httpUrl.port
