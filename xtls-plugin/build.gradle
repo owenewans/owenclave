@@ -54,7 +54,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "../plugin/proguard-rules.pro"
             signingConfig keystorePwd == null ? signingConfigs.debug : signingConfigs.release
         }
     }
@@ -77,13 +77,12 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = outputFileName.replace("xtls-plugin", "xtls-plugin-" + variant.versionName)
+            outputFileName = outputFileName.replace("plugin", "plugin-" + variant.versionName)
         }
     }
 
 }
 
 dependencies {
-    implementation fileTree(dir: "libs")
     implementation project(":plugin")
 }
