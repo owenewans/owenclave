@@ -1,0 +1,361 @@
+/******************************************************************************
+ *                                                                            *
+ * Copyright (C) 2021 by nekohasekai <sekai@neko.services>                    *
+ * Copyright (C) 2021 by Max Lv <max.c.lv@gmail.com>                          *
+ * Copyright (C) 2021 by Mygod Studio <contact-shadowsocks-android@mygod.be>  *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU General Public License as published by       *
+ * the Free Software Foundation, either version 3 of the License, or          *
+ *  (at your option) any later version.                                       *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU General Public License for more details.                               *
+ *                                                                            *
+ * You should have received a copy of the GNU General Public License          *
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.       *
+ *                                                                            *
+ ******************************************************************************/
+
+package io.nekohasekai.sagernet.ui
+
+import android.app.Activity
+import android.content.DialogInterface
+import android.content.Intent
+import android.os.Bundle
+import android.os.Parcelable
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import androidx.activity.result.component1
+import androidx.activity.result.component2
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.preference.EditTextPreference
+import androidx.preference.Preference
+import androidx.preference.PreferenceDataStore
+import com.github.shadowsocks.plugin.fragment.AlertDialogFragment
+import com.takisoft.preferencex.PreferenceFragmentCompat
+import io.nekohasekai.sagernet.Key
+import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.ProfileManager
+import io.nekohasekai.sagernet.database.RuleEntity
+import io.nekohasekai.sagernet.database.SagerDatabase
+import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeListener
+import io.nekohasekai.sagernet.ktx.Empty
+import io.nekohasekai.sagernet.ktx.onMainDispatcher
+import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.utils.DirectBoot
+import io.nekohasekai.sagernet.widget.ListListener
+import io.nekohasekai.sagernet.widget.OutboundPreference
+import kotlinx.parcelize.Parcelize
+
+@Suppress("UNCHECKED_CAST")
+class RouteSettingsActivity(
+    @LayoutRes
+    resId: Int = R.layout.layout_settings_activity,
+) : AppCompatActivity(resId),
+    OnPreferenceDataStoreChangeListener {
+
+    fun init() {
+        RuleEntity().init()
+    }
+
+    fun RuleEntity.init() {
+        DataStore.routeName = name
+        DataStore.routeDomain = domains
+        DataStore.routeIP = ip
+        DataStore.routeSourcePort = sourcePort
+        DataStore.routeNetwork = network
+        DataStore.routeSource = source
+        DataStore.routeProtocol = protocol
+        DataStore.routeOutboundRule = outbound
+        DataStore.routeOutbound = when (outbound) {
+            0L -> 0
+            -1L -> 1
+            -2L -> 2
+            else -> 3
+        }
+    }
+
+    fun RuleEntity.serialize() {
+        name = DataStore.routeName
+        domains = DataStore.routeDomain
+        ip = DataStore.routeIP
+        sourcePort = DataStore.routeSourcePort
+        network = DataStore.routeNetwork
+        protocol = DataStore.routeProtocol
+        outbound = when (DataStore.routeOutbound) {
+            0 -> 0L
+            1 -> -1L
+            2 -> -2L
+            else -> DataStore.routeOutboundRule
+        }
+    }
+
+    fun needSave(): Boolean {
+        if (!DataStore.dirty) return false
+        if (DataStore.routeDomain.isBlank() &&
+            DataStore.routeIP.isBlank() &&
+            DataStore.routeSourcePort.isBlank() &&
+            DataStore.routeNetwork.isBlank() &&
+            DataStore.routeProtocol.isBlank()
+        ) {
+            return false
+        }
+        return true
+    }
+
+    fun PreferenceFragmentCompat.createPreferences(
+        savedInstanceState: Bundle?,
+        rootKey: String?,
+    ) {
+        addPreferencesFromResource(R.xml.route_preferences)
+    }
+
+    lateinit var outbound: OutboundPreference
+    val selectProfileForAdd = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { (resultCode, data) ->
+        if (resultCode == Activity.RESULT_OK) runOnDefaultDispatcher {
+            val profile = ProfileManager.getProfile(
+                data!!.getLongExtra(
+                    ProfileSelectActivity.EXTRA_PROFILE_ID,
+                    0
+                )
+            ) ?: return@runOnDefaultDispatcher
+            DataStore.routeOutboundRule = profile.id
+            onMainDispatcher {
+                outbound.value = "3"
+            }
+        }
+    }
+
+    fun PreferenceFragmentCompat.viewCreated(view: View, savedInstanceState: Bundle?) {
+        outbound = findPreference(Key.ROUTE_OUTBOUND)!!
+        outbound.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue.toString() == "3") {
+                selectProfileForAdd.launch(
+                    Intent(
+                        this@RouteSettingsActivity,
+                        ProfileSelectActivity::class.java
+                    )
+                )
+                false
+            } else true
+        }
+    }
+
+    fun PreferenceFragmentCompat.displayPreferenceDialog(preference: Preference): Boolean {
+        return false
+    }
+
+    class UnsavedChangesDialogFragment : AlertDialogFragment<Empty, Empty>() {
+        override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
+            setTitle(R.string.unsaved_changes_prompt)
+            setPositiveButton(R.string.yes) { _, _ ->
+                runOnDefaultDispatcher {
+                    (requireActivity() as RouteSettingsActivity).saveAndExit()
+                }
+            }
+            setNegativeButton(R.string.no) { _, _ ->
+                requireActivity().finish()
+            }
+            setNeutralButton(android.R.string.cancel, null)
+        }
+    }
+
+    @Parcelize
+    data class ProfileIdArg(val ruleId: Long) : Parcelable
+    class DeleteConfirmationDialogFragment : AlertDialogFragment<ProfileIdArg, Empty>() {
+        override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
+            setTitle(R.string.delete_route_prompt)
+            setPositiveButton(R.string.yes) { _, _ ->
+                runOnDefaultDispatcher {
+                    ProfileManager.deleteRule(arg.ruleId)
+                }
+                requireActivity().finish()
+            }
+            setNegativeButton(R.string.no, null)
+        }
+    }
+
+    companion object {
+        const val EXTRA_ROUTE_ID = "id"
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.apply {
+            setTitle(R.string.cag_route)
+            setDisplayHomeAsUpEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_navigation_close)
+        }
+
+        if (savedInstanceState == null) {
+            val editingId = intent.getLongExtra(EXTRA_ROUTE_ID, 0L)
+            DataStore.editingId = editingId
+            runOnDefaultDispatcher {
+                if (editingId == 0L) {
+                    init()
+                } else {
+                    val ruleEntity = SagerDatabase.rulesDao.getById(editingId)
+                    if (ruleEntity == null) {
+                        onMainDispatcher {
+                            finish()
+                        }
+                        return@runOnDefaultDispatcher
+                    }
+                    ruleEntity.init()
+                }
+
+                onMainDispatcher {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.settings,
+                            MyPreferenceFragmentCompat().apply {
+                                activity = this@RouteSettingsActivity
+                            })
+                        .commit()
+
+                    DataStore.dirty = false
+                    DataStore.profileCacheStore.registerChangeListener(this@RouteSettingsActivity)
+                }
+            }
+
+
+        }
+
+    }
+
+    suspend fun saveAndExit() {
+
+        if (!needSave()) {
+            onMainDispatcher {
+                AlertDialog.Builder(this@RouteSettingsActivity)
+                    .setTitle(R.string.empty_route)
+                    .setMessage(R.string.empty_route_notice)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }
+            return
+        }
+
+        val editingId = DataStore.editingId
+        if (editingId == 0L) {
+            ProfileManager.createRule(RuleEntity().apply { serialize() })
+        } else {
+            val entity = SagerDatabase.rulesDao.getById(DataStore.editingId)
+            if (entity == null) {
+                finish()
+                return
+            }
+            ProfileManager.updateRule(entity.apply { serialize() })
+        }
+        if (editingId == DataStore.selectedProxy && DataStore.directBootAware) DirectBoot.update()
+        finish()
+
+    }
+
+    val child by lazy { supportFragmentManager.findFragmentById(R.id.settings) as MyPreferenceFragmentCompat }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.profile_config_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = child.onOptionsItemSelected(item)
+
+    override fun onBackPressed() {
+        if (needSave()) {
+            UnsavedChangesDialogFragment().apply { key() }
+                .show(supportFragmentManager, null)
+        } else super.onBackPressed()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        if (!super.onSupportNavigateUp()) finish()
+        return true
+    }
+
+    override fun onDestroy() {
+        DataStore.profileCacheStore.unregisterChangeListener(this)
+        super.onDestroy()
+    }
+
+    override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
+        if (key != Key.PROFILE_DIRTY) {
+            DataStore.dirty = true
+        }
+    }
+
+    class MyPreferenceFragmentCompat : PreferenceFragmentCompat() {
+
+        lateinit var activity: RouteSettingsActivity
+
+        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+            preferenceManager.preferenceDataStore = DataStore.profileCacheStore
+            activity.apply {
+                createPreferences(savedInstanceState, rootKey)
+            }
+        }
+
+        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+            super.onViewCreated(view, savedInstanceState)
+
+            ViewCompat.setOnApplyWindowInsetsListener(listView, ListListener)
+
+            activity.apply {
+                viewCreated(view, savedInstanceState)
+            }
+        }
+
+        override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+            R.id.action_delete -> {
+                if (DataStore.editingId == 0L) {
+                    requireActivity().finish()
+                } else {
+                    DeleteConfirmationDialogFragment().apply {
+                        arg(ProfileIdArg(DataStore.editingId))
+                        key()
+                    }.show(parentFragmentManager, null)
+                }
+                true
+            }
+            R.id.action_apply -> {
+                runOnDefaultDispatcher {
+                    activity.saveAndExit()
+                }
+                true
+            }
+            else -> false
+        }
+
+        override fun onDisplayPreferenceDialog(preference: Preference) {
+            activity.apply {
+                if (displayPreferenceDialog(preference)) return
+            }
+            super.onDisplayPreferenceDialog(preference)
+        }
+
+    }
+
+    object PasswordSummaryProvider : Preference.SummaryProvider<EditTextPreference> {
+
+        override fun provideSummary(preference: EditTextPreference): CharSequence {
+            return if (preference.text.isNullOrBlank()) {
+                preference.context.getString(androidx.preference.R.string.not_set)
+            } else {
+                "\u2022".repeat(preference.text.length)
+            }
+        }
+
+    }
+
+}

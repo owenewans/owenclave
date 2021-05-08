@@ -23,10 +23,12 @@ package io.nekohasekai.sagernet.fmt.trojan
 
 import io.nekohasekai.sagernet.ktx.linkBuilder
 import io.nekohasekai.sagernet.ktx.toLink
+import io.nekohasekai.sagernet.ktx.unUrlSafe
 import io.nekohasekai.sagernet.ktx.urlSafe
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
+// WTF
+// https://github.com/trojan-gfw/igniter/issues/318
 fun parseTrojan(server: String): TrojanBean {
 
     val link = server.replace("trojan://", "https://").toHttpUrlOrNull()
@@ -35,11 +37,10 @@ fun parseTrojan(server: String): TrojanBean {
     return TrojanBean().apply {
         serverAddress = link.host
         serverPort = link.port
-        password = link.username
+        password = link.username.unUrlSafe()
 
         if (link.password.isNotBlank()) {
-            // https://github.com/trojan-gfw/igniter/issues/318
-            password += ":" + link.password
+            password += ":" + link.password.unUrlSafe()
         }
 
         security = link.queryParameter("security") ?: "tls"
@@ -66,7 +67,8 @@ fun TrojanBean.toUri(): String {
     }
 
     when (security) {
-        "tls" -> {}
+        "tls" -> {
+        }
         "xtls" -> {
             builder.addQueryParameter("security", security)
             builder.addQueryParameter("flow", flow)

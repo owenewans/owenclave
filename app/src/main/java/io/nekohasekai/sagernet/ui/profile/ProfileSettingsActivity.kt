@@ -194,7 +194,6 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
 
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         if (key != Key.PROFILE_DIRTY) {
-            Logs.d("Chnaged $key")
             DataStore.dirty = true
         }
     }
