@@ -26,8 +26,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 
 fun parseHttp(link: String): HttpBean {
-    val httpUrl = link.replace("naive+https://", "https://").toHttpUrlOrNull()
-        ?: error("Invalid http(s) link: $link")
+    val httpUrl = link.toHttpUrlOrNull() ?: error("Invalid http(s) link: $link")
 
     if (httpUrl.encodedPath != "/") error("Not http proxy")
 
