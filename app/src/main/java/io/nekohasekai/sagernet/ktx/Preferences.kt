@@ -22,6 +22,7 @@
 package io.nekohasekai.sagernet.ktx
 
 import androidx.preference.PreferenceDataStore
+import cn.hutool.core.util.NumberUtil
 import kotlin.reflect.KProperty
 
 fun PreferenceDataStore.string(
@@ -44,7 +45,7 @@ fun PreferenceDataStore.stringToInt(
     defaultValue: () -> Int = { 0 },
 ) = PreferenceProxy(name,
     defaultValue,
-    { key, default -> getString(key, "$default")?.toInt() },
+    { key, default -> getString(key, "$default")?.takeIf { NumberUtil.isInteger(it) }?.toInt() },
     { key, value -> putString(key, "$value") })
 
 fun PreferenceDataStore.long(

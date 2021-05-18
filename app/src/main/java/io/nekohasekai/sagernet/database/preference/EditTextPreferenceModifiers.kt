@@ -44,4 +44,13 @@ object EditTextPreferenceModifiers {
             editText.setSelection(editText.text.length)
         }
     }
+
+    object Number : EditTextPreference.OnBindEditTextListener {
+
+        override fun onBindEditText(editText: EditText) {
+            editText.inputType = EditorInfo.TYPE_CLASS_NUMBER
+            editText.setSingleLine()
+            editText.setSelection(editText.text.length)
+        }
+    }
 }
