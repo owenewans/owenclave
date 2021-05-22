@@ -11,7 +11,7 @@
         android:label="PingTunnel Plugin"
         android:roundIcon="@mipmap/ic_launcher_round">
         <provider
-            android:name="io.nekohasekai.sagernet.plugin.pingtunnel.BinaryProvider"
+            android:name=".BinaryProvider"
             android:authorities="io.nekohasekai.sagernet.plugin.pingtunnel.BinaryProvider"
             android:directBootAware="true"
             android:exported="true"
