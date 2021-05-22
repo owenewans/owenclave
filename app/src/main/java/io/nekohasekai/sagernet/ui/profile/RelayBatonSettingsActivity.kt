@@ -34,10 +34,6 @@ class RelayBatonSettingsActivity : ProfileSettingsActivity<RelayBatonBean>() {
 
     override fun createEntity() = RelayBatonBean()
 
-    override fun init() {
-        RelayBatonBean().applyDefaultValues().init()
-    }
-
     override fun RelayBatonBean.init() {
         DataStore.profileName = name
         DataStore.serverAddress = serverAddress

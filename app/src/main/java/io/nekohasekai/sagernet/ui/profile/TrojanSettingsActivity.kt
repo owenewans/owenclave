@@ -37,10 +37,6 @@ class TrojanSettingsActivity : ProfileSettingsActivity<TrojanBean>() {
 
     override fun createEntity() = TrojanBean()
 
-    override fun init() {
-        TrojanBean().applyDefaultValues().init()
-    }
-
     override fun TrojanBean.init() {
         DataStore.profileName = name
         DataStore.serverAddress = serverAddress
