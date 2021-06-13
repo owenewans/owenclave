@@ -48,7 +48,7 @@ public class ChainBean extends AbstractBean {
 
     @Override
     public void initDefaultValues() {
-        super.initDefaultValues();
+        if (name == null) name = "";
 
         if (proxies == null) {
             proxies = new LinkedList<>();
@@ -57,8 +57,7 @@ public class ChainBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
-        super.serialize(output);
+        output.writeInt(1);
         output.writeInt(proxies.size());
         for (Long proxy : proxies) {
             output.writeLong(proxy);
@@ -68,7 +67,10 @@ public class ChainBean extends AbstractBean {
     @Override
     public void deserialize(ByteBufferInput input) {
         int version = input.readInt();
-        super.deserialize(input);
+        if (version < 1) {
+            input.readString();
+            input.readInt();
+        }
         int length = input.readInt();
         proxies = new LinkedList<>();
         for (int i = 0; i < length; i++) {
