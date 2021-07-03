@@ -34,7 +34,7 @@ import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
-public class ChainBean extends AbstractBean {
+public class ChainBean extends InternalBean {
 
     public List<Long> proxies;
 
