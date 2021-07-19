@@ -47,6 +47,7 @@ object Executable {
             }.split(Character.MIN_VALUE, limit = 2).first())
             if (EXECUTABLES.contains(exe.name)) try {
                 Os.kill(process.name.toInt(), OsConstants.SIGKILL)
+                Logs.w("SIGKILL ${exe.nameWithoutExtension} (${process.name}) succeed")
             } catch (e: ErrnoException) {
                 if (e.errno != OsConstants.ESRCH) {
                     Logs.w("SIGKILL ${exe.absolutePath} (${process.name}) failed")
