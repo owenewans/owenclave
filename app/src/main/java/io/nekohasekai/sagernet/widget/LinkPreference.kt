@@ -75,21 +75,21 @@ class LinkPreference : EditTextPreference {
             val linkLayout = it.rootView.findViewById<TextInputLayout>(R.id.input_layout)
             fun validate() {
                 val link = it.text
-                if (link.isNotBlank()) {
-                    try {
-                        val url = link.toString().toHttpUrl()
-                        if ("http".equals(url.scheme, true)) {
-                            linkLayout.error = app.getString(R.string.cleartext_http_warning)
-                            linkLayout.isErrorEnabled = true
-                        } else {
-                            linkLayout.isErrorEnabled = false
-                        }
-                    } catch (e: Exception) {
-                        linkLayout.error = e.readableMessage
-                        linkLayout.isErrorEnabled = true
-                    }
-                } else {
+                if (link.isBlank()) {
                     linkLayout.isErrorEnabled = false
+                    return
+                }
+                try {
+                    val url = link.toString().toHttpUrl()
+                    if ("http".equals(url.scheme, true)) {
+                        linkLayout.error = app.getString(R.string.cleartext_http_warning)
+                        linkLayout.isErrorEnabled = true
+                    } else {
+                        linkLayout.isErrorEnabled = false
+                    }
+                } catch (e: Exception) {
+                    linkLayout.error = e.readableMessage
+                    linkLayout.isErrorEnabled = true
                 }
             }
             validate()
