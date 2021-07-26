@@ -319,7 +319,8 @@ class AppManagerActivity : ThemedActivity() {
                             proxiedAppString to ""
                         } else proxiedAppString.substring(
                             0, i
-                        ) to proxiedAppString.substring(i + 1) //bypassGroup.check(if (enabled.toBoolean()) R.id.btn_bypass else R.id.btn_on)
+                        ) to proxiedAppString.substring(i + 1)
+                        binding.bypassGroup.check(if (enabled.toBoolean()) R.id.appProxyModeBypass else R.id.appProxyModeOn)
                         DataStore.individual = apps
                         Snackbar.make(
                             binding.list, R.string.action_import_msg, Snackbar.LENGTH_LONG
