@@ -24,11 +24,15 @@ package io.nekohasekai.sagernet.bg
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.buildCustomConfig
 import io.nekohasekai.sagernet.ktx.Logs
+import io.netty.channel.EventLoopGroup
 import libv2ray.Libv2ray
 import libv2ray.V2RayVPNServiceSupportsSet
 
 class ExternalInstance(
-    val supportSet: V2RayVPNServiceSupportsSet, profile: ProxyEntity, val port: Int
+    val supportSet: V2RayVPNServiceSupportsSet,
+    profile: ProxyEntity,
+    val port: Int,
+    override val eventLoopGroup: EventLoopGroup
 ) : V2RayInstance(profile) {
 
     override fun init() {
