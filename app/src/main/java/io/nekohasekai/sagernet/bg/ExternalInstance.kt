@@ -21,6 +21,7 @@
 
 package io.nekohasekai.sagernet.bg
 
+import io.nekohasekai.sagernet.bg.proto.V2RayInstance
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.buildCustomConfig
 import io.nekohasekai.sagernet.ktx.Logs
