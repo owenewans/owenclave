@@ -21,17 +21,14 @@
 
 package io.nekohasekai.sagernet.bg.proto
 
-import io.nekohasekai.sagernet.bg.AbstractInstance
+import io.nekohasekai.sagernet.bg.ClashBasedInstance
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
-import kotlinx.coroutines.CoroutineScope
-import libcore.ShadowsocksRInstance
+import libcore.Libcore
 
-class ShadowsocksRInstance(val server: ShadowsocksRBean, val port: Int) : AbstractInstance {
+class ShadowsocksRInstance(val server: ShadowsocksRBean, val port: Int) : ClashBasedInstance() {
 
-    lateinit var point: ShadowsocksRInstance
-
-    override fun launch() {
-        point = ShadowsocksRInstance(
+    override fun createInstance() {
+        instance = Libcore.newShadowsocksRInstance(
             port.toLong(),
             server.finalAddress,
             server.finalPort.toLong(),
@@ -42,10 +39,6 @@ class ShadowsocksRInstance(val server: ShadowsocksRBean, val port: Int) : Abstra
             server.protocol,
             server.protocolParam
         )
-        point.start()
     }
 
-    override fun destroy(scope: CoroutineScope) {
-        if (::point.isInitialized) point.close()
-    }
 }
