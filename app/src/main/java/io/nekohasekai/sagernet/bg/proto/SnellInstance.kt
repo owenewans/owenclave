@@ -19,7 +19,6 @@
 
 package io.nekohasekai.sagernet.bg.proto
 
-import io.nekohasekai.sagernet.bg.AbstractInstance
 import io.nekohasekai.sagernet.bg.ClashBasedInstance
 import io.nekohasekai.sagernet.fmt.snell.SnellBean
 import libcore.Libcore
