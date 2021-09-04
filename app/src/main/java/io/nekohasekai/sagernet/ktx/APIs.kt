@@ -18,6 +18,7 @@
  ******************************************************************************/
 
 package io.nekohasekai.sagernet.ktx
+/*
 
 import io.grpc.okhttp.OkHttpChannelBuilder
 import io.nekohasekai.sagernet.database.DataStore
@@ -27,4 +28,4 @@ import kotlinx.coroutines.asExecutor
 
 fun createChannel() =
     OkHttpChannelBuilder.forAddress(LOCALHOST, DataStore.apiPort).usePlaintext()
-        .executor(Dispatchers.Default.asExecutor()).build()
+        .executor(Dispatchers.Default.asExecutor()).build()*/
