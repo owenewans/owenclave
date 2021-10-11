@@ -19,7 +19,6 @@
 
 package io.nekohasekai.sagernet.bg
 
-import kotlinx.coroutines.CoroutineScope
 import libcore.ClashBasedInstance
 
 abstract class ClashBasedInstance : AbstractInstance {
