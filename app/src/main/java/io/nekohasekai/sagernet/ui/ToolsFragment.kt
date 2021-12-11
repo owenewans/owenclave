@@ -35,6 +35,7 @@ class ToolsFragment : ToolbarFragment(R.layout.layout_tools) {
         toolbar.setTitle(R.string.menu_tools)
 
         val tools = mutableListOf<NamedFragment>()
+        tools.add(NetworkFragment())
         tools.add(CloudflareFragment())
 
         if (BuildConfig.DEBUG || isExpert) tools.add(DebugFragment())
