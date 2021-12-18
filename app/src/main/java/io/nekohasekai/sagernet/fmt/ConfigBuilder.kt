@@ -197,15 +197,7 @@ fun buildV2RayConfig(
             servers.addAll(remoteDns.map {
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
-                        var url = it
-                        if (it != "localhost") {
-                            val lnk = Libcore.parseURL(it)
-                            if (lnk.scheme.isBlank()) {
-                                lnk.scheme = "udp"
-                            }
-                            url = lnk.string
-                        }
-                        address = url
+                        address = it
                         if (useFakeDns) {
                             fakedns = mutableListOf()
                             fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
@@ -1225,7 +1217,7 @@ fun buildV2RayConfig(
                 protocol = "dokodemo-door"
                 settings = LazyInboundConfigurationObject(this,
                     DokodemoDoorInboundConfigurationObject().apply {
-                        address = "1.0.0.1"
+                        address = "1.0.0.1" // FIXME
                         network = "tcp,udp"
                         port = 53
                     })
@@ -1239,16 +1231,20 @@ fun buildV2RayConfig(
             settings = LazyOutboundConfigurationObject(this,
                 DNSOutboundConfigurationObject().apply {
                     userLevel = 1
+                    address = "1.0.0.1" // FIXME
+                    port = 53
                     var dns = remoteDns.first()
                     if (!dns.contains("://")) dns = "udp://$dns"
                     val uri = Uri.parse(dns)
-                    address = uri.host
-                    if (uri.port > 0) {
-                        port = uri.port
-                    }
                     uri.scheme?.also {
-                        if (it.startsWith("tcp") || it.startsWith("https")) {
+                        if (it.startsWith("tcp") || it.startsWith("https") || it.startsWith("tls")) {
                             network = "tcp"
+                        }
+                        if (it.startsWith("tcp") || it.startsWith("udp")) {
+                            address = uri.host
+                            if (uri.port > 0) {
+                                port = uri.port
+                            }
                         }
                     }
                 })
@@ -1293,23 +1289,7 @@ fun buildV2RayConfig(
             dns.servers.addAll(directDNS.map {
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
-                        var url = it
-                        if (it != "localhost") {
-                            val lnk = Libcore.parseURL(it)
-                            if (lnk.scheme.isBlank()) {
-                                lnk.scheme = "udp+local"
-                            } else {
-                                lnk.scheme = when (lnk.scheme) {
-                                    "https" -> "https+local"
-                                    "quic" -> "quic+local"
-                                    "tcp" -> "tcp+local"
-                                    "udp" -> "udp+local"
-                                    else -> lnk.scheme
-                                }
-                            }
-                            url = lnk.string
-                        }
-                        address = url
+                        address = it
                         domains = bypassDomain.toList()
                         if (useFakeDns) {
                             fakedns = mutableListOf()
