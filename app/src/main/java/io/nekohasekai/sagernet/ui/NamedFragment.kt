@@ -25,6 +25,8 @@ abstract class NamedFragment : Fragment {
     constructor() : super()
     constructor(contentLayoutId: Int) : super(contentLayoutId)
 
-    abstract fun name(): String
+    private val name by lazy { name0() }
+    fun name() = name
+    protected abstract fun name0(): String
 
 }
