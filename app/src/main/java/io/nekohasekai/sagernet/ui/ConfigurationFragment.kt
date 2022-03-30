@@ -1143,9 +1143,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         recyclerView: RecyclerView,
                         viewHolder: RecyclerView.ViewHolder,
                     ): Int {
-                        return if (isProfileEditable((viewHolder as ConfigurationHolder).entity.id)) {
-                            super.getSwipeDirs(recyclerView, viewHolder)
-                        } else 0
+                        return 0
                     }
 
                     override fun getDragDirs(
@@ -1154,9 +1152,6 @@ class ConfigurationFragment @JvmOverloads constructor(
                     ) = if (isEnabled) super.getDragDirs(recyclerView, viewHolder) else 0
 
                     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                        val index = viewHolder.bindingAdapterPosition
-                        adapter.remove(index)
-                        undoManager.remove(index to (viewHolder as ConfigurationHolder).entity)
                     }
 
                     override fun onMove(
