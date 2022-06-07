@@ -173,7 +173,7 @@ fun buildV2RayConfig(
     val needIncludeSelf = DataStore.tunImplementation == TunImplementation.SYSTEM
 
     val outboundDomainStrategy = when {
-        destinationOverride && !resolveDestination -> "AsIs"
+        !resolveDestination -> "AsIs"
         ipv6Mode == IPv6Mode.DISABLE -> "UseIPv4"
         ipv6Mode == IPv6Mode.PREFER -> "PreferIPv6"
         ipv6Mode == IPv6Mode.ONLY -> "UseIPv6"
@@ -428,9 +428,6 @@ fun buildV2RayConfig(
                                             }
                                         })
                                 })
-                        }
-                        if (currentDomainStrategy == "AsIs") {
-                            currentDomainStrategy = "UseIP"
                         }
                     } else {
                         currentOutbound.apply {
@@ -922,6 +919,9 @@ fun buildV2RayConfig(
                                         when (bean.packetEncoding) {
                                             PacketAddrType.Packet_VALUE -> {
                                                 packetEncoding = "packet"
+                                                if (currentDomainStrategy == "AsIs") {
+                                                    currentDomainStrategy = "UseIP"
+                                                }
                                             }
                                             PacketAddrType.XUDP_VALUE -> {
                                                 packetEncoding = "xudp"
@@ -949,9 +949,6 @@ fun buildV2RayConfig(
                             type = "field"
                             inboundTag = listOf(pastInboundTag)
                             outboundTag = tagIn
-                            if (currentOutbound.domainStrategy == "AsIs") {
-                                currentOutbound.domainStrategy = "UseIP"
-                            }
                         })
                     }
                 }
