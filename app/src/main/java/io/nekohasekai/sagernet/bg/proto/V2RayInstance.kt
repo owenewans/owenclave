@@ -61,15 +61,13 @@ import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
-import libcore.ErrorHandler
 import libcore.V2RayInstance
 import java.io.File
 import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class V2RayInstance(
     val profile: ProxyEntity
-) : AbstractInstance,
-    ErrorHandler {
+) : AbstractInstance {
 
     lateinit var config: V2rayBuildResult
     lateinit var v2rayPoint: V2RayInstance
@@ -172,7 +170,7 @@ abstract class V2RayInstance(
                             }
                             else -> {
                                 externalInstances[port] = ExternalInstance(
-                                    profile, port, this
+                                    profile, port
                                 ).apply {
                                     init()
                                 }
@@ -328,9 +326,6 @@ abstract class V2RayInstance(
                         if (bean.insecure) {
                             commands.add("--insecure")
                         }
-                        if (bean.uot) {
-                            commands.add("--udpovertcp")
-                        }
 
                         if (bean.password.isNotBlank()) {
                             commands.add("--password")
@@ -410,7 +405,7 @@ abstract class V2RayInstance(
             }
         }
 
-        v2rayPoint.start(this)
+        v2rayPoint.start()
 
         if (config.requireWs) {
             val url = "http://$LOCALHOST:" + (config.wsPort) + "/"
@@ -475,8 +470,6 @@ abstract class V2RayInstance(
         if (::v2rayPoint.isInitialized) {
             v2rayPoint.close()
         }
-
-        Seq.destroyRef(v2rayPoint.refnum)
 
         isClosed = true
     }

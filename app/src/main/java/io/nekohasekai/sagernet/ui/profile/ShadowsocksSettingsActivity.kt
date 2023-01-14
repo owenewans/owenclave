@@ -47,7 +47,6 @@ import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
-import io.nekohasekai.sagernet.fmt.shadowsocks.methodsSing
 import io.nekohasekai.sagernet.ktx.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,9 +68,7 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
         DataStore.serverMethod = method
         DataStore.serverPassword = password
         DataStore.serverPlugin = plugin
-        DataStore.serverUoT = uot
         DataStore.serverReducedIvHeadEntropy = experimentReducedIvHeadEntropy
-        DataStore.serverEncryptedProtocolExtension = encryptedProtocolExtension
     }
 
     override fun ShadowsocksBean.serialize() {
@@ -81,9 +78,7 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
         method = DataStore.serverMethod
         password = DataStore.serverPassword
         plugin = DataStore.serverPlugin
-        uot = DataStore.serverUoT
         experimentReducedIvHeadEntropy = DataStore.serverReducedIvHeadEntropy
-        encryptedProtocolExtension = DataStore.serverEncryptedProtocolExtension
     }
 
     override fun onAttachedToWindow() {
@@ -108,14 +103,6 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
-
-        val serverMethod = findPreference<SimpleMenuPreference>(Key.SERVER_METHOD)!!
-        val serverEncryptedProtocolExtension = findPreference<SwitchPreference>(Key.SERVER_ENCRYPTED_PROTOCOL_EXTENSION)!!
-        serverMethod.setOnPreferenceChangeListener { _, newValue ->
-            serverEncryptedProtocolExtension.isVisible = (newValue as String) in methodsSing
-            true
-        }
-        serverEncryptedProtocolExtension.isVisible = serverMethod.value in methodsSing
 
         plugin = findPreference(Key.SERVER_PLUGIN)!!
         pluginConfigure = findPreference(Key.SERVER_PLUGIN_CONFIGURE)!!

@@ -42,7 +42,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.takisoft.preferencex.EditTextPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import com.takisoft.preferencex.SimpleMenuPreference
-import com.v2ray.core.app.router.StrategyLeastPingConfig
 import io.nekohasekai.sagernet.BalancerStrategy
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R

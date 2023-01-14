@@ -58,6 +58,7 @@
     <string name="route_add">Crear ruta</string>
     <string name="port_local_dns">Puerto DNS local</string>
     <string name="dns_hosts">Reescritura de dominio</string>
+    <string name="fakedns_message">Puede hacer que otras aplicaciones deban reiniciarse para volver a conectarse a la red después de que se detenga el proxy</string>
     <string name="group_delete_confirm_prompt">Estás seguro de eliminar este grupo\?</string>
     <string name="action_import_err">Importacion fallida.</string>
     <string name="add_profile_methods_scan_qr_code">Importar con QR</string>
@@ -211,6 +212,7 @@
     <string name="connection_test_url">URL de prueba de conexión</string>
     <string name="transproxy_mode">Modo transproxy</string>
     <string name="require_transproxy">Activar transproxy entrante</string>
+    <string name="enable_fakedns">Habilitar DNS falso</string>
     <string name="speed_detail">Proxy : %1$s↑ %2$s↓
 \nDirecto : %3$s↑ %4$s↓</string>
     <string name="security_settings">Configuraciones de seguridad</string>

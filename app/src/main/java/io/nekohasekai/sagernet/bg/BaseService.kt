@@ -46,7 +46,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import libcore.AppStats
-import libcore.ErrorHandler
 import libcore.Libcore
 import libcore.TrafficListener
 import java.net.UnknownHostException
@@ -375,10 +374,6 @@ class BaseService {
             Libcore.updateSystemRoots(useSystem)
         }
 
-        override fun closeConnections(uid: Int) {
-            (data?.proxy?.service as? VpnService)?.tun?.closeConnections(uid)
-        }
-
         override fun close() {
             callbacks.kill()
             cancel()
@@ -386,7 +381,7 @@ class BaseService {
         }
     }
 
-    interface Interface : ErrorHandler {
+    interface Interface {
         val data: Data
         val tag: String
         fun createNotification(profileName: String): ServiceNotification
@@ -453,19 +448,11 @@ class BaseService {
                 data.changeState(State.Stopped, msg)
                 DataStore.startedProfile = 0L
                 if (!keepState) DataStore.currentProfile = 0L
-                onDefaultDispatcher {
-                    Libcore.resetConnections()
-                    Libcore.disableConnectionPool()
-                }
                 // stop the service if nothing has bound to it
                 if (restart) startRunner() else { //   BootReceiver.enabled = false
                     stopSelf()
                 }
             }
-        }
-
-        override fun handleError(err: String) {
-            stopRunner(false, err)
         }
 
         fun persistStats() {
@@ -554,7 +541,6 @@ class BaseService {
                     }
                     DataStore.currentProfile = profile.id
                     DataStore.startedProfile = profile.id
-                    Libcore.enableConnectionPool()
                     startProcesses()
                     data.changeState(State.Connected)
                     data.binder.checkLoop()

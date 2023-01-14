@@ -289,6 +289,8 @@
     <string name="require_transproxy">Aktiver Transproxy Inbound</string>
     <string name="port_local_dns">Lokal DNS port</string>
     <string name="dns_hosts">Omskriving av domenet</string>
+    <string name="fakedns_message">Kan føre til at andre applikasjoner må startes på nytt for å koble til nettverket igjen etter at proxy er stoppet</string>
+    <string name="enable_fakedns">Aktiver FakeDNS</string>
     <string name="dns_routing_message">Løs domener i bypass -ruter med direkte DNS. Vær oppmerksom på potensielle DNS lekkasjer</string>
     <string name="enable_dns_routing">Aktiver DNS -ruting</string>
     <string name="direct_dns">Direkte DNS</string>

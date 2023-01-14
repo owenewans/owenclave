@@ -58,8 +58,4 @@ class V2RayTestInstance(profile: ProxyEntity, val link: String, val timeout: Int
     override fun buildConfig() {
         config = buildV2RayConfig(profile, true)
     }
-
-    override fun handleError(err: String) {
-        continuation.tryResumeWithException(Exception(err))
-    }
 }

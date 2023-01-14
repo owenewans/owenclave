@@ -96,17 +96,17 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .subText(versionName)
                         .setOnClickAction {
                             requireContext().launchCustomTab(
-                                "https://github.com/SagerNet/SagerNet/releases"
+                                "https://github.com/dyhkwong/SagerNet"
                             )
                         }
                         .build())
                     .addItem(MaterialAboutActionItem.Builder()
                         .icon(R.drawable.ic_baseline_airplanemode_active_24)
-                        .text(getString(R.string.version_x, "SagerNet/v2ray-core"))
+                        .text(getString(R.string.version_x, "v2ray-core"))
                         .subText("v" + Libcore.getV2RayVersion())
                         .setOnClickAction {
                             requireContext().launchCustomTab(
-                                "https://github.com/SagerNet/v2ray-core/releases"
+                                "https://github.com/dyhkwong/v2ray-core/tree/dev-sagernet"
                             )
                         }
                         .build())
@@ -172,27 +172,8 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .text(R.string.github)
                         .setOnClickAction {
                             requireContext().launchCustomTab(
-                                "https://github.com/SagerNet/SagerNet"
+                                "https://github.com/dyhkwong/SagerNet"
 
-                            )
-                        }
-                        .build())
-                    .addItem(MaterialAboutActionItem.Builder()
-                        .icon(R.drawable.baseline_translate_24)
-                        .text(R.string.translate_platform)
-                        .setOnClickAction {
-                            requireContext().launchCustomTab(
-                                "https://hosted.weblate.org/engage/sagernet/"
-
-                            )
-                        }
-                        .build())
-                    .addItem(MaterialAboutActionItem.Builder()
-                        .icon(R.drawable.ic_qu_shadowsocks_foreground)
-                        .text(R.string.telegram)
-                        .setOnClickAction {
-                            requireContext().launchCustomTab(
-                                "https://t.me/SagerNet"
                             )
                         }
                         .build())

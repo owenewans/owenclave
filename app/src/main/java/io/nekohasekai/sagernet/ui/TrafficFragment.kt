@@ -184,9 +184,6 @@ class TrafficFragment : ToolbarFragment(R.layout.layout_traffic),
                         putExtra(RouteSettingsActivity.EXTRA_PACKAGE_NAME, stats.packageName)
                     })
                 }
-                R.id.disconnect -> {
-                    (requireActivity() as? MainActivity)?.connection?.service?.closeConnections(stats.uid)
-                }
             }
             return true
         }

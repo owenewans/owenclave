@@ -48,18 +48,7 @@ class ProxyService : Service(),
         DefaultNetworkListener.start(this) {
             SagerNet.reloadNetwork(it)
             underlyingNetwork = it
-
-            SagerNet.connectivity.getLinkProperties(it)?.also { link ->
-                val oldName = upstreamInterfaceName
-                if (oldName != link.interfaceName) {
-                    upstreamInterfaceName = link.interfaceName
-                }
-                if (oldName != null && upstreamInterfaceName != null && oldName != upstreamInterfaceName) {
-                    Libcore.resetConnections()
-                }
-            }
         }
-        Libcore.setLocalhostResolver(this)
     }
 
     override var wakeLock: PowerManager.WakeLock? = null
@@ -72,7 +61,6 @@ class ProxyService : Service(),
 
     @Suppress("EXPERIMENTAL_API_USAGE")
     override fun killProcesses() {
-        Libcore.setLocalhostResolver(null)
         super.killProcesses()
         GlobalScope.launch(Dispatchers.Default) { DefaultNetworkListener.stop(this) }
     }

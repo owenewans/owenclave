@@ -17,5 +17,4 @@ interface ISagerNetService {
   oneway void resetTrafficStats();
   boolean getTrafficStatsEnabled();
   oneway void updateSystemRoots(boolean useSystem);
-  oneway void closeConnections(int uid);
 }

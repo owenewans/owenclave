@@ -21,7 +21,6 @@ package io.nekohasekai.sagernet.fmt.v2ray
 
 import cn.hutool.core.codec.Base64
 import cn.hutool.json.JSONObject
-import com.v2ray.core.common.net.packetaddr.PacketAddrType
 import io.nekohasekai.sagernet.ktx.*
 import libcore.Libcore
 
@@ -106,6 +105,16 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.headerType = it
                 }
             }
+            "grpc" -> {
+                url.queryParameter("serverName")?.let {
+                    bean.grpcServiceName = it
+                }
+                url.queryParameter("mode")?.let {
+                    if (it == "multi") {
+                        bean.grpcMode = it
+                    }
+                }
+            }
         }
     } else { // https://github.com/XTLS/Xray-core/issues/91
 
@@ -128,18 +137,6 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 }
                 url.queryParameter("chain")?.let {
                     bean.pinnedPeerCertificateChainSha256 = it
-                }
-            }
-            "xtls" -> {
-                bean.security = "xtls"
-                url.queryParameter("sni")?.let {
-                    bean.sni = it
-                }
-                url.queryParameter("alpn")?.let {
-                    bean.alpn = it
-                }
-                url.queryParameter("flow")?.let {
-                    bean.flow = it
                 }
             }
         }
@@ -203,13 +200,18 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 url.queryParameter("serviceName")?.let {
                     bean.grpcServiceName = it
                 }
+                url.queryParameter("mode")?.let {
+                    if (it == "multi") {
+                        bean.grpcMode = it
+                    }
+                }
             }
         }
 
         url.queryParameter("packetEncoding")?.let {
             when (it) {
-                "packet" -> bean.packetEncoding = PacketAddrType.Packet_VALUE
-                "xudp" -> bean.packetEncoding = PacketAddrType.XUDP_VALUE
+                "packet" -> bean.packetEncoding = 1
+                "xudp" -> bean.packetEncoding = 2
             }
         }
 
@@ -427,6 +429,11 @@ fun StandardV2RayBean.toUri(): String {
             if (grpcServiceName.isNotBlank()) {
                 builder.addQueryParameter("serviceName", grpcServiceName)
             }
+            when (grpcMode) {
+                "multi" -> {
+                    builder.addQueryParameter("mode", grpcMode)
+                }
+            }
         }
     }
 
@@ -447,25 +454,14 @@ fun StandardV2RayBean.toUri(): String {
                     builder.addQueryParameter("chain", pinnedPeerCertificateChainSha256)
                 }
             }
-            "xtls" -> {
-                if (sni.isNotBlank()) {
-                    builder.addQueryParameter("sni", sni)
-                }
-                if (alpn.isNotBlank()) {
-                    builder.addQueryParameter("alpn", alpn)
-                }
-                if (flow.isNotBlank()) {
-                    builder.addQueryParameter("flow", flow)
-                }
-            }
         }
     }
 
     when (packetEncoding) {
-        PacketAddrType.Packet_VALUE -> {
+        1 -> {
             builder.addQueryParameter("packetEncoding", "packet")
         }
-        PacketAddrType.XUDP_VALUE -> {
+        2 -> {
             builder.addQueryParameter("packetEncoding", "xudp")
         }
     }

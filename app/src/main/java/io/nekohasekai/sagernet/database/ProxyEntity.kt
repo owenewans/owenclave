@@ -407,13 +407,6 @@ data class ProxyEntity(
         }
     }
 
-    fun needUoT(): Boolean {
-        return when (type) {
-            TYPE_NAIVE -> naiveBean!!.uot
-            else -> false
-        }
-    }
-
     fun isV2RayNetworkTcp(): Boolean {
         val bean = requireBean() as StandardV2RayBean
         return when (bean.type) {

@@ -34,7 +34,6 @@ public class BrookBean extends AbstractBean {
     public String wsPath;
     public Boolean insecure;
     public Boolean withoutBrookProtocol;
-    public Boolean uot;
 
     @Override
     public boolean allowInsecure() {
@@ -49,12 +48,11 @@ public class BrookBean extends AbstractBean {
         if (wsPath == null) wsPath = "";
         if (insecure == null) insecure = false;
         if (withoutBrookProtocol == null) withoutBrookProtocol = false;
-        if (uot == null) uot = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(password);
@@ -69,7 +67,6 @@ public class BrookBean extends AbstractBean {
                 break;
             }
             default:
-                output.writeBoolean(uot);
                 break;
         }
     }
@@ -95,8 +92,8 @@ public class BrookBean extends AbstractBean {
                 break;
             }
             default:
-                if (version >= 2) {
-                    uot = input.readBoolean();
+                if (version == 2) {
+                    input.readBoolean(); // uot, removed
                 }
                 break;
         }

@@ -46,12 +46,6 @@
             app:key="tunImplementation"
             app:title="@string/tun_implementation"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
-            app:defaultValue="true"
-            app:icon="@drawable/ic_hardware_router"
-            app:key="useUpstreamInterfaceMTU"
-            app:summary="@string/auto_mtu_summary"
-            app:title="@string/auto_mtu" />
         <EditTextPreference
             app:icon="@drawable/baseline_public_24"
             app:key="mtu"
@@ -185,7 +179,7 @@
 
     <PreferenceCategory app:title="@string/cag_dns">
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
-            app:defaultValue="tls://dns.google"
+            app:defaultValue="tcp://1.1.1.1"
             app:icon="@drawable/ic_action_dns"
             app:key="remoteDns"
             app:title="@string/remote_dns"
@@ -195,7 +189,7 @@
             app:key="useLocalDnsAsDirectDns"
             app:title="@string/use_local_dns_as_direct_dns" />
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
-            app:defaultValue="tls+local://dot.pub"
+            app:defaultValue="tcp://223.5.5.5"
             app:key="directDns"
             app:title="@string/direct_dns"
             app:useSimpleSummaryProvider="true" />
@@ -211,10 +205,15 @@
             app:summary="@string/dns_routing_message"
             app:title="@string/enable_dns_routing" />
         <SwitchPreference
-            app:icon="@drawable/ic_baseline_import_contacts_24"
-            app:key="disableDnsExpire"
-            app:summary="@string/disable_dns_expire_summary"
-            app:title="@string/disable_dns_expire" />
+            app:icon="@drawable/ic_action_lock"
+            app:key="enableFakeDns"
+            app:summary="@string/fakedns_message"
+            app:title="@string/enable_fakedns" />
+        <SwitchPreference
+            app:icon="@drawable/ic_action_lock"
+            app:key="hijackDns"
+            app:summary="@string/hijack_dns_message"
+            app:title="@string/hijack_dns" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/inbound_settings">

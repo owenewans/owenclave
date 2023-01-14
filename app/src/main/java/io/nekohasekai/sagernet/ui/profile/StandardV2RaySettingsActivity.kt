@@ -25,7 +25,6 @@ import androidx.preference.PreferenceCategory
 import androidx.preference.SwitchPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import com.takisoft.preferencex.SimpleMenuPreference
-import com.v2ray.core.common.net.packetaddr.PacketAddrType
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -63,7 +62,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverALPN = alpn
         DataStore.serverCertificates = certificates
         DataStore.serverPinnedCertificateChain = pinnedPeerCertificateChainSha256
-        DataStore.serverFlow = flow
         DataStore.serverQuicSecurity = quicSecurity
         DataStore.serverWsMaxEarlyData = wsMaxEarlyData
         DataStore.serverEarlyDataHeaderName = earlyDataHeaderName
@@ -95,7 +93,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         alpn = DataStore.serverALPN
         certificates = DataStore.serverCertificates
         pinnedPeerCertificateChainSha256 = DataStore.serverPinnedCertificateChain
-        flow = DataStore.serverFlow
         quicSecurity = DataStore.serverQuicSecurity
         wsMaxEarlyData = DataStore.serverWsMaxEarlyData
         earlyDataHeaderName = DataStore.serverEarlyDataHeaderName
@@ -114,7 +111,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var quicSecurity: SimpleMenuPreference
     lateinit var security: SimpleMenuPreference
     lateinit var grpcMode: SimpleMenuPreference
-    lateinit var xtlsFlow: SimpleMenuPreference
 
     lateinit var securityCategory: PreferenceCategory
     lateinit var certificates: EditTextPreference
@@ -147,7 +143,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         certificates = findPreference(Key.SERVER_CERTIFICATES)!!
         pinnedCertificateChain = findPreference(Key.SERVER_PINNED_CERTIFICATE_CHAIN)!!
         allowInsecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
-        xtlsFlow = findPreference(Key.SERVER_FLOW)!!
 
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
 
@@ -191,7 +186,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     val tcpHeadersValue = app.resources.getStringArray(R.array.tcp_headers_value)
     val kcpQuicHeadersValue = app.resources.getStringArray(R.array.kcp_quic_headers_value)
     val quicSecurityValue = app.resources.getStringArray(R.array.quic_security_value)
-    val xtlsFlowValue = app.resources.getStringArray(R.array.xtls_flow_value)
 
     fun updateView(network: String) {
         if (bean is StandardV2RayBean) {
@@ -325,18 +319,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
     fun updateTle(tle: String) {
         val isTLS = tle == "tls"
-        val isXTLS = tle == "xtls"
         certificates.isVisible = isTLS
         pinnedCertificateChain.isVisible = isTLS
-        allowInsecure.isVisible = isTLS || isXTLS
-        xtlsFlow.isVisible = isXTLS
-        if (isXTLS) {
-            if (DataStore.serverFlow !in xtlsFlowValue) {
-                xtlsFlow.value = xtlsFlowValue[0]
-            } else {
-                xtlsFlow.value = DataStore.serverFlow
-            }
-        }
+        allowInsecure.isVisible = isTLS
     }
 
 }

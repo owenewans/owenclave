@@ -33,12 +33,6 @@ import io.nekohasekai.sagernet.ktx.unUrlSafe
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
 
-val methodsSing = arrayOf(
-    "2022-blake3-aes-128-gcm",
-    "2022-blake3-aes-256-gcm",
-    "2022-blake3-chacha20-poly1305"
-)
-
 fun PluginConfiguration.fixInvalidParams() {
 
     if (selected.contains("v2ray") && selected != "v2ray-plugin") {
@@ -94,8 +88,6 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
                 password = link.password
                 plugin = link.queryParameter("plugin") ?: ""
                 name = link.fragment
-                uot = link.queryParameter("udp-over-tcp") == "true" || name.contains("SUoT")
-                encryptedProtocolExtension = link.queryParameter("encrypted-protocol-extension") == "true"
                 fixInvalidParams()
 
             }
@@ -112,8 +104,6 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
             password = methodAndPswd.substringAfter(":")
             plugin = link.queryParameter("plugin") ?: ""
             name = link.fragment
-            uot = link.queryParameter("udp-over-tcp") == "true" || name.contains("SUoT")
-            encryptedProtocolExtension = link.queryParameter("encrypted-protocol-extension") == "true"
 
             fixInvalidParams()
 
@@ -168,14 +158,6 @@ fun ShadowsocksBean.toUri(): String {
 
     if (name.isNotBlank()) {
         builder.setRawFragment(name.urlSafe())
-    }
-
-    if (uot) {
-        builder.addQueryParameter("udp-over-tcp", "true")
-    }
-
-    if (encryptedProtocolExtension) {
-        builder.addQueryParameter("encrypted-protocol-extension", "true")
     }
 
     return builder.string

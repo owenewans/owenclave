@@ -14,6 +14,8 @@
     <string name="require_transproxy">Включить входящий прокси-сервер</string>
     <string name="port_local_dns">Локальный порт DNS</string>
     <string name="dns_hosts">Перезапись домена</string>
+    <string name="fakedns_message">Может вызвать необходимость перезапуска других приложений для повторного подключения к сети после остановки прокси</string>
+    <string name="enable_fakedns">Включить FakeDNS</string>
     <string name="dns_routing_message">Разрешение доменов в обходных маршрутах с помощью Direct DNS. Помните о потенциальных утечках DNS.</string>
     <string name="enable_dns_routing">Включить маршрутизацию DNS</string>
     <string name="direct_dns">Прямой DNS</string>

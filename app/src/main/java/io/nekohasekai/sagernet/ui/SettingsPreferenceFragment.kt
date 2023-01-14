@@ -150,7 +150,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         val enableDnsRouting = findPreference<SwitchPreference>(Key.ENABLE_DNS_ROUTING)!!
-        val disableDnsExpire = findPreference<SwitchPreference>(Key.DISABLE_DNS_EXPIRE)!!
+        val enableFakeDns = findPreference<SwitchPreference>(Key.ENABLE_FAKEDNS)!!
+        val hijackDns = findPreference<SwitchPreference>(Key.HIJACK_DNS)!!
 
         val requireTransproxy = findPreference<SwitchPreference>(Key.REQUIRE_TRANSPROXY)!!
         val transproxyPort = findPreference<EditTextPreference>(Key.TRANSPROXY_PORT)!!
@@ -224,14 +225,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         val mtu = findPreference<EditTextPreference>(Key.MTU)!!
         mtu.setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
-        mtu.isEnabled = !DataStore.useUpstreamInterfaceMTU
-
-        val useUpstreamInterfaceMTU = findPreference<SwitchPreference>(Key.USE_UPSTREAM_INTERFACE_MTU)!!
-        useUpstreamInterfaceMTU.setOnPreferenceChangeListener { _, newValue ->
-            mtu.isEnabled = !(newValue as Boolean)
-            needReload()
-            true
-        }
 
         val acquireWakeLock = findPreference<SwitchPreference>(Key.ACQUIRE_WAKE_LOCK)!!
 
@@ -249,9 +242,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         remoteDns.onPreferenceChangeListener = reloadListener
         directDns.onPreferenceChangeListener = reloadListener
+        enableFakeDns.onPreferenceChangeListener = reloadListener
+        hijackDns.onPreferenceChangeListener = reloadListener
         dnsHosts.onPreferenceChangeListener = reloadListener
         enableDnsRouting.onPreferenceChangeListener = reloadListener
-        disableDnsExpire.onPreferenceChangeListener = reloadListener
 
         portLocalDns.onPreferenceChangeListener = reloadListener
         ipv6Mode.onPreferenceChangeListener = reloadListener

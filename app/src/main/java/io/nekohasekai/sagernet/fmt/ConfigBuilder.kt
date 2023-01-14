@@ -29,11 +29,11 @@ import cn.hutool.json.JSONObject
 import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginManager
 import com.google.gson.JsonSyntaxException
-import com.v2ray.core.common.net.packetaddr.PacketAddrType
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.TunImplementation
+import io.nekohasekai.sagernet.bg.VpnService
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
@@ -43,7 +43,6 @@ import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
-import io.nekohasekai.sagernet.fmt.shadowsocks.methodsSing
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
@@ -161,6 +160,8 @@ fun buildV2RayConfig(
         .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
     if (DataStore.useLocalDnsAsDirectDns) directDNS = listOf("localhost")
     val enableDnsRouting = DataStore.enableDnsRouting
+    val useFakeDns = DataStore.enableFakeDns
+    val hijackDns = DataStore.hijackDns
     val trafficSniffing = DataStore.trafficSniffing
     val indexMap = ArrayList<IndexEntity>()
     var requireWs = false
@@ -205,12 +206,46 @@ fun buildV2RayConfig(
                             url = lnk.string
                         }
                         address = url
-                        concurrency = true
+                        if (useFakeDns) {
+                            fakedns = mutableListOf()
+                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                valueY = FakeDnsObject().apply {
+                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                    poolSize = 65535
+                                }
+                            })
+                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
             })
 
-            disableFallbackIfMatch = true
+            fallbackStrategy = "disabledIfAnyMatch"
+
+            if (useFakeDns) {
+                fakedns = mutableListOf()
+                fakedns.add(DnsObject.StringOrFakeDnsObject().apply {
+                    valueY = FakeDnsObject().apply {
+                        ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                        poolSize = 65535
+                    }
+                })
+                if (ipv6Mode != IPv6Mode.DISABLE) {
+                    fakedns.add(DnsObject.StringOrFakeDnsObject().apply {
+                        valueY = FakeDnsObject().apply {
+                            ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
+                            poolSize = 65535
+                        }
+                    })
+                }
+            }
 
             when (ipv6Mode) {
                 IPv6Mode.DISABLE -> {
@@ -252,10 +287,15 @@ fun buildV2RayConfig(
                     auth = "noauth"
                     udp = true
                 })
-            if (trafficSniffing) {
+            if (trafficSniffing || useFakeDns) {
                 sniffing = InboundObject.SniffingObject().apply {
                     enabled = true
-                    destOverride = listOf("http", "tls", "quic")
+                    destOverride = when {
+                        useFakeDns && !trafficSniffing -> listOf("fakedns")
+                        useFakeDns -> listOf("fakedns", "http", "tls", "quic")
+                        else -> listOf("http", "tls", "quic")
+                    }
+                    metadataOnly = useFakeDns && !trafficSniffing
                     routeOnly = !destinationOverride
                 }
             }
@@ -271,10 +311,15 @@ fun buildV2RayConfig(
                     HTTPInboundConfigurationObject().apply {
                         allowTransparent = true
                     })
-                if (trafficSniffing) {
+                if (trafficSniffing || useFakeDns) {
                     sniffing = InboundObject.SniffingObject().apply {
                         enabled = true
-                        destOverride = listOf("http", "tls", "quic")
+                        destOverride = when {
+                            useFakeDns && !trafficSniffing -> listOf("fakedns")
+                            useFakeDns -> listOf("fakedns", "http", "tls", "quic")
+                            else -> listOf("http", "tls", "quic")
+                        }
+                        metadataOnly = useFakeDns && !trafficSniffing
                         routeOnly = !destinationOverride
                     }
                 }
@@ -292,10 +337,15 @@ fun buildV2RayConfig(
                         network = "tcp,udp"
                         followRedirect = true
                     })
-                if (trafficSniffing) {
+                if (trafficSniffing || useFakeDns) {
                     sniffing = InboundObject.SniffingObject().apply {
                         enabled = true
-                        destOverride = listOf("http", "tls", "quic")
+                        destOverride = when {
+                            useFakeDns && !trafficSniffing -> listOf("fakedns")
+                            useFakeDns -> listOf("fakedns", "http", "tls", "quic")
+                            else -> listOf("http", "tls", "quic")
+                        }
+                        metadataOnly = useFakeDns && !trafficSniffing
                         routeOnly = !destinationOverride
                     }
                 }
@@ -423,9 +473,6 @@ fun buildV2RayConfig(
                                         .apply {
                                             address = LOCALHOST
                                             port = localPort
-                                            if (proxy.needUoT()) {
-                                                uot = true
-                                            }
                                         })
                                 })
                         }
@@ -530,13 +577,13 @@ fun buildV2RayConfig(
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
-                                                PacketAddrType.Packet_VALUE -> {
+                                                1 -> {
                                                     packetEncoding = "packet"
                                                     if (currentDomainStrategy == "AsIs") {
                                                         currentDomainStrategy = "UseIP"
                                                     }
                                                 }
-                                                PacketAddrType.XUDP_VALUE -> packetEncoding = "xudp"
+                                                2 -> packetEncoding = "xudp"
                                             }
                                         })
                                 } else if (bean is VLESSBean) {
@@ -551,21 +598,16 @@ fun buildV2RayConfig(
                                                         .apply {
                                                             id = bean.uuidOrGenerate()
                                                             encryption = bean.encryption
-                                                            if (bean.flow.isNotBlank()) {
-                                                                flow = bean.flow
-                                                            } else if (bean.security == "xtls") {
-                                                                flow = "xtls-rprx-direct"
-                                                            }
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
-                                                PacketAddrType.Packet_VALUE -> {
+                                                1 -> {
                                                     packetEncoding = "packet"
                                                     if (currentDomainStrategy == "AsIs") {
                                                         currentDomainStrategy = "UseIP"
                                                     }
                                                 }
-                                                PacketAddrType.XUDP_VALUE -> packetEncoding = "xudp"
+                                                2 -> packetEncoding = "xudp"
                                             }
                                         })
                                 }
@@ -576,16 +618,6 @@ fun buildV2RayConfig(
                                         security = bean.security
                                     }
                                     when (security) {
-                                        "xtls" -> {
-                                            xtlsSettings = TLSObject().apply {
-                                                if (bean.sni.isNotBlank()) {
-                                                    serverName = bean.sni
-                                                }
-                                                if (bean.alpn.isNotBlank()) {
-                                                    alpn = bean.alpn.split("\n")
-                                                }
-                                            }
-                                        }
                                         "tls" -> {
                                             tlsSettings = TLSObject().apply {
                                                 if (bean.sni.isNotBlank()) {
@@ -739,14 +771,8 @@ fun buildV2RayConfig(
                                                     is ShadowsocksBean -> {
                                                         method = bean.method
                                                         password = bean.password
-                                                        if (bean.uot) {
-                                                            uot = true
-                                                        }
                                                         if (bean.experimentReducedIvHeadEntropy) {
                                                             experimentReducedIvHeadEntropy = true
-                                                        }
-                                                        if (bean.encryptedProtocolExtension) {
-                                                            encryptedProtocolExtension = true
                                                         }
                                                     }
                                                     is ShadowsocksRBean -> {
@@ -793,23 +819,6 @@ fun buildV2RayConfig(
                                             }
                                         }
                                     })
-                            } else if (bean is TrojanBean && bean.security != "xtls") {
-                                protocol = "trojan_sing"
-                                settings = LazyOutboundConfigurationObject(this,
-                                    TrojanSingOutboundConfigurationObject().apply {
-                                        address = bean.serverAddress
-                                        port = bean.serverPort
-                                        password = bean.password
-                                        if (bean.sni.isNotBlank()) {
-                                            serverName = bean.sni
-                                        }
-                                        if (bean.alpn.isNotBlank()) {
-                                            nextProtos = bean.alpn.split("\n")
-                                        }
-                                        if (bean.allowInsecure) {
-                                            insecure = true
-                                        }
-                                    })
                             } else if (bean is TrojanBean) {
                                 protocol = "trojan"
                                 settings = LazyOutboundConfigurationObject(this,
@@ -819,42 +828,22 @@ fun buildV2RayConfig(
                                                 address = bean.serverAddress
                                                 port = bean.serverPort
                                                 password = bean.password
-                                                if (bean.flow.isNotBlank()) {
-                                                    flow = bean.flow
-                                                } else if (bean.security == "xtls") {
-                                                    flow = "xtls-rprx-direct"
-                                                }
                                             })
                                     })
                                 streamSettings = StreamSettingsObject().apply {
                                     network = "tcp"
-                                    when (bean.security) {
-                                        "xtls" -> {
-                                            security = bean.security
-                                            xtlsSettings = TLSObject().apply {
-                                                if (bean.sni.isNotBlank()) {
-                                                    serverName = bean.sni
-                                                }
-                                                if (bean.alpn.isNotBlank()) {
-                                                    alpn = bean.alpn.split("\n")
-                                                }
-                                            }
+                                    security = "tls"
+                                    tlsSettings = TLSObject().apply {
+                                        if (bean.sni.isNotBlank()) {
+                                            serverName = bean.sni
                                         }
-                                        else -> {
-                                            security = "tls"
-                                            tlsSettings = TLSObject().apply {
-                                                if (bean.sni.isNotBlank()) {
-                                                    serverName = bean.sni
-                                                }
-                                                if (bean.alpn.isNotBlank()) {
-                                                    alpn = bean.alpn.split("\n")
-                                                }
-                                            }
-                                            if (bean.allowInsecure) {
-                                                tlsSettings = tlsSettings ?: TLSObject()
-                                                tlsSettings.allowInsecure = true
-                                            }
+                                        if (bean.alpn.isNotBlank()) {
+                                            alpn = bean.alpn.split("\n")
                                         }
+                                    }
+                                    if (bean.allowInsecure) {
+                                        tlsSettings = tlsSettings ?: TLSObject()
+                                        tlsSettings.allowInsecure = true
                                     }
                                     if (needKeepAliveInterval) {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
@@ -917,13 +906,13 @@ fun buildV2RayConfig(
                                     concurrency = DataStore.muxConcurrency
                                     if (bean is StandardV2RayBean) {
                                         when (bean.packetEncoding) {
-                                            PacketAddrType.Packet_VALUE -> {
+                                            1 -> {
                                                 packetEncoding = "packet"
                                                 if (currentDomainStrategy == "AsIs") {
                                                     currentDomainStrategy = "UseIP"
                                                 }
                                             }
-                                            PacketAddrType.XUDP_VALUE -> {
+                                            2 -> {
                                                 packetEncoding = "xudp"
                                             }
                                         }
@@ -1311,9 +1300,9 @@ fun buildV2RayConfig(
                                 lnk.scheme = "udp+local"
                             } else {
                                 lnk.scheme = when (lnk.scheme) {
-                                    "tls" -> "tls+local"
                                     "https" -> "https+local"
                                     "quic" -> "quic+local"
+                                    "tcp" -> "tcp+local"
                                     "udp" -> "udp+local"
                                     else -> lnk.scheme
                                 }
@@ -1322,18 +1311,36 @@ fun buildV2RayConfig(
                         }
                         address = url
                         domains = bypassDomain.toList()
-                        skipFallback = true
-                        concurrency = true
+                        if (useFakeDns) {
+                            fakedns = mutableListOf()
+                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                valueY = FakeDnsObject().apply {
+                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                    poolSize = 65535
+                                }
+                            })
+                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                        }
+                        fallbackStrategy = "disabled"
                     }
                 }
             })
         }
 
-        routing.rules.add(0, RoutingObject.RuleObject().apply {
-            type = "field"
-            protocol = listOf("dns")
-            outboundTag = TAG_DNS_OUT
-        })
+        if (!hijackDns) {
+            routing.rules.add(0, RoutingObject.RuleObject().apply {
+                type = "field"
+                protocol = listOf("dns")
+                outboundTag = TAG_DNS_OUT
+            })
+        }
 
         if (!forTest) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
@@ -1355,11 +1362,6 @@ fun buildV2RayConfig(
         if (rootBalancer != null) routing.rules.add(rootBalancer)
 
         if (trafficStatistics) stats = emptyMap()
-
-        if (!forTest) ping = PingObject().apply {
-            protocol = "unprivileged"
-            disableIPv6 = DataStore.ipv6Mode == IPv6Mode.DISABLE
-        }
 
         result = V2rayBuildResult(
             gson.toJson(this),

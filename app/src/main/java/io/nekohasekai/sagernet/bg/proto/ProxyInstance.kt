@@ -31,8 +31,6 @@ import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.utils.DirectBoot
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import libcore.ErrorHandler
-import libcore.Libcore
 import libcore.ObservatoryStatusUpdateListener
 import java.io.IOException
 import java.util.*
@@ -42,8 +40,7 @@ import kotlin.concurrent.timerTask
 class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : V2RayInstance(
     profile
 ),
-    ObservatoryStatusUpdateListener,
-    ErrorHandler by service {
+    ObservatoryStatusUpdateListener {
 
     lateinit var observatoryJob: Job
 
@@ -67,17 +64,6 @@ class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : 
             }
         }
 
-        if (DataStore.allowAccess) {
-            val api = ApiInstance()
-            try {
-                api.launch()
-                externalInstances[11451] = api
-            } catch (e: Exception) {
-                Logs.w("Failed to start api server", e)
-            }
-        }
-
-        Libcore.setCurrentDomainNameSystemQueryInstance(v2rayPoint)
         SagerNet.started = true
     }
 
@@ -166,7 +152,6 @@ class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : 
     }
 
     override fun close() {
-        Libcore.setCurrentDomainNameSystemQueryInstance(null)
         SagerNet.started = false
 
         persistStats()

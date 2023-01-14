@@ -35,8 +35,6 @@ public class ShadowsocksBean extends AbstractBean {
     public String method;
     public String password;
     public String plugin;
-    public Boolean uot;
-    public Boolean encryptedProtocolExtension;
     public Boolean experimentReducedIvHeadEntropy;
 
     @Override
@@ -47,21 +45,17 @@ public class ShadowsocksBean extends AbstractBean {
         if (method == null) method = "";
         if (password == null) password = "";
         if (plugin == null) plugin = "";
-        if (uot == null) uot = false;
-        if (encryptedProtocolExtension == null) encryptedProtocolExtension = false;
         if (experimentReducedIvHeadEntropy == null) experimentReducedIvHeadEntropy = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
         super.serialize(output);
         output.writeString(method);
         output.writeString(password);
         output.writeString(plugin);
         output.writeBoolean(experimentReducedIvHeadEntropy);
-        output.writeBoolean(uot);
-        output.writeBoolean(encryptedProtocolExtension);
     }
 
     @Override
@@ -74,11 +68,11 @@ public class ShadowsocksBean extends AbstractBean {
         if (version >= 1) {
             experimentReducedIvHeadEntropy = input.readBoolean();
         }
-        if (version >= 2) {
-            uot = input.readBoolean();
+        if (version == 2 || version == 3) {
+            input.readBoolean(); // uot, removed
         }
-        if (version >= 3) {
-            encryptedProtocolExtension = input.readBoolean();
+        if (version == 3) {
+            input.readBoolean(); // encryptedProtocolExtension, removed
         }
     }
 
@@ -86,9 +80,6 @@ public class ShadowsocksBean extends AbstractBean {
     public void applyFeatureSettings(AbstractBean other) {
         if (!(other instanceof ShadowsocksBean)) return;
         ShadowsocksBean bean = ((ShadowsocksBean) other);
-        if (uot) {
-            bean.uot = true;
-        }
         bean.experimentReducedIvHeadEntropy = experimentReducedIvHeadEntropy;
     }
 

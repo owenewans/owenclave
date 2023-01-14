@@ -21,7 +21,6 @@ package io.nekohasekai.sagernet.fmt.v2ray;
 
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
-import com.v2ray.core.common.net.packetaddr.PacketAddrType;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
@@ -160,16 +159,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     public Boolean wsUseBrowserForwarder;
     public Boolean allowInsecure;
-    public Integer packetEncoding;
-
-    // --------------------------------------- //
-
-    /**
-     * XTLS 的流控方式。可选值为 xtls-rprx-direct、xtls-rprx-splice 等。
-     * <p>
-     * 若使用 XTLS，此项不可省略，否则无此项。此项不可为空字符串。
-     */
-    public String flow;
+    public Integer packetEncoding; // 0: none, 1: packet, 2: xudp
 
     @Override
     public boolean allowInsecure() {
@@ -204,8 +194,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (pinnedPeerCertificateChainSha256 == null) pinnedPeerCertificateChainSha256 = "";
         if (earlyDataHeaderName == null) earlyDataHeaderName = "";
         if (allowInsecure == null) allowInsecure = false;
-        if (packetEncoding == null) packetEncoding = PacketAddrType.None_VALUE;
-        if (StrUtil.isBlank(flow)) flow = "";
+        if (packetEncoding == null) packetEncoding = 0;
+        if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
 
     }
 
@@ -263,12 +253,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(certificates);
                 output.writeString(pinnedPeerCertificateChainSha256);
                 output.writeBoolean(allowInsecure);
-                break;
-            }
-            case "xtls": {
-                output.writeString(sni);
-                output.writeString(alpn);
-                output.writeString(flow);
                 break;
             }
         }
@@ -350,10 +334,13 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 }
                 break;
             }
-            case "xtls": {
+            case "none":
+                break;
+            default: {
+                security = "tls"; // xtls, removed, for compatibility
                 sni = input.readString();
                 alpn = input.readString();
-                flow = input.readString();
+                input.readString(); // flow, removed
             }
         }
         if (this instanceof VMessBean && version != 4 && version < 6) {

@@ -40,7 +40,6 @@ fun parseNaive(link: String): NaiveBean {
         password = url.password
         extraHeaders = url.queryParameter("extra-headers")?.unUrlSafe()?.replace("\r\n", "\n")
         insecureConcurrency = url.queryParameter("insecure-concurrency")?.toIntOrNull()
-        uot = url.queryParameter("udp-over-tcp") == "true"
         name = url.fragment
         initializeDefaultValues()
     }
@@ -65,9 +64,6 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
         }
         if (insecureConcurrency > 0) {
             builder.addQueryParameter("insecure-concurrency", "$insecureConcurrency")
-        }
-        if (uot) {
-            builder.addQueryParameter("udp-over-tcp", "true")
         }
     }
     return builder.string

@@ -31,11 +31,6 @@
             app:icon="@drawable/ic_settings_password"
             app:key="serverPassword"
             app:title="@string/password" />
-        <SwitchPreference
-            app:icon="@drawable/baseline_wrap_text_24"
-            app:key="serverUoT"
-            app:title="@string/udp_over_tcp"
-            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

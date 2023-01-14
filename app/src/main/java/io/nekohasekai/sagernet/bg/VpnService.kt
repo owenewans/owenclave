@@ -52,7 +52,6 @@ import kotlinx.coroutines.launch
 import libcore.*
 import java.io.FileDescriptor
 import java.io.IOException
-import java.net.NetworkInterface
 import android.net.VpnService as BaseVpnService
 
 class VpnService : BaseVpnService(),
@@ -69,6 +68,8 @@ class VpnService : BaseVpnService(),
         const val PRIVATE_VLAN4_GATEWAY = "172.19.0.2"
         const val PRIVATE_VLAN6_CLIENT = "fdfe:dcba:9876::1"
         const val PRIVATE_VLAN6_GATEWAY = "fdfe:dcba:9876::2"
+        const val FAKEDNS_VLAN4_CLIENT = "198.18.0.0"
+        const val FAKEDNS_VLAN6_CLIENT = "fc00::"
 
         private fun <T> FileDescriptor.use(block: (FileDescriptor) -> T) = try {
             block(this)
@@ -115,7 +116,6 @@ class VpnService : BaseVpnService(),
 
     @Suppress("EXPERIMENTAL_API_USAGE")
     override fun killProcesses() {
-        Libcore.setLocalhostResolver(null)
         tun?.apply {
             close()
         }
@@ -125,7 +125,6 @@ class VpnService : BaseVpnService(),
         active = false
         tun?.apply {
             tun = null
-            Seq.destroyRef(refnum)
         }
         GlobalScope.launch(Dispatchers.Default) { DefaultNetworkListener.stop(this) }
     }
@@ -154,38 +153,11 @@ class VpnService : BaseVpnService(),
         return Service.START_NOT_STICKY
     }
 
-    var upstreamInterfaceMTU = 0
-    var upstreamInterfaceName: String? = null
     override suspend fun preInit() {
         DefaultNetworkListener.start(this) {
             underlyingNetwork = it
             SagerNet.reloadNetwork(it)
-            SagerNet.connectivity.getLinkProperties(it)?.also { link ->
-                var mtu = 0
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    mtu = link.mtu
-                }
-                if (mtu == 0) {
-                    mtu = NetworkInterface.getByName(link.interfaceName)?.mtu ?: DEFAULT_MTU
-                }
-                if (upstreamInterfaceMTU != mtu) {
-                    upstreamInterfaceMTU = mtu
-                    Logs.d("Updated upstream network MTU: $upstreamInterfaceMTU")
-                    if (useUpstreamInterfaceMTU && data.state.canStop) forceLoad()
-                }
-                val oldName = upstreamInterfaceName
-                if (oldName != link.interfaceName) {
-                    upstreamInterfaceName = link.interfaceName
-                }
-                if (oldName != null && upstreamInterfaceName != null && oldName != upstreamInterfaceName) {
-                    Libcore.resetConnections()
-                }
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    Libcore.bindNetworkName(link.interfaceName)
-                }
-            }
         }
-        Libcore.setLocalhostResolver(this)
     }
 
     inner class NullConnectionException : NullPointerException(),
@@ -193,80 +165,28 @@ class VpnService : BaseVpnService(),
         override fun getLocalizedMessage() = getString(R.string.reboot_required)
     }
 
-    fun getMTU(network: Network): Int {
-        var mtu = 0
-        SagerNet.connectivity.getLinkProperties(network)?.also { link ->
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                mtu = link.mtu
-            }
-            if (mtu == 0) {
-                mtu = NetworkInterface.getByName(link.interfaceName)?.mtu ?: DEFAULT_MTU
-            }
-        }
-        return mtu
-    }
-
-    fun getActiveNetworkUnder23(): Network? {
-        val activeInfo = SagerNet.connectivity.activeNetworkInfo ?: return null
-        for (network in SagerNet.connectivity.allNetworks) {
-            val info = SagerNet.connectivity.getNetworkInfo(network) ?: continue
-            if (info.type != activeInfo.type) continue
-            if (info.isConnected != activeInfo.isConnected) continue
-            if (info.isAvailable != activeInfo.isAvailable) continue
-            return network
-        }
-        return null
-    }
-
-    val useUpstreamInterfaceMTU = DataStore.useUpstreamInterfaceMTU
-
     private fun startVpn() {
         instance = this
-        Libcore.setLocalhostResolver(this)
-
-        var mtuFinal = 0
-        if (useUpstreamInterfaceMTU) {
-            if (upstreamInterfaceMTU > 0) {
-                mtuFinal = upstreamInterfaceMTU
-                Logs.d("Use MTU of upstream network: $upstreamInterfaceMTU")
-            } else {
-                val network = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    SagerNet.connectivity.activeNetwork
-                } else {
-                    getActiveNetworkUnder23()
-                }
-                if (network != null) {
-                    try {
-                        mtuFinal = getMTU(network)
-                        upstreamInterfaceMTU = mtuFinal
-                        Logs.d("Use MTU of upstream network: $mtuFinal")
-                    } catch (e: Exception) {
-                        Logs.w("Failed to get MTU of current network", e)
-                    }
-                } else {
-                    Logs.d("Failed to get current network")
-                }
-                if (mtuFinal == 0) {
-                    mtuFinal = DataStore.mtu
-                }
-            }
-        } else {
-            mtuFinal = DataStore.mtu
-            Logs.d("Use MTU: $upstreamInterfaceMTU")
-        }
 
         val profile = data.proxy!!.profile
         val builder = Builder().setConfigureIntent(SagerNet.configureIntent(this))
             .setSession(profile.displayName())
-        if (!useUpstreamInterfaceMTU) {
-            builder.setMtu(mtuFinal)
-        }
+            .setMtu(DataStore.mtu)
+
+        val useFakeDns = DataStore.enableFakeDns
         val ipv6Mode = DataStore.ipv6Mode
 
         builder.addAddress(PRIVATE_VLAN4_CLIENT, 30)
+        if (useFakeDns) {
+            builder.addAddress(FAKEDNS_VLAN4_CLIENT, 15)
+        }
 
         if (ipv6Mode != IPv6Mode.DISABLE) {
             builder.addAddress(PRIVATE_VLAN6_CLIENT, 126)
+
+            if (useFakeDns) {
+                builder.addAddress(FAKEDNS_VLAN6_CLIENT, 18)
+            }
         }
 
         if (DataStore.bypassLan && !DataStore.bypassLanInCoreOnly) {
@@ -361,7 +281,7 @@ class VpnService : BaseVpnService(),
         val config = TunConfig().apply {
             fileDescriptor = conn.fd
             protect = needIncludeSelf
-            mtu = mtuFinal
+            mtu = DataStore.mtu
             v2Ray = data.proxy!!.v2rayPoint
             gateway4 = PRIVATE_VLAN4_GATEWAY
             gateway6 = PRIVATE_VLAN6_GATEWAY
@@ -369,26 +289,17 @@ class VpnService : BaseVpnService(),
             implementation = tunImplementation
             sniffing = DataStore.trafficSniffing
             overrideDestination = DataStore.destinationOverride
+            fakeDNS = DataStore.enableFakeDns
+            hijackDNS = DataStore.hijackDns
             debug = DataStore.enableLog
             dumpUID = data.proxy!!.config.dumpUid
             trafficStats = DataStore.appTrafficStatistics
             pCap = DataStore.enablePcap
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                bindUpstream = Protector {
-                    protect(it)
-                    try {
-                        val fd = ParcelFileDescriptor.fromFd(it)
-                        underlyingNetwork?.bindSocket(fd.fileDescriptor)
-                        fd.close()
-                    } catch (e: IOException) {
-                        Log.e("VpnService", "failed to bind socket to upstream", e)
-                    }
-                    true
-                }
+            errorHandler = ErrorHandler {
+                stopRunner(false, it)
             }
-
-            errorHandler = this@VpnService
             protector = this@VpnService
+            localResolver = this@VpnService
         }
 
         tun = Libcore.newTun2ray(config)

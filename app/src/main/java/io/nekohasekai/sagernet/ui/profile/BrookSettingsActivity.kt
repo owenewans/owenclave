@@ -45,7 +45,6 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         DataStore.serverPath = wsPath
         DataStore.serverAllowInsecure = insecure
         DataStore.serverWithoutBrookProtocol = withoutBrookProtocol
-        DataStore.serverUoT = uot
     }
 
     override fun BrookBean.serialize() {
@@ -57,12 +56,10 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         wsPath = DataStore.serverPath
         insecure = DataStore.serverAllowInsecure
         withoutBrookProtocol = DataStore.serverWithoutBrookProtocol
-        uot = DataStore.serverUoT
     }
 
     lateinit var protocol: SimpleMenuPreference
     val protocolValue = app.resources.getStringArray(R.array.brook_protocol_value)
-    lateinit var uot: SwitchPreference
     lateinit var wsCategory: PreferenceCategory
     lateinit var insecure: SwitchPreference
 
@@ -79,7 +76,6 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
             summaryProvider = PasswordSummaryProvider
         }
 
-        uot = findPreference(Key.SERVER_UDP_OVER_TCP)!!
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
         protocol = findPreference(Key.SERVER_PROTOCOL)!!
         insecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
@@ -95,7 +91,6 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
     }
 
     fun updateProtocol(value: String) {
-        uot.isVisible = value.isBlank()
         wsCategory.isVisible = value.startsWith("ws")
         insecure.isVisible = value == "wss"
     }

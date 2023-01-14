@@ -63,6 +63,8 @@
     <string name="require_transproxy">فعالسازی پراکسی شفاف به عنوان ورودی</string>
     <string name="port_local_dns">پورت DNS محلی</string>
     <string name="dns_hosts">بازنویسی دستی دامنه ها</string>
+    <string name="fakedns_message">احتمالا نرم افزارها بعد از متوقف کردن پراکسی نیاز به اجرای دوباره جهت دسترسی به اینترنت خواهند داشت</string>
+    <string name="enable_fakedns">فعالسازی DNS جعلی</string>
     <string name="dns_routing_message">استفاده از DNS مستقیم برای مسیرهای خارج از پراکسی. احتمالا نشت DNS در این حالت وجود دارد</string>
     <string name="enable_dns_routing">فعالسازی مسیریابی DNS</string>
     <string name="remote_dns">DNS پروکسی</string>

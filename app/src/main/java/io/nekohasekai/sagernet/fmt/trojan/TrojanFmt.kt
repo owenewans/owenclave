@@ -71,15 +71,6 @@ fun TrojanBean.toUri(): String {
         builder.addQueryParameter("allowInsecure", "1")
     }
 
-    when (security) {
-        "tls" -> {
-        }
-        "xtls" -> {
-            builder.addQueryParameter("security", security)
-            builder.addQueryParameter("flow", flow)
-        }
-    }
-
     if (name.isNotBlank()) {
         builder.setRawFragment(name.urlSafe())
     }
