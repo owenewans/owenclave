@@ -53,6 +53,10 @@ data class RuleEntity(
         return (domains.isNotBlank() && ip.isBlank() || ip.isNotBlank() && domains.isBlank()) && port.isBlank() && sourcePort.isBlank() && network.isBlank() && source.isBlank() && protocol.isBlank() && attrs.isBlank() && !reverse && redirect.isBlank() && outbound == -1L && packages.isEmpty() && ssid.isBlank() && networkType.isBlank()
     }
 
+    fun isProxyRule(): Boolean {
+        return !(domains.isNotBlank() && ip.isNotBlank()) && outbound == 0L
+    }
+
     fun displayName(): String {
         return name.takeIf { it.isNotBlank() } ?: "Rule $id"
     }

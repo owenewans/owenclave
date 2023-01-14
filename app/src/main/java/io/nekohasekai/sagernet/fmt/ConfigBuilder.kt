@@ -194,31 +194,6 @@ fun buildV2RayConfig(
                 .toMutableMap()
             servers = mutableListOf()
 
-            servers.addAll(remoteDns.map {
-                DnsObject.StringOrServerObject().apply {
-                    valueY = DnsObject.ServerObject().apply {
-                        address = it
-                        if (useFakeDns) {
-                            fakedns = mutableListOf()
-                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                valueY = FakeDnsObject().apply {
-                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
-                                    poolSize = 65535
-                                }
-                            })
-                            if (ipv6Mode != IPv6Mode.DISABLE) {
-                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                    valueY = FakeDnsObject().apply {
-                                        ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
-                                        poolSize = 65535
-                                    }
-                                })
-                            }
-                        }
-                    }
-                }
-            })
-
             fallbackStrategy = "disabledIfAnyMatch"
 
             if (useFakeDns) {
@@ -1252,6 +1227,7 @@ fun buildV2RayConfig(
 
         val bypassIP = HashSet<String>()
         val bypassDomain = HashSet<String>()
+        val proxyDomain = HashSet<String>()
 
         (proxies + extraProxies.values.flatten()).forEach {
             it.requireBean().apply {
@@ -1277,6 +1253,11 @@ fun buildV2RayConfig(
                     bypassDomain.addAll(bypassRule.domains.split("\n"))
                 }
             }
+            for (proxyRule in extraRules.filter { it.isProxyRule() }) {
+                if (proxyRule.domains.isNotBlank()) {
+                    proxyDomain.addAll(proxyRule.domains.split("\n"))
+                }
+            }
         }
 
         remoteDns.forEach { dns ->
@@ -1286,6 +1267,31 @@ fun buildV2RayConfig(
         }
 
         if (bypassDomain.isNotEmpty()) {
+            dns.servers.addAll(remoteDns.map {
+                DnsObject.StringOrServerObject().apply {
+                    valueY = DnsObject.ServerObject().apply {
+                        address = it
+                        domains = proxyDomain.toList()
+                        if (useFakeDns) {
+                            fakedns = mutableListOf()
+                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                valueY = FakeDnsObject().apply {
+                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                    poolSize = 65535
+                                }
+                            })
+                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+            })
             dns.servers.addAll(directDNS.map {
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
@@ -1309,6 +1315,31 @@ fun buildV2RayConfig(
                             }
                         }
                         fallbackStrategy = "disabled"
+                    }
+                }
+            })
+        } else {
+            dns.servers.addAll(remoteDns.map {
+                DnsObject.StringOrServerObject().apply {
+                    valueY = DnsObject.ServerObject().apply {
+                        address = it
+                        if (useFakeDns) {
+                            fakedns = mutableListOf()
+                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                valueY = FakeDnsObject().apply {
+                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                    poolSize = 65535
+                                }
+                            })
+                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                        }
                     }
                 }
             })
