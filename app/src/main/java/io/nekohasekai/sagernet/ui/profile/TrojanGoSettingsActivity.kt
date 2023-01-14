@@ -79,6 +79,7 @@ class TrojanGoSettingsActivity : ProfileSettingsActivity<TrojanGoBean>(),
             DataStore.serverEncryption = encryption
         }
         DataStore.serverPlugin = plugin
+        DataStore.serverUTLSFingerprint = utlsFingerprint
     }
 
     override fun TrojanGoBean.serialize() {
@@ -100,6 +101,7 @@ class TrojanGoSettingsActivity : ProfileSettingsActivity<TrojanGoBean>(),
             }
         }
         plugin = DataStore.serverPlugin
+        utlsFingerprint = DataStore.serverUTLSFingerprint
     }
 
     override fun onAttachedToWindow() {
@@ -117,6 +119,7 @@ class TrojanGoSettingsActivity : ProfileSettingsActivity<TrojanGoBean>(),
     lateinit var wsCategory: PreferenceCategory
     lateinit var ssCategory: PreferenceCategory
     lateinit var method: SimpleMenuPreference
+    lateinit var utlsFingerprint: SimpleMenuPreference
 
     val trojanGoMethods = app.resources.getStringArray(R.array.trojan_go_methods)
     val trojanGoNetworks = app.resources.getStringArray(R.array.trojan_go_networks_value)
@@ -156,6 +159,7 @@ class TrojanGoSettingsActivity : ProfileSettingsActivity<TrojanGoBean>(),
             updateEncryption(newValue as String)
             true
         }
+        utlsFingerprint = findPreference(Key.SERVER_UTLS_FINGERPRINT)!!
 
         plugin = findPreference(Key.SERVER_PLUGIN)!!
         pluginConfigure = findPreference(Key.SERVER_PLUGIN_CONFIGURE)!!

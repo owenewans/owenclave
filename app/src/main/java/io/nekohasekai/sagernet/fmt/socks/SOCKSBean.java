@@ -69,6 +69,7 @@ public class SOCKSBean extends AbstractBean {
     public String password;
     public boolean tls;
     public String sni;
+    public String utlsFingerprint;
 
     public static final int PROTOCOL_SOCKS4 = 0;
     public static final int PROTOCOL_SOCKS4A = 1;
@@ -88,17 +89,19 @@ public class SOCKSBean extends AbstractBean {
         if (username == null) username = "";
         if (password == null) password = "";
         if (sni == null) sni = "";
+        if (utlsFingerprint == null) utlsFingerprint = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(1);
+        output.writeInt(2);
         super.serialize(output);
         output.writeInt(protocol);
         output.writeString(username);
         output.writeString(password);
         output.writeBoolean(tls);
         output.writeString(sni);
+        output.writeString(utlsFingerprint);
     }
 
     @Override
@@ -112,6 +115,9 @@ public class SOCKSBean extends AbstractBean {
         password = input.readString();
         tls = input.readBoolean();
         sni = input.readString();
+        if (version >= 2) {
+            utlsFingerprint = input.readString();
+        }
     }
 
     @NotNull

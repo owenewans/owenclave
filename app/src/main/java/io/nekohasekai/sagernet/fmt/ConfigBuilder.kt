@@ -475,6 +475,9 @@ fun buildV2RayConfig(
                                                 if (bean.sni.isNotBlank()) {
                                                     serverName = bean.sni
                                                 }
+                                                if (bean.utlsFingerprint.isNotBlank()) {
+                                                    fingerprint = bean.utlsFingerprint
+                                                }
                                             }
                                         }
                                         if (needKeepAliveInterval) {
@@ -509,6 +512,9 @@ fun buildV2RayConfig(
                                             tlsSettings = TLSObject().apply {
                                                 if (bean.sni.isNotBlank()) {
                                                     serverName = bean.sni
+                                                }
+                                                if (bean.utlsFingerprint.isNotBlank()) {
+                                                    fingerprint = bean.utlsFingerprint
                                                 }
                                             }
                                         }
@@ -625,6 +631,9 @@ fun buildV2RayConfig(
 
                                                 if (bean.allowInsecure) {
                                                     allowInsecure = true
+                                                }
+                                                if (bean.utlsFingerprint.isNotBlank()) {
+                                                    fingerprint = bean.utlsFingerprint
                                                 }
                                             }
                                         }

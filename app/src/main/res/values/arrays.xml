@@ -584,6 +584,104 @@
         <item>SOCKS5</item>
     </string-array>
 
+    <string-array name="utls_entry">
+        <item>Disabled</item>
+        <item>Chrome_Auto</item>
+        <item>Firefox_Auto</item>
+        <item>Safari_Auto</item>
+        <item>Randomized</item>
+        <item>RandomizedALPN</item>
+        <item>RandomizedNoALPN</item>
+        <item>IOS_Auto</item>
+        <item>Android_11_OkHttp</item>
+        <item>Edge_Auto</item>
+        <item>360_Auto</item>
+        <item>QQ_Auto</item>
+        <item>Golang</item>
+        <item>Firefox_55</item>
+        <item>Firefox_56</item>
+        <item>Firefox_63</item>
+        <item>Firefox_65</item>
+        <item>Firefox_99</item>
+        <item>Firefox_102</item>
+        <item>Firefox_105</item>
+        <item>Chrome_58</item>
+        <item>Chrome_62</item>
+        <item>Chrome_70</item>
+        <item>Chrome_72</item>
+        <item>Chrome_83</item>
+        <item>Chrome_87</item>
+        <item>Chrome_96</item>
+        <item>Chrome_100</item>
+        <item>Chrome_102</item>
+        <item>Chrome_106_Shuffle</item>
+        <item>IOS_11_1</item>
+        <item>IOS_12_1</item>
+        <item>IOS_13</item>
+        <item>IOS_14</item>
+        <item>Edge_85</item>
+        <item>Edge_106</item>
+        <item>Safari_16_0</item>
+        <item>360_7_5</item>
+        <item>360_11_0</item>
+    </string-array>
+
+    <string-array name="utls_value">
+        <item />
+        <item>hellochrome_auto</item>
+        <item>hellofirefox_auto</item>
+        <item>hellosafari_auto</item>
+        <item>hellorandomized</item>
+        <item>hellorandomizedalpn</item>
+        <item>hellorandomizednoalpn</item>
+        <item>helloios_auto</item>
+        <item>helloandroid_11_okhttp</item>
+        <item>helloedge_auto</item>
+        <item>hello360_auto</item>
+        <item>helloqq_auto</item>
+        <item>hellogolang</item>
+        <item>hellofirefox_55</item>
+        <item>hellofirefox_56</item>
+        <item>hellofirefox_63</item>
+        <item>hellofirefox_65</item>
+        <item>hellofirefox_99</item>
+        <item>hellofirefox_102</item>
+        <item>hellofirefox_105</item>
+        <item>hellochrome_58</item>
+        <item>hellochrome_62</item>
+        <item>hellochrome_70</item>
+        <item>hellochrome_72</item>
+        <item>hellochrome_83</item>
+        <item>hellochrome_87</item>
+        <item>hellochrome_96</item>
+        <item>hellochrome_100</item>
+        <item>hellochrome_102</item>
+        <item>hellochrome_106_shuffle</item>
+        <item>helloios_11_1</item>
+        <item>helloios_12_1</item>
+        <item>helloios_13</item>
+        <item>helloios_14</item>
+        <item>helloedge_85</item>
+        <item>helloedge_106</item>
+        <item>hellosafari_16_0</item>
+        <item>hello360_7_5</item>
+        <item>hello360_11_0</item>
+    </string-array>
+
+    <string-array name="trojan_go_utls_entry">
+        <item>Disabled</item>
+        <item>Chrome</item>
+        <item>Firefox</item>
+        <item>iOS</item>
+    </string-array>
+
+    <string-array name="trojan_go_utls_value">
+        <item />
+        <item>chrome</item>
+        <item>firefox</item>
+        <item>ios</item>
+    </string-array>
+
     <string-array name="simple_obfs">
         <item>http</item>
         <item>tls</item>

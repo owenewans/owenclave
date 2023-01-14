@@ -44,6 +44,7 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
         DataStore.serverPassword = password
         DataStore.serverTLS = tls
         DataStore.serverSNI = sni
+        DataStore.serverUTLSFingerprint = utlsFingerprint
     }
 
     override fun SOCKSBean.serialize() {
@@ -56,6 +57,7 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
         password = DataStore.serverPassword
         tls = DataStore.serverTLS
         sni = DataStore.serverSNI
+        utlsFingerprint = DataStore.serverUTLSFingerprint
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -72,11 +74,13 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
         val protocol = findPreference<SimpleMenuPreference>(Key.SERVER_PROTOCOL)!!
         val useTls = findPreference<SwitchPreference>(Key.SERVER_TLS)!!
         val sni = findPreference<EditTextPreference>(Key.SERVER_SNI)!!
+        val utlsFingerprint = findPreference<SimpleMenuPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
 
         fun updateProtocol(version: Int) {
             password.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
             useTls.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
             sni.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
+            utlsFingerprint.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
         }
 
         updateProtocol(DataStore.serverProtocolVersion)

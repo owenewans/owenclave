@@ -48,6 +48,13 @@
             app:key="serverEncryption"
             app:title="@string/encryption"
             app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/trojan_go_utls_entry"
+            app:entryValues="@array/trojan_go_utls_value"
+            app:icon="@drawable/ic_baseline_fingerprint_24"
+            app:key="serverUTLSFingerprint"
+            app:title="@string/utls_fingerprint"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

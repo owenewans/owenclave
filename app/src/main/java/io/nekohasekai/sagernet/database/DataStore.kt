@@ -253,6 +253,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverHeaders by profileCacheStore.string(Key.SERVER_HEADERS)
     var serverAllowInsecure by profileCacheStore.boolean(Key.SERVER_ALLOW_INSECURE)
     var serverPacketEncoding by profileCacheStore.stringToInt(Key.SERVER_PACKET_ENCODING)
+    var serverUTLSFingerprint by profileCacheStore.string(Key.SERVER_UTLS_FINGERPRINT)
 
     var serverVMessExperimentalAuthenticatedLength by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH)
     var serverVMessExperimentalNoTerminationSignal by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL)

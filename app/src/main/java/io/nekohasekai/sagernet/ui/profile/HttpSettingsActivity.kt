@@ -40,6 +40,7 @@ class HttpSettingsActivity : ProfileSettingsActivity<HttpBean>() {
         DataStore.serverPassword = password
         DataStore.serverTLS = tls
         DataStore.serverSNI = sni
+        DataStore.serverUTLSFingerprint = utlsFingerprint
     }
 
     override fun HttpBean.serialize() {
@@ -50,6 +51,7 @@ class HttpSettingsActivity : ProfileSettingsActivity<HttpBean>() {
         password = DataStore.serverPassword
         tls = DataStore.serverTLS
         sni = DataStore.serverSNI
+        utlsFingerprint = DataStore.serverUTLSFingerprint
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

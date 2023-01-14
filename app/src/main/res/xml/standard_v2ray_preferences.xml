@@ -114,6 +114,13 @@
             app:key="serverAllowInsecure"
             app:summary="@string/allow_insecure_sum"
             app:title="@string/allow_insecure" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/utls_entry"
+            app:entryValues="@array/utls_value"
+            app:icon="@drawable/ic_baseline_fingerprint_24"
+            app:key="serverUTLSFingerprint"
+            app:title="@string/utls_fingerprint"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

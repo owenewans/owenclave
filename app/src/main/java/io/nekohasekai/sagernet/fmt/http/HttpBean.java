@@ -35,6 +35,7 @@ public class HttpBean extends AbstractBean {
     public String password;
     public boolean tls;
     public String sni;
+    public String utlsFingerprint;
 
     @Override
     public void initializeDefaultValues() {
@@ -42,16 +43,18 @@ public class HttpBean extends AbstractBean {
         if (username == null) username = "";
         if (password == null) password = "";
         if (sni == null) sni = "";
+        if (utlsFingerprint == null) utlsFingerprint = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeString(username);
         output.writeString(password);
         output.writeBoolean(tls);
         output.writeString(sni);
+        output.writeString(utlsFingerprint);
     }
 
     @Override
@@ -62,6 +65,9 @@ public class HttpBean extends AbstractBean {
         password = input.readString();
         tls = input.readBoolean();
         sni = input.readString();
+        if (version >= 1) {
+            utlsFingerprint = input.readString();
+        }
     }
 
     @NotNull

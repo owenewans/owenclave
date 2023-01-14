@@ -37,6 +37,13 @@
             app:key="serverSNI"
             app:title="@string/sni"
             app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/utls_entry"
+            app:entryValues="@array/utls_value"
+            app:icon="@drawable/ic_baseline_fingerprint_24"
+            app:key="serverUTLSFingerprint"
+            app:title="@string/utls_fingerprint"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 
