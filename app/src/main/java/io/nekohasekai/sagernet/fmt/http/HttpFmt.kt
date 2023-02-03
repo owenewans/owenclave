@@ -25,7 +25,7 @@ import libcore.Libcore
 
 fun parseHttp(link: String): HttpBean {
     val url = Libcore.parseURL(link)
-    if (url.rawPath != "/") error("Not http proxy")
+    if (url.path != "/" && url.path != "") error("Not http proxy")
 
     return HttpBean().apply {
         serverAddress = url.host
