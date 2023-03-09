@@ -37,8 +37,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.activity:activity-ktx:1.6.1")
-    implementation("androidx.fragment:fragment-ktx:1.5.5")
+    implementation("androidx.activity:activity-ktx:1.7.0")
+    implementation("androidx.fragment:fragment-ktx:1.5.6")
     implementation("androidx.browser:browser:1.5.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -46,12 +46,12 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("androidx.work:work-runtime-ktx:2.8.0")
-    implementation("androidx.work:work-multiprocess:2.8.0")
+    implementation("androidx.work:work-runtime-ktx:2.8.1")
+    implementation("androidx.work:work-multiprocess:2.8.1")
 
-    implementation(project(":external:preferencex:preferencex"))
-    implementation(project(":external:preferencex:preferencex-simplemenu"))
-    implementation(project(":external:preferencex:preferencex-colorpicker"))
+    implementation("com.takisoft.preferencex:preferencex:1.1.0")
+    implementation("com.takisoft.preferencex:preferencex-simplemenu:1.1.0")
+    implementation("com.takisoft.preferencex:preferencex-colorpicker:1.1.0")
 
     implementation("com.google.android.material:material:1.8.0")
     implementation("cn.hutool:hutool-core:$hutoolVersion")
@@ -77,14 +77,12 @@ dependencies {
         exclude(group = "com.google.guava", module = "guava")
     }
 
-    implementation("androidx.room:room-runtime:2.5.0")
-    kapt("androidx.room:room-compiler:2.5.0")
-    implementation("androidx.room:room-ktx:2.5.0")
+    implementation("androidx.room:room-runtime:2.5.1")
+    kapt("androidx.room:room-compiler:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
 
-    implementation("editorkit:editorkit:2.0.0")
-    implementation("editorkit:feature-editor:2.0.0")
-    implementation("editorkit:language-json:2.0.0")
-    implementation("termux:terminal-view:1.0")
+    implementation("com.blacksquircle.ui:editorkit:2.0.0")
+    implementation("com.blacksquircle.ui:language-json:2.0.0")
 
 
     implementation(project(":library:proto-stub"))

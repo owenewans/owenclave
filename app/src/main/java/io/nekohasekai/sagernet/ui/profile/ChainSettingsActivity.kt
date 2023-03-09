@@ -113,14 +113,14 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
             ): Boolean {
                 return if (target !is ProfileHolder) false else {
                     configurationAdapter.move(
-                        viewHolder.bindingAdapterPosition, target.bindingAdapterPosition
+                        viewHolder.adapterPosition, target.adapterPosition
                     )
                     true
                 }
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                configurationAdapter.remove(viewHolder.bindingAdapterPosition)
+                configurationAdapter.remove(viewHolder.adapterPosition)
             }
 
         }).attachToRecyclerView(configurationList)
@@ -309,7 +309,7 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
             }
 
             editButton.setOnClickListener {
-                replacing = bindingAdapterPosition
+                replacing = adapterPosition
                 selectProfileForAdd.launch(Intent(
                     this@ChainSettingsActivity, ProfileSelectActivity::class.java
                 ).apply {

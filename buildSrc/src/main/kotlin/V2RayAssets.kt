@@ -33,7 +33,7 @@ fun Project.downloadAssets() {
             Request.Builder().url(sha256sum).build()
         )
             .execute()
-            .let { it.body ?: error("Error when downloading $sha256sum: $it") }
+            .let { it.body }
             .string()
             .trim()
             .substringBefore(" ")
@@ -49,7 +49,7 @@ fun Project.downloadAssets() {
                 Request.Builder().url(geoipDat).build()
             )
                 .execute()
-                .let { it.body ?: error("Error when downloading $geoipDat: $it") }
+                .let { it.body }
                 .byteStream()
                 .use {
                     geoipFile.outputStream().use { out -> it.copyTo(out) }
@@ -99,7 +99,7 @@ fun Project.downloadAssets() {
             Request.Builder().url(sha256sum).build()
         )
             .execute()
-            .let { it.body ?: error("Error when downloading $sha256sum: $it") }
+            .let { it.body }
             .string()
             .trim()
             .substringBefore(" ")
@@ -116,7 +116,7 @@ fun Project.downloadAssets() {
                 Request.Builder().url(geositeDat).build()
             )
                 .execute()
-                .let { it.body ?: error("Error when downloading $geositeDat: $it") }
+                .let { it.body }
                 .byteStream()
                 .use {
                     geositeFile.outputStream().use { out -> it.copyTo(out) }

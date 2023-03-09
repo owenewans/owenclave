@@ -163,7 +163,7 @@ class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : 
 
 // ------------- stats -------------
 
-    private suspend fun queryStats(tag: String, direct: String): Long {
+    private fun queryStats(tag: String, direct: String): Long {
         return v2rayPoint.queryStats(tag, direct)
     }
 
@@ -211,7 +211,7 @@ class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : 
     var downlinkTotalDirect = 0L
 
     private val outboundStats = OutboundStats(profile)
-    suspend fun outboundStats(): Pair<OutboundStats, HashMap<Long, OutboundStats>> {
+    fun outboundStats(): Pair<OutboundStats, HashMap<Long, OutboundStats>> {
         if (!isInitialized()) return outboundStats to statsOutbounds
         uplinkProxy = 0L
         downlinkProxy = 0L
@@ -269,16 +269,16 @@ class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : 
         return outboundStats to statsOutbounds
     }
 
-    suspend fun bypassStats(direct: String): Long {
+    fun bypassStats(direct: String): Long {
         if (!isInitialized()) return 0L
         return queryStats(config.bypassTag, direct)
     }
 
-    suspend fun uplinkDirect() = bypassStats("uplink").also {
+    fun uplinkDirect() = bypassStats("uplink").also {
         uplinkTotalDirect += it
     }
 
-    suspend fun downlinkDirect() = bypassStats("downlink").also {
+    fun downlinkDirect() = bypassStats("downlink").also {
         downlinkTotalDirect += it
     }
 

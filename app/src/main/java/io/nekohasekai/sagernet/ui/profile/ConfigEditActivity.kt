@@ -29,7 +29,6 @@ import androidx.appcompat.app.AlertDialog
 import cn.hutool.json.JSONObject
 import com.blacksquircle.ui.editorkit.listener.OnChangeListener
 import com.blacksquircle.ui.editorkit.model.ColorScheme
-import com.blacksquircle.ui.feature.editor.customview.ExtendedKeyboard
 import com.blacksquircle.ui.language.base.model.SyntaxScheme
 import com.blacksquircle.ui.language.json.JsonLanguage
 import com.github.shadowsocks.plugin.Empty
@@ -86,14 +85,6 @@ class ConfigEditActivity : ThemedActivity() {
             }
         }
         binding.editor.setHorizontallyScrolling(true)
-        binding.actionTab.setOnClickListener {
-            binding.editor.insert(binding.editor.tab())
-        }
-        val extendedKeyboard = findViewById<ExtendedKeyboard>(R.id.extended_keyboard)
-        extendedKeyboard.setKeyListener { char -> binding.editor.insert(char) }
-        extendedKeyboard.setHasFixedSize(true)
-        extendedKeyboard.submitList("{}();,.=|&![]<>+-/*?:_".map { it.toString() })
-        extendedKeyboard.setBackgroundColor(getColorAttr(R.attr.primaryOrTextPrimary))
 
         runOnDefaultDispatcher {
             config = DataStore.serverConfig

@@ -1546,7 +1546,7 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
 
     var requireWs = false
     var wsPort = 0
-    if (config.contains("browserForwarder")) {
+    if (config.containsKey("browserForwarder")) {
         config["browserForwarder"] = JSONObject(gson.toJson(BrowserForwarderObject().apply {
             requireWs = true
             listenAddr = LOCALHOST

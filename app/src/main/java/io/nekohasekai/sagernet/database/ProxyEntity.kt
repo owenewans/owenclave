@@ -160,7 +160,7 @@ data class ProxyEntity(
         private val placeHolderBean = SOCKSBean().applyDefaultValues()
 
         @JvmField
-        val CREATOR = object : Serializable.CREATOR<ProxyEntity>() {
+        val CREATOR = object : CREATOR<ProxyEntity>() {
 
             override fun newInstance(): ProxyEntity {
                 return ProxyEntity()

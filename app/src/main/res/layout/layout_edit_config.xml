@@ -27,9 +27,7 @@
             android:background="@null"
             android:completionThreshold="2"
             android:importantForAutofill="no"
-            android:popupBackground="@drawable/autocomplete_bg"
-            android:scrollbars="none"
-            android:textCursorDrawable="@drawable/caret" />
+            android:scrollbars="none" />
 
         <com.blacksquircle.ui.editorkit.widget.TextScroller
             android:id="@+id/scroller"
@@ -39,33 +37,5 @@
             app:thumbTint="?colorPrimary" />
 
     </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/keyboard_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="2dp"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/action_tab"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:background="?colorSurface"
-            android:padding="8dp"
-            android:src="@drawable/ic_keyboard_tab"
-            app:tint="?colorOnSurface" />
-
-        <com.blacksquircle.ui.feature.editor.customview.ExtendedKeyboard
-            android:id="@+id/extended_keyboard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorSecondaryVariant"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:itemCount="24"
-            tools:listitem="@layout/item_keyboard_key" />
-
-    </LinearLayout>
 
 </LinearLayout>

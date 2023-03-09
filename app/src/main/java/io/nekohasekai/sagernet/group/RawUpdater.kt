@@ -528,7 +528,7 @@ object RawUpdater : GroupUpdater() {
                 json.containsKey("remote_addr") -> {
                     return listOf(json.parseTrojanGo())
                 }
-                else -> json.forEach { (_, it) ->
+                else -> json.forEach { _, it ->
                     if (it is JSON) {
                         proxies.addAll(parseJSON(it))
                     }

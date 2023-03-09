@@ -84,7 +84,7 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val index = viewHolder.bindingAdapterPosition
+                val index = viewHolder.adapterPosition
                 ruleAdapter.remove(index)
                 undoManager.remove(index to (viewHolder as RuleAdapter.RuleHolder).rule)
             }
@@ -96,7 +96,7 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                 return if (target is RuleAdapter.DocumentHolder) {
                     false
                 } else {
-                    ruleAdapter.move(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+                    ruleAdapter.move(viewHolder.adapterPosition, target.adapterPosition)
                     true
                 }
             }

@@ -144,7 +144,7 @@ data class ProxyGroup(
 
     companion object {
         @JvmField
-        val CREATOR = object : Serializable.CREATOR<ProxyGroup>() {
+        val CREATOR = object : CREATOR<ProxyGroup>() {
 
             override fun newInstance(): ProxyGroup {
                 return ProxyGroup()

@@ -1171,7 +1171,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder,
                     ): Boolean {
                         adapter.move(
-                            viewHolder.bindingAdapterPosition, target.bindingAdapterPosition
+                            viewHolder.adapterPosition, target.adapterPosition
                         )
                         return true
                     }

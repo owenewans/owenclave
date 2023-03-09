@@ -82,13 +82,13 @@ class AssetsActivity : ThemedActivity() {
             override fun getSwipeDirs(
                 recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder
             ): Int {
-                val index = viewHolder.bindingAdapterPosition
+                val index = viewHolder.adapterPosition
                 if (index < 2) return 0
                 return super.getSwipeDirs(recyclerView, viewHolder)
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val index = viewHolder.bindingAdapterPosition
+                val index = viewHolder.adapterPosition
                 adapter.remove(index)
                 undoManager.remove(index to (viewHolder as AssetHolder).file)
             }

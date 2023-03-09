@@ -4,21 +4,12 @@
 [submodule "plugin/brook/src/main/go/brook"]
 	path = plugin/brook/src/main/go/brook
 	url = https://github.com/txthinking/brook
-[submodule "external/editorkit"]
-	path = external/editorkit
-	url = https://github.com/dyhkwong/editorkit
-[submodule "external/preferencex"]
-	path = external/preferencex
-	url = https://github.com/SagerNet/preferencex-android
 [submodule "plugin/hysteria2/src/main/go/hysteria2"]
 	path = plugin/hysteria2/src/main/go/hysteria2
 	url = https://github.com/apernet/hysteria
 [submodule "library/core"]
 	path = library/core
 	url = https://github.com/dyhkwong/LibSagerNetCore
-[submodule "external/termux-view"]
-	path = external/termux-view
-	url = https://github.com/dyhkwong/termux-view
 [submodule "plugin/mieru2/src/main/go/mieru2"]
 	path = plugin/mieru2/src/main/go/mieru2
 	url = https://github.com/enfein/mieru

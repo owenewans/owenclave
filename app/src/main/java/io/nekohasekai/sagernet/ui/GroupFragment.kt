@@ -102,7 +102,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val index = viewHolder.bindingAdapterPosition
+                val index = viewHolder.adapterPosition
                 groupAdapter.remove(index)
                 undoManager.remove(index to (viewHolder as GroupHolder).proxyGroup)
             }
@@ -111,7 +111,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder,
             ): Boolean {
-                groupAdapter.move(viewHolder.bindingAdapterPosition, target.bindingAdapterPosition)
+                groupAdapter.move(viewHolder.adapterPosition, target.adapterPosition)
                 return true
             }
 
