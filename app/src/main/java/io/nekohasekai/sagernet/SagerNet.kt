@@ -54,6 +54,7 @@ import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ui.MainActivity
 import io.nekohasekai.sagernet.utils.CrashHandler
+import io.nekohasekai.sagernet.utils.DefaultNetworkListener
 import io.nekohasekai.sagernet.utils.DeviceStorageApp
 import io.nekohasekai.sagernet.utils.PackageCache
 import io.nekohasekai.sagernet.utils.Theme
@@ -270,11 +271,7 @@ class SagerNet : Application(),
             Libcore.setNetworkType(networkType)
             var ssid: String? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                when (val transportInfo = capabilities.transportInfo) {
-                    is WifiInfo -> {
-                        ssid = transportInfo.ssid
-                    }
-                }
+                ssid = DefaultNetworkListener.getSSID()
             } else {
                 val wifiInfo = wifi.connectionInfo
                 ssid = wifiInfo?.ssid

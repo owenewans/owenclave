@@ -26,6 +26,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.wifi.WifiInfo
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -106,20 +107,28 @@ object DefaultNetworkListener {
 
     suspend fun stop(key: Any) = networkActor.send(NetworkMessage.Stop(key))
 
+    private var ssid: String? = null
+
     // NB: this runs in ConnectivityThread, and this behavior cannot be changed until API 26
-    private object Callback : ConnectivityManager.NetworkCallback() {
+    private object Callback : ConnectivityManager.NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
         override fun onAvailable(network: Network) =
             runBlocking { networkActor.send(NetworkMessage.Put(network)) }
 
         override fun onCapabilitiesChanged(
             network: Network, networkCapabilities: NetworkCapabilities
         ) { // it's a good idea to refresh capabilities
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && networkCapabilities.transportInfo is WifiInfo) {
+                val wifiInfo = networkCapabilities.transportInfo as WifiInfo
+                ssid = wifiInfo.ssid
+            }
             runBlocking { networkActor.send(NetworkMessage.Update(network)) }
         }
 
         override fun onLost(network: Network) =
             runBlocking { networkActor.send(NetworkMessage.Lost(network)) }
     }
+
+    fun getSSID(): String? = ssid
 
     private var fallback = false
     private val request = NetworkRequest.Builder().apply {
