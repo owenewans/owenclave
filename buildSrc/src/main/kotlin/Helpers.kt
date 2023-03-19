@@ -93,8 +93,8 @@ fun Project.requireTargetAbi(): String {
 
 fun Project.setupCommon() {
     android.apply {
-        buildToolsVersion = "30.0.3"
-        compileSdk = 31
+        buildToolsVersion = "33.0.2"
+        compileSdk = 33
         defaultConfig {
             minSdk = 21
         }
@@ -154,7 +154,7 @@ fun Project.setupCommon() {
     }
     (android as? ApplicationExtension)?.apply {
         defaultConfig {
-            targetSdk = 32
+            targetSdk = 33
         }
     }
 }
@@ -170,7 +170,7 @@ fun Project.setupKotlinCommon() {
 }
 
 fun Project.setupNdk() {
-    android.ndkVersion = "25.0.8775105"
+    android.ndkVersion = "25.2.9519653"
 }
 
 fun Project.setupNdkLibrary() {
@@ -504,13 +504,7 @@ fun Project.setupApp() {
     }
 
     dependencies {
-
-        add("implementation", kotlin("stdlib", "${rootProject.extra["kotlinVersion"]}"))
         add("implementation", project(":plugin:api"))
-        add("testImplementation", "junit:junit:4.13.2")
-        add("androidTestImplementation", "androidx.test.ext:junit:1.1.3")
-        add("androidTestImplementation", "androidx.test:runner:1.4.0")
-        add("androidTestImplementation", "androidx.test.espresso:espresso-core:3.4.0")
     }
 
     setupPlay()

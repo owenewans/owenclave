@@ -379,6 +379,7 @@ class MainActivity : ThemedActivity(),
             BaseService.State.Connected, BaseService.State.Stopped -> {
                 statsUpdated(emptyList())
             }
+            else -> {}
         }
     }
 

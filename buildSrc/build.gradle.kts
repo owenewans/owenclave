@@ -1,5 +1,4 @@
 plugins {
-    kotlin("jvm") version "1.5.31"
     `java-gradle-plugin`
     `kotlin-dsl`
 }
@@ -12,8 +11,7 @@ dependencies {
     val hutoolVersion = rootProject.extra["hutoolVersion"].toString()
     implementation("com.android.tools.build:gradle:$androidPluginVersion")
     implementation("com.android.tools.build:gradle-api:$androidPluginVersion")
-    implementation(kotlin("gradle-plugin", kotlinVersion))
-    implementation(kotlin("stdlib", kotlinVersion))
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     implementation("cn.hutool:hutool-http:$hutoolVersion")
     implementation("cn.hutool:hutool-crypto:$hutoolVersion")
     implementation("org.tukaani:xz:1.9")

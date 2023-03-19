@@ -15,7 +15,7 @@
 	url = https://github.com/SagerNet/brook
 [submodule "external/editorkit"]
 	path = external/editorkit
-	url = https://github.com/SagerNet/editorkit
+	url = https://github.com/dyhkwong/editorkit
 [submodule "external/preferencex"]
 	path = external/preferencex
 	url = https://github.com/SagerNet/preferencex-android
@@ -30,7 +30,7 @@
 	url = https://github.com/SagerNet/LibSagerNetCore
 [submodule "external/termux-view"]
 	path = external/termux-view
-	url = https://github.com/SagerNet/termux-view
+	url = https://github.com/dyhkwong/termux-view
 [submodule "plugin/mieru/src/main/go/mieru"]
 	path = plugin/mieru/src/main/go/mieru
 	url = https://github.com/enfein/mieru

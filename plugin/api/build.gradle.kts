@@ -5,3 +5,6 @@ plugins {
 }
 
 setupKotlinCommon()
+android {
+    namespace = "io.nekohasekai.sagernet.plugin"
+}

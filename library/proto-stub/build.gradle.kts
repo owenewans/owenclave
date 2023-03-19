@@ -16,6 +16,9 @@ dependencies {
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     api("com.google.protobuf:protobuf-java:$protobufVersion")
 }
+android {
+    namespace = "com.v2ray.core"
+}
 
 protobuf {
     protoc {

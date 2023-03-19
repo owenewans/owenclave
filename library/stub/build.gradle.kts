@@ -3,3 +3,6 @@ plugins {
 }
 
 setupCommon()
+android {
+    namespace = "com.android.include"
+}

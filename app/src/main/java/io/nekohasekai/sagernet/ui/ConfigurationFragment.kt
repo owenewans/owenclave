@@ -1568,8 +1568,8 @@ class ConfigurationFragment @JvmOverloads constructor(
                         popup.menuInflater.inflate(R.menu.profile_share_menu, popup.menu)
 
                         if (proxyEntity.vmessBean == null) {
-                            popup.menu.findItem(R.id.action_group_qr).subMenu.removeItem(R.id.action_v2rayn_qr)
-                            popup.menu.findItem(R.id.action_group_clipboard).subMenu.removeItem(R.id.action_v2rayn_clipboard)
+                            popup.menu.findItem(R.id.action_group_qr).subMenu?.removeItem(R.id.action_v2rayn_qr)
+                            popup.menu.findItem(R.id.action_group_clipboard).subMenu?.removeItem(R.id.action_v2rayn_clipboard)
                         }
 
                         when {
@@ -1578,8 +1578,8 @@ class ConfigurationFragment @JvmOverloads constructor(
                                 popup.menu.removeItem(R.id.action_group_clipboard)
                             }
                             !proxyEntity.haveStandardLink() -> {
-                                popup.menu.findItem(R.id.action_group_qr).subMenu.removeItem(R.id.action_standard_qr)
-                                popup.menu.findItem(R.id.action_group_clipboard).subMenu.removeItem(
+                                popup.menu.findItem(R.id.action_group_qr).subMenu?.removeItem(R.id.action_standard_qr)
+                                popup.menu.findItem(R.id.action_group_clipboard).subMenu?.removeItem(
                                     R.id.action_standard_clipboard
                                 )
                             }
