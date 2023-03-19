@@ -63,7 +63,6 @@ import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import libcore.Libcore
 import libcore.UidDumper
 import libcore.UidInfo
-import org.lsposed.hiddenapibypass.HiddenApiBypass
 import java.net.InetSocketAddress
 import androidx.work.Configuration as WorkConfiguration
 
@@ -73,9 +72,6 @@ class SagerNet : Application(),
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            HiddenApiBypass.addHiddenApiExemptions("L")
-        }
         application = this
     }
 

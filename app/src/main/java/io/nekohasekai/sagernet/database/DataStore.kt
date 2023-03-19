@@ -214,7 +214,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var providerTrojan by configurationStore.stringToInt(Key.PROVIDER_TROJAN)
     var providerRootCA by configurationStore.stringToInt(Key.PROVIDER_ROOT_CA)
-    var providerInstaller by configurationStore.stringToInt(Key.PROVIDER_INSTALLER)
 
     // cache
 

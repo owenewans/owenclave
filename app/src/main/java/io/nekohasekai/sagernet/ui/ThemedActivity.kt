@@ -35,8 +35,7 @@ abstract class ThemedActivity : AppCompatActivity {
 
     enum class Type {
         Default,
-        Dialog,
-        Translucent
+        Dialog
     }
 
     open val type = Type.Default
@@ -51,9 +50,6 @@ abstract class ThemedActivity : AppCompatActivity {
             }
             Type.Dialog -> {
                 Theme.applyDialog(this)
-            }
-            Type.Translucent -> {
-                Theme.applyTranslucent(this)
             }
         }
         Theme.applyNightTheme()

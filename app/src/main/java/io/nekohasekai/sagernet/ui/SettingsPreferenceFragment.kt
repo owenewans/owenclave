@@ -22,7 +22,6 @@ package io.nekohasekai.sagernet.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -41,7 +40,6 @@ import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.widget.ColorPickerPreference
 import kotlinx.coroutines.delay
 import libcore.Libcore
-import rikka.shizuku.Shizuku
 import java.io.File
 
 class SettingsPreferenceFragment : PreferenceFragmentCompat() {
@@ -237,15 +235,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         val acquireWakeLock = findPreference<SwitchPreference>(Key.ACQUIRE_WAKE_LOCK)!!
 
-/*        val installerProvider = findPreference<SimpleMenuPreference>(Key.PROVIDER_INSTALLER)!!
-        installerProvider.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue == "${InstallerProvider.SHIZUKU}") {
-                checkShizuku()
-            } else {
-                true
-            }
-        }*/
-
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
         portHttp.onPreferenceChangeListener = reloadListener
@@ -305,30 +294,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-    }
-
-    private fun checkShizuku(): Boolean {
-        val permission = try {
-            Shizuku.checkSelfPermission()
-        } catch (e: Exception) {
-            context?.shizukuError()
-            Logs.w(e)
-            return false
-        }
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            Shizuku.requestPermission(0)
-        }
-        return true
-    }
-
-    private fun Context.shizukuError() {
-        MaterialAlertDialogBuilder(this).setTitle(R.string.error_title)
-            .setMessage(R.string.shizuku_unavailable)
-            .setPositiveButton(R.string.action_learn_more) { _, _ ->
-                launchCustomTab("https://shizuku.rikka.app/")
-            }
-            .setNegativeButton(android.R.string.cancel, null)
-            .show()
     }
 
 
