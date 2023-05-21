@@ -32,6 +32,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.SwitchPreference
 import com.github.shadowsocks.plugin.*
 import com.github.shadowsocks.plugin.fragment.AlertDialogFragment
@@ -60,6 +61,9 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
     private lateinit var pluginConfigure: EditTextPreference
     private lateinit var pluginConfiguration: PluginConfiguration
     private lateinit var receiver: BroadcastReceiver
+    private lateinit var method: SimpleMenuPreference
+    private lateinit var pluginCategory: PreferenceCategory
+    private lateinit var serverSsExperimentsCategory: PreferenceCategory
 
     override fun ShadowsocksBean.init() {
         DataStore.profileName = name
@@ -104,12 +108,33 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
             summaryProvider = PasswordSummaryProvider
         }
 
+        pluginCategory = findPreference(Key.SERVER_PLUGIN_CATEGORY)!!
         plugin = findPreference(Key.SERVER_PLUGIN)!!
         pluginConfigure = findPreference(Key.SERVER_PLUGIN_CONFIGURE)!!
         pluginConfigure.setOnBindEditTextListener(EditTextPreferenceModifiers.Monospace)
         pluginConfigure.onPreferenceChangeListener = this@ShadowsocksSettingsActivity
         pluginConfiguration = PluginConfiguration(DataStore.serverPlugin ?: "")
         initPlugins()
+        serverSsExperimentsCategory = findPreference(Key.SERVER_SS_EXPERIMENTS_CATEGORY)!!
+        method = findPreference(Key.SERVER_METHOD)!!
+        updateMethod(method.value)
+        method.setOnPreferenceChangeListener { _, newValue ->
+            updateMethod(newValue as String)
+            true
+        }
+    }
+
+    private fun updateMethod(method: String) {
+        when (method) {
+            "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305" -> {
+                pluginCategory.isVisible = false
+                serverSsExperimentsCategory.isVisible = false
+            }
+            else -> {
+                pluginCategory.isVisible = true
+                serverSsExperimentsCategory.isVisible = true
+            }
+        }
     }
 
     override fun PreferenceFragmentCompat.viewCreated(view: View, savedInstanceState: Bundle?) {
