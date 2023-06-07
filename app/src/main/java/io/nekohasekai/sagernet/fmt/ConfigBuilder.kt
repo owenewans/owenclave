@@ -737,6 +737,13 @@ fun buildV2RayConfig(
                                                 }
                                             }
                                         }
+                                        "meek" -> {
+                                            meekSettings = MeekObject().apply {
+                                                if (bean.meekUrl.isNotBlank()) {
+                                                    url = bean.meekUrl
+                                                }
+                                            }
+                                        }
                                     }
 
                                     if (needKeepAliveInterval) {

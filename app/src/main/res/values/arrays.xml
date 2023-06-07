@@ -325,6 +325,7 @@
         <item>H2</item>
         <item>QUIC</item>
         <item>GRPC</item>
+        <item>Meek</item>
     </string-array>
 
     <string-array name="networks_value">
@@ -334,6 +335,7 @@
         <item>http</item>
         <item>quic</item>
         <item>grpc</item>
+        <item>meek</item>
     </string-array>
 
     <string-array name="trojan_go_networks_entry">

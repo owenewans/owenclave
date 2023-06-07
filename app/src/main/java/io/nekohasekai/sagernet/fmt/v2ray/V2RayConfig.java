@@ -710,6 +710,7 @@ public class V2RayConfig {
         public QuicObject quicSettings;
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
+        public MeekObject meekSettings;
 
     }
 
@@ -725,6 +726,7 @@ public class V2RayConfig {
         public QuicObject quicSettings;
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
+        public MeekObject meekSettings;
         public SockoptObject sockopt;
 
         public static class SockoptObject {
@@ -866,6 +868,12 @@ public class V2RayConfig {
 
         public String serviceName;
         public String mode;
+
+    }
+
+    public static class MeekObject {
+
+        public String url;
 
     }
 

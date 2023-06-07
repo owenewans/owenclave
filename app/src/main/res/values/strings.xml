@@ -117,6 +117,7 @@
     <string name="quic_key">Quic KEY</string>
     <string name="kcp_seed">mKCP Seed</string>
     <string name="grpc_service_name">gRPC ServiceName</string>
+    <string name="meek_url">Meek URL</string>
     <string name="tls">Use TLS</string>
     <string name="sni">Server Name Indication</string>
     <string name="alpn">Application-Layer Protocol Negotiation</string>

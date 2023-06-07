@@ -115,6 +115,11 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     }
                 }
             }
+            "meek" -> {
+                url.queryParameter("url")?.let {
+                    bean.meekUrl = it
+                }
+            }
         }
     } else { // https://github.com/XTLS/Xray-core/issues/91
 
@@ -204,6 +209,11 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     if (it == "multi") {
                         bean.grpcMode = it
                     }
+                }
+            }
+            "meek" -> {
+                url.queryParameter("url")?.let {
+                    bean.meekUrl = it
                 }
             }
         }
@@ -433,6 +443,11 @@ fun StandardV2RayBean.toUri(): String {
                 "multi" -> {
                     builder.addQueryParameter("mode", grpcMode)
                 }
+            }
+        }
+        "meek" -> {
+            if (meekUrl.isNotBlank()) {
+                builder.addQueryParameter("url", meekUrl)
             }
         }
     }

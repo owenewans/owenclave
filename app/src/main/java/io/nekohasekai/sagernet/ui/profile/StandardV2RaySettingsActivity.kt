@@ -59,6 +59,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             "kcp" -> DataStore.serverPath = mKcpSeed
             "quic" -> DataStore.serverPath = quicKey
             "grpc" -> DataStore.serverPath = grpcServiceName
+            "meek" -> DataStore.serverPath = meekUrl
             else -> DataStore.serverPath = path
         }
 
@@ -96,6 +97,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             "kcp" -> mKcpSeed = DataStore.serverPath
             "quic" -> quicKey = DataStore.serverPath
             "grpc" -> grpcServiceName = DataStore.serverPath
+            "meek" -> meekUrl = DataStore.serverPath
             else -> path = DataStore.serverPath
         }
         security = DataStore.serverSecurity
@@ -240,8 +242,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isGRPC = network == "grpc"
         val isWs = network == "ws"
         val isHttp = network == "http"
+        val isMeek = network == "meek"
         quicSecurity.isVisible = isQuic
-        utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHttp)
+        utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHttp || isMeek)
         if (isQuic) {
             if (DataStore.serverQuicSecurity !in quicSecurityValue) {
                 quicSecurity.value = quicSecurityValue[0]
@@ -337,6 +340,13 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 requestHost.isVisible = false
                 path.isVisible = true
             }
+            "meek" -> {
+                path.setTitle(R.string.meek_url)
+
+                header.isVisible = false
+                requestHost.isVisible = false
+                path.isVisible = true
+            }
         }
     }
 
@@ -345,7 +355,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         certificates.isVisible = isTLS
         pinnedCertificateChain.isVisible = isTLS
         allowInsecure.isVisible = isTLS
-        utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws" || network.value == "http")
+        utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws" || network.value == "http" || network.value == "meek")
     }
 
 }

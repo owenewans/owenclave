@@ -151,6 +151,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String grpcMode;
     public Integer wsMaxEarlyData;
     public String earlyDataHeaderName;
+    public String meekUrl;
 
     public String certificates;
     public String pinnedPeerCertificateChainSha256;
@@ -182,6 +183,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(mKcpSeed)) mKcpSeed = "";
         if (StrUtil.isBlank(quicSecurity)) quicSecurity = "";
         if (StrUtil.isBlank(quicKey)) quicKey = "";
+        if (StrUtil.isBlank(meekUrl)) meekUrl = "";
 
         if (StrUtil.isBlank(security)) security = "";
         if (StrUtil.isBlank(sni)) sni = "";
@@ -202,7 +204,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(9);
+        output.writeInt(10);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -242,6 +244,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "grpc": {
                 output.writeString(grpcServiceName);
                 output.writeString(grpcMode);
+            }
+            case "meek": {
+                output.writeString(meekUrl);
             }
         }
 
@@ -318,6 +323,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
                         default:
                             grpcMode = "";
                     }
+                }
+            }
+            case "meek": {
+                if (version >= 10) {
+                    meekUrl = input.readString();
                 }
             }
         }
