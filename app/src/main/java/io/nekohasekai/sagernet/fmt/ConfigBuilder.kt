@@ -1218,6 +1218,10 @@ fun buildV2RayConfig(
                         }
                     }
                 })
+            proxySettings = OutboundObject.ProxySettingsObject().apply {
+                tag = tagProxy
+                transportLayer = true
+            }
         })
 
         val bypassIP = HashSet<String>()
