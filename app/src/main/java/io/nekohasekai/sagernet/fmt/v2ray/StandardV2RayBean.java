@@ -163,6 +163,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public Boolean allowInsecure;
     public Integer packetEncoding; // 0: none, 1: packet, 2: xudp
 
+    public String realityPublicKey;
+    public String realityShortId;
+    public String realitySpiderX;
+    public String realityFingerprint;
+
     @Override
     public boolean allowInsecure() {
         return allowInsecure;
@@ -200,11 +205,16 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (packetEncoding == null) packetEncoding = 0;
         if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
 
+        if (StrUtil.isBlank(realityPublicKey)) realityPublicKey = "";
+        if (StrUtil.isBlank(realityShortId)) realityShortId = "";
+        if (StrUtil.isBlank(realitySpiderX)) realitySpiderX = "";
+        if (StrUtil.isBlank(realityFingerprint)) realityFingerprint = "chrome";
+
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(10);
+        output.writeInt(11);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -262,11 +272,22 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(utlsFingerprint);
                 break;
             }
+            case "reality": {
+                output.writeString(sni);
+                output.writeString(realityPublicKey);
+                output.writeString(realityShortId);
+                output.writeString(realitySpiderX);
+                output.writeString(realityFingerprint);
+                break;
+            }
         }
 
         if (this instanceof VMessBean) {
             output.writeBoolean(((VMessBean) this).experimentalAuthenticatedLength);
             output.writeBoolean(((VMessBean) this).experimentalNoTerminationSignal);
+        }
+        if (this instanceof VLESSBean) {
+            output.writeString(((VLESSBean) this).flow);
         }
 
         output.writeInt(packetEncoding);
@@ -349,13 +370,20 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 }
                 break;
             }
-            case "none":
-                break;
-            default: {
-                security = "tls"; // xtls, removed, for compatibility
+            case "xtls": { // removed, for compatibility
+                security = "tls";
                 sni = input.readString();
                 alpn = input.readString();
                 input.readString(); // flow, removed
+            }
+            case "reality": {
+                if (version >= 11) {
+                    sni = input.readString();
+                    realityPublicKey = input.readString();
+                    realityShortId = input.readString();
+                    realitySpiderX = input.readString();
+                    realityFingerprint = input.readString();
+                }
             }
         }
         if (this instanceof VMessBean && version != 4 && version < 6) {
@@ -364,6 +392,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (this instanceof VMessBean && version >= 4) {
             ((VMessBean) this).experimentalAuthenticatedLength = input.readBoolean();
             ((VMessBean) this).experimentalNoTerminationSignal = input.readBoolean();
+        }
+        if (this instanceof VLESSBean && version >= 11) {
+            ((VLESSBean) this).flow = input.readString();
         }
         if (version >= 7) {
             packetEncoding = input.readInt();

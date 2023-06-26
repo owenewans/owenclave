@@ -143,6 +143,34 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 url.queryParameter("chain")?.let {
                     bean.pinnedPeerCertificateChainSha256 = it
                 }
+                if (bean is VLESSBean) {
+                    url.queryParameter("flow")?.let {
+                        bean.flow = it
+                    }
+                }
+            }
+            "reality" -> {
+                bean.security = "reality"
+                url.queryParameter("sni")?.let {
+                    bean.sni = it
+                }
+                url.queryParameter("pbk")?.let {
+                    bean.realityPublicKey = it
+                }
+                url.queryParameter("sid")?.let {
+                    bean.realityShortId = it
+                }
+                url.queryParameter("spx")?.let {
+                    bean.realitySpiderX = it
+                }
+                url.queryParameter("fp")?.let {
+                    bean.realityFingerprint = it
+                }
+                if (bean is VLESSBean) {
+                    url.queryParameter("flow")?.let {
+                        bean.flow = it
+                    }
+                }
             }
         }
         when (protocol) {
@@ -467,6 +495,29 @@ fun StandardV2RayBean.toUri(): String {
                 }
                 if (pinnedPeerCertificateChainSha256.isNotBlank()) {
                     builder.addQueryParameter("chain", pinnedPeerCertificateChainSha256)
+                }
+                if (this is VLESSBean && flow.isNotBlank()) {
+                    builder.addQueryParameter("flow", flow)
+                }
+            }
+            "reality" -> {
+                if (sni.isNotBlank()) {
+                    builder.addQueryParameter("sni", sni)
+                }
+                if (realityPublicKey.isNotBlank()) {
+                    builder.addQueryParameter("pbk", realityPublicKey)
+                }
+                if (realityShortId.isNotBlank()) {
+                    builder.addQueryParameter("sid", realityShortId)
+                }
+                if (realitySpiderX.isNotBlank()) {
+                    builder.addQueryParameter("spx", realitySpiderX)
+                }
+                if (realityFingerprint.isNotBlank()) {
+                    builder.addQueryParameter("fp", realityFingerprint)
+                }
+                if (this is VLESSBean && flow.isNotBlank()) {
+                    builder.addQueryParameter("flow", flow)
                 }
             }
         }

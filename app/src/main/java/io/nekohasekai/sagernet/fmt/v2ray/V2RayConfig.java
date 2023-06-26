@@ -643,6 +643,7 @@ public class V2RayConfig {
                 public String id;
                 public String encryption;
                 public Integer level;
+                public String flow;
 
             }
 
@@ -703,6 +704,7 @@ public class V2RayConfig {
     public static class TransportObject {
 
         public TLSObject tlsSettings;
+        public RealityObject realitySettings;
         public TcpObject tcpSettings;
         public KcpObject kcpSettings;
         public WebSocketObject wsSettings;
@@ -719,6 +721,7 @@ public class V2RayConfig {
         public String network;
         public String security;
         public TLSObject tlsSettings;
+        public RealityObject realitySettings;
         public TcpObject tcpSettings;
         public KcpObject kcpSettings;
         public WebSocketObject wsSettings;
@@ -759,6 +762,16 @@ public class V2RayConfig {
             public List<String> key;
 
         }
+
+    }
+
+        public static class RealityObject {
+
+        public String serverName;
+        public String publicKey;
+        public String shortId;
+        public String spiderX;
+        public String fingerprint;
 
     }
 

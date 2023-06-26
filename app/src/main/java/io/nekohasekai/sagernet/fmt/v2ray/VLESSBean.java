@@ -24,9 +24,12 @@ import androidx.annotation.NonNull;
 import org.jetbrains.annotations.NotNull;
 
 import cn.hutool.core.util.StrUtil;
+import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
 public class VLESSBean extends StandardV2RayBean {
+
+    public String flow;
 
     @Override
     public void initializeDefaultValues() {
@@ -35,7 +38,17 @@ public class VLESSBean extends StandardV2RayBean {
         if (StrUtil.isBlank(encryption)) {
             encryption = "none";
         }
+        if (StrUtil.isBlank(flow)) {
+            flow = "";
+        }
 
+    }
+
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof VLESSBean)) return;
+        VLESSBean bean = ((VLESSBean) other);
+        bean.flow = flow;
     }
 
     @NotNull

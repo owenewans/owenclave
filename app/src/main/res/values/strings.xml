@@ -542,5 +542,9 @@
     <string name="tuic_congestion_controller">Congestion Controller</string>
     <string name="tuic_disable_sni">Disable SNI</string>
     <string name="tuic_reduce_rtt">Reduce RTT</string>
+    <string name="reality_public_key">REALITY Public Key</string>
+    <string name="reality_short_id">REALITY Short ID</string>
+    <string name="reality_spider_x">REALITY SpiderX</string>
+    <string name="reality_fingerprint">REALITY uTLS Fingerprint</string>
 
 </resources>

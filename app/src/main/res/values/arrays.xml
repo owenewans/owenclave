@@ -431,11 +431,13 @@
     <string-array name="transport_layer_encryption_entry">
         <item>NONE</item>
         <item>TLS</item>
+        <item>REALITY</item>
     </string-array>
 
     <string-array name="transport_layer_encryption_value">
         <item>none</item>
         <item>tls</item>
+        <item>reality</item>
     </string-array>
 
     <string-array name="trojan_transport_layer_encryption_entry" translatable="false">
@@ -444,6 +446,18 @@
 
     <string-array name="trojan_transport_layer_encryption_value">
         <item>tls</item>
+    </string-array>
+
+    <string-array name="xtls_flow_entry" translatable="false">
+        <item />
+        <item>XTLS-RPRX-VISION</item>
+        <item>XTLS-RPRX-VISION-UDP443</item>
+    </string-array>
+
+    <string-array name="xtls_flow_value" translatable="false">
+        <item />
+        <item>xtls-rprx-vision</item>
+        <item>xtls-rprx-vision-udp443</item>
     </string-array>
 
     <string-array name="notification_entry">
@@ -668,6 +682,28 @@
         <item>hellosafari_16_0</item>
         <item>hello360_7_5</item>
         <item>hello360_11_0</item>
+    </string-array>
+
+    <string-array name="reality_fingerprint_entry">
+        <item>chrome</item>
+        <item>firefox</item>
+        <item>safari</item>
+        <item>ios</item>
+        <item>edge</item>
+        <item>360</item>
+        <item>qq</item>
+        <item>random</item>
+    </string-array>
+
+    <string-array name="reality_fingerprint_value">
+        <item>chrome</item>
+        <item>firefox</item>
+        <item>safari</item>
+        <item>ios</item>
+        <item>edge</item>
+        <item>360</item>
+        <item>qq</item>
+        <item>random</item>
     </string-array>
 
     <string-array name="trojan_go_utls_entry">

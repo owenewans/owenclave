@@ -571,6 +571,9 @@ fun buildV2RayConfig(
                                                         .apply {
                                                             id = bean.uuidOrGenerate()
                                                             encryption = bean.encryption
+                                                            if (bean.flow.isNotBlank()) {
+                                                                flow = bean.flow
+                                                            }
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
@@ -634,6 +637,25 @@ fun buildV2RayConfig(
                                                 }
                                                 if (bean.utlsFingerprint.isNotBlank()) {
                                                     fingerprint = bean.utlsFingerprint
+                                                }
+                                            }
+                                        }
+                                        "reality" -> {
+                                            realitySettings = RealityObject().apply {
+                                                if (bean.sni.isNotBlank()) {
+                                                    serverName = bean.sni
+                                                }
+                                                if (bean.realityPublicKey.isNotBlank()) {
+                                                    publicKey = bean.realityPublicKey
+                                                }
+                                                if (bean.realityShortId.isNotBlank()) {
+                                                    shortId = bean.realityShortId
+                                                }
+                                                if (bean.realitySpiderX.isNotBlank()) {
+                                                    spiderX = bean.realitySpiderX
+                                                }
+                                                if (bean.realityFingerprint.isNotBlank()) {
+                                                    fingerprint = bean.realityFingerprint
                                                 }
                                             }
                                         }

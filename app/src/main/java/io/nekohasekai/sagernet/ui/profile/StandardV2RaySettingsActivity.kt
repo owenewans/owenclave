@@ -67,11 +67,19 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverSNI = sni
         DataStore.serverALPN = alpn
         DataStore.serverCertificates = certificates
+        if (this is VLESSBean) {
+            DataStore.serverFlow = flow
+        }
         DataStore.serverPinnedCertificateChain = pinnedPeerCertificateChainSha256
         DataStore.serverQuicSecurity = quicSecurity
         DataStore.serverWsMaxEarlyData = wsMaxEarlyData
         DataStore.serverEarlyDataHeaderName = earlyDataHeaderName
         DataStore.serverUTLSFingerprint = utlsFingerprint
+
+        DataStore.serverRealityPublicKey = realityPublicKey
+        DataStore.serverRealityShortId = realityShortId
+        DataStore.serverRealitySpiderX = realitySpiderX
+        DataStore.serverRealityFingerprint = realityFingerprint
 
         DataStore.serverWsBrowserForwarding = wsUseBrowserForwarder
         DataStore.serverAllowInsecure = allowInsecure
@@ -105,10 +113,18 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         alpn = DataStore.serverALPN
         certificates = DataStore.serverCertificates
         pinnedPeerCertificateChainSha256 = DataStore.serverPinnedCertificateChain
+        if (this is VLESSBean) {
+            flow = DataStore.serverFlow
+        }
         quicSecurity = DataStore.serverQuicSecurity
         wsMaxEarlyData = DataStore.serverWsMaxEarlyData
         earlyDataHeaderName = DataStore.serverEarlyDataHeaderName
         utlsFingerprint = DataStore.serverUTLSFingerprint
+
+        realityPublicKey = DataStore.serverRealityPublicKey
+        realityShortId = DataStore.serverRealityShortId
+        realitySpiderX = DataStore.serverRealitySpiderX
+        realityFingerprint = DataStore.serverRealityFingerprint
 
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
         allowInsecure = DataStore.serverAllowInsecure
@@ -124,12 +140,19 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var quicSecurity: SimpleMenuPreference
     lateinit var security: SimpleMenuPreference
     lateinit var grpcMode: SimpleMenuPreference
+    lateinit var xtlsFlow: SimpleMenuPreference
 
+    lateinit var alpn: EditTextPreference
     lateinit var securityCategory: PreferenceCategory
     lateinit var certificates: EditTextPreference
     lateinit var pinnedCertificateChain: EditTextPreference
     lateinit var allowInsecure: SwitchPreference
     lateinit var utlsFingerprint: SimpleMenuPreference
+
+    lateinit var realityPublicKey: EditTextPreference
+    lateinit var realityShortId: EditTextPreference
+    lateinit var realitySpiderX: EditTextPreference
+    lateinit var realityFingerprint: SimpleMenuPreference
 
     lateinit var wsCategory: PreferenceCategory
     lateinit var vmessExperimentsCategory: PreferenceCategory
@@ -153,11 +176,18 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         security = findPreference(Key.SERVER_SECURITY)!!
         grpcMode = findPreference(Key.SERVER_GRPC_MODE)!!
 
+        alpn = findPreference(Key.SERVER_ALPN)!!
         securityCategory = findPreference(Key.SERVER_SECURITY_CATEGORY)!!
         certificates = findPreference(Key.SERVER_CERTIFICATES)!!
         pinnedCertificateChain = findPreference(Key.SERVER_PINNED_CERTIFICATE_CHAIN)!!
         allowInsecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
+        xtlsFlow = findPreference(Key.SERVER_FLOW)!!
         utlsFingerprint = findPreference(Key.SERVER_UTLS_FINGERPRINT)!!
+
+        realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
+        realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
+        realitySpiderX = findPreference(Key.SERVER_REALITY_SPIDER_X)!!
+        realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
 
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
 
@@ -168,6 +198,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             val vev = resources.getStringArray(R.array.vless_encryption_value)
             if (encryption.value !in vev) {
                 encryption.value = vev[0]
+            }
+            val xfv = resources.getStringArray(R.array.xtls_flow_value)
+            if (xtlsFlow.value !in xfv) {
+                xtlsFlow.value = xfv[0]
             }
         } else if (bean is VMessBean) {
             encryption.setEntries(R.array.vmess_encryption_entry)
@@ -201,6 +235,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         vmessExperimentsCategory = findPreference(Key.SERVER_VMESS_EXPERIMENTS_CATEGORY)!!
         vmessExperimentsCategory.isVisible = bean is VMessBean
+        xtlsFlow.isVisible = bean is VLESSBean
 
         findPreference<SimpleMenuPreference>(Key.SERVER_PACKET_ENCODING)!!.isVisible = bean !is TrojanBean
     }
@@ -245,6 +280,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isMeek = network == "meek"
         quicSecurity.isVisible = isQuic
         utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHttp || isMeek)
+        realityFingerprint.isVisible = security.value == "reality"
         if (isQuic) {
             if (DataStore.serverQuicSecurity !in quicSecurityValue) {
                 quicSecurity.value = quicSecurityValue[0]
@@ -351,11 +387,18 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     }
 
     fun updateTle(tle: String) {
+        val isNone = tle == "none"
         val isTLS = tle == "tls"
+        val isReality = tle == "reality"
         certificates.isVisible = isTLS
         pinnedCertificateChain.isVisible = isTLS
         allowInsecure.isVisible = isTLS
+        alpn.isVisible = isTLS || isNone
+        realityPublicKey.isVisible = isReality
+        realityShortId.isVisible = isReality
+        realitySpiderX.isVisible = isReality
         utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws" || network.value == "http" || network.value == "meek")
+        realityFingerprint.isVisible = isReality
     }
 
 }
