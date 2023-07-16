@@ -38,7 +38,8 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
                 it["ip"] = finalAddress
             }
             it["port"] = finalPort
-            it["token"] = token
+            it["uuid"] = uuid
+            it["password"] = password
 
             if (caText.isNotBlank() && cacheFile != null) {
                 val caFile = cacheFile()
@@ -52,14 +53,13 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
             if (alpn.isNotBlank()) {
                 it["alpn"] = JSONArray(alpn.split("\n"))
             }
-            it["congestion_controller"] = congestionController
+            it["congestion_control"] = congestionControl
             it["disable_sni"] = disableSNI
-            it["reduce_rtt"] = reduceRTT
-            it["max_udp_relay_packet_size"] = mtu
+            it["zero_rtt_handshake"] = zeroRTTHandshake
         }
         it["local"] = JSONObject().also {
-            it["ip"] = LOCALHOST
-            it["port"] = port
+            it["server"] = LOCALHOST + ":" + port
+            it["max_packet_size"] = mtu
         }
         it["log_level"] = if (DataStore.enableLog) "debug" else "info"
     }.toStringPretty()

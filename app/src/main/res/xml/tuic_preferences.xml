@@ -19,10 +19,15 @@
             app:title="@string/server_port"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="serverUserId"
+            app:title="@string/uuid"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_settings_password"
             app:key="serverPassword"
-            app:title="@string/tuic_token" />
+            app:title="@string/password" />
         <EditTextPreference
             app:icon="@drawable/ic_baseline_legend_toggle_24"
             app:key="serverALPN"
@@ -61,7 +66,7 @@
         <SwitchPreference
             app:icon="@drawable/baseline_flight_takeoff_24"
             app:key="serverReduceRTT"
-            app:title="@string/tuic_reduce_rtt" />
+            app:title="@string/tuic_zero_rtt_handshake" />
         <EditTextPreference
             app:icon="@drawable/baseline_public_24"
             app:key="serverMTU"

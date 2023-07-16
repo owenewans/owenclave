@@ -40,14 +40,15 @@ class TuicSettingsActivity : ProfileSettingsActivity<TuicBean>() {
         DataStore.profileName = name
         DataStore.serverAddress = serverAddress
         DataStore.serverPort = serverPort
-        DataStore.serverPassword = token
+        DataStore.serverUserId = uuid
+        DataStore.serverPassword = password
         DataStore.serverALPN = alpn
         DataStore.serverCertificates = caText
         DataStore.serverUDPRelayMode = udpRelayMode
-        DataStore.serverCongestionController = congestionController
+        DataStore.serverCongestionController = congestionControl
         DataStore.serverDisableSNI = disableSNI
         DataStore.serverSNI = sni
-        DataStore.serverReduceRTT = reduceRTT
+        DataStore.serverReduceRTT = zeroRTTHandshake
         DataStore.serverMTU = mtu
 
     }
@@ -56,14 +57,15 @@ class TuicSettingsActivity : ProfileSettingsActivity<TuicBean>() {
         name = DataStore.profileName
         serverAddress = DataStore.serverAddress
         serverPort = DataStore.serverPort
-        token = DataStore.serverPassword
+        uuid = DataStore.serverUserId
+        password = DataStore.serverPassword
         alpn = DataStore.serverALPN
         caText = DataStore.serverCertificates
         udpRelayMode = DataStore.serverUDPRelayMode
-        congestionController = DataStore.serverCongestionController
+        congestionControl = DataStore.serverCongestionController
         disableSNI = DataStore.serverDisableSNI
         sni = DataStore.serverSNI
-        reduceRTT = DataStore.serverReduceRTT
+        zeroRTTHandshake = DataStore.serverReduceRTT
         mtu = DataStore.serverMTU
     }
 
