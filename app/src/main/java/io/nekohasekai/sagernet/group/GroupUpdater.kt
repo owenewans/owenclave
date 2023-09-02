@@ -30,6 +30,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.brook.BrookBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
+import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.relaybaton.RelayBatonBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
@@ -177,6 +178,9 @@ abstract class GroupUpdater {
                     if (sni.isBlank()) sni = bean.serverAddress
                 }
                 is HysteriaBean -> {
+                    if (sni.isBlank()) sni = bean.serverAddress
+                }
+                is Hysteria2Bean -> {
                     if (sni.isBlank()) sni = bean.serverAddress
                 }
             }

@@ -42,6 +42,8 @@ import io.nekohasekai.sagernet.fmt.brook.internalUri
 import io.nekohasekai.sagernet.fmt.buildV2RayConfig
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria.buildHysteriaConfig
+import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
+import io.nekohasekai.sagernet.fmt.hysteria2.buildHysteria2Config
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
@@ -138,6 +140,18 @@ abstract class V2RayInstance(
                             File(
                                 app.noBackupFilesDir,
                                 "hysteria_" + SystemClock.elapsedRealtime() + ".ca"
+                            ).apply {
+                                parentFile?.mkdirs()
+                                cacheFiles.add(this)
+                            }
+                        }
+                    }
+                    is Hysteria2Bean -> {
+                        initPlugin("hysteria2-plugin")
+                        pluginConfigs[port] = profile.type to bean.buildHysteria2Config(port) {
+                            File(
+                                app.noBackupFilesDir,
+                                "hysteria2_" + SystemClock.elapsedRealtime() + ".ca"
                             ).apply {
                                 parentFile?.mkdirs()
                                 cacheFiles.add(this)
@@ -360,6 +374,28 @@ abstract class V2RayInstance(
                         if (bean.protocol == HysteriaBean.PROTOCOL_FAKETCP) {
                             commands.addAll(0, listOf("su", "-c"))
                         }
+
+                        processes.start(commands, env)
+                    }
+                    bean is Hysteria2Bean -> {
+                        val configFile = File(
+                            context.noBackupFilesDir,
+                            "hysteria2_" + SystemClock.elapsedRealtime() + ".yaml"
+                        )
+
+                        configFile.parentFile?.mkdirs()
+                        configFile.writeText(config)
+                        cacheFiles.add(configFile)
+
+                        val commands = mutableListOf(
+                            initPlugin("hysteria2-plugin").path,
+                            "--disable-update-check",
+                            "--config",
+                            configFile.absolutePath,
+                            "--log-level",
+                            if (DataStore.enableLog) "debug" else "warn",
+                            "client"
+                        )
 
                         processes.start(commands, env)
                     }

@@ -191,6 +191,9 @@
             android:name="io.nekohasekai.sagernet.ui.profile.HysteriaSettingsActivity"
             android:configChanges="uiMode" />
         <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.Hysteria2SettingsActivity"
+            android:configChanges="uiMode" />
+        <activity
             android:name="io.nekohasekai.sagernet.ui.profile.SSHSettingsActivity"
             android:configChanges="uiMode" />
         <activity

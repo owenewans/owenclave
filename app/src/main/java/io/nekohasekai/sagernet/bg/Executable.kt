@@ -36,6 +36,7 @@ object Executable {
         "libnaive.so",
         "libbrook.so",
         "libhysteria.so",
+        "libhysteria2.so",
         "libpingtunnel.so",
         "librelaybaton.so",
     )

@@ -39,6 +39,10 @@ import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.http.toUri
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria.buildHysteriaConfig
+import io.nekohasekai.sagernet.fmt.hysteria.toUri
+import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
+import io.nekohasekai.sagernet.fmt.hysteria2.buildHysteria2Config
+import io.nekohasekai.sagernet.fmt.hysteria2.toUri
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
@@ -103,6 +107,7 @@ data class ProxyEntity(
     var rbBean: RelayBatonBean? = null,
     var brookBean: BrookBean? = null,
     var hysteriaBean: HysteriaBean? = null,
+    var hysteria2Bean: Hysteria2Bean? = null,
     var mieruBean: MieruBean? = null,
     var tuicBean: TuicBean? = null,
     var sshBean: SSHBean? = null,
@@ -126,6 +131,7 @@ data class ProxyEntity(
         const val TYPE_RELAY_BATON = 11
         const val TYPE_BROOK = 12
         const val TYPE_HYSTERIA = 15
+        const val TYPE_HYSTERIA2 = 21
         const val TYPE_SNELL = 16
         const val TYPE_SSH = 17
         const val TYPE_WG = 18
@@ -221,6 +227,7 @@ data class ProxyEntity(
             TYPE_RELAY_BATON -> rbBean = KryoConverters.relayBatonDeserialize(byteArray)
             TYPE_BROOK -> brookBean = KryoConverters.brookDeserialize(byteArray)
             TYPE_HYSTERIA -> hysteriaBean = KryoConverters.hysteriaDeserialize(byteArray)
+            TYPE_HYSTERIA2 -> hysteria2Bean = KryoConverters.hysteria2Deserialize(byteArray)
             TYPE_SSH -> sshBean = KryoConverters.sshDeserialize(byteArray)
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
             TYPE_MIERU -> mieruBean = KryoConverters.mieruDeserialize(byteArray)
@@ -246,6 +253,7 @@ data class ProxyEntity(
         TYPE_RELAY_BATON -> "relaybaton"
         TYPE_BROOK -> "Brook"
         TYPE_HYSTERIA -> "Hysteria"
+        TYPE_HYSTERIA2 -> "Hysteria2"
         TYPE_SNELL -> "Snell"
         TYPE_SSH -> "SSH"
         TYPE_WG -> "WireGuard"
@@ -276,6 +284,7 @@ data class ProxyEntity(
             TYPE_RELAY_BATON -> rbBean
             TYPE_BROOK -> brookBean
             TYPE_HYSTERIA -> hysteriaBean
+            TYPE_HYSTERIA2 -> hysteria2Bean
             TYPE_SSH -> sshBean
             TYPE_WG -> wgBean
             TYPE_MIERU -> mieruBean
@@ -298,7 +307,7 @@ data class ProxyEntity(
 
     fun haveStandardLink(): Boolean {
         return haveLink() && when (type) {
-            TYPE_RELAY_BATON, TYPE_BROOK, TYPE_SSH, TYPE_WG, TYPE_HYSTERIA, TYPE_MIERU, TYPE_TUIC -> false
+            TYPE_RELAY_BATON, TYPE_BROOK, TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_TUIC -> false
             TYPE_CONFIG -> false
             else -> true
         }
@@ -316,13 +325,14 @@ data class ProxyEntity(
             is TrojanGoBean -> toUri()
             is NaiveBean -> toUri()
             is PingTunnelBean -> toUri()
+            is HysteriaBean -> toUri()
+            is Hysteria2Bean -> toUri()
 
             is RelayBatonBean -> toUniversalLink()
             is BrookBean -> toUniversalLink()
             is ConfigBean -> toUniversalLink()
             is SSHBean -> toUniversalLink()
             is WireGuardBean -> toUniversalLink()
-            is HysteriaBean -> toUniversalLink()
             is MieruBean -> toUniversalLink()
             is TuicBean -> toUniversalLink()
             else -> null
@@ -371,6 +381,12 @@ data class ProxyEntity(
                                     Logs.d(it)
                                 })
                             }
+                            is Hysteria2Bean -> {
+                                append("\n\n")
+                                append(bean.buildHysteria2Config(port, null).also {
+                                    Logs.d(it)
+                                })
+                            }
                             is MieruBean -> {
                                 append("\n\n")
                                 append(bean.buildMieruConfig(port).also {
@@ -397,6 +413,7 @@ data class ProxyEntity(
             TYPE_NAIVE -> true
             TYPE_PING_TUNNEL -> true
             TYPE_HYSTERIA -> true
+            TYPE_HYSTERIA2 -> true
             TYPE_RELAY_BATON -> true
             TYPE_BROOK -> true
             TYPE_MIERU -> true
@@ -438,6 +455,7 @@ data class ProxyEntity(
         rbBean = null
         brookBean = null
         hysteriaBean = null
+        hysteria2Bean = null
         sshBean = null
         wgBean = null
         mieruBean = null
@@ -500,6 +518,10 @@ data class ProxyEntity(
                 type = TYPE_HYSTERIA
                 hysteriaBean = bean
             }
+            is Hysteria2Bean -> {
+                type = TYPE_HYSTERIA2
+                hysteria2Bean = bean
+            }
             is SSHBean -> {
                 type = TYPE_SSH
                 sshBean = bean
@@ -550,6 +572,7 @@ data class ProxyEntity(
                 TYPE_RELAY_BATON -> RelayBatonSettingsActivity::class.java
                 TYPE_BROOK -> BrookSettingsActivity::class.java
                 TYPE_HYSTERIA -> HysteriaSettingsActivity::class.java
+                TYPE_HYSTERIA2 -> Hysteria2SettingsActivity::class.java
                 TYPE_SSH -> SSHSettingsActivity::class.java
                 TYPE_WG -> WireGuardSettingsActivity::class.java
                 TYPE_MIERU -> MieruSettingsActivity::class.java

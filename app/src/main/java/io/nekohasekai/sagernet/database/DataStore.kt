@@ -269,6 +269,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverStreamReceiveWindow by profileCacheStore.stringToIntIfExists(Key.SERVER_STREAM_RECEIVE_WINDOW)
     var serverConnectionReceiveWindow by profileCacheStore.stringToIntIfExists(Key.SERVER_CONNECTION_RECEIVE_WINDOW)
     var serverDisableMtuDiscovery by profileCacheStore.boolean(Key.SERVER_DISABLE_MTU_DISCOVERY)
+    var serverInitStreamReceiveWindow by profileCacheStore.stringToIntIfExists(Key.SERVER_INIT_STREAM_RECEIVE_WINDOW)
+    var serverMaxStreamReceiveWindow by profileCacheStore.stringToIntIfExists(Key.SERVER_MAX_STREAM_RECEIVE_WINDOW)
+    var serverInitConnReceiveWindow by profileCacheStore.stringToIntIfExists(Key.SERVER_INIT_CONN_RECEIVE_WINDOW)
+    var serverMaxConnReceiveWindow by profileCacheStore.stringToIntIfExists(Key.SERVER_MAX_CONN_RECEIVE_WINDOW)
 
     var serverProtocolVersion by profileCacheStore.stringToInt(Key.SERVER_PROTOCOL)
     var serverPrivateKey by profileCacheStore.string(Key.SERVER_PRIVATE_KEY)
