@@ -48,6 +48,8 @@ import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
+import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean
+import io.nekohasekai.sagernet.fmt.mieru2.buildMieru2Config
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
@@ -109,6 +111,7 @@ data class ProxyEntity(
     var hysteriaBean: HysteriaBean? = null,
     var hysteria2Bean: Hysteria2Bean? = null,
     var mieruBean: MieruBean? = null,
+    var mieru2Bean: Mieru2Bean? = null,
     var tuicBean: TuicBean? = null,
     var sshBean: SSHBean? = null,
     var wgBean: WireGuardBean? = null,
@@ -136,6 +139,7 @@ data class ProxyEntity(
         const val TYPE_SSH = 17
         const val TYPE_WG = 18
         const val TYPE_MIERU = 19
+        const val TYPE_MIERU2 = 22
         const val TYPE_TUIC = 20
 
         const val TYPE_CHAIN = 8
@@ -231,6 +235,7 @@ data class ProxyEntity(
             TYPE_SSH -> sshBean = KryoConverters.sshDeserialize(byteArray)
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
             TYPE_MIERU -> mieruBean = KryoConverters.mieruDeserialize(byteArray)
+            TYPE_MIERU2 -> mieru2Bean = KryoConverters.mieru2Deserialize(byteArray)
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
 
             TYPE_CONFIG -> configBean = KryoConverters.configDeserialize(byteArray)
@@ -258,6 +263,7 @@ data class ProxyEntity(
         TYPE_SSH -> "SSH"
         TYPE_WG -> "WireGuard"
         TYPE_MIERU -> "Mieru"
+        TYPE_MIERU2 -> "Mieru2"
         TYPE_TUIC -> "TUIC"
 
         TYPE_CHAIN -> chainName
@@ -288,6 +294,7 @@ data class ProxyEntity(
             TYPE_SSH -> sshBean
             TYPE_WG -> wgBean
             TYPE_MIERU -> mieruBean
+            TYPE_MIERU2 -> mieru2Bean
             TYPE_TUIC -> tuicBean
 
             TYPE_CONFIG -> configBean
@@ -307,7 +314,7 @@ data class ProxyEntity(
 
     fun haveStandardLink(): Boolean {
         return haveLink() && when (type) {
-            TYPE_RELAY_BATON, TYPE_BROOK, TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_TUIC -> false
+            TYPE_RELAY_BATON, TYPE_BROOK, TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_MIERU2, TYPE_TUIC -> false
             TYPE_CONFIG -> false
             else -> true
         }
@@ -334,6 +341,7 @@ data class ProxyEntity(
             is SSHBean -> toUniversalLink()
             is WireGuardBean -> toUniversalLink()
             is MieruBean -> toUniversalLink()
+            is Mieru2Bean -> toUniversalLink()
             is TuicBean -> toUniversalLink()
             else -> null
         }
@@ -393,6 +401,12 @@ data class ProxyEntity(
                                     Logs.d(it)
                                 })
                             }
+                            is Mieru2Bean -> {
+                                append("\n\n")
+                                append(bean.buildMieru2Config(port).also {
+                                    Logs.d(it)
+                                })
+                            }
                             is TuicBean -> {
                                 append("\n\n")
                                 append(bean.buildTuicConfig(port, null).also {
@@ -417,6 +431,7 @@ data class ProxyEntity(
             TYPE_RELAY_BATON -> true
             TYPE_BROOK -> true
             TYPE_MIERU -> true
+            TYPE_MIERU2 -> true
             TYPE_TUIC -> true
 
             TYPE_CONFIG -> true
@@ -459,6 +474,7 @@ data class ProxyEntity(
         sshBean = null
         wgBean = null
         mieruBean = null
+        mieru2Bean = null
         tuicBean = null
 
         configBean = null
@@ -534,6 +550,10 @@ data class ProxyEntity(
                 type = TYPE_MIERU
                 mieruBean = bean
             }
+            is Mieru2Bean -> {
+                type = TYPE_MIERU2
+                mieru2Bean = bean
+            }
             is TuicBean -> {
                 type = TYPE_TUIC
                 tuicBean = bean
@@ -576,6 +596,7 @@ data class ProxyEntity(
                 TYPE_SSH -> SSHSettingsActivity::class.java
                 TYPE_WG -> WireGuardSettingsActivity::class.java
                 TYPE_MIERU -> MieruSettingsActivity::class.java
+                TYPE_MIERU2 -> Mieru2SettingsActivity::class.java
                 TYPE_TUIC -> TuicSettingsActivity::class.java
 
                 TYPE_CONFIG -> ConfigSettingsActivity::class.java

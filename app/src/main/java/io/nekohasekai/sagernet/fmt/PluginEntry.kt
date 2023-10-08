@@ -37,6 +37,7 @@ enum class PluginEntry(
     Hysteria("hysteria-plugin", R.string.action_hysteria, "io.nekohasekai.sagernet.plugin.hysteria", DownloadSource(fdroid = false)),
     Hysteria2("hysteria2-plugin", R.string.action_hysteria2, "io.nekohasekai.sagernet.plugin.hysteria2", DownloadSource(fdroid = false)),
     Mieru("mieru-plugin", R.string.action_mieru, "io.nekohasekai.sagernet.plugin.mieru", DownloadSource(fdroid = false)),
+    Mieru2("mieru2-plugin", R.string.action_mieru2, "io.nekohasekai.sagernet.plugin.mieru2", DownloadSource(fdroid = false)),
     TUIC("tuic-plugin", R.string.action_tuic, "io.nekohasekai.sagernet.plugin.tuic", DownloadSource(fdroid = false)),
 
     // shadowsocks plugins

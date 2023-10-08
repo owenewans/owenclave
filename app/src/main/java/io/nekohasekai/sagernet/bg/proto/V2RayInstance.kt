@@ -47,6 +47,8 @@ import io.nekohasekai.sagernet.fmt.hysteria2.buildHysteria2Config
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
+import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean
+import io.nekohasekai.sagernet.fmt.mieru2.buildMieru2Config
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.pingtunnel.PingTunnelBean
@@ -161,6 +163,10 @@ abstract class V2RayInstance(
                     is MieruBean -> {
                         initPlugin("mieru-plugin")
                         pluginConfigs[port] = profile.type to bean.buildMieruConfig(port)
+                    }
+                    is Mieru2Bean -> {
+                        initPlugin("mieru2-plugin")
+                        pluginConfigs[port] = profile.type to bean.buildMieru2Config(port)
                     }
                     is TuicBean -> {
                         initPlugin("tuic-plugin")
@@ -415,6 +421,26 @@ abstract class V2RayInstance(
 
                         val commands = mutableListOf(
                             initPlugin("mieru-plugin").path, "run"
+                        )
+
+                        processes.start(commands, env)
+                    }
+                    bean is Mieru2Bean -> {
+                        val configFile = File(
+                            context.noBackupFilesDir,
+                            "mieru2_" + SystemClock.elapsedRealtime() + ".json"
+                        )
+
+                        configFile.parentFile?.mkdirs()
+                        configFile.writeText(config)
+                        cacheFiles.add(configFile)
+
+                        val plugin = initPlugin("mieru2-plugin")
+
+                        env["MIERU2_CONFIG_JSON_FILE"] = configFile.absolutePath
+
+                        val commands = mutableListOf(
+                            initPlugin("mieru2-plugin").path, "run"
                         )
 
                         processes.start(commands, env)

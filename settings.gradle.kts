@@ -16,6 +16,7 @@ when {
         include(":plugin:hysteria")
         include(":plugin:hysteria2")
         include(":plugin:mieru")
+        include(":plugin:mieru2")
         include(":plugin:tuic")
     }
     buildPlugin == "none" -> {

@@ -340,6 +340,9 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_new_mieru -> {
                 startActivity(Intent(requireActivity(), MieruSettingsActivity::class.java))
             }
+            R.id.action_new_mieru2 -> {
+                startActivity(Intent(requireActivity(), Mieru2SettingsActivity::class.java))
+            }
             R.id.action_new_tuic -> {
                 startActivity(Intent(requireActivity(), TuicSettingsActivity::class.java))
             }

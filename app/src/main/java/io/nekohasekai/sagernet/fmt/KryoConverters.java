@@ -39,6 +39,7 @@ import io.nekohasekai.sagernet.fmt.internal.BalancerBean;
 import io.nekohasekai.sagernet.fmt.internal.ChainBean;
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean;
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean;
+import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean;
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean;
 import io.nekohasekai.sagernet.fmt.pingtunnel.PingTunnelBean;
 import io.nekohasekai.sagernet.fmt.relaybaton.RelayBatonBean;
@@ -183,6 +184,12 @@ public class KryoConverters {
     public static MieruBean mieruDeserialize(byte[] bytes) {
         if (ArrayUtil.isEmpty(bytes)) return null;
         return deserialize(new MieruBean(), bytes);
+    }
+
+    @TypeConverter
+    public static Mieru2Bean mieru2Deserialize(byte[] bytes) {
+        if (ArrayUtil.isEmpty(bytes)) return null;
+        return deserialize(new Mieru2Bean(), bytes);
     }
 
     @TypeConverter

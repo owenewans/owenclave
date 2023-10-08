@@ -172,7 +172,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Fetch Status
         run: git submodule status 'plugin/mieru/*' > mieru_status
-      - name: Hysteria Cache
+      - name: Mieru Cache
         uses: actions/cache@v3
         with:
           path: |
