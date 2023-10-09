@@ -30,64 +30,58 @@ import io.nekohasekai.sagernet.fmt.KryoConverters;
 
 public class TuicBean extends AbstractBean {
 
-    public String uuid;
-    public String password;
+    public String token;
     public String caText;
     public String udpRelayMode;
-    public String congestionControl;
+    public String congestionController;
     public String alpn;
     public Boolean disableSNI;
-    public Boolean zeroRTTHandshake;
+    public Boolean reduceRTT;
     public Integer mtu;
     public String sni;
 
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
-        if (uuid == null) uuid = "";
-        if (password == null) password = "";
+        if (token == null) token = "";
         if (caText == null) caText = "";
         if (udpRelayMode == null) udpRelayMode = "native";
-        if (congestionControl == null) congestionControl = "cubic";
+        if (congestionController == null) congestionController = "cubic";
         if (alpn == null) alpn = "";
         if (disableSNI == null) disableSNI = false;
-        if (zeroRTTHandshake == null) zeroRTTHandshake = false;
-        if (mtu == null) mtu = 1500;
+        if (reduceRTT == null) reduceRTT = false;
+        if (mtu == null) mtu = 1400;
         if (sni == null) sni = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(1);
+        output.writeInt(0);
         super.serialize(output);
-        output.writeString(password);
+        output.writeString(token);
         output.writeString(caText);
         output.writeString(udpRelayMode);
-        output.writeString(congestionControl);
+        output.writeString(congestionController);
         output.writeString(alpn);
         output.writeBoolean(disableSNI);
-        output.writeBoolean(zeroRTTHandshake);
+        output.writeBoolean(reduceRTT);
         output.writeInt(mtu);
         output.writeString(sni);
-        output.writeString(uuid);
     }
 
     @Override
     public void deserialize(ByteBufferInput input) {
         int version = input.readInt();
         super.deserialize(input);
-        password = input.readString(); // was "token"
+        token = input.readString();
         caText = input.readString();
         udpRelayMode = input.readString();
-        congestionControl = input.readString(); // was "congestionController"
+        congestionController = input.readString();
         alpn = input.readString();
         disableSNI = input.readBoolean();
-        zeroRTTHandshake = input.readBoolean(); // was "reduceRTT"
+        reduceRTT = input.readBoolean();
         mtu = input.readInt();
         sni = input.readString();
-        if (version >= 1) {
-            uuid = input.readString();
-        }
     }
 
     @NotNull
