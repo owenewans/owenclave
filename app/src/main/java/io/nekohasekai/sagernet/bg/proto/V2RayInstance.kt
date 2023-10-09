@@ -341,6 +341,10 @@ abstract class V2RayInstance(
                                 commands.add("wssclient")
                                 commands.add("--wssserver")
                             }
+                            "quic" -> {
+                                commands.add("quicclient")
+                                commands.add("--quicserver")
+                            }
                             else -> {
                                 commands.add("client")
                                 commands.add("--server")
@@ -349,7 +353,7 @@ abstract class V2RayInstance(
 
                         commands.add(bean.internalUri())
 
-                        if (bean.protocol.startsWith("ws")) {
+                        if (bean.protocol.startsWith("ws") || bean.protocol == "quic") {
                             commands.add("--serverAddress")
                             commands.add(bean.wrapUri())
                         }

@@ -60,8 +60,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
 
     lateinit var protocol: SimpleMenuPreference
     val protocolValue = app.resources.getStringArray(R.array.brook_protocol_value)
-    lateinit var wsCategory: PreferenceCategory
+    lateinit var category: PreferenceCategory
     lateinit var insecure: SwitchPreference
+    lateinit var wsPath: EditTextPreference
 
     override fun PreferenceFragmentCompat.createPreferences(
         savedInstanceState: Bundle?,
@@ -76,9 +77,10 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
             summaryProvider = PasswordSummaryProvider
         }
 
-        wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
+        category = findPreference(Key.SERVER_WS_CATEGORY)!!
         protocol = findPreference(Key.SERVER_PROTOCOL)!!
         insecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
+        wsPath = findPreference(Key.SERVER_PATH)!!
 
         if (protocol.value !in protocolValue) {
             protocol.value = protocolValue[0]
@@ -91,8 +93,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
     }
 
     fun updateProtocol(value: String) {
-        wsCategory.isVisible = value.startsWith("ws")
-        insecure.isVisible = value == "wss"
+        category.isVisible = value.startsWith("ws") || value == "quic"
+        insecure.isVisible = value == "wss" || value == "quic"
+        wsPath.isVisible = value.startsWith("ws")
     }
 
 }

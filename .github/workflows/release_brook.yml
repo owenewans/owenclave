@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Fetch Status
         run: git submodule status 'plugin/brook/*' > brook_status
       - name: Brook Cache
@@ -46,10 +46,10 @@ jobs:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Install Golang
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
-          go-version: 1.18.0
+          go-version: 1.20.9
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: ./run plugin brook
@@ -61,7 +61,7 @@ jobs:
       - check
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Fetch Status
         run: git submodule status 'plugin/brook/*' > brook_status
       - name: brook Cache
@@ -81,7 +81,7 @@ jobs:
           BUILD_PLUGIN: brook
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
-          echo "ndk.dir=${ANDROID_HOME}/ndk/25.0.8775105" >> local.properties
+          echo "ndk.dir=${ANDROID_HOME}/ndk/25.2.9519653" >> local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           ./run init action library
           ./gradlew :plugin:brook:assembleOssRelease
@@ -115,7 +115,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Donwload Artifacts
         uses: actions/download-artifact@v3
         with:
@@ -123,7 +123,7 @@ jobs:
           path: artifacts
       - name: Release
         run: |
-          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
+          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.16.0/ghr_v0.16.0_linux_amd64.tar.gz
           tar -xvf ghr.tar.gz
           mv ghr*linux_amd64/ghr .
           mkdir apks
@@ -169,7 +169,7 @@ jobs:
       - check
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Fetch Status
         run: git submodule status 'plugin/brook/*' > brook_status
       - name: brook Cache
@@ -189,7 +189,7 @@ jobs:
           BUILD_PLUGIN: brook
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
-          echo "ndk.dir=${ANDROID_HOME}/ndk/25.0.8775105" >> local.properties
+          echo "ndk.dir=${ANDROID_HOME}/ndk/25.2.9519653" >> local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           cat > service_account_credentials.json << EOF
           ${{ secrets.ANDROID_PUBLISHER_CREDENTIALS }}"

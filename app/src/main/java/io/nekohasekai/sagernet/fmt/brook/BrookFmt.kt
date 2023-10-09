@@ -83,6 +83,21 @@ fun parseBrook(text: String): AbstractBean {
                 ?: error("Invalid brook wssserver url (Missing password parameter): $text")
 
         }
+        "quicserver" -> {
+            bean as BrookBean
+            bean.protocol = "quic"
+
+
+            var quicserver = (link.queryParameter("quicserver")
+                ?: error("Invalid brook quicserver url (Missing quicserver parameter): $text")).substringAfter(
+                "://"
+            )
+            bean.serverAddress = quicserver.substringBefore(":")
+            bean.serverPort = quicserver.substringAfter(":").toInt()
+            bean.password = link.queryParameter("password")
+                ?: error("Invalid brook quicserver url (Missing password parameter): $text")
+
+        }
         "socks5" -> {
             bean as SOCKSBean
 
@@ -125,6 +140,10 @@ fun BrookBean.toUri(): String {
             builder.host = "wssserver"
             builder.addQueryParameter("wssserver", serverString)
         }
+        "quic" -> {
+            builder.host = "quicserver"
+            builder.addQueryParameter("quicserver", serverString)
+        }
         else -> {
             builder.host = "server"
             builder.addQueryParameter("server", serverString)
@@ -143,6 +162,7 @@ fun BrookBean.internalUri(): String {
     var server = when (protocol) {
         "ws" -> "ws://" + wrapUriWithOriginHost()
         "wss" -> "wss://" + wrapUriWithOriginHost()
+        "quic" -> "quic://" + wrapUriWithOriginHost()
         else -> return wrapUri()
     }
     if (wsPath.isNotBlank()) {

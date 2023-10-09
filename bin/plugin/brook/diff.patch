@@ -1,0 +1,133 @@
+diff --git a/cli/brook/main.go b/cli/brook/main.go
+index 83cf3b4..304e8f3 100644
+--- a/cli/brook/main.go
++++ b/cli/brook/main.go
+@@ -586,6 +586,9 @@ func main() {
+ 					Value: 60,
+ 					Usage: "time (s)",
+ 				},
++				&cli.StringFlag{
++					Name: "serverAddress",
++				},
+ 			},
+ 			Action: func(c *cli.Context) error {
+ 				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
+@@ -605,7 +608,7 @@ func main() {
+ 				if c.String("socks5ServerIP") != "" {
+ 					ip = c.String("socks5ServerIP")
+ 				}
+-				s, err := brook.NewWSClient(c.String("socks5"), ip, c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
++				s, err := brook.NewWSClientWithServerAddress(c.String("socks5"), ip, c.String("wsserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"), c.String("serverAddress"))
+ 				if err != nil {
+ 					return err
+ 				}
+@@ -838,6 +841,9 @@ func main() {
+ 					Value: 60,
+ 					Usage: "time (s)",
+ 				},
++				&cli.StringFlag{
++					Name: "serverAddress",
++				},
+ 			},
+ 			Action: func(c *cli.Context) error {
+ 				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
+@@ -857,7 +863,7 @@ func main() {
+ 				if c.String("socks5ServerIP") != "" {
+ 					ip = c.String("socks5ServerIP")
+ 				}
+-				s, err := brook.NewWSClient(c.String("socks5"), ip, c.String("wssserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
++				s, err := brook.NewWSClientWithServerAddress(c.String("socks5"), ip, c.String("wssserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"), c.String("serverAddress"))
+ 				if err != nil {
+ 					return err
+ 				}
+@@ -1099,6 +1105,9 @@ func main() {
+ 					Value: 60,
+ 					Usage: "time (s)",
+ 				},
++				&cli.StringFlag{
++					Name: "serverAddress",
++				},
+ 			},
+ 			Action: func(c *cli.Context) error {
+ 				if c.String("socks5") == "" || c.String("quicserver") == "" || c.String("password") == "" {
+@@ -1118,7 +1127,7 @@ func main() {
+ 				if c.String("socks5ServerIP") != "" {
+ 					ip = c.String("socks5ServerIP")
+ 				}
+-				s, err := brook.NewQUICClient(c.String("socks5"), ip, c.String("quicserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"))
++				s, err := brook.NewQUICClientWithServerAddress(c.String("socks5"), ip, c.String("quicserver"), c.String("password"), c.Int("tcpTimeout"), c.Int("udpTimeout"), c.Bool("withoutBrookProtocol"), c.String("serverAddress"))
+ 				if err != nil {
+ 					return err
+ 				}
+diff --git a/limits/limits.go b/limits/limits.go
+index 770612c..9d3d974 100644
+--- a/limits/limits.go
++++ b/limits/limits.go
+@@ -12,7 +12,7 @@
+ // You should have received a copy of the GNU General Public License
+ // along with this program. If not, see <https://www.gnu.org/licenses/>.
+ 
+-// +build !windows
++//go:build !windows && !android
+ 
+ package limits
+ 
+diff --git a/limits/limits_not.go b/limits/limits_not.go
+index d4fa78b..9b41df2 100644
+--- a/limits/limits_not.go
++++ b/limits/limits_not.go
+@@ -12,7 +12,7 @@
+ // You should have received a copy of the GNU General Public License
+ // along with this program. If not, see <https://www.gnu.org/licenses/>.
+ 
+-// +build windows
++//go:build windows || android
+ 
+ package limits
+ 
+diff --git a/quicclient.go b/quicclient.go
+index 920b247..5047f95 100644
+--- a/quicclient.go
++++ b/quicclient.go
+@@ -40,6 +40,10 @@ type QUICClient struct {
+ }
+ 
+ func NewQUICClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool) (*QUICClient, error) {
++	return NewQUICClientWithServerAddress(addr, ip, server, password, tcpTimeout, udpTimeout, withoutbrook, "")
++}
++
++func NewQUICClientWithServerAddress(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool, serverAddress string) (*QUICClient, error) {
+ 	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, udpTimeout)
+ 	if err != nil {
+ 		return nil, err
+@@ -74,6 +78,7 @@ func NewQUICClient(addr, ip, server, password string, tcpTimeout, udpTimeout int
+ 	}
+ 	x := &QUICClient{
+ 		ServerHost:        u.Host,
++		ServerAddress:     serverAddress,
+ 		Server:            s5,
+ 		Password:          p,
+ 		TCPTimeout:        tcpTimeout,
+diff --git a/wsclient.go b/wsclient.go
+index 08676d9..3574e6a 100644
+--- a/wsclient.go
++++ b/wsclient.go
+@@ -40,6 +40,10 @@ type WSClient struct {
+ }
+ 
+ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSClient, error) {
++	return NewWSClientWithServerAddress(addr, ip, server, password, tcpTimeout, udpTimeout, withoutbrook, "")
++}
++
++func NewWSClientWithServerAddress(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool, serverAddress string) (*WSClient, error) {
+ 	if err := limits.Raise(); err != nil {
+ 		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
+ 	}
+@@ -64,6 +68,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int,
+ 	}
+ 	x := &WSClient{
+ 		ServerHost:        u.Host,
++		ServerAddress:     serverAddress,
+ 		Server:            s5,
+ 		Password:          p,
+ 		TCPTimeout:        tcpTimeout,
