@@ -56,7 +56,7 @@ public class TuicBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(2);
         super.serialize(output);
         output.writeString(token);
         output.writeString(caText);
@@ -82,6 +82,9 @@ public class TuicBean extends AbstractBean {
         reduceRTT = input.readBoolean();
         mtu = input.readInt();
         sni = input.readString();
+        if (version == 1) {
+            input.readString();
+        }
     }
 
     @NotNull

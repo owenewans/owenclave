@@ -47,8 +47,8 @@ jobs:
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Install toolchain
         run: |
-          rustup toolchain install stable
-          rustup override set stable
+          rustup toolchain install 1.61.0
+          rustup override set 1.61.0
         if: steps.cache.outputs.cache-hit != 'true'
       - name: Install rust android target
         run: ./run init action rust
