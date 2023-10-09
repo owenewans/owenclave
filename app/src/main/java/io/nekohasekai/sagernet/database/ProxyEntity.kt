@@ -72,6 +72,8 @@ import io.nekohasekai.sagernet.fmt.trojan_go.buildTrojanGoConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.toUri
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
+import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
+import io.nekohasekai.sagernet.fmt.tuic5.buildTuic5Config
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
@@ -113,6 +115,7 @@ data class ProxyEntity(
     var mieruBean: MieruBean? = null,
     var mieru2Bean: Mieru2Bean? = null,
     var tuicBean: TuicBean? = null,
+    var tuic5Bean: Tuic5Bean? = null,
     var sshBean: SSHBean? = null,
     var wgBean: WireGuardBean? = null,
     var configBean: ConfigBean? = null,
@@ -141,6 +144,7 @@ data class ProxyEntity(
         const val TYPE_MIERU = 19
         const val TYPE_MIERU2 = 22
         const val TYPE_TUIC = 20
+        const val TYPE_TUIC5 = 23
 
         const val TYPE_CHAIN = 8
         const val TYPE_BALANCER = 14
@@ -237,6 +241,7 @@ data class ProxyEntity(
             TYPE_MIERU -> mieruBean = KryoConverters.mieruDeserialize(byteArray)
             TYPE_MIERU2 -> mieru2Bean = KryoConverters.mieru2Deserialize(byteArray)
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
+            TYPE_TUIC5 -> tuic5Bean = KryoConverters.tuic5Deserialize(byteArray)
 
             TYPE_CONFIG -> configBean = KryoConverters.configDeserialize(byteArray)
             TYPE_CHAIN -> chainBean = KryoConverters.chainDeserialize(byteArray)
@@ -265,6 +270,7 @@ data class ProxyEntity(
         TYPE_MIERU -> "Mieru"
         TYPE_MIERU2 -> "Mieru2"
         TYPE_TUIC -> "TUIC"
+        TYPE_TUIC5 -> "TUIC v5"
 
         TYPE_CHAIN -> chainName
         TYPE_CONFIG -> configName
@@ -296,6 +302,7 @@ data class ProxyEntity(
             TYPE_MIERU -> mieruBean
             TYPE_MIERU2 -> mieru2Bean
             TYPE_TUIC -> tuicBean
+            TYPE_TUIC5 -> tuic5Bean
 
             TYPE_CONFIG -> configBean
             TYPE_CHAIN -> chainBean
@@ -314,7 +321,7 @@ data class ProxyEntity(
 
     fun haveStandardLink(): Boolean {
         return haveLink() && when (type) {
-            TYPE_RELAY_BATON, TYPE_BROOK, TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_MIERU2, TYPE_TUIC -> false
+            TYPE_RELAY_BATON, TYPE_BROOK, TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_MIERU2, TYPE_TUIC, TYPE_TUIC5 -> false
             TYPE_CONFIG -> false
             else -> true
         }
@@ -343,6 +350,7 @@ data class ProxyEntity(
             is MieruBean -> toUniversalLink()
             is Mieru2Bean -> toUniversalLink()
             is TuicBean -> toUniversalLink()
+            is Tuic5Bean -> toUniversalLink()
             else -> null
         }
     }
@@ -413,6 +421,12 @@ data class ProxyEntity(
                                     Logs.d(it)
                                 })
                             }
+                            is Tuic5Bean -> {
+                                append("\n\n")
+                                append(bean.buildTuic5Config(port, null).also {
+                                    Logs.d(it)
+                                })
+                            }
                         }
                     }
                 }
@@ -433,6 +447,7 @@ data class ProxyEntity(
             TYPE_MIERU -> true
             TYPE_MIERU2 -> true
             TYPE_TUIC -> true
+            TYPE_TUIC5 -> true
 
             TYPE_CONFIG -> true
             else -> false
@@ -476,6 +491,7 @@ data class ProxyEntity(
         mieruBean = null
         mieru2Bean = null
         tuicBean = null
+        tuic5Bean = null
 
         configBean = null
         chainBean = null
@@ -558,6 +574,10 @@ data class ProxyEntity(
                 type = TYPE_TUIC
                 tuicBean = bean
             }
+            is Tuic5Bean -> {
+                type = TYPE_TUIC5
+                tuic5Bean = bean
+            }
 
             is ConfigBean -> {
                 type = TYPE_CONFIG
@@ -598,6 +618,7 @@ data class ProxyEntity(
                 TYPE_MIERU -> MieruSettingsActivity::class.java
                 TYPE_MIERU2 -> Mieru2SettingsActivity::class.java
                 TYPE_TUIC -> TuicSettingsActivity::class.java
+                TYPE_TUIC5 -> Tuic5SettingsActivity::class.java
 
                 TYPE_CONFIG -> ConfigSettingsActivity::class.java
                 TYPE_CHAIN -> ChainSettingsActivity::class.java

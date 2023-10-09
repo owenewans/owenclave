@@ -18,6 +18,7 @@ when {
         include(":plugin:mieru")
         include(":plugin:mieru2")
         include(":plugin:tuic")
+        include(":plugin:tuic5")
     }
     buildPlugin == "none" -> {
     }

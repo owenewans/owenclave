@@ -62,6 +62,8 @@ import io.nekohasekai.sagernet.fmt.trojan_go.buildCustomTrojanConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.buildTrojanGoConfig
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
+import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
+import io.nekohasekai.sagernet.fmt.tuic5.buildTuic5Config
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
@@ -174,6 +176,18 @@ abstract class V2RayInstance(
                             File(
                                 app.noBackupFilesDir,
                                 "tuic_" + SystemClock.elapsedRealtime() + ".ca"
+                            ).apply {
+                                parentFile?.mkdirs()
+                                cacheFiles.add(this)
+                            }
+                        }
+                    }
+                    is Tuic5Bean -> {
+                        initPlugin("tuic5-plugin")
+                        pluginConfigs[port] = profile.type to bean.buildTuic5Config(port) {
+                            File(
+                                app.noBackupFilesDir,
+                                "tuic5_" + SystemClock.elapsedRealtime() + ".ca"
                             ).apply {
                                 parentFile?.mkdirs()
                                 cacheFiles.add(this)
@@ -457,6 +471,24 @@ abstract class V2RayInstance(
 
                         val commands = mutableListOf(
                             initPlugin("tuic-plugin").path,
+                            "-c",
+                            configFile.absolutePath,
+                        )
+
+                        processes.start(commands, env)
+                    }
+                    bean is Tuic5Bean -> {
+                        val configFile = File(
+                            context.noBackupFilesDir,
+                            "tuic5_" + SystemClock.elapsedRealtime() + ".json"
+                        )
+
+                        configFile.parentFile?.mkdirs()
+                        configFile.writeText(config)
+                        cacheFiles.add(configFile)
+
+                        val commands = mutableListOf(
+                            initPlugin("tuic5-plugin").path,
                             "-c",
                             configFile.absolutePath,
                         )

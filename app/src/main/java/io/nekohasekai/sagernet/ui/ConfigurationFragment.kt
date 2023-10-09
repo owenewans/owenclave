@@ -346,6 +346,9 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_new_tuic -> {
                 startActivity(Intent(requireActivity(), TuicSettingsActivity::class.java))
             }
+            R.id.action_new_tuic5 -> {
+                startActivity(Intent(requireActivity(), Tuic5SettingsActivity::class.java))
+            }
             R.id.action_new_ssh -> {
                 startActivity(Intent(requireActivity(), SSHSettingsActivity::class.java))
             }

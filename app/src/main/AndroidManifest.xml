@@ -209,6 +209,9 @@
             android:name="io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity"
             android:configChanges="uiMode" />
         <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.Tuic5SettingsActivity"
+            android:configChanges="uiMode" />
+        <activity
             android:name="io.nekohasekai.sagernet.ui.profile.ConfigSettingsActivity"
             android:configChanges="uiMode" />
         <activity

@@ -39,4 +39,7 @@
 	url = https://github.com/enfein/mieru
 [submodule "plugin/tuic/src/main/rust/tuic"]
 	path = plugin/tuic/src/main/rust/tuic
-	url = https://github.com/dyhkwong/tuic
+	url = https://github.com/EAimTY/tuic
+[submodule "plugin/tuic5/src/main/rust/tuic5"]
+	path = plugin/tuic5/src/main/rust/tuic5
+	url = https://github.com/EAimTY/tuic

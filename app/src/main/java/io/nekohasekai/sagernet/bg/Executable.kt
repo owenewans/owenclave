@@ -41,6 +41,8 @@ object Executable {
         "librelaybaton.so",
         "libmieru.so",
         "libmieru2.so",
+        "libtuic.so",
+        "libtuic5.so",
     )
 
     fun killAll() {

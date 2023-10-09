@@ -39,6 +39,7 @@ enum class PluginEntry(
     Mieru("mieru-plugin", R.string.action_mieru, "io.nekohasekai.sagernet.plugin.mieru", DownloadSource(fdroid = false)),
     Mieru2("mieru2-plugin", R.string.action_mieru2, "io.nekohasekai.sagernet.plugin.mieru2", DownloadSource(fdroid = false)),
     TUIC("tuic-plugin", R.string.action_tuic, "io.nekohasekai.sagernet.plugin.tuic", DownloadSource(fdroid = false)),
+    TUIC5("tuic5-plugin", R.string.action_tuic5, "io.nekohasekai.sagernet.plugin.tuic5", DownloadSource(fdroid = false)),
 
     // shadowsocks plugins
 

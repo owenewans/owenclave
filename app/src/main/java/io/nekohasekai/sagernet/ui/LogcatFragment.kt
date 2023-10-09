@@ -121,6 +121,7 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                 "libmieru:D",
                 "libmieru2:D",
                 "libtuic:D",
+                "libtuic5:D",
                 "*:S",
             )
         }
