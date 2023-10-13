@@ -182,6 +182,8 @@ object Key {
     const val SERVER_DISABLE_SNI = "serverDisableSNI"
     const val SERVER_REDUCE_RTT= "serverReduceRTT"
 
+    const val SERVER_V3 = "serverV3"
+
     const val BALANCER_TYPE = "balancerType"
     const val BALANCER_GROUP = "balancerGroup"
     const val BALANCER_STRATEGY = "balancerStrategy"

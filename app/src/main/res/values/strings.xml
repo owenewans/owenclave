@@ -224,6 +224,7 @@
     <string name="action_mieru2" translatable="false">Mieru 2</string>
     <string name="action_tuic" translatable="false">TUIC</string>
     <string name="action_tuic5" translatable="false">TUIC v5</string>
+    <string name="action_shadowtls" translatable="false">ShadowTLS</string>
     <string name="proxy_chain">Proxy Chain</string>
     <string name="custom_config">Custom Config</string>
     <string name="balancer">Balancer</string>
@@ -555,5 +556,6 @@
     <string name="reality_short_id">REALITY Short ID</string>
     <string name="reality_spider_x">REALITY SpiderX</string>
     <string name="reality_fingerprint">REALITY uTLS Fingerprint</string>
+    <string name="shadowtls_v3">ShadowTLS v3</string>
 
 </resources>

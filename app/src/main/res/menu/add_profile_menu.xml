@@ -73,6 +73,9 @@
                         android:id="@+id/action_new_tuic5"
                         android:title="@string/action_tuic5" />
                     <item
+                        android:id="@+id/action_new_shadowtls"
+                        android:title="@string/action_shadowtls" />
+                    <item
                         android:id="@+id/action_new_ssh"
                         android:title="@string/action_ssh" />
                     <item

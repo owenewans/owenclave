@@ -64,6 +64,7 @@ import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.buildTuic5Config
+import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
@@ -193,6 +194,9 @@ abstract class V2RayInstance(
                                 cacheFiles.add(this)
                             }
                         }
+                    }
+                    is ShadowTLSBean -> {
+                        initPlugin("shadowtls-plugin")
                     }
                     is ConfigBean -> {
                         when (bean.type) {
@@ -497,6 +501,30 @@ abstract class V2RayInstance(
                             configFile.absolutePath,
                         )
 
+                        processes.start(commands, env)
+                    }
+                    bean is ShadowTLSBean -> {
+                        val commands = mutableListOf(initPlugin("shadowtls-plugin").path)
+                        if (bean.v3) {
+                            commands.add("--v3")
+                        }
+                        commands.add("client")
+                        commands.add("--listen")
+                        commands.add("$LOCALHOST:$port")
+                        commands.add("--server")
+                        commands.add(bean.wrapUri())
+                        if (bean.sni.isNotBlank()) {
+                            commands.add("--sni")
+                            commands.add(bean.sni)
+                        }
+                        if (bean.alpn.isNotBlank()) {
+                            commands.add("--alpn")
+                            commands.add(bean.alpn)
+                        }
+                        if (bean.password.isNotBlank()) {
+                            commands.add("--password")
+                            commands.add(bean.password)
+                        }
                         processes.start(commands, env)
                     }
                 }

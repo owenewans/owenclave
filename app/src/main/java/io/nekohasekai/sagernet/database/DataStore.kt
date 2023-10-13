@@ -289,6 +289,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverDisableSNI by profileCacheStore.boolean(Key.SERVER_DISABLE_SNI)
     var serverReduceRTT by profileCacheStore.boolean(Key.SERVER_REDUCE_RTT)
 
+    var serverV3 by profileCacheStore.boolean(Key.SERVER_V3)
+
     var balancerType by profileCacheStore.stringToInt(Key.BALANCER_TYPE)
     var balancerGroup by profileCacheStore.stringToLong(Key.BALANCER_GROUP)
     var balancerStrategy by profileCacheStore.string(Key.BALANCER_STRATEGY)

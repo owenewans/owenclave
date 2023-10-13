@@ -44,6 +44,7 @@ import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
+import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
@@ -432,16 +433,26 @@ fun buildV2RayConfig(
                     if (proxyEntity.needExternal()) {
                         val localPort = mkPort()
                         chainMap[localPort] = proxyEntity
-                        currentOutbound.apply {
-                            protocol = "socks"
-                            settings = LazyOutboundConfigurationObject(this,
-                                SocksOutboundConfigurationObject().apply {
-                                    servers = listOf(SocksOutboundConfigurationObject.ServerObject()
-                                        .apply {
-                                            address = LOCALHOST
-                                            port = localPort
-                                        })
-                                })
+                        if (bean is ShadowTLSBean) {
+                            currentOutbound.apply {
+                                protocol = "freedom"
+                                settings = LazyOutboundConfigurationObject(this,
+                                    FreedomOutboundConfigurationObject().apply {
+                                        redirect = LOCALHOST + ":" + localPort
+                                    })
+                            }
+                        } else {
+                            currentOutbound.apply {
+                                protocol = "socks"
+                                settings = LazyOutboundConfigurationObject(this,
+                                    SocksOutboundConfigurationObject().apply {
+                                        servers = listOf(SocksOutboundConfigurationObject.ServerObject()
+                                            .apply {
+                                                address = LOCALHOST
+                                                port = localPort
+                                            })
+                                    })
+                            }
                         }
                     } else {
                         currentOutbound.apply {

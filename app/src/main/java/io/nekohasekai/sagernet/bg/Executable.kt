@@ -43,6 +43,7 @@ object Executable {
         "libmieru2.so",
         "libtuic.so",
         "libtuic5.so",
+        "libshadowtls.so",
     )
 
     fun killAll() {

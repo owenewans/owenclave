@@ -51,6 +51,7 @@ import io.nekohasekai.sagernet.fmt.trojan.TrojanBean;
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean;
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean;
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean;
+import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean;
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean;
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean;
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean;
@@ -203,6 +204,12 @@ public class KryoConverters {
     public static Tuic5Bean tuic5Deserialize(byte[] bytes) {
         if (ArrayUtil.isEmpty(bytes)) return null;
         return deserialize(new Tuic5Bean(), bytes);
+    }
+
+    @TypeConverter
+    public static ShadowTLSBean shadowtlsDeserialize(byte[] bytes) {
+        if (ArrayUtil.isEmpty(bytes)) return null;
+        return deserialize(new ShadowTLSBean(), bytes);
     }
 
     @TypeConverter
