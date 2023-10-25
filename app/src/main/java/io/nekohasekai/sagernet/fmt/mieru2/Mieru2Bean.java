@@ -33,10 +33,16 @@ public class Mieru2Bean extends AbstractBean {
     public static final int PROTOCOL_TCP = 0;
     public static final int PROTOCOL_UDP = 1;
 
+    public static final int MULTIPLEXING_OFF = 1;
+    public static final int MULTIPLEXING_LOW = 0;
+    public static final int MULTIPLEXING_MIDDLE = 2;
+    public static final int MULTIPLEXING_HIGH = 3;
+
     public Integer protocol;
     public String username;
     public String password;
     public Integer mtu;
+    public Integer muxLevel;
 
     @Override
     public void initializeDefaultValues() {
@@ -45,11 +51,12 @@ public class Mieru2Bean extends AbstractBean {
         if (username == null) username = "";
         if (password == null) password = "";
         if (mtu == null) mtu = 1400;
+        if (muxLevel == null) muxLevel = MULTIPLEXING_LOW;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeInt(protocol);
         output.writeString(username);
@@ -57,6 +64,7 @@ public class Mieru2Bean extends AbstractBean {
         if (protocol == PROTOCOL_UDP) {
             output.writeInt(mtu);
         }
+        output.writeInt(muxLevel);
     }
 
     @Override
@@ -68,6 +76,9 @@ public class Mieru2Bean extends AbstractBean {
         password = input.readString();
         if (protocol == PROTOCOL_UDP) {
             mtu = input.readInt();
+        }
+        if (version >= 1) {
+            muxLevel = input.readInt();
         }
     }
 

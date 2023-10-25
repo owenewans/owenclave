@@ -41,6 +41,7 @@ class Mieru2SettingsActivity : ProfileSettingsActivity<Mieru2Bean>() {
         DataStore.serverUsername = username
         DataStore.serverPassword = password
         DataStore.serverMTU = mtu
+        DataStore.serverMieruMuxLevel = muxLevel
     }
 
     override fun Mieru2Bean.serialize() {
@@ -51,6 +52,7 @@ class Mieru2SettingsActivity : ProfileSettingsActivity<Mieru2Bean>() {
         username = DataStore.serverUsername
         password = DataStore.serverPassword
         mtu = DataStore.serverMTU
+        muxLevel = DataStore.serverMieruMuxLevel
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

@@ -51,6 +51,18 @@ fun Mieru2Bean.buildMieru2Config(port: Int): String {
                         }
                     })
                 }
+                if (protocol == Mieru2Bean.PROTOCOL_UDP) {
+                    it["mtu"] = mtu
+                }
+                it["multiplexing"] = JSONObject().also {
+                    it["level"] = when (muxLevel) {
+                        Mieru2Bean.MULTIPLEXING_OFF -> "MULTIPLEXING_OFF"
+                        Mieru2Bean.MULTIPLEXING_LOW -> "MULTIPLEXING_LOW"
+                        Mieru2Bean.MULTIPLEXING_MIDDLE -> "MULTIPLEXING_MIDDLE"
+                        Mieru2Bean.MULTIPLEXING_HIGH -> "MULTIPLEXING_HIGH"
+                        else -> "MULTIPLEXING_LOW"
+                    }
+                }
             })
         }
     }.toStringPretty()

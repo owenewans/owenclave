@@ -51,6 +51,9 @@ fun MieruBean.buildMieruConfig(port: Int): String {
                         }
                     })
                 }
+                if (protocol == MieruBean.PROTOCOL_UDP) {
+                    it["mtu"] = mtu
+                }
             })
         }
     }.toStringPretty()

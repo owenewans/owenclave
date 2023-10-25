@@ -183,6 +183,7 @@ object Key {
     const val SERVER_REDUCE_RTT= "serverReduceRTT"
 
     const val SERVER_V3 = "serverV3"
+    const val SERVER_MIERU_MUX_LEVEL = "serverMieruMuxLevel"
 
     const val BALANCER_TYPE = "balancerType"
     const val BALANCER_GROUP = "balancerGroup"

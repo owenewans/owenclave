@@ -290,6 +290,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverReduceRTT by profileCacheStore.boolean(Key.SERVER_REDUCE_RTT)
 
     var serverV3 by profileCacheStore.boolean(Key.SERVER_V3)
+    var serverMieruMuxLevel by profileCacheStore.stringToInt(Key.SERVER_MIERU_MUX_LEVEL)
 
     var balancerType by profileCacheStore.stringToInt(Key.BALANCER_TYPE)
     var balancerGroup by profileCacheStore.stringToLong(Key.BALANCER_GROUP)

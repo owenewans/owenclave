@@ -40,6 +40,13 @@
             app:key="serverMTU"
             app:title="@string/mtu"
             app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/mieru_mux_level_entry"
+            app:entryValues="@array/mieru_mux_level_value"
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverMieruMuxLevel"
+            app:title="@string/mieru_mux_level"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>
