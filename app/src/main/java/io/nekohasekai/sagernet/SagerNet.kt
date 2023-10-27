@@ -267,7 +267,7 @@ class SagerNet : Application(),
             Libcore.setNetworkType(networkType)
             var ssid: String? = null
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ssid = DefaultNetworkListener.getSSID()
+                ssid = DefaultNetworkListener.ssid
             } else {
                 val wifiInfo = wifi.connectionInfo
                 ssid = wifiInfo?.ssid
