@@ -713,6 +713,7 @@ public class V2RayConfig {
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
         public MeekObject meekSettings;
+        public HTTPUpgradeObject httpUpgradeSettings;
 
     }
 
@@ -730,6 +731,7 @@ public class V2RayConfig {
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
         public MeekObject meekSettings;
+        public HTTPUpgradeObject httpUpgradeSettings;
         public SockoptObject sockopt;
 
         public static class SockoptObject {
@@ -887,6 +889,13 @@ public class V2RayConfig {
     public static class MeekObject {
 
         public String url;
+
+    }
+
+    public static class HTTPUpgradeObject {
+
+        public String host;
+        public String path;
 
     }
 

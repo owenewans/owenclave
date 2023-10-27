@@ -78,7 +78,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.host = it.split("|").joinToString(",")
                 }
             }
-            "ws" -> {
+            "ws", "httpupgrade" -> {
                 url.queryParameter("path")?.let {
                     bean.path = it
                 }
@@ -195,7 +195,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.mKcpSeed = it
                 }
             }
-            "http" -> {
+            "http", "httpupgrade" -> {
                 url.queryParameter("host")?.let {
                     bean.host = it
                 }
@@ -438,7 +438,7 @@ fun StandardV2RayBean.toUri(): String {
                 builder.addQueryParameter("seed", mKcpSeed)
             }
         }
-        "ws", "http" -> {
+        "ws", "http", "httpupgrade" -> {
             if (host.isNotBlank()) {
                 builder.addQueryParameter("host", host)
             }

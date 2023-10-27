@@ -777,6 +777,16 @@ fun buildV2RayConfig(
                                                 }
                                             }
                                         }
+                                        "httpupgrade" -> {
+                                            httpUpgradeSettings = HTTPUpgradeObject().apply {
+                                                if (bean.host.isNotBlank()) {
+                                                    host = bean.host
+                                                }
+                                                if (bean.path.isNotBlank()) {
+                                                    path = bean.path
+                                                }
+                                            }
+                                        }
                                     }
 
                                     if (needKeepAliveInterval) {

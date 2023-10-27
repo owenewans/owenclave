@@ -214,7 +214,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(11);
+        output.writeInt(12);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -257,6 +257,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
             }
             case "meek": {
                 output.writeString(meekUrl);
+            }
+            case "httpupgrade": {
+                output.writeString(host);
+                output.writeString(path);
             }
         }
 
@@ -349,6 +353,12 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "meek": {
                 if (version >= 10) {
                     meekUrl = input.readString();
+                }
+            }
+            case "httpupgrade": {
+                if (version >= 12) {
+                    host = input.readString();
+                    path = input.readString();
                 }
             }
         }
