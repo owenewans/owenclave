@@ -22,6 +22,8 @@ object Alerts {
 
     const val ROUTE_ALERT_NOT_VPN = 0
     const val ROUTE_ALERT_NEED_BACKGROUND_LOCATION_ACCESS = 1
+    const val ROUTE_ALERT_NEED_COARSE_LOCATION_ACCESS = 3
+    const val ROUTE_ALERT_NEED_FINE_LOCATION_ACCESS = 4
     const val ROUTE_ALERT_LOCATION_DISABLED = 2
 
     class RouteAlertException(val alert: Int, val routeName: String) : Exception()

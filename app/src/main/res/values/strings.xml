@@ -490,6 +490,10 @@
     <string name="missing_permission">Missing Permission</string>
     <string name="location_disabled">Location Disabled</string>
     <string name="route_need_ssid">Routing rule `%s` requires access to your **Wi-Fi SSID**, but this requires **background location permission** and **location enabled** on Android 8.0 or above</string>
+    <string name="route_need_location_enabled">Routing rule `%s` requires access to your **Wi-Fi SSID**, but this requires **location enabled**</string>
+    <string name="route_need_background_location">Routing rule `%s` requires access to your **Wi-Fi SSID**, but this requires **background location permission**</string>
+    <string name="route_need_fine_location">Routing rule `%s` requires access to your **Wi-Fi SSID**, but this requires **fine location permission**</string>
+    <string name="route_need_coarse_location">Routing rule `%s` requires access to your **Wi-Fi SSID**, but this requires **coarse location permission**</string>
     <string name="network_type">Network Type</string>
     <string name="network_data">Mobile Data</string>
     <string name="network_wifi">Wi-Fi</string>

@@ -408,8 +408,46 @@ class MainActivity : ThemedActivity(),
                 val message = markwon.toMarkdown(getString(R.string.route_need_vpn, routeName))
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             }
+            Alerts.ROUTE_ALERT_NEED_COARSE_LOCATION_ACCESS -> {
+                val message = markwon.toMarkdown(getString(R.string.route_need_coarse_location, routeName))
+                MaterialAlertDialogBuilder(this).setTitle(R.string.missing_permission)
+                    .setMessage(message)
+                    .setNeutralButton(R.string.open_settings) { _, _ ->
+                        try {
+                            startActivity(Intent().apply {
+                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                data = Uri.fromParts(
+                                    "package", packageName, null
+                                )
+                            })
+                        } catch (e: Exception) {
+                            snackbar(e.readableMessage).show()
+                        }
+                    }
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }
+            Alerts.ROUTE_ALERT_NEED_FINE_LOCATION_ACCESS -> {
+                val message = markwon.toMarkdown(getString(R.string.route_need_fine_location, routeName))
+                MaterialAlertDialogBuilder(this).setTitle(R.string.missing_permission)
+                    .setMessage(message)
+                    .setNeutralButton(R.string.open_settings) { _, _ ->
+                        try {
+                            startActivity(Intent().apply {
+                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                data = Uri.fromParts(
+                                    "package", packageName, null
+                                )
+                            })
+                        } catch (e: Exception) {
+                            snackbar(e.readableMessage).show()
+                        }
+                    }
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show()
+            }
             Alerts.ROUTE_ALERT_NEED_BACKGROUND_LOCATION_ACCESS -> {
-                val message = markwon.toMarkdown(getString(R.string.route_need_ssid, routeName))
+                val message = markwon.toMarkdown(getString(R.string.route_need_background_location, routeName))
                 MaterialAlertDialogBuilder(this).setTitle(R.string.missing_permission)
                     .setMessage(message)
                     .setNeutralButton(R.string.open_settings) { _, _ ->
@@ -428,7 +466,7 @@ class MainActivity : ThemedActivity(),
                     .show()
             }
             Alerts.ROUTE_ALERT_LOCATION_DISABLED -> {
-                val message = markwon.toMarkdown(getString(R.string.route_need_ssid, routeName))
+                val message = markwon.toMarkdown(getString(R.string.route_need_location_enabled, routeName))
                 MaterialAlertDialogBuilder(this).setTitle(R.string.location_disabled)
                     .setMessage(message)
                     .setNeutralButton(R.string.open_settings) { _, _ ->

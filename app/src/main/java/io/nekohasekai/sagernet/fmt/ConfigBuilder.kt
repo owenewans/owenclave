@@ -1106,7 +1106,17 @@ fun buildV2RayConfig(
                 }
 
                 if (rule.ssid.isNotBlank() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (app.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (app.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        throw Alerts.RouteAlertException(
+                            Alerts.ROUTE_ALERT_NEED_COARSE_LOCATION_ACCESS, rule.displayName()
+                        )
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && app.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        throw Alerts.RouteAlertException(
+                            Alerts.ROUTE_ALERT_NEED_FINE_LOCATION_ACCESS, rule.displayName()
+                        )
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && app.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         throw Alerts.RouteAlertException(
                             Alerts.ROUTE_ALERT_NEED_BACKGROUND_LOCATION_ACCESS, rule.displayName()
                         )
