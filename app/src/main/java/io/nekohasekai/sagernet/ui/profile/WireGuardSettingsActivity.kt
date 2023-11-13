@@ -45,6 +45,7 @@ class WireGuardSettingsActivity : ProfileSettingsActivity<WireGuardBean>() {
         DataStore.serverPassword = peerPreSharedKey
 
         DataStore.serverMTU = mtu
+        DataStore.serverWireGuardReserved = reserved
     }
 
     override fun WireGuardBean.serialize() {
@@ -60,6 +61,7 @@ class WireGuardSettingsActivity : ProfileSettingsActivity<WireGuardBean>() {
         peerPreSharedKey = DataStore.serverPassword
 
         mtu = DataStore.serverMTU
+        reserved = DataStore.serverWireGuardReserved
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

@@ -562,5 +562,6 @@
     <string name="reality_fingerprint">REALITY uTLS Fingerprint</string>
     <string name="shadowtls_v3">ShadowTLS v3</string>
     <string name="mieru_mux_level">Multiplexing Level</string>
+    <string name="wireguard_reserved">Reserved</string>
 
 </resources>

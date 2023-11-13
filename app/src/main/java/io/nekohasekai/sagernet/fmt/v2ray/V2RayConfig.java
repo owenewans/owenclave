@@ -675,15 +675,19 @@ public class V2RayConfig {
 
     public static class WireGuardOutbounzConfigurationObject implements OutboundConfigurationObject {
 
-        public String address;
-        public Integer port;
-        public String network;
-        public List<String> localAddresses;
-        public String privateKey;
-        public String peerPublicKey;
-        public String preSharedKey;
+        public List<String> address;
+        public String secretKey;
         public Integer mtu;
-        public Integer userLevel;
+        public List<WireGuardPeerObject> peers;
+        public List<Integer> reserved;
+
+        public static class WireGuardPeerObject {
+
+            public String publicKey;
+            public String preSharedKey;
+            public String endpoint;
+
+        }
 
     }
 

@@ -58,6 +58,7 @@ import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.mkPort
+import io.nekohasekai.sagernet.ktx.wrapUri
 import io.nekohasekai.sagernet.utils.PackageCache
 import libcore.Libcore
 
@@ -860,14 +861,23 @@ fun buildV2RayConfig(
                                 protocol = "wireguard"
                                 settings = LazyOutboundConfigurationObject(this,
                                     WireGuardOutbounzConfigurationObject().apply {
-                                        address = bean.finalAddress
-                                        port = bean.finalPort
-                                        network = "udp"
-                                        localAddresses = bean.localAddress.split("\n")
-                                        privateKey = bean.privateKey
-                                        peerPublicKey = bean.peerPublicKey
-                                        preSharedKey = bean.peerPreSharedKey
+                                        address = bean.localAddress.split("\n")
+                                        secretKey = bean.privateKey
                                         mtu = bean.mtu
+                                        val values = bean.reserved.trim().split(",")
+                                        if (values.size == 3) {
+                                            val reserved0 = values[0].trim().toIntOrNull()
+                                            val reserved1 = values[1].trim().toIntOrNull()
+                                            val reserved2 = values[2].trim().toIntOrNull()
+                                            if (reserved0 != null && reserved1 != null && reserved2 != null) {
+                                                reserved = listOf(reserved0, reserved1, reserved2)
+                                            }
+                                        }
+                                        peers = listOf(WireGuardOutbounzConfigurationObject.WireGuardPeerObject().apply {
+                                            publicKey = bean.peerPublicKey
+                                            preSharedKey = bean.peerPreSharedKey
+                                            endpoint = bean.wrapUri()
+                                        })
                                     })
                                 streamSettings = StreamSettingsObject().apply {
                                     if (needKeepAliveInterval) {
