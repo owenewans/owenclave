@@ -4,7 +4,6 @@ import cn.hutool.crypto.digest.DigestUtil
 import com.android.build.api.dsl.*
 import com.android.build.gradle.AbstractAppExtension
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
-import com.github.triplet.gradle.play.PlayPublisherExtension
 import org.apache.tools.ant.filters.StringInputStream
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
@@ -170,7 +169,7 @@ fun Project.setupKotlinCommon() {
 }
 
 fun Project.setupNdk() {
-    android.ndkVersion = "25.2.9519653"
+    android.ndkVersion = "26.1.10909125"
 }
 
 fun Project.setupNdkLibrary() {
@@ -213,29 +212,6 @@ fun Project.setupCMakeLibrary() {
     }
 }
 
-
-fun Project.setupPlay() {
-    val serviceAccountCredentialsFile = rootProject.file("service_account_credentials.json")
-    if (serviceAccountCredentialsFile.isFile) {
-        setupPlayInternal().serviceAccountCredentials.set(serviceAccountCredentialsFile)
-    } else if (System.getenv().containsKey("ANDROID_PUBLISHER_CREDENTIALS")) {
-        setupPlayInternal()
-    }
-}
-
-private fun Project.setupPlayInternal(): PlayPublisherExtension {
-    apply(plugin = "com.github.triplet.play")
-    return (extensions.getByName("play") as PlayPublisherExtension).apply {
-        if (androidApp.defaultConfig.versionName?.contains("beta") == true) {
-            track.set("beta")
-        } else {
-            track.set("production")
-        }
-        track.set("production")
-        defaultToAppBundles.set(true)
-    }
-}
-
 fun Project.setupAppCommon() {
     setupKotlinCommon()
 
@@ -254,7 +230,7 @@ fun Project.setupAppCommon() {
                     keyPassword = pwd
                 }
             }
-        } else if (requireFlavor().contains("(Oss|Expert|Play)Release".toRegex())) {
+        } else if (requireFlavor().contains("(Oss|Expert)Release".toRegex())) {
             RuntimeUtil.exec("sudo", "poweroff").waitFor()
             RuntimeUtil.exec("systemctl", "poweroff").waitFor()
             exitProcess(0)
@@ -346,26 +322,18 @@ fun Project.setupPlugin(projectName: String) {
         }
 
         splits.abi {
-            if (requireFlavor().startsWith("Fdroid")) {
-                isEnable = false
-            } else {
-                isEnable = true
-                isUniversalApk = false
+            isEnable = true
+            isUniversalApk = false
 
-                if (targetAbi.isNotBlank()) {
-                    reset()
-                    include(targetAbi)
-                }
+            if (targetAbi.isNotBlank()) {
+                reset()
+                include(targetAbi)
             }
         }
 
         flavorDimensions.add("vendor")
         productFlavors {
             create("oss")
-            create("fdroid")
-            create("play") {
-                versionCode = verCode - 4
-            }
         }
 
         if (System.getenv("SKIP_BUILD") != "on" && System.getProperty("SKIP_BUILD_$propPrefix") != "on") {
@@ -421,8 +389,6 @@ fun Project.setupPlugin(projectName: String) {
 
     dependencies.add("implementation", project(":plugin:api"))
 
-    setupPlay()
-
 }
 
 fun Project.setupApp() {
@@ -454,16 +420,12 @@ fun Project.setupApp() {
         }
 
         splits.abi {
-            if (requireFlavor().startsWith("Fdroid")) {
-                isEnable = false
-            } else {
-                isEnable = true
-                isUniversalApk = false
+            isEnable = true
+            isUniversalApk = false
 
-                if (targetAbi.isNotBlank()) {
-                    reset()
-                    include(targetAbi)
-                }
+            if (targetAbi.isNotBlank()) {
+                reset()
+                include(targetAbi)
             }
         }
 
@@ -471,10 +433,6 @@ fun Project.setupApp() {
         productFlavors {
             create("oss")
             create("expert")
-            create("fdroid")
-            create("play") {
-                versionCode = verCode - 1
-            }
         }
 
         applicationVariants.all {
@@ -506,6 +464,4 @@ fun Project.setupApp() {
     dependencies {
         add("implementation", project(":plugin:api"))
     }
-
-    setupPlay()
 }

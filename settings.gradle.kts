@@ -9,16 +9,10 @@ val buildPlugin = System.getenv("BUILD_PLUGIN")
 when {
     buildPlugin.isNullOrBlank() -> {
         include(":plugin:naive")
-        include(":plugin:pingtunnel")
-        include(":plugin:relaybaton")
         include(":plugin:brook")
-        include(":plugin:trojan-go")
-        include(":plugin:hysteria")
         include(":plugin:hysteria2")
-        include(":plugin:mieru")
         include(":plugin:mieru2")
-        include(":plugin:tuic")
-        include(":plugin:tuic5")
+        include(":plugin:shadowtls")
     }
     buildPlugin == "none" -> {
     }
