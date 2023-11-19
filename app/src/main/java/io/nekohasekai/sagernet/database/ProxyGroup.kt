@@ -111,7 +111,7 @@ data class ProxyGroup(
         fun allGroups(): List<ProxyGroup>
 
         @Query("SELECT * FROM proxy_groups WHERE type = ${GroupType.SUBSCRIPTION}")
-        suspend fun subscriptions(): List<ProxyGroup>
+        fun subscriptions(): List<ProxyGroup>
 
         @Query("SELECT MAX(userOrder) + 1 FROM proxy_groups")
         fun nextOrder(): Long?

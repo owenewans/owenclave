@@ -57,13 +57,13 @@ dependencies {
     implementation("cn.hutool:hutool-core:$hutoolVersion")
     implementation("cn.hutool:hutool-json:$hutoolVersion")
     implementation("com.google.code.gson:gson:2.10.1")
-    implementation("com.google.zxing:core:3.5.1")
+    implementation("com.google.zxing:core:3.5.2")
 
-    implementation("org.yaml:snakeyaml:2.0")
+    implementation("org.yaml:snakeyaml:2.2")
     implementation("com.github.daniel-stoneuk:material-about-library:3.2.0-rc01")
     implementation("com.jakewharton:process-phoenix:2.1.2")
-    implementation("com.esotericsoftware:kryo:5.4.0")
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation("com.esotericsoftware:kryo:5.5.0")
+    implementation("com.google.guava:guava:32.1.3-jre")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("org.ini4j:ini4j:0.5.4")
     implementation("io.noties.markwon:core:4.6.2")
@@ -88,8 +88,7 @@ dependencies {
 
 
     implementation(project(":library:proto-stub"))
-//    implementation("io.grpc:grpc-okhttp:1.40.1")
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }
 
