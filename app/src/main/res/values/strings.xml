@@ -563,5 +563,6 @@
     <string name="shadowtls_v3">ShadowTLS v3</string>
     <string name="mieru_mux_level">Multiplexing Level</string>
     <string name="wireguard_reserved">Reserved</string>
+    <string name="shadowsocks_2022_implementation">Shadowsocks 2022 Implementation</string>
 
 </resources>

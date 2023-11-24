@@ -503,6 +503,8 @@ public class V2RayConfig {
                     return WireGuardOutbounzConfigurationObject.class;
                 case "ssh":
                     return SSHOutbountConfigurationObject.class;
+                case "shadowsocks2022":
+                    return Shadowsocks2022OutboundConfigurationObject.class;
             }
             return null;
         }
@@ -624,6 +626,16 @@ public class V2RayConfig {
         public String plugin;
         public String pluginOpts;
         public List<String> pluginArgs;
+
+    }
+
+    public static class Shadowsocks2022OutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public String method;
+        public String psk;
+        public List<String> ipsk;
 
     }
 

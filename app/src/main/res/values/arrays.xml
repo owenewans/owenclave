@@ -167,7 +167,7 @@
         <item>XCHACHA20-IETF-POLY1305</item>
         <item>2022-BLAKE3-AES-128-GCM</item>
         <item>2022-BLAKE3-AES-256-GCM</item>
-        <item>2022-BLAKE3-CHACHA20-IETF-POLY1305</item>
+        <item>2022-BLAKE3-CHACHA20-POLY1305</item>
         <item>RC4</item>
         <item>RC4-MD5</item>
         <item>AES-128-CTR</item>
@@ -569,6 +569,16 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+
+    <string-array name="shadowsocks_2022_implementation">
+        <item>SagerNet/sing-shadowsocks2</item>
+        <item>v2fly/v2ray-core</item>
+    </string-array>
+
+    <string-array name="shadowsocks_2022_implementation_value">
+        <item>0</item>
+        <item>1</item>
     </string-array>
 
     <string-array name="trojan_provider">

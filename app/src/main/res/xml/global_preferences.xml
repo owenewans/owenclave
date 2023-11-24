@@ -162,6 +162,14 @@
         <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/baseline_flight_takeoff_24"
             app:defaultValue="0"
+            app:entries="@array/shadowsocks_2022_implementation"
+            app:entryValues="@array/shadowsocks_2022_implementation_value"
+            app:key="shadowsocks2022Implementation"
+            app:title="@string/shadowsocks_2022_implementation"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            android:icon="@drawable/baseline_flight_takeoff_24"
+            app:defaultValue="0"
             app:entries="@array/trojan_provider"
             app:entryValues="@array/trojan_provider_value"
             app:key="providerTrojan"

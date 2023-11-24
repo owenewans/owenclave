@@ -212,6 +212,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     // protocol
 
+    var shadowsocks2022Implementation by configurationStore.stringToInt(Key.SHADOWSOCKS_2022_IMPLEMENTATION)
     var providerTrojan by configurationStore.stringToInt(Key.PROVIDER_TROJAN)
     var providerRootCA by configurationStore.stringToInt(Key.PROVIDER_ROOT_CA)
 

@@ -87,6 +87,7 @@ object Key {
 
     const val ALWAYS_SHOW_ADDRESS = "alwaysShowAddress"
 
+    const val SHADOWSOCKS_2022_IMPLEMENTATION = "shadowsocks2022Implementation"
     const val PROVIDER_TROJAN = "providerTrojan"
     const val PROVIDER_ROOT_CA = "providerRootCA"
 
@@ -238,6 +239,11 @@ object TrojanProvider {
     const val V2RAY = 0
     const val TROJAN = 1
     const val TROJAN_GO = 2
+}
+
+object Shadowsocks2022Implementation {
+    const val SAGERNET_SING_SHADOWSOCKS2 = 0
+    const val V2FLY_V2RAY_CORE = 1
 }
 
 object RootCAProvider {
