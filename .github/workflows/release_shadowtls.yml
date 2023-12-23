@@ -31,8 +31,8 @@ jobs:
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Install toolchain
         run: |
-          rustup toolchain install nightly-2023-05-17
-          rustup override set nightly-2023-05-17
+          rustup toolchain install nightly-2023-12-13
+          rustup override set nightly-2023-12-13
         if: steps.cache.outputs.cache-hit != 'true'
       - name: Install rust android target
         run: ./run init action rust
