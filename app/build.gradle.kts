@@ -83,7 +83,6 @@ dependencies {
 
     implementation("com.blacksquircle.ui:editorkit:2.0.0")
     implementation("com.blacksquircle.ui:language-json:2.0.0")
-    implementation("termux:terminal-view:1.0")
 
 
     implementation(project(":library:proto-stub"))

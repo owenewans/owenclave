@@ -21,12 +21,5 @@ when {
     }
 }
 
-includeBuild("external/termux-view") {
-    name = "termux-view"
-    dependencySubstitution {
-        substitute(module("termux:terminal-view:1.0")).using(project(":terminal-view"))
-    }
-}
-
 include(":app")
 rootProject.name = "SagerNet"
