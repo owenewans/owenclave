@@ -26,7 +26,6 @@ enum class PluginEntry(
     val pluginId: String,
     @StringRes val nameId: Int,
     val packageName: String,
-    val downloadSource: DownloadSource = DownloadSource()
 ) {
     // sagernet plugins
     TrojanGo("trojan-go-plugin", R.string.action_trojan_go, "io.nekohasekai.sagernet.plugin.trojan_go"),
@@ -34,26 +33,17 @@ enum class PluginEntry(
     PingTunnel("pingtunnel-plugin", R.string.action_ping_tunnel, "io.nekohasekai.sagernet.plugin.pingtunnel"),
     RelayBaton("relaybaton-plugin", R.string.action_relay_baton, "io.nekohasekai.sagernet.plugin.relaybaton"),
     Brook("brook-plugin", R.string.action_brook, "io.nekohasekai.sagernet.plugin.brook"),
-    Hysteria("hysteria-plugin", R.string.action_hysteria, "io.nekohasekai.sagernet.plugin.hysteria", DownloadSource(fdroid = false)),
-    Hysteria2("hysteria2-plugin", R.string.action_hysteria2, "io.nekohasekai.sagernet.plugin.hysteria2", DownloadSource(fdroid = false)),
-    Mieru("mieru-plugin", R.string.action_mieru, "io.nekohasekai.sagernet.plugin.mieru", DownloadSource(fdroid = false)),
-    Mieru2("mieru2-plugin", R.string.action_mieru2, "io.nekohasekai.sagernet.plugin.mieru2", DownloadSource(fdroid = false)),
-    TUIC("tuic-plugin", R.string.action_tuic, "io.nekohasekai.sagernet.plugin.tuic", DownloadSource(fdroid = false)),
-    TUIC5("tuic5-plugin", R.string.action_tuic5, "io.nekohasekai.sagernet.plugin.tuic5", DownloadSource(fdroid = false)),
-    ShadowTLS("shadowtls-plugin", R.string.action_shadowtls, "io.nekohasekai.sagernet.plugin.shadowtls", DownloadSource(fdroid = false)),
+    Hysteria("hysteria-plugin", R.string.action_hysteria, "io.nekohasekai.sagernet.plugin.hysteria"),
+    Hysteria2("hysteria2-plugin", R.string.action_hysteria2, "io.nekohasekai.sagernet.plugin.hysteria2"),
+    Mieru("mieru-plugin", R.string.action_mieru, "io.nekohasekai.sagernet.plugin.mieru"),
+    Mieru2("mieru2-plugin", R.string.action_mieru2, "io.nekohasekai.sagernet.plugin.mieru2"),
+    TUIC("tuic-plugin", R.string.action_tuic, "io.nekohasekai.sagernet.plugin.tuic"),
+    TUIC5("tuic5-plugin", R.string.action_tuic5, "io.nekohasekai.sagernet.plugin.tuic5"),
+    ShadowTLS("shadowtls-plugin", R.string.action_shadowtls, "io.nekohasekai.sagernet.plugin.shadowtls"),
 
     // shadowsocks plugins
 
-    ObfsLocal("shadowsocks-obfs-local", R.string.shadowsocks_plugin_simple_obfs, "com.github.shadowsocks.plugin.obfs_local", DownloadSource(
-        fdroid = false,
-        downloadLink = "https://github.com/shadowsocks/simple-obfs-android/releases"
-    ));
-
-    data class DownloadSource(
-        val playStore: Boolean = true,
-        val fdroid: Boolean = true,
-        val downloadLink: String = "https://sagernet.org/download/"
-    )
+    ObfsLocal("shadowsocks-obfs-local", R.string.shadowsocks_plugin_simple_obfs, "com.github.shadowsocks.plugin.obfs_local");
 
     companion object {
 

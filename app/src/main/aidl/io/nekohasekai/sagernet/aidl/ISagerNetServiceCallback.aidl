@@ -12,5 +12,4 @@ oneway interface ISagerNetServiceCallback {
   void profilePersisted(long profileId);
   void missingPlugin(String profileName, String pluginName);
   void routeAlert(int type, String routeName);
-  void updateWakeLockStatus(boolean acquired);
 }

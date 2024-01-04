@@ -116,7 +116,6 @@ class BaseService {
 
         override fun registerCallback(cb: ISagerNetServiceCallback) {
             callbacks.register(cb)
-            cb.updateWakeLockStatus(data?.proxy?.service?.wakeLock != null)
         }
 
         private val broadcastLock = Mutex()
@@ -469,14 +468,8 @@ class BaseService {
                 wakeLock?.apply {
                     release()
                     wakeLock = null
-                    data.binder.broadcast {
-                        it.updateWakeLockStatus(false)
-                    }
                 } ?: apply {
                     acquireWakeLock()
-                    data.binder.broadcast {
-                        it.updateWakeLockStatus(true)
-                    }
                 }
             }
         }
@@ -489,13 +482,6 @@ class BaseService {
 
             if (DataStore.acquireWakeLock) {
                 acquireWakeLock()
-                data.binder.broadcast {
-                    it.updateWakeLockStatus(true)
-                }
-            } else {
-                data.binder.broadcast {
-                    it.updateWakeLockStatus(false)
-                }
             }
         }
 

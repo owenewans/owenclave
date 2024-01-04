@@ -96,7 +96,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .subText(versionName)
                         .setOnClickAction {
                             requireContext().launchCustomTab(
-                                "https://github.com/dyhkwong/SagerNet"
+                                "https://github.com/dyhkwong/SagerNet/releases"
                             )
                         }
                         .build())

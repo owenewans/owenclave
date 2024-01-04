@@ -231,9 +231,11 @@ fun Project.setupAppCommon() {
                 }
             }
         } else if (requireFlavor().contains("(Oss|Expert)Release".toRegex())) {
-            RuntimeUtil.exec("sudo", "poweroff").waitFor()
-            RuntimeUtil.exec("systemctl", "poweroff").waitFor()
-            exitProcess(0)
+            // OK just do not poweroff in case some random person runs this on real machine
+            // RuntimeUtil.exec("sudo", "poweroff").waitFor()
+            // RuntimeUtil.exec("systemctl", "poweroff").waitFor()
+            // exitProcess(0)
+            return
         }
         buildTypes {
             val key = signingConfigs.findByName("release")

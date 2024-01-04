@@ -65,7 +65,6 @@ dependencies {
     implementation("com.github.daniel-stoneuk:material-about-library:3.2.0-rc01")
     implementation("com.jakewharton:process-phoenix:2.1.2")
     implementation("com.esotericsoftware:kryo:5.5.0")
-    implementation("com.google.guava:guava:32.1.3-jre")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("org.ini4j:ini4j:0.5.4")
     implementation("io.noties.markwon:core:4.6.2")
@@ -74,9 +73,6 @@ dependencies {
     implementation("com.simplecityapps:recyclerview-fastscroll:2.0.1") {
         exclude(group = "androidx.recyclerview")
         exclude(group = "androidx.appcompat")
-    }
-    implementation("org.smali:dexlib2:2.5.2") {
-        exclude(group = "com.google.guava", module = "guava")
     }
 
     implementation("androidx.room:room-runtime:2.5.1")

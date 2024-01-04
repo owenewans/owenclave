@@ -114,9 +114,6 @@ class SagerConnection(private var listenForDeath: Boolean = false) : ServiceConn
                 callback.observatoryResultsUpdated(groupId)
             }
         }
-
-        override fun updateWakeLockStatus(acquired: Boolean) {
-        }
     }
 
     private var binder: IBinder? = null

@@ -238,69 +238,12 @@ class MainActivity : ThemedActivity(),
             return
         }
 
-        val existsButOnShitSystem = if (pluginName == pluginId) {
-            PluginManager.fetchPlugins().map { it.id }.contains(pluginName)
-        } else {
-            ShadowsocksPluginPluginManager.fetchPlugins(true).map { it.id }.contains(pluginId)
-        }
-
-        if (existsButOnShitSystem) {
-            MaterialAlertDialogBuilder(this).setTitle(R.string.missing_plugin).setMessage(
-                getString(
-                    R.string.plugin_exists_but_on_shit_system,
-                    profileName,
-                    getString(pluginEntity.nameId)
-                )
-            ).setPositiveButton(R.string.action_learn_more) { _, _ ->
-                launchCustomTab("https://sagernet.org/plugin/")
-            }.show()
-            return
-        }
-
         MaterialAlertDialogBuilder(this).setTitle(R.string.missing_plugin)
             .setMessage(
                 getString(
                     R.string.profile_requiring_plugin, profileName, getString(pluginEntity.nameId)
                 )
-            )
-            .setPositiveButton(R.string.action_download) { _, _ ->
-                showDownloadDialog(pluginEntity)
-            }
-            .setNeutralButton(android.R.string.cancel, null)
-            .setNeutralButton(R.string.action_learn_more) { _, _ ->
-                launchCustomTab("https://sagernet.org/plugin/")
-            }
-            .show()
-    }
-
-    private fun showDownloadDialog(pluginEntry: PluginEntry) {
-        var index = 0
-        var playIndex = -1
-        var fdroidIndex = -1
-        var downloadIndex = -1
-
-        val items = mutableListOf<String>()
-        if (pluginEntry.downloadSource.playStore) {
-            items.add(getString(R.string.install_from_play_store))
-            playIndex = index++
-        }
-        if (pluginEntry.downloadSource.fdroid) {
-            items.add(getString(R.string.install_from_fdroid))
-            fdroidIndex = index++
-        }
-
-        items.add(getString(R.string.download))
-        downloadIndex = index
-
-        MaterialAlertDialogBuilder(this).setTitle(pluginEntry.name)
-            .setItems(items.toTypedArray()) { _, which ->
-                when (which) {
-                    playIndex -> launchCustomTab("https://play.google.com/store/apps/details?id=${pluginEntry.packageName}")
-                    fdroidIndex -> launchCustomTab("https://f-droid.org/packages/${pluginEntry.packageName}/")
-                    downloadIndex -> launchCustomTab(pluginEntry.downloadSource.downloadLink)
-                }
-            }
-            .show()
+            ).show()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -333,10 +276,6 @@ class MainActivity : ThemedActivity(),
             }
             R.id.nav_tools -> displayFragment(ToolsFragment())
             R.id.nav_logcat -> displayFragment(LogcatFragment())
-            R.id.nav_faq -> {
-                launchCustomTab("https://sagernet.org/")
-                return false
-            }
             R.id.nav_about -> displayFragment(AboutFragment())
             else -> return false
         }

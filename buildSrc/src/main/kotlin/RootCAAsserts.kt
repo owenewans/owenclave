@@ -15,8 +15,6 @@ fun Project.downloadRootCAList() {
     val data = CsvUtil.getReader(CsvReadConfig().setContainsHeader(true)).readFromStr(csv)
     val list = mutableListOf<String>()
     for (row in data) {
-        // skip China root CA
-        if (row.getByName("Geographic Focus").contains("China")) continue
         if (!row.getByName("Trust Bits").contains("Websites")) continue
 
         val name = row.getByName("Common Name or Certificate Name")

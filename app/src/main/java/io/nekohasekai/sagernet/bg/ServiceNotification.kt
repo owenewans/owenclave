@@ -122,12 +122,6 @@ class ServiceNotification(
 
             override fun routeAlert(type: Int, routeName: String?) {
             }
-
-            override fun updateWakeLockStatus(acquired: Boolean) {
-                updateActions(acquired)
-                builder.priority = if (acquired) NotificationCompat.PRIORITY_HIGH else NotificationCompat.PRIORITY_LOW
-                update()
-            }
         }
     }
     private var callbackRegistered = false
@@ -144,7 +138,7 @@ class ServiceNotification(
 
     init {
         service as Context
-        updateActions(false)
+        updateActions()
 
         Theme.apply(app)
         Theme.apply(service)
@@ -158,7 +152,7 @@ class ServiceNotification(
         show()
     }
 
-    fun updateActions(wakeLockAcquired: Boolean) {
+    fun updateActions() {
         service as Context
 
         builder.clearActions()
@@ -179,20 +173,6 @@ class ServiceNotification(
             setShowsUserInterface(false)
         }.build()
         builder.addAction(switchAction)
-
-        val wakeLockAction = NotificationCompat.Action.Builder(
-            0,
-            service.getText(if (!wakeLockAcquired) R.string.acquire_wake_lock else R.string.release_wake_lock),
-            PendingIntent.getBroadcast(
-                service,
-                0,
-                Intent(Action.SWITCH_WAKE_LOCK).setPackage(service.packageName),
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
-            )
-        ).apply {
-            setShowsUserInterface(false)
-        }.build()
-        builder.addAction(wakeLockAction)
     }
 
     override fun onReceive(context: Context, intent: Intent) {
