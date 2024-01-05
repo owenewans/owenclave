@@ -63,6 +63,12 @@ jobs:
         with:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          distribution: 'zulu'
+          java-version: 17
       - name: Release Build
         env:
           BUILD_PLUGIN: none

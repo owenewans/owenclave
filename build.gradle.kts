@@ -38,7 +38,7 @@ tasks.register<Delete>("clean") {
 
 subprojects {
     // skip uploading the mapping to Crashlytics
-    tasks.whenTaskAdded {
+    tasks.configureEach {
         if (name.contains("uploadCrashlyticsMappingFile")) enabled = false
     }
 }

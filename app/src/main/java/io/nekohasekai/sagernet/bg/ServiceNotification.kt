@@ -142,7 +142,7 @@ class ServiceNotification(
 
         Theme.apply(app)
         Theme.apply(service)
-        builder.color = service.getColorAttr(R.attr.colorPrimary)
+        builder.color = service.getColorAttr(androidx.appcompat.R.attr.colorPrimary)
 
         updateCallback(SagerNet.power.isInteractive)
         service.registerReceiver(this, IntentFilter().apply {

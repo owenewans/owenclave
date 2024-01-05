@@ -363,7 +363,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                         val links = profiles.mapNotNull { it.toLink() }.joinToString("\n")
                         onMainDispatcher {
                             SagerNet.trySetPrimaryClip(links)
-                            snackbar(getString(R.string.copy_toast_msg)).show()
+                            snackbar(getString(androidx.browser.R.string.copy_toast_msg)).show()
                         }
                     }
                 }

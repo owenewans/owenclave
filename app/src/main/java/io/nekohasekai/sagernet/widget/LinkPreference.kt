@@ -54,7 +54,7 @@ class LinkPreference : EditTextPreference {
         defStyleRes: Int,
     ) : super(context, attrs, defStyleAttr, defStyleRes) {
         val a = context.obtainStyledAttributes(
-            attrs, R.styleable.Preference, defStyleAttr, defStyleRes
+            attrs, androidx.preference.R.styleable.Preference, defStyleAttr, defStyleRes
         )
         if (a.hasValue(androidx.preference.R.styleable.Preference_defaultValue)) {
             defaultValue = onGetDefaultValue(

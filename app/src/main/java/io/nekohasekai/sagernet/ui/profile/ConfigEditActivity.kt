@@ -136,8 +136,8 @@ class ConfigEditActivity : ThemedActivity() {
     }
 
     fun mkTheme(): ColorScheme {
-        val colorPrimary = getColorAttr(R.attr.colorPrimary)
-        val colorPrimaryDark = getColorAttr(R.attr.colorPrimaryDark)
+        val colorPrimary = getColorAttr(androidx.appcompat.R.attr.colorPrimary)
+        val colorPrimaryDark = getColorAttr(androidx.appcompat.R.attr.colorPrimaryDark)
 
         return ColorScheme(
             textColor = colorPrimary,

@@ -89,7 +89,13 @@ jobs:
         with:
           path: ~/.gradle
           key: native-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Native Build
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Release Build
         env:
           SKIP_BUILD: on
           BUILD_PLUGIN: naive

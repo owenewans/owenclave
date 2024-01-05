@@ -16,12 +16,12 @@ import java.util.*
 import kotlin.system.exitProcess
 
 private val Project.android
-    get() = extensions.getByName<CommonExtension<BuildFeatures, BuildType, DefaultConfig, ProductFlavor>>(
+    get() = extensions.getByName<CommonExtension<BuildFeatures, BuildType, DefaultConfig, ProductFlavor, AndroidResources>>(
         "android"
     )
 private val Project.androidApp get() = android as ApplicationExtension
 
-private val javaVersion = JavaVersion.VERSION_1_8
+private val javaVersion = JavaVersion.VERSION_17
 private lateinit var metadata: Properties
 private lateinit var localProperties: Properties
 private lateinit var flavor: String
@@ -78,7 +78,7 @@ fun Project.requireTargetAbi(): String {
     var targetAbi = ""
     if (gradle.startParameter.taskNames.isNotEmpty()) {
         if (gradle.startParameter.taskNames.size == 1) {
-            val targetTask = gradle.startParameter.taskNames[0].toLowerCase(Locale.ROOT).trim()
+            val targetTask = gradle.startParameter.taskNames[0].lowercase(Locale.ROOT).trim()
             when {
                 targetTask.contains("arm64") -> targetAbi = "arm64-v8a"
                 targetTask.contains("arm") -> targetAbi = "armeabi-v7a"
@@ -92,8 +92,8 @@ fun Project.requireTargetAbi(): String {
 
 fun Project.setupCommon() {
     android.apply {
-        buildToolsVersion = "33.0.2"
-        compileSdk = 33
+        buildToolsVersion = "34.0.0"
+        compileSdk = 34
         defaultConfig {
             minSdk = 21
         }
@@ -114,7 +114,7 @@ fun Project.setupCommon() {
             textOutput = project.file("build/lint.txt")
             htmlOutput = project.file("build/lint.html")
         }
-        packagingOptions {
+        packaging {
             resources {
                 excludes.addAll(
                     listOf(
@@ -132,7 +132,7 @@ fun Project.setupCommon() {
                 )
             }
         }
-        packagingOptions {
+        packaging {
             jniLibs.useLegacyPackaging = true
         }
         (this as? AbstractAppExtension)?.apply {
@@ -189,26 +189,6 @@ fun Project.setupNdkLibrary() {
         }
 
         externalNativeBuild.ndkBuild.path("src/main/jni/Android.mk")
-    }
-}
-
-fun Project.setupCMakeLibrary() {
-    setupCommon()
-    setupNdk()
-    android.apply {
-        defaultConfig {
-            externalNativeBuild.cmake {
-                val targetAbi = requireTargetAbi()
-                if (targetAbi.isNotBlank()) {
-                    abiFilters(targetAbi)
-                } else {
-                    abiFilters("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-                }
-                arguments("-j${Runtime.getRuntime().availableProcessors()}")
-            }
-        }
-
-        externalNativeBuild.cmake.path("src/main/cpp/CMakeLists.txt")
     }
 }
 
@@ -286,7 +266,7 @@ fun Project.setupAppCommon() {
                 dependsOn("package${requireFlavor()}")
             }
             val assemble = "assemble${requireFlavor()}"
-            tasks.whenTaskAdded {
+            tasks.configureEach {
                 if (name == assemble) dependsOn(calculateTaskName)
             }
         }
@@ -294,8 +274,8 @@ fun Project.setupAppCommon() {
 }
 
 fun Project.setupPlugin(projectName: String) {
-    val propPrefix = projectName.toUpperCase(Locale.ROOT)
-    val projName = projectName.toLowerCase(Locale.ROOT)
+    val propPrefix = projectName.uppercase(Locale.ROOT)
+    val projName = projectName.lowercase(Locale.ROOT)
     val verName = requireMetadata().getProperty("${propPrefix}_VERSION_NAME").trim()
     val verCode = requireMetadata().getProperty("${propPrefix}_VERSION").trim().toInt() * 5
     androidApp.defaultConfig {
@@ -330,6 +310,9 @@ fun Project.setupPlugin(projectName: String) {
             if (targetAbi.isNotBlank()) {
                 reset()
                 include(targetAbi)
+            } else {
+                reset()
+                include("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
             }
         }
 
@@ -346,7 +329,7 @@ fun Project.setupPlugin(projectName: String) {
                     workingDir(rootProject.projectDir)
                 }
 
-                tasks.whenTaskAdded {
+                tasks.configureEach {
                     if (name.startsWith("merge") && name.endsWith("JniLibFolders")) {
                         dependsOn("externalBuild")
                     }
@@ -369,7 +352,7 @@ fun Project.setupPlugin(projectName: String) {
                     workingDir(rootProject.projectDir)
                     dependsOn("externalBuild")
                 }
-                tasks.whenTaskAdded {
+                tasks.configureEach {
                     if (name.startsWith("merge") && name.endsWith("JniLibFolders")) {
                         dependsOn("externalBuildEnd")
                     }
@@ -428,6 +411,9 @@ fun Project.setupApp() {
             if (targetAbi.isNotBlank()) {
                 reset()
                 include(targetAbi)
+            } else {
+                reset()
+                include("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
             }
         }
 
@@ -456,7 +442,7 @@ fun Project.setupApp() {
                 downloadAssets()
             }
         }
-        tasks.whenTaskAdded {
+        tasks.configureEach {
             if (name == "pre${requireFlavor()}Build") {
                 dependsOn("downloadAssets")
             }

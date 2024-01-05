@@ -193,7 +193,7 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                                     Intent.EXTRA_STREAM, FileProvider.getUriForFile(
                                         context, BuildConfig.APPLICATION_ID + ".cache", logFile
                                     )
-                                ), context.getString(R.string.abc_shareactionprovider_share_with)
+                                ), context.getString(androidx.appcompat.R.string.abc_shareactionprovider_share_with)
                         )
                     )
                 }

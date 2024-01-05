@@ -135,8 +135,8 @@ class TerminalView(context: Context, attributes: AttributeSet?) : View(context, 
             override fun finishComposingText(): Boolean {
                 if (TERMINAL_VIEW_KEY_LOGGING_ENABLED) mClient!!.logInfo(LOG_TAG, "IME: finishComposingText()")
                 super.finishComposingText()
-                sendTextToTerminal(editable)
-                editable.clear()
+                sendTextToTerminal(editable.toString())
+                editable?.clear()
                 return true
             }
 
@@ -147,8 +147,8 @@ class TerminalView(context: Context, attributes: AttributeSet?) : View(context, 
                 super.commitText(text, newCursorPosition)
                 if (mEmulator == null) return true
                 val content = editable
-                sendTextToTerminal(content)
-                content.clear()
+                sendTextToTerminal(content.toString())
+                content?.clear()
                 return true
             }
 

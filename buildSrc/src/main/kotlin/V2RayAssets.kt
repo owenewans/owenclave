@@ -37,7 +37,7 @@ fun Project.downloadAssets() {
             .string()
             .trim()
             .substringBefore(" ")
-            .toUpperCase(Locale.ROOT)
+            .uppercase(Locale.ROOT)
         var count = 0
 
         while (true) {
@@ -55,11 +55,11 @@ fun Project.downloadAssets() {
                     geoipFile.outputStream().use { out -> it.copyTo(out) }
                 }
 
-            val fileSha256 = DigestUtil.sha256Hex(geoipFile).toUpperCase(Locale.ROOT)
+            val fileSha256 = DigestUtil.sha256Hex(geoipFile).uppercase(Locale.ROOT)
             if (fileSha256 != checksum) {
                 System.err.println(
                     "Error verifying ${geoipFile.name}: \nLocal: ${
-                        fileSha256.toUpperCase(
+                        fileSha256.uppercase(
                             Locale.ROOT
                         )
                     }\nRemote: $checksum"
@@ -103,7 +103,7 @@ fun Project.downloadAssets() {
             .string()
             .trim()
             .substringBefore(" ")
-            .toUpperCase(Locale.ROOT)
+            .uppercase(Locale.ROOT)
 
         var count = 0
 
@@ -122,11 +122,11 @@ fun Project.downloadAssets() {
                     geositeFile.outputStream().use { out -> it.copyTo(out) }
                 }
 
-            val fileSha256 = DigestUtil.sha256Hex(geositeFile).toUpperCase(Locale.ROOT)
+            val fileSha256 = DigestUtil.sha256Hex(geositeFile).uppercase(Locale.ROOT)
             if (fileSha256 != checksum) {
                 System.err.println(
                     "Error verifying ${geositeFile.name}: \nLocal: ${
-                        fileSha256.toUpperCase(
+                        fileSha256.uppercase(
                             Locale.ROOT
                         )
                     }\nRemote: $checksum"

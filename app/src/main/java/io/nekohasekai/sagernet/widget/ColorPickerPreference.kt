@@ -52,7 +52,7 @@ class ColorPickerPreference @JvmOverloads constructor(
     }
 
     init {
-        widgetLayoutResource = R.layout.preference_widget_color_swatch
+        widgetLayoutResource = com.takisoft.preferencex.colorpicker.R.layout.preference_widget_color_swatch
     }
 
     val colors = app.resources.getIntArray(R.array.material_colors)
@@ -68,7 +68,7 @@ class ColorPickerPreference @JvmOverloads constructor(
     @SuppressLint("RestrictedApi")
     constructor(context: Context, attrs: AttributeSet?) : this(
         context, attrs, TypedArrayUtils.getAttr(
-            context, R.attr.dialogPreferenceStyle,
+            context, androidx.preference.R.attr.dialogPreferenceStyle,
             android.R.attr.dialogPreferenceStyle
         )
     )
@@ -77,7 +77,7 @@ class ColorPickerPreference @JvmOverloads constructor(
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        colorWidget = holder.findViewById(R.id.color_picker_widget) as ImageView
+        colorWidget = holder.findViewById(com.takisoft.preferencex.colorpicker.R.id.color_picker_widget) as ImageView
         setColorOnWidget(colors[colorIndex])
     }
 
@@ -87,7 +87,7 @@ class ColorPickerPreference @JvmOverloads constructor(
         }
         val colorDrawable = arrayOf(
             ContextCompat.getDrawable(
-                context, R.drawable.colorpickerpreference_pref_swatch
+                context, com.takisoft.preferencex.colorpicker.R.drawable.colorpickerpreference_pref_swatch
             )
         )
         colorWidget!!.setImageDrawable(ColorStateDrawable(colorDrawable, color))
