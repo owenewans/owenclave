@@ -62,7 +62,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.global_preferences)
         val appTheme = findPreference<ColorPickerPreference>(Key.APP_THEME)!!
-        if (!isExpert) {
+        if (!(isExpert || DataStore.showAppTheme)) {
             appTheme.remove()
         } else {
             appTheme.setOnPreferenceChangeListener { _, newTheme ->

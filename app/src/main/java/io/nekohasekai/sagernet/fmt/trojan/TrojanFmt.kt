@@ -24,7 +24,6 @@ import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
-import io.nekohasekai.sagernet.ktx.isExpert
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.urlSafe
@@ -66,7 +65,7 @@ fun TrojanBean.toUri(): String {
     if (alpn.isNotBlank()) {
         builder.addQueryParameter("alpn", alpn)
     }
-    if (isExpert && allowInsecure) {
+    if (allowInsecure) {
         // bad format from where?
         builder.addQueryParameter("allowInsecure", "1")
     }
