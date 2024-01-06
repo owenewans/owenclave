@@ -26,8 +26,8 @@
             app:title="@string/password" />
 
         <com.takisoft.preferencex.SimpleMenuPreference
-            app:entries="@array/enc_method_entry"
-            app:entryValues="@array/enc_method_value"
+            app:entries="@array/ssr_enc_method_entry"
+            app:entryValues="@array/ssr_enc_method_value"
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverMethod"
             app:title="@string/enc_method"
