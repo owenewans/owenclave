@@ -500,12 +500,21 @@ class BaseService {
             data.proxy = proxy
             BootReceiver.enabled = DataStore.persistAcrossReboot
             if (!data.closeReceiverRegistered) {
-                registerReceiver(data.receiver, IntentFilter().apply {
-                    addAction(Action.RELOAD)
-                    addAction(Intent.ACTION_SHUTDOWN)
-                    addAction(Action.CLOSE)
-                    addAction(Action.SWITCH_WAKE_LOCK)
-                }, "$packageName.SERVICE", null)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    registerReceiver(data.receiver, IntentFilter().apply {
+                        addAction(Action.RELOAD)
+                        addAction(Intent.ACTION_SHUTDOWN)
+                        addAction(Action.CLOSE)
+                        addAction(Action.SWITCH_WAKE_LOCK)
+                    }, "$packageName.SERVICE", null, Context.RECEIVER_EXPORTED)
+                } else {
+                    registerReceiver(data.receiver, IntentFilter().apply {
+                        addAction(Action.RELOAD)
+                        addAction(Intent.ACTION_SHUTDOWN)
+                        addAction(Action.CLOSE)
+                        addAction(Action.SWITCH_WAKE_LOCK)
+                    }, "$packageName.SERVICE", null)
+                }
                 data.closeReceiverRegistered = true
             }
 

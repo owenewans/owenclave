@@ -26,6 +26,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
@@ -71,7 +72,11 @@ object DirectBoot : BroadcastReceiver() {
 
     fun listenForUnlock() {
         if (registered) return
-        app.registerReceiver(this, IntentFilter(Intent.ACTION_BOOT_COMPLETED))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            app.registerReceiver(this, IntentFilter(Intent.ACTION_BOOT_COMPLETED), Context.RECEIVER_EXPORTED)
+        } else {
+            app.registerReceiver(this, IntentFilter(Intent.ACTION_BOOT_COMPLETED))
+        }
         registered = true
     }
 

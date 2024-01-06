@@ -22,7 +22,10 @@
 package io.nekohasekai.sagernet.ui
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.Manifest
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.RemoteException
 import android.provider.Settings
@@ -30,6 +33,7 @@ import android.view.KeyEvent
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.IdRes
+import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.preference.PreferenceDataStore
 import cn.hutool.core.codec.Base64Decoder
@@ -70,6 +74,12 @@ class MainActivity : ThemedActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (app.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
+            }
+        }
 
         binding = LayoutMainBinding.inflate(layoutInflater)
         binding.fab.initProgress(binding.fabProgress)

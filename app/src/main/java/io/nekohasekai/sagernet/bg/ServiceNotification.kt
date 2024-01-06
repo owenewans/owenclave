@@ -145,10 +145,17 @@ class ServiceNotification(
         builder.color = service.getColorAttr(androidx.appcompat.R.attr.colorPrimary)
 
         updateCallback(SagerNet.power.isInteractive)
-        service.registerReceiver(this, IntentFilter().apply {
-            addAction(Intent.ACTION_SCREEN_ON)
-            addAction(Intent.ACTION_SCREEN_OFF)
-        })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            service.registerReceiver(this, IntentFilter().apply {
+                addAction(Intent.ACTION_SCREEN_ON)
+                addAction(Intent.ACTION_SCREEN_OFF)
+            }, Context.RECEIVER_EXPORTED)
+        } else {
+            service.registerReceiver(this, IntentFilter().apply {
+                addAction(Intent.ACTION_SCREEN_ON)
+                addAction(Intent.ACTION_SCREEN_OFF)
+            })
+        }
         show()
     }
 
