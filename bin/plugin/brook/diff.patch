@@ -1,8 +1,8 @@
 diff --git a/cli/brook/main.go b/cli/brook/main.go
-index 83cf3b4..304e8f3 100644
+index a1230e6..e239d46 100644
 --- a/cli/brook/main.go
 +++ b/cli/brook/main.go
-@@ -586,6 +586,9 @@ func main() {
+@@ -593,6 +593,9 @@ func main() {
  					Value: 60,
  					Usage: "time (s)",
  				},
@@ -12,7 +12,7 @@ index 83cf3b4..304e8f3 100644
  			},
  			Action: func(c *cli.Context) error {
  				if c.String("socks5") == "" || c.String("wsserver") == "" || c.String("password") == "" {
-@@ -605,7 +608,7 @@ func main() {
+@@ -612,7 +615,7 @@ func main() {
  				if c.String("socks5ServerIP") != "" {
  					ip = c.String("socks5ServerIP")
  				}
@@ -21,7 +21,7 @@ index 83cf3b4..304e8f3 100644
  				if err != nil {
  					return err
  				}
-@@ -838,6 +841,9 @@ func main() {
+@@ -845,6 +848,9 @@ func main() {
  					Value: 60,
  					Usage: "time (s)",
  				},
@@ -31,7 +31,7 @@ index 83cf3b4..304e8f3 100644
  			},
  			Action: func(c *cli.Context) error {
  				if c.String("socks5") == "" || c.String("wssserver") == "" || c.String("password") == "" {
-@@ -857,7 +863,7 @@ func main() {
+@@ -864,7 +870,7 @@ func main() {
  				if c.String("socks5ServerIP") != "" {
  					ip = c.String("socks5ServerIP")
  				}
@@ -40,7 +40,7 @@ index 83cf3b4..304e8f3 100644
  				if err != nil {
  					return err
  				}
-@@ -1099,6 +1105,9 @@ func main() {
+@@ -1106,6 +1112,9 @@ func main() {
  					Value: 60,
  					Usage: "time (s)",
  				},
@@ -50,7 +50,7 @@ index 83cf3b4..304e8f3 100644
  			},
  			Action: func(c *cli.Context) error {
  				if c.String("socks5") == "" || c.String("quicserver") == "" || c.String("password") == "" {
-@@ -1118,7 +1127,7 @@ func main() {
+@@ -1125,7 +1134,7 @@ func main() {
  				if c.String("socks5ServerIP") != "" {
  					ip = c.String("socks5ServerIP")
  				}
@@ -86,10 +86,10 @@ index d4fa78b..9b41df2 100644
  package limits
  
 diff --git a/quicclient.go b/quicclient.go
-index 920b247..5047f95 100644
+index 133d5e7..271d6b3 100644
 --- a/quicclient.go
 +++ b/quicclient.go
-@@ -40,6 +40,10 @@ type QUICClient struct {
+@@ -39,6 +39,10 @@ type QUICClient struct {
  }
  
  func NewQUICClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool) (*QUICClient, error) {
@@ -100,7 +100,7 @@ index 920b247..5047f95 100644
  	s5, err := socks5.NewClassicServer(addr, ip, "", "", tcpTimeout, udpTimeout)
  	if err != nil {
  		return nil, err
-@@ -74,6 +78,7 @@ func NewQUICClient(addr, ip, server, password string, tcpTimeout, udpTimeout int
+@@ -73,6 +77,7 @@ func NewQUICClient(addr, ip, server, password string, tcpTimeout, udpTimeout int
  	}
  	x := &QUICClient{
  		ServerHost:        u.Host,
@@ -109,10 +109,10 @@ index 920b247..5047f95 100644
  		Password:          p,
  		TCPTimeout:        tcpTimeout,
 diff --git a/wsclient.go b/wsclient.go
-index 08676d9..3574e6a 100644
+index 097e63b..432ac74 100644
 --- a/wsclient.go
 +++ b/wsclient.go
-@@ -40,6 +40,10 @@ type WSClient struct {
+@@ -39,6 +39,10 @@ type WSClient struct {
  }
  
  func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int, withoutbrook bool) (*WSClient, error) {
@@ -123,7 +123,7 @@ index 08676d9..3574e6a 100644
  	if err := limits.Raise(); err != nil {
  		Log(Error{"when": "try to raise system limits", "warning": err.Error()})
  	}
-@@ -64,6 +68,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int,
+@@ -63,6 +67,7 @@ func NewWSClient(addr, ip, server, password string, tcpTimeout, udpTimeout int,
  	}
  	x := &WSClient{
  		ServerHost:        u.Host,
