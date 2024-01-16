@@ -69,6 +69,12 @@ object PluginManager {
         .path("/$id")
         .build()
 
+    private fun buildNaiveUri() = Uri.Builder()
+        .scheme("plugin")
+        .authority("moe.matsuri.lite")
+        .path("/naive-plugin")
+        .build()
+
     data class InitResult(
         val path: String,
     )
@@ -94,9 +100,14 @@ object PluginManager {
             flags =
                 flags or PackageManager.MATCH_DIRECT_BOOT_UNAWARE or PackageManager.MATCH_DIRECT_BOOT_AWARE
         }
-        val providers = SagerNet.application.packageManager.queryIntentContentProviders(
+        var providers = SagerNet.application.packageManager.queryIntentContentProviders(
             Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId)), flags)
             .filter { it.providerInfo.exported }
+        if (providers.isEmpty() && pluginId == "naive-plugin") {
+            providers = SagerNet.application.packageManager.queryIntentContentProviders(
+            Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildNaiveUri()), flags)
+            .filter { it.providerInfo.exported }
+        }
         if (providers.isEmpty()) return null
         if (providers.size > 1) {
             val message =
