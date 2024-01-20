@@ -273,8 +273,8 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
     ) {
         if (profile && content.containsKey("profiles")) {
             val profiles = mutableListOf<ProxyEntity>()
-            content.getJSONArray("profiles").toList(String::class.java).forEach {
-                val data = Base64Decoder.decode(it)
+            content.getJSONArray("profiles").toList().forEach {
+                val data = Base64Decoder.decode(it.toString())
                 val parcel = Parcel.obtain()
                 parcel.unmarshall(data, 0, data.size)
                 parcel.setDataPosition(0)
@@ -285,8 +285,8 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
             SagerDatabase.proxyDao.insert(profiles)
 
             val groups = mutableListOf<ProxyGroup>()
-            content.getJSONArray("groups").toList(String::class.java).forEach {
-                val data = Base64Decoder.decode(it)
+            content.getJSONArray("groups").toList().forEach {
+                val data = Base64Decoder.decode(it.toString())
                 val parcel = Parcel.obtain()
                 parcel.unmarshall(data, 0, data.size)
                 parcel.setDataPosition(0)
@@ -298,8 +298,8 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
         }
         if (rule && content.containsKey("rules")) {
             val rules = mutableListOf<RuleEntity>()
-            content.getJSONArray("rules").toList(String::class.java).forEach {
-                val data = Base64Decoder.decode(it)
+            content.getJSONArray("rules").toList().forEach {
+                val data = Base64Decoder.decode(it.toString())
                 val parcel = Parcel.obtain()
                 parcel.unmarshall(data, 0, data.size)
                 parcel.setDataPosition(0)
@@ -311,8 +311,8 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
         }
         if (setting && content.containsKey("settings")) {
             val settings = mutableListOf<KeyValuePair>()
-            content.getJSONArray("settings").toList(String::class.java).forEach {
-                val data = Base64Decoder.decode(it)
+            content.getJSONArray("settings").toList().forEach {
+                val data = Base64Decoder.decode(it.toString())
                 val parcel = Parcel.obtain()
                 parcel.unmarshall(data, 0, data.size)
                 parcel.setDataPosition(0)
