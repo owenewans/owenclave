@@ -319,7 +319,6 @@
             android:name="io.nekohasekai.sagernet.bg.TileService"
             android:directBootAware="true"
             android:exported="true"
-            android:foregroundServiceType="specialUse"
             android:icon="@drawable/ic_service_active"
             android:label="@string/tile_title"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
@@ -331,9 +330,6 @@
             <meta-data
                 android:name="android.service.quicksettings.TOGGLEABLE_TILE"
                 android:value="true" />
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="tile" />
         </service>
 
         <provider
