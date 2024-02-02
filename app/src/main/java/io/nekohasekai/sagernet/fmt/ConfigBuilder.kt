@@ -1258,9 +1258,18 @@ fun buildV2RayConfig(
             }
         }
 
-        for (freedom in arrayOf(TAG_DIRECT, TAG_BYPASS)) outbounds.add(OutboundObject().apply {
-            tag = freedom
+        outbounds.add(OutboundObject().apply {
+            tag = TAG_DIRECT
             protocol = "freedom"
+        })
+        outbounds.add(OutboundObject().apply {
+            tag = TAG_BYPASS
+            protocol = "freedom"
+            settings = LazyOutboundConfigurationObject(this,
+                 FreedomOutboundConfigurationObject().apply {
+                     domainStrategy = outboundDomainStrategy
+                 })
+            // domainStrategy = outboundDomainStrategy
         })
 
         outbounds.add(OutboundObject().apply {
