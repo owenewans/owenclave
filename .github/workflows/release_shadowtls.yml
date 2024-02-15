@@ -37,9 +37,18 @@ jobs:
       - name: Install rust android target
         run: ./run init action rust
         if: steps.cache.outputs.cache-hit != 'true'
+      - name: Install NDK
+        uses: nttld/setup-ndk@v1
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          ndk-version: r26c
+          add-to-path: true
+          link-to-sdk: true
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
-        run: ./run plugin shadowtls
+        run: |
+          export ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/26.1.10909125
+          ./run plugin shadowtls
   build:
     name: Gradle Build
     runs-on: ubuntu-latest
@@ -73,7 +82,6 @@ jobs:
           BUILD_PLUGIN: shadowtls
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
-          echo "ndk.dir=${ANDROID_HOME}/ndk/26.1.10909125" >> local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           ./run init action library
           ./gradlew :plugin:shadowtls:assembleOssRelease

@@ -37,8 +37,6 @@ jobs:
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          echo "sdk.dir=${ANDROID_HOME}" > local.properties
-          echo "ndk.dir=${ANDROID_HOME}/ndk/26.1.10909125" >> local.properties
           ./run init action naive
           ./run plugin naive init
           ./run plugin naive ${{ matrix.arch }}
@@ -101,7 +99,6 @@ jobs:
           BUILD_PLUGIN: naive
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
-          echo "ndk.dir=${ANDROID_HOME}/ndk/26.1.10909125" >> local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           ./run init action library
           ./gradlew :plugin:naive:assembleOssRelease
