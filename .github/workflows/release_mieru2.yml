@@ -33,7 +33,7 @@ jobs:
         uses: actions/setup-go@v5
         if: steps.cache.outputs.cache-hit != 'true'
         with:
-          go-version: 1.21.6
+          go-version: 1.22.0
       - name: Install NDK
         uses: nttld/setup-ndk@v1
         if: steps.cache.outputs.cache-hit != 'true'
