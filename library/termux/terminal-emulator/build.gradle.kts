@@ -41,7 +41,7 @@ android {
             path = file("src/main/jni/Android.mk")
         }
     }
-    ndkVersion = "26.1.10909125"
+    ndkVersion = "26.2.11394342"
 }
 
 dependencies {

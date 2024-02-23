@@ -34,18 +34,10 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           go-version: 1.21.6
-      - name: Install NDK
-        uses: nttld/setup-ndk@v1
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          ndk-version: r26c
-          local-cache: true
-          add-to-path: true
-          link-to-sdk: true
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          export ANDROID_NDK_HOME=${ANDROID_HOME}/ndk/26.1.10909125
+          export ANDROID_NDK_HOME=${ANDROID_NDK_LATEST_HOME}
           ./run plugin hysteria2
   build:
     name: Gradle Build
