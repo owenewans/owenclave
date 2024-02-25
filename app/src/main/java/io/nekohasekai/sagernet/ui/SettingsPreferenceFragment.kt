@@ -141,10 +141,19 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val remoteDns = findPreference<EditTextPreference>(Key.REMOTE_DNS)!!
         val directDns = findPreference<EditTextPreference>(Key.DIRECT_DNS)!!
         val useLocalDnsAsDirectDns = findPreference<SwitchPreference>(Key.USE_LOCAL_DNS_AS_DIRECT_DNS)!!
+        val bootstrapDns = findPreference<EditTextPreference>(Key.BOOTSTRAP_DNS)!!
+        val useLocalDnsAsBootstrapDns = findPreference<SwitchPreference>(Key.USE_LOCAL_DNS_AS_BOOTSTRAP_DNS)!!
 
         directDns.isEnabled = !DataStore.useLocalDnsAsDirectDns
         useLocalDnsAsDirectDns.setOnPreferenceChangeListener { _, newValue ->
             directDns.isEnabled = newValue == false
+            needReload()
+            true
+        }
+
+        bootstrapDns.isEnabled = !DataStore.useLocalDnsAsBootstrapDns
+        useLocalDnsAsBootstrapDns.setOnPreferenceChangeListener { _, newValue ->
+            bootstrapDns.isEnabled = newValue == false
             needReload()
             true
         }

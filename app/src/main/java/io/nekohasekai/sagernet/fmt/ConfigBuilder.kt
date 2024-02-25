@@ -161,7 +161,10 @@ fun buildV2RayConfig(
         .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
     var directDNS = DataStore.directDns.split("\n")
         .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
+    var bootstrapDNS = DataStore.bootstrapDns.split("\n")
+        .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
     if (DataStore.useLocalDnsAsDirectDns) directDNS = listOf("localhost")
+    if (DataStore.useLocalDnsAsBootstrapDns) bootstrapDNS = listOf("localhost")
     val enableDnsRouting = DataStore.enableDnsRouting
     val useFakeDns = DataStore.enableFakeDns
     val hijackDns = DataStore.hijackDns
@@ -1324,6 +1327,7 @@ fun buildV2RayConfig(
         val bypassIP = HashSet<String>()
         val bypassDomain = HashSet<String>()
         val proxyDomain = HashSet<String>()
+        val bootstrapDomain = HashSet<String>()
 
         (proxies + extraProxies.values.flatten()).forEach {
             it.requireBean().apply {
@@ -1362,6 +1366,24 @@ fun buildV2RayConfig(
             }
         }
 
+        remoteDns.forEach { dns ->
+            { !dns.contains("://") && !dns.isIpAddress() && dns != "localhost" }?.also {
+                bypassDomain.add("full:$dns")
+            }
+        }
+
+        directDNS.forEach { dns ->
+            Uri.parse(dns).host?.takeIf { !it.isIpAddress() }?.also {
+                bootstrapDomain.add("full:$it")
+            }
+        }
+
+        directDNS.forEach { dns ->
+            { !dns.contains("://") && !dns.isIpAddress() && dns != "localhost" }?.also {
+                bootstrapDomain.add("full:$dns")
+            }
+        }
+
         if (bypassDomain.isNotEmpty()) {
             dns.servers.addAll(remoteDns.map {
                 DnsObject.StringOrServerObject().apply {
@@ -1388,6 +1410,16 @@ fun buildV2RayConfig(
                     }
                 }
             })
+            if (bootstrapDomain.isNotEmpty()) {
+                dns.servers.addAll(bootstrapDNS.map {
+                    DnsObject.StringOrServerObject().apply {
+                        valueY = DnsObject.ServerObject().apply {
+                            address = it
+                            domains = bootstrapDomain.toList()
+                        }
+                    }
+                })
+            }
             dns.servers.addAll(directDNS.map {
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {

@@ -566,5 +566,7 @@
     <string name="shadowsocks_2022_implementation">Shadowsocks 2022 Implementation</string>
     <string name="action_copy">Copy</string>
     <string name="action_open">Open</string>
+    <string name="bootstrap_dns">Bootstrap DNS</string>
+    <string name="use_local_dns_as_bootstrap_dns">Use Local DNS as Bootstrap DNS</string>
 
 </resources>

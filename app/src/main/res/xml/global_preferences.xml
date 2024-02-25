@@ -201,6 +201,14 @@
             app:key="directDns"
             app:title="@string/direct_dns"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_home_24"
+            app:key="useLocalDnsAsBootstrapDns"
+            app:title="@string/use_local_dns_as_bootstrap_dns" />
+        <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+            app:key="bootstrapDns"
+            app:title="@string/bootstrap_dns"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_baseline_transform_24"
             app:key="dnsHosts0"
