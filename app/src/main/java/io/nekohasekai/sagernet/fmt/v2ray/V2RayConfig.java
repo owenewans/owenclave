@@ -898,7 +898,6 @@ public class V2RayConfig {
     public static class GrpcObject {
 
         public String serviceName;
-        public String mode;
 
     }
 

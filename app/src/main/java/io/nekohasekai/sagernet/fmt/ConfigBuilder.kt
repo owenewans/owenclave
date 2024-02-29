@@ -770,9 +770,6 @@ fun buildV2RayConfig(
                                         "grpc" -> {
                                             grpcSettings = GrpcObject().apply {
                                                 serviceName = bean.grpcServiceName
-                                                if (bean.grpcMode.isNotBlank()) {
-                                                    mode = bean.grpcMode
-                                                }
                                             }
                                         }
                                         "meek" -> {

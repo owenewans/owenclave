@@ -148,7 +148,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
     // --------------------------------------- //
 
     public String grpcServiceName;
-    public String grpcMode;
     public Integer wsMaxEarlyData;
     public String earlyDataHeaderName;
     public String meekUrl;
@@ -195,7 +194,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(alpn)) alpn = "";
 
         if (StrUtil.isBlank(grpcServiceName)) grpcServiceName = "";
-        if (StrUtil.isBlank(grpcMode)) grpcMode = "";
         if (wsMaxEarlyData == null) wsMaxEarlyData = 0;
         if (wsUseBrowserForwarder == null) wsUseBrowserForwarder = false;
         if (certificates == null) certificates = "";
@@ -214,7 +212,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(12);
+        output.writeInt(13);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -253,7 +251,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
             }
             case "grpc": {
                 output.writeString(grpcServiceName);
-                output.writeString(grpcMode);
             }
             case "meek": {
                 output.writeString(meekUrl);
@@ -339,15 +336,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
             }
             case "grpc": {
                 grpcServiceName = input.readString();
-                if (version >= 8) {
-                    grpcMode = input.readString();
-                    switch (grpcMode) {
-                        case "multi":
-                        case "raw":
-                            break;
-                        default:
-                            grpcMode = "";
-                    }
+                if (version >= 8 && version <= 12) {
+                    input.readString(); // grpcMode, removed
                 }
             }
             case "meek": {

@@ -106,13 +106,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 }
             }
             "grpc" -> {
-                url.queryParameter("serverName")?.let {
+                url.queryParameter("serviceName")?.let {
                     bean.grpcServiceName = it
-                }
-                url.queryParameter("mode")?.let {
-                    if (it == "multi") {
-                        bean.grpcMode = it
-                    }
                 }
             }
             "meek" -> {
@@ -233,11 +228,6 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 url.queryParameter("serviceName")?.let {
                     bean.grpcServiceName = it
                 }
-                url.queryParameter("mode")?.let {
-                    if (it == "multi") {
-                        bean.grpcMode = it
-                    }
-                }
             }
             "meek" -> {
                 url.queryParameter("url")?.let {
@@ -288,7 +278,6 @@ fun parseV2RayN(link: String): VMessBean {
         }
         "grpc" -> {
             bean.grpcServiceName = bean.path
-            bean.grpcMode = bean.headerType
         }
     }
 
@@ -393,7 +382,6 @@ fun VMessBean.toV2rayN(): String {
             }
             "grpc" -> {
                 it["path"] = grpcServiceName
-                it["type"] = grpcMode
             }
         }
 
@@ -466,11 +454,6 @@ fun StandardV2RayBean.toUri(): String {
         "grpc" -> {
             if (grpcServiceName.isNotBlank()) {
                 builder.addQueryParameter("serviceName", grpcServiceName)
-            }
-            when (grpcMode) {
-                "multi" -> {
-                    builder.addQueryParameter("mode", grpcMode)
-                }
             }
         }
         "meek" -> {

@@ -78,13 +78,6 @@
             app:title="@string/http_path"
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
-            app:entries="@array/grpc_mode_entry"
-            app:entryValues="@array/grpc_mode_value"
-            app:icon="@drawable/baseline_developer_board_24"
-            app:key="serverGrpcMode"
-            app:title="@string/grpc_mode"
-            app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/transport_layer_encryption_entry"
             app:entryValues="@array/transport_layer_encryption_value"
             app:icon="@drawable/ic_baseline_layers_24"

@@ -84,7 +84,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverWsBrowserForwarding = wsUseBrowserForwarder
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverPacketEncoding = packetEncoding
-        DataStore.serverGrpcMode = grpcMode
 
     }
 
@@ -129,7 +128,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
         allowInsecure = DataStore.serverAllowInsecure
         packetEncoding = DataStore.serverPacketEncoding
-        grpcMode = DataStore.serverGrpcMode
     }
 
     lateinit var encryption: SimpleMenuPreference
@@ -139,7 +137,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var path: EditTextPreference
     lateinit var quicSecurity: SimpleMenuPreference
     lateinit var security: SimpleMenuPreference
-    lateinit var grpcMode: SimpleMenuPreference
     lateinit var xtlsFlow: SimpleMenuPreference
 
     lateinit var alpn: EditTextPreference
@@ -174,7 +171,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         path = findPreference(Key.SERVER_PATH)!!
         quicSecurity = findPreference(Key.SERVER_QUIC_SECURITY)!!
         security = findPreference(Key.SERVER_SECURITY)!!
-        grpcMode = findPreference(Key.SERVER_GRPC_MODE)!!
 
         alpn = findPreference(Key.SERVER_ALPN)!!
         securityCategory = findPreference(Key.SERVER_SECURITY_CATEGORY)!!
@@ -274,13 +270,12 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         val isTcp = network == "tcp"
         val isQuic = network == "quic"
-        val isGRPC = network == "grpc"
         val isWs = network == "ws"
-        val isHttp = network == "http"
+        val isHTTP = network == "http"
         val isMeek = network == "meek"
         val isHttpUpgrade = network == "httpupgrade"
         quicSecurity.isVisible = isQuic
-        utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHttp || isMeek || isHttpUpgrade)
+        utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHTTP || isMeek || isHttpUpgrade)
         realityFingerprint.isVisible = security.value == "reality"
         if (isQuic) {
             if (DataStore.serverQuicSecurity !in quicSecurityValue) {
@@ -291,7 +286,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         }
 
         wsCategory.isVisible = isWs
-        grpcMode.isVisible = isGRPC
 
         when (network) {
             "tcp" -> {
