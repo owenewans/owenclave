@@ -8,12 +8,12 @@ plugins {
 
 setupKotlinCommon()
 
-val protobufVersion = "3.25.2"
+val protobufVersion = "3.25.3"
 
 dependencies {
     protobuf(project(":library:proto"))
 
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     api("com.google.protobuf:protobuf-java:$protobufVersion")
 }
 android {

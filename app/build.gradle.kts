@@ -39,7 +39,7 @@ dependencies {
     implementation(project(":library:termux:terminal-view"))
     implementation(project(":library:termux:terminal-emulator"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.fragment:fragment-ktx:1.6.2")
@@ -65,7 +65,7 @@ dependencies {
 
     implementation("org.yaml:snakeyaml:2.2")
     implementation("com.github.daniel-stoneuk:material-about-library:3.2.0-rc01")
-    implementation("com.jakewharton:process-phoenix:2.1.2")
+    implementation("com.jakewharton:process-phoenix:2.2.0")
     implementation("com.esotericsoftware:kryo:5.6.0")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("org.ini4j:ini4j:0.5.4")
