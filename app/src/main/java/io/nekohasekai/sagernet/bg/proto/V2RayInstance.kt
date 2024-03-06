@@ -39,6 +39,7 @@ import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult
 import io.nekohasekai.sagernet.fmt.brook.BrookBean
 import io.nekohasekai.sagernet.fmt.brook.internalUri
+import io.nekohasekai.sagernet.fmt.brook.toInternalUri
 import io.nekohasekai.sagernet.fmt.buildV2RayConfig
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria.buildHysteriaConfig
@@ -343,7 +344,7 @@ abstract class V2RayInstance(
                             }
                             "wss" -> {
                                 commands.add("wssclient")
-                                commands.add("--wssserver")
+                                commands.add("--link") // WTF?
                             }
                             "quic" -> {
                                 commands.add("quicclient")
@@ -355,21 +356,29 @@ abstract class V2RayInstance(
                             }
                         }
 
-                        commands.add(bean.internalUri())
+                        if (bean.protocol != "wss") {
+                            commands.add(bean.internalUri())
+                        } else {
+                            commands.add(bean.toInternalUri())
+                        }
 
-                        if (bean.protocol.startsWith("ws") || bean.protocol == "quic") {
-                            commands.add("--serverAddress")
+                        if (bean.protocol == "ws" || bean.protocol == "quic") {
+                            commands.add("--address")
                             commands.add(bean.wrapUri())
+                            if (bean.withoutBrookProtocol) {
+                                commands.add("--withoutBrookProtocol")
+                            }
                         }
 
-                        if (bean.withoutBrookProtocol) {
-                            commands.add("--withoutBrookProtocol")
-                        }
-                        if (bean.insecure) {
+                        if (bean.protocol == "quic" && bean.insecure) {
                             commands.add("--insecure")
                         }
 
-                        if (bean.password.isNotBlank()) {
+                        if (bean.protocol != "wss" && bean.udpovertcp) {
+                            commands.add("--udpovertcp")
+                        }
+
+                        if (bean.protocol != "wss" && bean.password.isNotBlank()) {
                             commands.add("--password")
                             commands.add(bean.password)
                         }

@@ -927,4 +927,14 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="brook_tls_fingerprint_entry">
+        <item />
+        <item>chrome</item>
+    </string-array>
+
+    <string-array name="brook_tls_fingerprint_value">
+        <item />
+        <item>chrome</item>
+    </string-array>
+
 </resources>

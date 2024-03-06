@@ -284,6 +284,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverMTU by profileCacheStore.stringToInt(Key.SERVER_MTU)
     var serverReducedIvHeadEntropy by profileCacheStore.boolean(Key.SERVER_REDUCED_IV_HEAD_ENTROPY)
     var serverWithoutBrookProtocol by profileCacheStore.boolean(Key.SERVER_WITHOUT_BROOK_PROTOCOL)
+    var serverBrookUdpOverTcp by profileCacheStore.boolean(Key.SERVER_BROOK_UDP_OVER_TCP)
+    var serverBrookTlsFingerprint by profileCacheStore.string(Key.SERVER_BROOK_TLS_FINGERPRINT)
+    var serverBrookFragment by profileCacheStore.string(Key.SERVER_BROOK_FRAGMENT)
     var serverEncryptedProtocolExtension by profileCacheStore.boolean(Key.SERVER_ENCRYPTED_PROTOCOL_EXTENSION)
 
     var serverUDPRelayMode by profileCacheStore.string(Key.SERVER_UDP_RELAY_MODE)

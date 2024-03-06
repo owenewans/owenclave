@@ -47,6 +47,14 @@ fun String.isIpAddress(): Boolean {
     return Validator.isIpv4(this) || Validator.isIpv6(this)
 }
 
+fun String.isIpv4Address(): Boolean {
+    return Validator.isIpv4(this)
+}
+
+fun String.isIpv6Address(): Boolean {
+    return Validator.isIpv6(this)
+}
+
 fun String.unwrapHost(): String {
     if (startsWith("[") && endsWith("]")) {
         return substring(1, length - 1).unwrapHost()

@@ -45,6 +45,10 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         DataStore.serverPath = wsPath
         DataStore.serverAllowInsecure = insecure
         DataStore.serverWithoutBrookProtocol = withoutBrookProtocol
+        DataStore.serverBrookUdpOverTcp = udpovertcp
+        DataStore.serverBrookTlsFingerprint = tlsfingerprint
+        DataStore.serverBrookFragment = fragment
+        DataStore.serverSNI = sni
     }
 
     override fun BrookBean.serialize() {
@@ -56,6 +60,10 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         wsPath = DataStore.serverPath
         insecure = DataStore.serverAllowInsecure
         withoutBrookProtocol = DataStore.serverWithoutBrookProtocol
+        udpovertcp = DataStore.serverBrookUdpOverTcp
+        tlsfingerprint = DataStore.serverBrookTlsFingerprint
+        fragment = DataStore.serverBrookFragment
+        sni = DataStore.serverSNI
     }
 
     lateinit var protocol: SimpleMenuPreference
@@ -63,6 +71,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
     lateinit var category: PreferenceCategory
     lateinit var insecure: SwitchPreference
     lateinit var wsPath: EditTextPreference
+    lateinit var tlsfingerprint: SimpleMenuPreference
+    lateinit var fragment: EditTextPreference
+    lateinit var sni: EditTextPreference
 
     override fun PreferenceFragmentCompat.createPreferences(
         savedInstanceState: Bundle?,
@@ -81,6 +92,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         protocol = findPreference(Key.SERVER_PROTOCOL)!!
         insecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
         wsPath = findPreference(Key.SERVER_PATH)!!
+        tlsfingerprint = findPreference(Key.SERVER_BROOK_TLS_FINGERPRINT)!!
+        fragment = findPreference(Key.SERVER_BROOK_FRAGMENT)!!
+        sni = findPreference(Key.SERVER_SNI)!!
 
         if (protocol.value !in protocolValue) {
             protocol.value = protocolValue[0]
@@ -96,6 +110,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         category.isVisible = value.startsWith("ws") || value == "quic"
         insecure.isVisible = value == "wss" || value == "quic"
         wsPath.isVisible = value.startsWith("ws")
+        tlsfingerprint.isVisible = value == "wss"
+        fragment.isVisible = value == "wss"
+        sni.isVisible = value == "wss" || value == "quic"
     }
 
 }

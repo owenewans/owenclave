@@ -25,13 +25,12 @@ import io.nekohasekai.sagernet.ktx.*
 import libcore.Libcore
 
 fun parseBrook(text: String): AbstractBean {
-    // https://github.com/txthinking/brook/issues/811
-
     val link = Libcore.parseURL(text)
 
     val bean = if (link.host == "socks5") SOCKSBean() else BrookBean()
-    bean.name = link.queryParameter("remarks")
+    bean.name = link.queryParameter("name")
 
+    // "Do not omit the port under any circumstances"
     when (link.host) {
         "server" -> {
             bean as BrookBean
@@ -40,8 +39,8 @@ fun parseBrook(text: String): AbstractBean {
             val server = link.queryParameter("server")
                 ?: error("Invalid brook server url (Missing server parameter): $text")
 
-            bean.serverAddress = server.substringBefore(":")
-            bean.serverPort = server.substringAfter(":").toInt()
+            bean.serverAddress = server.substringBeforeLast(":").unwrapHost()
+            bean.serverPort = server.substringAfterLast(":").toInt()
             bean.password = link.queryParameter("password")
                 ?: error("Invalid brook server url (Missing password parameter): $text")
         }
@@ -58,10 +57,20 @@ fun parseBrook(text: String): AbstractBean {
                 bean.wsPath = "/" + wsserver.substringAfter("/")
                 wsserver = wsserver.substringBefore("/")
             }
-            bean.serverAddress = wsserver.substringBefore(":")
-            bean.serverPort = wsserver.substringAfter(":").toInt()
+            bean.serverAddress = wsserver.substringBeforeLast(":").unwrapHost()
+            bean.serverPort = wsserver.substringAfterLast(":").toInt()
+            if (link.queryParameter("address") != "") {
+                bean.serverAddress = link.queryParameter("address")?.substringBeforeLast(":")?.unwrapHost()
+                bean.serverPort = link.queryParameter("address")?.substringAfterLast(":")?.toInt()
+            }
             bean.password = link.queryParameter("password")
                 ?: error("Invalid brook wsserver url (Missing password parameter): $text")
+            if (link.queryParameter("udpovertcp") == "true") {
+                bean.udpovertcp = true
+            }
+            if (link.queryParameter("withoutBrookProtocol") == "true") {
+                bean.withoutBrookProtocol = true
+            }
 
         }
         "wssserver" -> {
@@ -77,10 +86,30 @@ fun parseBrook(text: String): AbstractBean {
                 bean.wsPath = "/" + wsserver.substringAfter("/")
                 wsserver = wsserver.substringBefore("/")
             }
-            bean.serverAddress = wsserver.substringBefore(":")
-            bean.serverPort = wsserver.substringAfter(":").toInt()
+            bean.serverAddress = wsserver.substringBeforeLast(":").unwrapHost()
+            bean.serverPort = wsserver.substringAfterLast(":").toInt()
+            if (link.queryParameter("address") != "") {
+                bean.sni = bean.serverAddress
+                bean.serverAddress = link.queryParameter("address")?.substringBeforeLast(":")?.unwrapHost()
+                bean.serverPort = link.queryParameter("address")?.substringAfterLast(":")?.toInt()
+            }
             bean.password = link.queryParameter("password")
                 ?: error("Invalid brook wssserver url (Missing password parameter): $text")
+            if (link.queryParameter("udpovertcp") == "true") {
+                bean.udpovertcp = true
+            }
+            if (link.queryParameter("withoutBrookProtocol") == "true") {
+                bean.withoutBrookProtocol = true
+            }
+            if (link.queryParameter("insecure") == "true") {
+                bean.insecure = true
+            }
+            if (link.queryParameter("tlsfingerprint") == "chrome") {
+                bean.tlsfingerprint = "chrome"
+            }
+            if (link.queryParameter("fragment") != "") {
+                bean.fragment = link.queryParameter("fragment")
+            }
 
         }
         "quicserver" -> {
@@ -92,10 +121,24 @@ fun parseBrook(text: String): AbstractBean {
                 ?: error("Invalid brook quicserver url (Missing quicserver parameter): $text")).substringAfter(
                 "://"
             )
-            bean.serverAddress = quicserver.substringBefore(":")
-            bean.serverPort = quicserver.substringAfter(":").toInt()
+            bean.serverAddress = quicserver.substringBeforeLast(":").unwrapHost()
+            bean.serverPort = quicserver.substringAfterLast(":").toInt()
+            if (link.queryParameter("address") != "") {
+                bean.sni = bean.serverAddress
+                bean.serverAddress = link.queryParameter("address")?.substringBeforeLast(":")?.unwrapHost()
+                bean.serverPort = link.queryParameter("address")?.substringAfterLast(":")?.toInt()
+            }
             bean.password = link.queryParameter("password")
                 ?: error("Invalid brook quicserver url (Missing password parameter): $text")
+            if (link.queryParameter("udpovertcp") == "true") {
+                bean.udpovertcp = true
+            }
+            if (link.queryParameter("withoutBrookProtocol") == "true") {
+                bean.withoutBrookProtocol = true
+            }
+            if (link.queryParameter("insecure") == "true") {
+                bean.insecure = true
+            }
 
         }
         "socks5" -> {
@@ -106,8 +149,8 @@ fun parseBrook(text: String): AbstractBean {
                 "://"
             )
 
-            bean.serverAddress = socks5.substringBefore(":")
-            bean.serverPort = socks5.substringAfter(":").toInt()
+            bean.serverAddress = socks5.substringBeforeLast(":").substringBeforeLast("]").substringAfter("[")
+            bean.serverPort = socks5.substringAfterLast(":").toInt()
 
             link.queryParameter("username")?.also { username ->
                 bean.username = username
@@ -124,25 +167,65 @@ fun parseBrook(text: String): AbstractBean {
 
 fun BrookBean.toUri(): String {
     val builder = Libcore.newURL("brook")
-    var serverString = "$serverAddress:$serverPort"
-    if (protocol.startsWith("ws")) {
-        if (wsPath.isNotBlank() && wsPath != "/") {
-            if (!wsPath.startsWith("/")) wsPath = "/$wsPath"
-            serverString += wsPath
-        }
-    }
+    var serverString = wrapOriginUri()
+    var addressString = wrapOriginUri()
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
-            builder.addQueryParameter("wsserver", serverString)
+            if (wsPath.isNotBlank()) {
+                if (!wsPath.startsWith("/")) {
+                    serverString += "/"
+                }
+                serverString += wsPath.pathSafe()
+            }
+            builder.addQueryParameter("wsserver", "ws://" + serverString)
+            if (withoutBrookProtocol) {
+                builder.addQueryParameter("withoutBrookProtocol", "true")
+            }
         }
         "wss" -> {
             builder.host = "wssserver"
-            builder.addQueryParameter("wssserver", serverString)
+            if (sni.isNotBlank()) {
+                serverString = sni + ":$serverPort"
+            }
+            if (wsPath.isNotBlank()) {
+                if (!wsPath.startsWith("/")) {
+                    serverString += "/"
+                }
+                serverString += wsPath.pathSafe()
+            }
+            builder.addQueryParameter("wssserver", "wss://" + serverString)
+            if (sni.isNotBlank()) {
+                builder.addQueryParameter("address", addressString)
+            }
+            if (withoutBrookProtocol) {
+                builder.addQueryParameter("withoutBrookProtocol", "true")
+            }
+            if (insecure) {
+                builder.addQueryParameter("insecure", "true")
+            }
+            if (tlsfingerprint.isNotBlank()) {
+                builder.addQueryParameter("tlsfingerprint", tlsfingerprint)
+            }
+            if (fragment.isNotBlank()) {
+                builder.addQueryParameter("fragment", fragment)
+            }
         }
         "quic" -> {
             builder.host = "quicserver"
-            builder.addQueryParameter("quicserver", serverString)
+            if (sni.isNotBlank()) {
+                serverString = sni + ":$serverPort"
+            }
+            builder.addQueryParameter("quicserver", "quic://" + serverString)
+            if (sni.isNotBlank()) {
+                builder.addQueryParameter("address", addressString)
+            }
+            if (withoutBrookProtocol) {
+                builder.addQueryParameter("withoutBrookProtocol", "true")
+            }
+            if (insecure) {
+                builder.addQueryParameter("insecure", "true")
+            }
         }
         else -> {
             builder.host = "server"
@@ -152,20 +235,91 @@ fun BrookBean.toUri(): String {
     if (password.isNotBlank()) {
         builder.addQueryParameter("password", password)
     }
+    if (udpovertcp) {
+        builder.addQueryParameter("udpovertcp", "true")
+    }
     if (name.isNotBlank()) {
-        builder.addQueryParameter("remarks", name)
+        builder.addQueryParameter("name", name)
     }
     return builder.string
+}
+
+
+fun BrookBean.toInternalUri(): String {
+    val builder = Libcore.newURL("brook")
+    val serverString = internalUri()
+    val addressString = wrapUri()
+    when (protocol) {
+        "ws" -> {
+            builder.host = "wsserver"
+            builder.addQueryParameter("wsserver", addressString)
+            if (withoutBrookProtocol) {
+                builder.addQueryParameter("withoutBrookProtocol", "true")
+            }
+        }
+        "wss" -> {
+            builder.host = "wssserver"
+            builder.addQueryParameter("wssserver", serverString)
+            if (withoutBrookProtocol) {
+                builder.addQueryParameter("withoutBrookProtocol", "true")
+            }
+            if (insecure) {
+                builder.addQueryParameter("insecure", "true")
+            }
+            if (tlsfingerprint.isNotBlank()) {
+                builder.addQueryParameter("tlsfingerprint", tlsfingerprint)
+            }
+            if (fragment.isNotBlank()) {
+                builder.addQueryParameter("fragment", fragment)
+            }
+            builder.addQueryParameter("address", addressString)
+        }
+        "quic" -> {
+            builder.host = "quicserver"
+            builder.addQueryParameter("quicserver", serverString)
+            if (withoutBrookProtocol) {
+                builder.addQueryParameter("withoutBrookProtocol", "true")
+            }
+            if (insecure) {
+                builder.addQueryParameter("insecure", "true")
+            }
+            builder.addQueryParameter("address", addressString)
+        }
+        else -> {
+            builder.host = "server"
+            builder.addQueryParameter("server", addressString)
+        }
+    }
+    if (password.isNotBlank()) {
+        builder.addQueryParameter("password", password)
+    }
+    if (udpovertcp) {
+        builder.addQueryParameter("udpovertcp", "true")
+    }
+    if (name.isNotBlank()) {
+        builder.addQueryParameter("name", name)
+    }
+    return builder.string
+}
+
+fun BrookBean.wrapUriWithOriginHost0(): String {
+    if (sni.isNotBlank()) {
+        return sni + ":$finalPort"
+    } else if (serverAddress.isIpv6Address()) {
+        return "[$serverAddress]:$finalPort"
+    } else {
+        return "$serverAddress:$finalPort"
+    }
 }
 
 fun BrookBean.internalUri(): String {
     var server = when (protocol) {
         "ws" -> "ws://" + wrapUriWithOriginHost()
-        "wss" -> "wss://" + wrapUriWithOriginHost()
-        "quic" -> "quic://" + wrapUriWithOriginHost()
+        "wss" -> "wss://" + wrapUriWithOriginHost0()
+        "quic" -> "quic://" + wrapUriWithOriginHost0()
         else -> return wrapUri()
     }
-    if (wsPath.isNotBlank()) {
+    if (protocol.startsWith("ws") && wsPath.isNotBlank()) {
         if (!wsPath.startsWith("/")) {
             server += "/"
         }

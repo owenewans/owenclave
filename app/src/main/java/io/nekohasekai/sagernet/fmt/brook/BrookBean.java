@@ -34,6 +34,10 @@ public class BrookBean extends AbstractBean {
     public String wsPath;
     public Boolean insecure;
     public Boolean withoutBrookProtocol;
+    public Boolean udpovertcp;
+    public String tlsfingerprint;
+    public String fragment;
+    public String sni;
 
     @Override
     public boolean allowInsecure() {
@@ -48,14 +52,19 @@ public class BrookBean extends AbstractBean {
         if (wsPath == null) wsPath = "";
         if (insecure == null) insecure = false;
         if (withoutBrookProtocol == null) withoutBrookProtocol = false;
+        if (udpovertcp == null) udpovertcp = false;
+        if (tlsfingerprint == null) tlsfingerprint = "";
+        if (fragment == null) fragment = "";
+        if (sni == null) sni = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(4);
+        output.writeInt(5);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(password);
+        output.writeBoolean(udpovertcp);
         switch (protocol) {
             case "ws":
                 output.writeString(wsPath);
@@ -64,11 +73,15 @@ public class BrookBean extends AbstractBean {
                 output.writeString(wsPath);
                 output.writeBoolean(insecure);
                 output.writeBoolean(withoutBrookProtocol);
+                output.writeString(tlsfingerprint);
+                output.writeString(fragment);
+                output.writeString(sni);
                 break;
             }
             case "quic": {
                 output.writeBoolean(insecure);
                 output.writeBoolean(withoutBrookProtocol);
+                output.writeString(sni);
                 break;
             }
             default:
@@ -82,6 +95,9 @@ public class BrookBean extends AbstractBean {
         super.deserialize(input);
         protocol = input.readString();
         password = input.readString();
+        if (version >= 5) {
+            udpovertcp = input.readBoolean();
+        }
         if (version >= 1) switch (protocol) {
             case "ws":
                 wsPath = input.readString();
@@ -94,12 +110,20 @@ public class BrookBean extends AbstractBean {
                     insecure = input.readBoolean();
                     withoutBrookProtocol = input.readBoolean();
                 }
+                if (version >= 5) {
+                    tlsfingerprint = input.readString();
+                    fragment = input.readString();
+                    sni = input.readString();
+                }
                 break;
             }
             case "quic": {
                 if (version >= 4) {
                     insecure = input.readBoolean();
                     withoutBrookProtocol = input.readBoolean();
+                }
+                if (version >= 5) {
+                    sni = input.readString();
                 }
                 break;
             }

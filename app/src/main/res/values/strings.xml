@@ -568,5 +568,6 @@
     <string name="action_open">Open</string>
     <string name="bootstrap_dns">Bootstrap DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Use Local DNS as Bootstrap DNS</string>
+    <string name="brook_fragment">Fragment</string>
 
 </resources>

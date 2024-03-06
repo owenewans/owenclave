@@ -178,6 +178,9 @@ object Key {
     const val SERVER_SS_EXPERIMENTS_CATEGORY = "serverSsExperimentsCategory"
     const val SERVER_REDUCED_IV_HEAD_ENTROPY = "serverReducedIvHeadEntropy"
     const val SERVER_WITHOUT_BROOK_PROTOCOL = "serverWithoutBrookProtocol"
+    const val SERVER_BROOK_UDP_OVER_TCP = "serverBrookUdpOverTcp"
+    const val SERVER_BROOK_TLS_FINGERPRINT = "serverBrookTlsFingerprint"
+    const val SERVER_BROOK_FRAGMENT = "serverBrookFragment"
     const val SERVER_ENCRYPTED_PROTOCOL_EXTENSION = "serverEncryptedProtocolExtension"
 
     const val SERVER_UDP_RELAY_MODE = "serverUDPRelayMode"
