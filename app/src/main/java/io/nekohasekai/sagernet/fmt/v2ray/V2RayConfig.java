@@ -636,6 +636,9 @@ public class V2RayConfig {
         public String method;
         public String psk;
         public List<String> ipsk;
+        public String plugin;
+        public String pluginOpts;
+        public List<String> pluginArgs;
 
     }
 

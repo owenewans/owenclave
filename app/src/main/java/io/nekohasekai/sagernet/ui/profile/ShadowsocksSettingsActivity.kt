@@ -62,7 +62,6 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
     private lateinit var pluginConfiguration: PluginConfiguration
     private lateinit var receiver: BroadcastReceiver
     private lateinit var method: SimpleMenuPreference
-    private lateinit var pluginCategory: PreferenceCategory
     private lateinit var serverSsExperimentsCategory: PreferenceCategory
 
     override fun ShadowsocksBean.init() {
@@ -108,7 +107,6 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
             summaryProvider = PasswordSummaryProvider
         }
 
-        pluginCategory = findPreference(Key.SERVER_PLUGIN_CATEGORY)!!
         plugin = findPreference(Key.SERVER_PLUGIN)!!
         pluginConfigure = findPreference(Key.SERVER_PLUGIN_CONFIGURE)!!
         pluginConfigure.setOnBindEditTextListener(EditTextPreferenceModifiers.Monospace)
@@ -127,11 +125,9 @@ class ShadowsocksSettingsActivity : ProfileSettingsActivity<ShadowsocksBean>(),
     private fun updateMethod(method: String) {
         when (method) {
             "2022-blake3-aes-128-gcm", "2022-blake3-aes-256-gcm", "2022-blake3-chacha20-poly1305" -> {
-                pluginCategory.isVisible = false
                 serverSsExperimentsCategory.isVisible = false
             }
             else -> {
-                pluginCategory.isVisible = true
                 serverSsExperimentsCategory.isVisible = true
             }
         }

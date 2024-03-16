@@ -817,6 +817,27 @@ fun buildV2RayConfig(
                                                 }
                                                 psk = keys[keys.size - 1]
                                             }
+                                            if (bean.plugin.isNotBlank()) {
+                                                val pluginConfiguration = PluginConfiguration(bean.plugin)
+                                                try {
+                                                    PluginManager.init(pluginConfiguration)
+                                                        ?.let { (path, opts, _) ->
+                                                            plugin = path
+                                                            pluginOpts = opts.toString()
+                                                        }
+                                                } catch (e: PluginManager.PluginNotFoundException) {
+                                                    if (e.plugin in arrayOf(
+                                                            "v2ray-plugin", "obfs-local"
+                                                        )
+                                                    ) {
+                                                        plugin = e.plugin
+                                                        pluginOpts = pluginConfiguration.getOptions()
+                                                            .toString()
+                                                    } else {
+                                                        throw e
+                                                    }
+                                                }
+                                            }
                                         }
                                     )
                                     if (needKeepAliveInterval) {
