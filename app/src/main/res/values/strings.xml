@@ -572,5 +572,6 @@
     <string name="action_flash_on">Turn on flash</string>
     <string name="action_camera_switch">Switch camera</string>
     <string name="action_flash_off">Turn off flash</string>
+    <string name="hysteria_hop_interval">Hop Interval</string>
 
 </resources>

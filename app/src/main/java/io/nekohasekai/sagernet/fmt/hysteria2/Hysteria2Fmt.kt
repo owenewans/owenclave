@@ -34,9 +34,9 @@ fun parseHysteria2(url: String): Hysteria2Bean {
 
         serverAddress = link.host
         if (link.port > 0) {
-            serverPort = link.port
+            serverPorts = link.port.toString()
         } else {
-            serverPort = 443
+            serverPorts = "443"
         }
 
         if (link.username.isNotBlank()) {
@@ -69,7 +69,7 @@ fun parseHysteria2(url: String): Hysteria2Bean {
 fun Hysteria2Bean.toUri(): String {
     val builder = Libcore.newURL("hysteria2")
     builder.host = serverAddress
-    builder.port = serverPort
+    builder.port = serverPorts.substringBefore(",").substringBefore("-").toInt() // use the first port if hopping
 
     if (auth.isNotBlank()) {
         val a = auth.split(":")
@@ -102,13 +102,26 @@ fun Hysteria2Bean.toUri(): String {
 }
 
 fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): String {
-    var conf = "server: \"" + wrapUri() + "\"\n"
+    var hostport: String
+    if (serverPorts.contains("-") || serverPorts.contains(",")) {
+        // hopping is incompatible with chain
+        if (serverAddress.isIpv6Address()) {
+            hostport = "[$serverAddress]:$serverPorts"
+        } else {
+            hostport = "$serverAddress:$serverPorts"
+        }
+    } else {
+        hostport = wrapUri()
+    }
+    var conf = "server: \"" + hostport + "\"\n"
     if (auth.isNotBlank()) {
         conf += "\nauth: \"" + auth + "\"\n"
     }
     conf += "\ntls:\n  insecure: " + allowInsecure + "\n"
-    if (sni.isBlank() && finalAddress == LOCALHOST && !serverAddress.isIpAddress()) {
-        sni = serverAddress
+    if (sni.isBlank() && !serverAddress.isIpAddress()) {
+        if (finalAddress == LOCALHOST && !serverPorts.contains("-") && !serverPorts.contains(",")) {
+            sni = serverAddress
+        }
     }
     if (sni.isNotBlank()) {
         conf += "  sni: \"" + sni + "\"\n"
@@ -121,7 +134,11 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (pinSHA256.isNotBlank()) {
         conf += "  pinSHA256: \"" + pinSHA256 + "\"\n"
     }
-    conf += "\ntransport:\n  type: udp\n\n"
+    conf += "\ntransport:\n  type: udp\n"
+    if (serverPorts.contains("-") || serverPorts.contains(",")) {
+        conf += "  udp:\n    hopInterval: " + hopInterval + "s\n"
+    }
+    conf += "\n"
     if (obfs.isNotBlank()) {
         conf += "obfs:\n  type: salamander\n  salamander:\n    password: \"" + obfs + "\"\n\n"
     }

@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.hysteria;
 
 import androidx.annotation.NonNull;
 
+import cn.hutool.core.lang.Validator;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
@@ -56,6 +57,9 @@ public class HysteriaBean extends AbstractBean {
     public Integer connectionReceiveWindow;
     public Boolean disableMtuDiscovery;
 
+    public String serverPorts;
+    public Integer hopInterval;
+
     @Override
     public boolean allowInsecure() {
         return allowInsecure;
@@ -77,18 +81,21 @@ public class HysteriaBean extends AbstractBean {
         if (alpn == null) alpn = "";
         if (caText == null) caText = "";
 
-        if (uploadMbps == null) uploadMbps = 10;
-        if (downloadMbps == null) downloadMbps = 50;
+        if (uploadMbps == null) uploadMbps = 0;
+        if (downloadMbps == null) downloadMbps = 0;
         if (allowInsecure == null) allowInsecure = false;
 
         if (streamReceiveWindow == null) streamReceiveWindow = 0;
         if (connectionReceiveWindow == null) connectionReceiveWindow = 0;
         if (disableMtuDiscovery == null) disableMtuDiscovery = false;
+
+        if (serverPorts == null) serverPorts = "1080";
+        if (hopInterval == null) hopInterval = 10;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(5);
+        output.writeInt(6);
         super.serialize(output);
         output.writeInt(authPayloadType);
         output.writeString(authPayload);
@@ -105,6 +112,9 @@ public class HysteriaBean extends AbstractBean {
         output.writeInt(streamReceiveWindow);
         output.writeInt(connectionReceiveWindow);
         output.writeBoolean(disableMtuDiscovery);
+
+        output.writeString(serverPorts);
+        output.writeInt(hopInterval);
     }
 
     @Override
@@ -132,6 +142,13 @@ public class HysteriaBean extends AbstractBean {
                 disableMtuDiscovery = input.readBoolean();
             }
         }
+        if (version < 6) {
+            serverPorts = serverPort.toString();
+        }
+        if (version >= 6) {
+            serverPorts = input.readString();
+            hopInterval = input.readInt();
+        }
     }
 
     @Override
@@ -142,6 +159,15 @@ public class HysteriaBean extends AbstractBean {
         bean.downloadMbps = downloadMbps;
         bean.allowInsecure = allowInsecure;
         bean.disableMtuDiscovery = disableMtuDiscovery;
+    }
+
+    @Override
+    public String displayAddress() {
+        if (Validator.isIpv6(serverAddress)) {
+            return "[" + serverAddress + "]:" + serverPorts;
+        } else {
+            return serverAddress + ":" + serverPorts;
+        }
     }
 
     @NotNull

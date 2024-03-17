@@ -51,6 +51,8 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         DataStore.serverStreamReceiveWindow = streamReceiveWindow
         DataStore.serverConnectionReceiveWindow = connectionReceiveWindow
         DataStore.serverDisableMtuDiscovery = disableMtuDiscovery
+        DataStore.serverPorts = serverPorts
+        DataStore.serverHopInterval = hopInterval
     }
 
     override fun HysteriaBean.serialize() {
@@ -70,6 +72,8 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         streamReceiveWindow = DataStore.serverStreamReceiveWindow
         connectionReceiveWindow = DataStore.serverConnectionReceiveWindow
         disableMtuDiscovery = DataStore.serverDisableMtuDiscovery
+        serverPorts = DataStore.serverPorts
+        hopInterval = DataStore.serverHopInterval
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -86,6 +90,9 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
             true
         }
 
+        findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL)!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
         findPreference<EditTextPreference>(Key.SERVER_UPLOAD_SPEED)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
         }
@@ -97,10 +104,6 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         }
         findPreference<EditTextPreference>(Key.SERVER_CONNECTION_RECEIVE_WINDOW)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
-        }
-
-        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
-            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         }
 
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {

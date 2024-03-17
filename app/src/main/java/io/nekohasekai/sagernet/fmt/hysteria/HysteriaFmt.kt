@@ -35,7 +35,7 @@ fun parseHysteria(url: String): HysteriaBean {
 
     return HysteriaBean().apply {
         serverAddress = link.host
-        serverPort = link.port
+        serverPorts = link.port.toString()
         name = link.fragment
 
         link.queryParameter("peer")?.also {
@@ -47,12 +47,6 @@ fun parseHysteria(url: String): HysteriaBean {
         }
         link.queryParameter("insecure")?.also {
             allowInsecure = it == "1"
-        }
-        link.queryParameter("upmbps")?.also {
-            uploadMbps = it.toIntOrNull() ?: uploadMbps
-        }
-        link.queryParameter("downmbps")?.also {
-            downloadMbps = it.toIntOrNull() ?: downloadMbps
         }
         link.queryParameter("alpn")?.also {
             alpn = it
@@ -76,7 +70,7 @@ fun parseHysteria(url: String): HysteriaBean {
 fun HysteriaBean.toUri(): String {
     val builder = Libcore.newURL("hysteria")
     builder.host = serverAddress
-    builder.port = serverPort
+    builder.port = serverPorts.substringBefore(",").substringBefore("-").toInt() // use the first port if hopping
 
     if (sni.isNotBlank()) {
         builder.addQueryParameter("peer", sni)
@@ -84,10 +78,10 @@ fun HysteriaBean.toUri(): String {
     if (authPayload.isNotBlank()) {
         builder.addQueryParameter("auth", authPayload)
     }
-    if (uploadMbps != 10) {
+    if (uploadMbps != 0) {
         builder.addQueryParameter("upmbps", "$uploadMbps")
     }
-    if (downloadMbps != 50) {
+    if (downloadMbps != 0) {
         builder.addQueryParameter("downmbps", "$downloadMbps")
     }
     if (alpn.isNotBlank()) {
@@ -117,9 +111,9 @@ fun HysteriaBean.toUri(): String {
 fun JSONObject.parseHysteria(): HysteriaBean {
     return HysteriaBean().apply {
         serverAddress = getStr("server").substringBeforeLast(":")
-        serverPort = getStr("server").substringAfterLast(":")
+        serverPorts = getStr("server").substringAfterLast(":")
             .takeIf { NumberUtil.isInteger(it) }
-            ?.toInt() ?: 443
+            ?.toString() ?: "443"
         uploadMbps = getInt("up_mbps")
         downloadMbps = getInt("down_mbps")
         obfuscation = getStr("obfs")
@@ -153,7 +147,17 @@ fun JSONObject.parseHysteria(): HysteriaBean {
 
 fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {
-        it["server"] = wrapUri()
+        if (serverPorts.contains("-") || serverPorts.contains(",")) {
+            // hopping is incompatible with chain
+            if (serverAddress.isIpv6Address()) {
+                it["server"] = "[$serverAddress]:$serverPorts"
+            } else {
+                it["server"] = "$serverAddress:$serverPorts"
+            }
+            it["hop_interval"] = hopInterval
+        } else {
+            it["server"] = wrapUri()
+        }
         when (protocol) {
             HysteriaBean.PROTOCOL_FAKETCP -> {
                 it["protocol"] = "faketcp"
@@ -170,8 +174,10 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
             HysteriaBean.TYPE_BASE64 -> it["auth"] = authPayload
             HysteriaBean.TYPE_STRING -> it["auth_str"] = authPayload
         }
-        if (sni.isBlank() && finalAddress == LOCALHOST && !serverAddress.isIpAddress()) {
-            sni = serverAddress
+        if (sni.isBlank() && !serverAddress.isIpAddress()) {
+            if (finalAddress == LOCALHOST && !serverPorts.contains("-") && !serverPorts.contains(",")) {
+                sni = serverAddress
+            }
         }
         if (sni.isNotBlank()) {
             it["server_name"] = sni

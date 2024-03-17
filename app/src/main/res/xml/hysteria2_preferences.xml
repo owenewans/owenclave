@@ -15,7 +15,7 @@
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_maps_directions_boat"
-            app:key="serverPort"
+            app:key="serverPorts"
             app:title="@string/server_port"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -47,6 +47,10 @@
             app:icon="@drawable/ic_baseline_push_pin_24"
             app:key="serverPinnedCertificateChain"
             app:title="@string/pinned_peer_certificate_chain_sha256"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="serverHopInterval"
+            app:title="@string/hysteria_hop_interval"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_file_file_upload"

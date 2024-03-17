@@ -51,6 +51,8 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.serverMaxStreamReceiveWindow = maxStreamReceiveWindow
         DataStore.serverInitConnReceiveWindow = initConnReceiveWindow
         DataStore.serverMaxConnReceiveWindow = maxConnReceiveWindow
+        DataStore.serverPorts = serverPorts
+        DataStore.serverHopInterval = hopInterval
     }
 
     override fun Hysteria2Bean.serialize() {
@@ -70,6 +72,8 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         maxStreamReceiveWindow = DataStore.serverMaxStreamReceiveWindow
         initConnReceiveWindow = DataStore.serverInitConnReceiveWindow
         maxConnReceiveWindow = DataStore.serverMaxConnReceiveWindow
+        serverPorts = DataStore.serverPorts
+        hopInterval = DataStore.serverHopInterval
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -77,6 +81,10 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         rootKey: String?,
     ) {
         addPreferencesFromResource(R.xml.hysteria2_preferences)
+
+        findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL)!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
 
         findPreference<EditTextPreference>(Key.SERVER_UPLOAD_SPEED)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
@@ -96,10 +104,6 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         }
         findPreference<EditTextPreference>(Key.SERVER_MAX_CONN_RECEIVE_WINDOW)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
-        }
-
-        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
-            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         }
 
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {

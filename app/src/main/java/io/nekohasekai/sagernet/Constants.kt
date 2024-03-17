@@ -192,6 +192,9 @@ object Key {
     const val SERVER_MIERU_MUX_LEVEL = "serverMieruMuxLevel"
     const val SERVER_WIREGUARD_RESERVED = "serverWireGuardReserved"
 
+    const val SERVER_PORTS = "serverPorts"
+    const val SERVER_HOP_INTERVAL = "serverHopInterval"
+
     const val BALANCER_TYPE = "balancerType"
     const val BALANCER_GROUP = "balancerGroup"
     const val BALANCER_STRATEGY = "balancerStrategy"
