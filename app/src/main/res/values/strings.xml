@@ -569,5 +569,8 @@
     <string name="bootstrap_dns">Bootstrap DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Use Local DNS as Bootstrap DNS</string>
     <string name="brook_fragment">Fragment</string>
+    <string name="action_flash_on">Turn on flash</string>
+    <string name="action_camera_switch">Switch camera</string>
+    <string name="action_flash_off">Turn off flash</string>
 
 </resources>
