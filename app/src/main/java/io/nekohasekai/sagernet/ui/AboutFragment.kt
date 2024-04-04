@@ -159,7 +159,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .subText(R.string.donate_info)
                             .setOnClickAction {
                                 requireContext().launchCustomTab(
-                                    "https://liberapay.com/nekohasekai"
+                                    "https://sekai.icu/sponsors/"
                                 )
                             }
                             .setOnLongClickAction {
