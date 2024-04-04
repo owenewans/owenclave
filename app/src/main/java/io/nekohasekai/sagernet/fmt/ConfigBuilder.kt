@@ -41,6 +41,8 @@ import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult.IndexEntity
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
+import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
+import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
@@ -1023,7 +1025,13 @@ fun buildV2RayConfig(
                             DokodemoDoorInboundConfigurationObject().apply {
                                 address = bean.serverAddress
                                 network = bean.network()
-                                port = bean.serverPort
+                                if (bean is HysteriaBean) {
+                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                } else if (bean is Hysteria2Bean) {
+                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                } else {
+                                    port = bean.serverPort
+                                }
                             })
 
                         pastInboundTag = tag
@@ -1043,6 +1051,13 @@ fun buildV2RayConfig(
                                 address = bean.serverAddress
                                 network = bean.network()
                                 port = bean.serverPort
+                                if (bean is HysteriaBean) {
+                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                } else if (bean is Hysteria2Bean) {
+                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                } else {
+                                    port = bean.serverPort
+                                }
                             })
                         routing.rules.add(RoutingObject.RuleObject().apply {
                             type = "field"
