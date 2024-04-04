@@ -168,9 +168,8 @@ class VpnService : BaseVpnService(),
     private fun startVpn() {
         instance = this
 
-        val profile = data.proxy!!.profile
         val builder = Builder().setConfigureIntent(SagerNet.configureIntent(this))
-            .setSession(profile.displayName())
+            .setSession(getString(R.string.app_name))
             .setMtu(DataStore.mtu)
 
         val useFakeDns = DataStore.enableFakeDns
