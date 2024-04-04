@@ -573,5 +573,6 @@
     <string name="action_camera_switch">Switch camera</string>
     <string name="action_flash_off">Turn off flash</string>
     <string name="hysteria_hop_interval">Hop Interval</string>
+    <string name="connection_test_delete_unavailable">Clear unavailable</string>
 
 </resources>

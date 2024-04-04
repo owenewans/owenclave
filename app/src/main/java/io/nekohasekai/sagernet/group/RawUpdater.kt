@@ -106,9 +106,10 @@ object RawUpdater : GroupUpdater() {
         val duplicate = ArrayList<String>()
         if (subscription.deduplication) {
             Logs.d("Before deduplication: ${proxies.size}")
-            val uniqueProxies = LinkedHashSet<AbstractBean>()
-            val uniqueNames = HashMap<AbstractBean, String>()
-            for (proxy in proxies) {
+            val uniqueProxies = LinkedHashSet<Protocols.Deduplication>()
+            val uniqueNames = HashMap<Protocols.Deduplication, String>()
+            for (_proxy in proxies) {
+                val proxy = Protocols.Deduplication(_proxy, _proxy.javaClass.toString())
                 if (!uniqueProxies.add(proxy)) {
                     val index = uniqueProxies.indexOf(proxy)
                     if (uniqueNames.containsKey(proxy)) {
@@ -118,13 +119,13 @@ object RawUpdater : GroupUpdater() {
                             uniqueNames[proxy] = ""
                         }
                     }
-                    duplicate.add(proxy.displayName() + " ($index)")
+                    duplicate.add(_proxy.displayName() + " ($index)")
                 } else {
-                    uniqueNames[proxy] = proxy.displayName()
+                    uniqueNames[proxy] = _proxy.displayName()
                 }
             }
             uniqueProxies.retainAll(uniqueNames.keys)
-            proxies = uniqueProxies.toList()
+            proxies = uniqueProxies.toList().map { it.bean }
         }
 
         Logs.d("New profiles: ${proxies.size}")
