@@ -20,4 +20,10 @@
         app:key="serverConfig"
         app:title="@string/edit" />
 
+    <EditTextPreference
+        app:icon="@drawable/ic_hardware_router"
+        app:key="serverAddress"
+        app:title="@string/server_address"
+        app:useSimpleSummaryProvider="true" />
+
 </PreferenceScreen>

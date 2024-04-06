@@ -443,6 +443,10 @@ data class ProxyEntity(
     }
 
     fun needExternal(): Boolean {
+        val bean = requireBean()
+        if (bean is ConfigBean) {
+            return bean.type != "v2ray_outbound"
+        }
         return when (type) {
             TYPE_TROJAN -> DataStore.providerTrojan != TrojanProvider.V2RAY
             TYPE_TROJAN_GO -> true
@@ -458,7 +462,6 @@ data class ProxyEntity(
             TYPE_TUIC5 -> true
             TYPE_SHADOWTLS -> true
 
-            TYPE_CONFIG -> true
             else -> false
         }
     }

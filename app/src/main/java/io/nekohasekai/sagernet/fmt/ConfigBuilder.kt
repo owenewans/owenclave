@@ -38,6 +38,7 @@ import io.nekohasekai.sagernet.bg.VpnService
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
+import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult.IndexEntity
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
@@ -990,8 +991,13 @@ fun buildV2RayConfig(
                         }
                     }
 
-                    currentOutbound.tag = tagIn
                     currentOutbound.domainStrategy = currentDomainStrategy
+
+                    if (bean is ConfigBean && bean.type == "v2ray_outbound") {
+                        currentOutbound = gson.fromJson(bean.content, OutboundObject::class.java).apply { init() }
+                    }
+
+                    currentOutbound.tag = tagIn
 
                 }
 
@@ -1363,7 +1369,19 @@ fun buildV2RayConfig(
         val bootstrapDomain = HashSet<String>()
 
         (proxies + extraProxies.values.flatten()).forEach {
-            it.requireBean().apply {
+            val bean = it.requireBean()
+            bean.apply {
+                if (bean is ConfigBean) {
+                    // too dirty to read server addresses from a custom outbound config
+                    // let users provide them manually
+                    bean.serverAddresses.split("\n").forEach {
+                        if (!it.isIpAddress()) {
+                            bypassDomain.add("full:$it")
+                        } else {
+                            bypassIP.add(it)
+                        }
+                    }
+                }
                 if (!serverAddress.isIpAddress()) {
                     bypassDomain.add("full:$serverAddress")
                 } else {

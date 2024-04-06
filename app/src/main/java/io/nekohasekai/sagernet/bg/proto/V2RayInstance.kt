@@ -207,6 +207,8 @@ abstract class V2RayInstance(
                                     bean.content, port
                                 )
                             }
+                            "v2ray_outbound" -> {
+                            }
                             else -> {
                                 externalInstances[port] = ExternalInstance(
                                     profile, port

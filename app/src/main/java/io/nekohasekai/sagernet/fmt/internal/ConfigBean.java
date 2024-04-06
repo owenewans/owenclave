@@ -31,6 +31,7 @@ public class ConfigBean extends InternalBean {
 
     public String type;
     public String content;
+    public String serverAddresses;
 
     @Override
     public String displayName() {
@@ -47,14 +48,16 @@ public class ConfigBean extends InternalBean {
         if (name == null) name = "";
         if (type == null) type = "v2ray";
         if (content == null) content = "{}";
+        if (serverAddresses == null) serverAddresses = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
 
         output.writeString(type);
         output.writeString(content);
+        output.writeString(serverAddresses);
     }
 
     @Override
@@ -63,6 +66,9 @@ public class ConfigBean extends InternalBean {
 
         type = input.readString();
         content = input.readString();
+        if (version >= 1) {
+            serverAddresses = input.readString();
+        }
     }
 
     @NonNull
