@@ -67,7 +67,7 @@ public class HysteriaBean extends AbstractBean {
 
     @Override
     public boolean canMapping() {
-        return protocol != PROTOCOL_FAKETCP;
+        return protocol != PROTOCOL_FAKETCP && !serverPorts.contains("-") && !serverPorts.contains(",");
     }
 
     @Override

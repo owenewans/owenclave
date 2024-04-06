@@ -55,7 +55,7 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public boolean canMapping() {
-        return true;
+        return !serverPorts.contains("-") && !serverPorts.contains(",");
     }
 
     @Override
