@@ -139,6 +139,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var security: SimpleMenuPreference
     lateinit var xtlsFlow: SimpleMenuPreference
 
+    lateinit var sni: EditTextPreference
     lateinit var alpn: EditTextPreference
     lateinit var securityCategory: PreferenceCategory
     lateinit var certificates: EditTextPreference
@@ -172,6 +173,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         quicSecurity = findPreference(Key.SERVER_QUIC_SECURITY)!!
         security = findPreference(Key.SERVER_SECURITY)!!
 
+        sni = findPreference(Key.SERVER_SNI)!!
         alpn = findPreference(Key.SERVER_ALPN)!!
         securityCategory = findPreference(Key.SERVER_SECURITY_CATEGORY)!!
         certificates = findPreference(Key.SERVER_CERTIFICATES)!!
@@ -385,10 +387,12 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isNone = tle == "none"
         val isTLS = tle == "tls"
         val isReality = tle == "reality"
+        securityCategory.isVisible = isTLS || isReality
         certificates.isVisible = isTLS
         pinnedCertificateChain.isVisible = isTLS
         allowInsecure.isVisible = isTLS
-        alpn.isVisible = isTLS || isNone
+        sni.isVisible = isTLS || isReality
+        alpn.isVisible = isTLS
         realityPublicKey.isVisible = isReality
         realityShortId.isVisible = isReality
         realitySpiderX.isVisible = isReality
