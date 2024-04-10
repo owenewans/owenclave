@@ -169,7 +169,7 @@ fun Project.setupKotlinCommon() {
 }
 
 fun Project.setupNdk() {
-    android.ndkVersion = "26.2.11394342"
+    android.ndkVersion = "26.3.11579264"
 }
 
 fun Project.setupNdkLibrary() {

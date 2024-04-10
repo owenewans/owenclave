@@ -5,7 +5,7 @@
 [ -d "$ANDROID_HOME" ] || ANDROID_HOME="$HOME/.local/lib/android/sdk"
 [ -d "$ANDROID_HOME" ] || ANDROID_HOME="$HOME/Library/Android/sdk"
 
-_NDK="$ANDROID_HOME/ndk/26.2.11394342"
+_NDK="$ANDROID_HOME/ndk/26.3.11579264"
 [ -f "$_NDK/source.properties" ] || _NDK="$NDK"
 [ -f "$_NDK/source.properties" ] || _NDK="$ANDROID_NDK_HOME"
 
