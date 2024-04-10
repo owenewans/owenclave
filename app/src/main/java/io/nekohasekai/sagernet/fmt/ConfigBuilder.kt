@@ -32,6 +32,7 @@ import com.google.gson.JsonSyntaxException
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
+import io.nekohasekai.sagernet.Hysteria2Provider
 import io.nekohasekai.sagernet.Shadowsocks2022Implementation
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.bg.VpnService
@@ -792,6 +793,23 @@ fun buildV2RayConfig(
                                                 }
                                             }
                                         }
+                                        "hysteria2" -> {
+                                            hy2Settings = Hy2Object().apply {
+                                                if (bean.hy2UpMbps > 0 && bean.hy2DownMbps > 0) {
+                                                    congestion = Hy2Object.CongestionObject().apply {
+                                                        type = "brutal"
+                                                        down_mbps = bean.hy2DownMbps
+                                                        up_mbps = bean.hy2UpMbps
+                                                    }
+                                                }
+                                                if (bean.hy2ObfsPassword.isNotBlank()) {
+                                                    obfs = Hy2Object.OBFSObject().apply {
+                                                        type = "salamander"
+                                                        password = bean.hy2ObfsPassword
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     if (needKeepAliveInterval) {
@@ -968,6 +986,52 @@ fun buildV2RayConfig(
                                         }
                                     }
                                 }
+                            } else if (bean is Hysteria2Bean && DataStore.providerHysteria2 == Hysteria2Provider.V2RAY && bean.canMapping()) {
+                                protocol = "hysteria2"
+                                settings = LazyOutboundConfigurationObject(this,
+                                    Hysteria2OutboundConfigurationObject().apply {
+                                        servers = listOf(Hysteria2OutboundConfigurationObject.ServerObject().apply {
+                                            address = bean.serverAddress
+                                            port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                        })
+                                    }
+                                )
+                                streamSettings = StreamSettingsObject().apply {
+                                    if (needKeepAliveInterval) {
+                                        sockopt = StreamSettingsObject.SockoptObject().apply {
+                                            tcpKeepAliveInterval = keepAliveInterval
+                                        }
+                                    }
+                                    network = "hysteria2"
+                                    security = "tls"
+                                    hy2Settings = Hy2Object().apply {
+                                        use_udp_extension = true
+                                        if (bean.auth.isNotBlank()) {
+                                            password = bean.auth
+                                        }
+                                        if (bean.uploadMbps > 0 && bean.downloadMbps > 0) {
+                                            congestion = Hy2Object.CongestionObject().apply {
+                                                type = "brutal"
+                                                down_mbps = bean.downloadMbps
+                                                up_mbps = bean.uploadMbps
+                                            }
+                                        }
+                                        if (bean.obfs.isNotBlank()) {
+                                            obfs = Hy2Object.OBFSObject().apply {
+                                                type = "salamander"
+                                                password = bean.obfs
+                                            }
+                                        }
+                                    }
+                                    tlsSettings = TLSObject().apply {
+                                        if (bean.sni.isNotBlank()) {
+                                            serverName = bean.sni
+                                        }
+                                        if (bean.allowInsecure) {
+                                            allowInsecure = true
+                                        }
+                                    }
+                                }
                             }
                             if ((isBalancer || index == 0) && proxyEntity.needCoreMux() && DataStore.enableMux) {
                                 mux = OutboundObject.MuxObject().apply {
@@ -1059,7 +1123,7 @@ fun buildV2RayConfig(
                                 port = bean.serverPort
                                 if (bean is HysteriaBean) {
                                     port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
-                                } else if (bean is Hysteria2Bean) {
+                                } else if (bean is Hysteria2Bean && (DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || bean.canMapping())) {
                                     port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
                                 } else {
                                     port = bean.serverPort

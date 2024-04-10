@@ -216,6 +216,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var shadowsocks2022Implementation by configurationStore.stringToInt(Key.SHADOWSOCKS_2022_IMPLEMENTATION)
     var providerTrojan by configurationStore.stringToInt(Key.PROVIDER_TROJAN)
+    var providerHysteria2 by configurationStore.stringToInt(Key.PROVIDER_HYSTERIA2)
     var providerRootCA by configurationStore.stringToInt(Key.PROVIDER_ROOT_CA)
 
     // cache

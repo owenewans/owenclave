@@ -29,6 +29,7 @@ import com.esotericsoftware.kryo.io.ByteBufferInput
 import com.esotericsoftware.kryo.io.ByteBufferOutput
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.TrojanProvider
+import io.nekohasekai.sagernet.Hysteria2Provider
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.KryoConverters
@@ -447,13 +448,15 @@ data class ProxyEntity(
         if (bean is ConfigBean) {
             return bean.type != "v2ray_outbound"
         }
+        if (bean is Hysteria2Bean) {
+            return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || !bean.canMapping()
+        }
         return when (type) {
             TYPE_TROJAN -> DataStore.providerTrojan != TrojanProvider.V2RAY
             TYPE_TROJAN_GO -> true
             TYPE_NAIVE -> true
             TYPE_PING_TUNNEL -> true
             TYPE_HYSTERIA -> true
-            TYPE_HYSTERIA2 -> true
             TYPE_RELAY_BATON -> true
             TYPE_BROOK -> true
             TYPE_MIERU -> true

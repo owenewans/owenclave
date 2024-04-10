@@ -81,6 +81,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverRealitySpiderX = realitySpiderX
         DataStore.serverRealityFingerprint = realityFingerprint
 
+        DataStore.serverUploadSpeed = hy2UpMbps
+        DataStore.serverDownloadSpeed = hy2DownMbps
+        DataStore.serverObfs = hy2ObfsPassword
+
         DataStore.serverWsBrowserForwarding = wsUseBrowserForwarder
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverPacketEncoding = packetEncoding
@@ -125,6 +129,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         realitySpiderX = DataStore.serverRealitySpiderX
         realityFingerprint = DataStore.serverRealityFingerprint
 
+        hy2UpMbps = DataStore.serverUploadSpeed
+        hy2DownMbps = DataStore.serverDownloadSpeed
+        hy2ObfsPassword = DataStore.serverObfs
+
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
         allowInsecure = DataStore.serverAllowInsecure
         packetEncoding = DataStore.serverPacketEncoding
@@ -151,6 +159,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var realityShortId: EditTextPreference
     lateinit var realitySpiderX: EditTextPreference
     lateinit var realityFingerprint: SimpleMenuPreference
+
+    lateinit var hy2UpMbps: EditTextPreference
+    lateinit var hy2DownMbps: EditTextPreference
+    lateinit var hy2ObfsPassword: EditTextPreference
 
     lateinit var wsCategory: PreferenceCategory
     lateinit var vmessExperimentsCategory: PreferenceCategory
@@ -186,6 +198,19 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
         realitySpiderX = findPreference(Key.SERVER_REALITY_SPIDER_X)!!
         realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
+
+        hy2UpMbps = findPreference(Key.SERVER_UPLOAD_SPEED)!!
+        hy2UpMbps.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
+        hy2DownMbps = findPreference(Key.SERVER_DOWNLOAD_SPEED)!!
+        hy2DownMbps.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
+        hy2ObfsPassword = findPreference(Key.SERVER_OBFS)!!
+        hy2ObfsPassword.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
 
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
 
@@ -276,6 +301,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isHTTP = network == "http"
         val isMeek = network == "meek"
         val isHttpUpgrade = network == "httpupgrade"
+        val isHysteria2 = network == "hysteria2"
+        hy2UpMbps.isVisible = isHysteria2
+        hy2DownMbps.isVisible = isHysteria2
+        hy2ObfsPassword.isVisible = isHysteria2
         quicSecurity.isVisible = isQuic
         utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHTTP || isMeek || isHttpUpgrade)
         realityFingerprint.isVisible = security.value == "reality"
@@ -379,6 +408,11 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 header.isVisible = false
                 requestHost.isVisible = false
                 path.isVisible = true
+            }
+            "hysteria2" -> {
+                path.isVisible = false
+                header.isVisible = false
+                requestHost.isVisible = false
             }
         }
     }

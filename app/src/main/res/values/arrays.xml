@@ -395,6 +395,7 @@
         <item>GRPC</item>
         <item>Meek</item>
         <item>HTTPUpgrade</item>
+        <item>Hysteria2</item>
     </string-array>
 
     <string-array name="networks_value">
@@ -406,6 +407,7 @@
         <item>grpc</item>
         <item>meek</item>
         <item>httpupgrade</item>
+        <item>hysteria2</item>
     </string-array>
 
     <string-array name="trojan_go_networks_entry">
@@ -659,6 +661,16 @@
     <string-array name="trojan_provider_value">
         <item>0</item>
         <item>2</item>
+    </string-array>
+
+    <string-array name="hysteria2_provider">
+        <item>Hysteria 2 Plugin</item>
+        <item>V2Ray</item>
+    </string-array>
+
+    <string-array name="hysteria2_provider_value">
+        <item>0</item>
+        <item>1</item>
     </string-array>
 
     <string-array name="group_types">

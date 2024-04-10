@@ -92,6 +92,7 @@ object Key {
 
     const val SHADOWSOCKS_2022_IMPLEMENTATION = "shadowsocks2022Implementation"
     const val PROVIDER_TROJAN = "providerTrojan"
+    const val PROVIDER_HYSTERIA2 = "providerHysteria2"
     const val PROVIDER_ROOT_CA = "providerRootCA"
 
     const val TUN_IMPLEMENTATION = "tunImplementation"
@@ -247,6 +248,11 @@ object TrojanProvider {
     const val V2RAY = 0
     const val TROJAN = 1
     const val TROJAN_GO = 2
+}
+
+object Hysteria2Provider {
+    const val HYSTERIA2_PLUGIN = 0
+    const val V2RAY = 1
 }
 
 object Shadowsocks2022Implementation {

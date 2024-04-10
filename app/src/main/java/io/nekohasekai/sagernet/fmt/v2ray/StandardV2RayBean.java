@@ -167,6 +167,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String realitySpiderX;
     public String realityFingerprint;
 
+    public Integer hy2DownMbps;
+    public Integer hy2UpMbps;
+    public String hy2ObfsPassword;
+
     @Override
     public boolean allowInsecure() {
         return allowInsecure;
@@ -208,11 +212,15 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(realitySpiderX)) realitySpiderX = "";
         if (StrUtil.isBlank(realityFingerprint)) realityFingerprint = "chrome";
 
+        if (hy2DownMbps == null) hy2DownMbps = 0;
+        if (hy2UpMbps == null) hy2UpMbps = 0;
+        if (StrUtil.isBlank(hy2ObfsPassword)) hy2ObfsPassword = "";
+
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(13);
+        output.writeInt(14);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -258,6 +266,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "httpupgrade": {
                 output.writeString(host);
                 output.writeString(path);
+            }
+            case "hysteria2": {
+                output.writeInt(hy2DownMbps);
+                output.writeInt(hy2UpMbps);
+                output.writeString(hy2ObfsPassword);
             }
         }
 
@@ -349,6 +362,13 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (version >= 12) {
                     host = input.readString();
                     path = input.readString();
+                }
+            }
+            case "hysteria2": {
+                if (version >= 14) {
+                    hy2DownMbps = input.readInt();
+                    hy2UpMbps = input.readInt();
+                    hy2ObfsPassword = input.readString();
                 }
             }
         }

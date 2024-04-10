@@ -505,6 +505,8 @@ public class V2RayConfig {
                     return SSHOutbountConfigurationObject.class;
                 case "shadowsocks2022":
                     return Shadowsocks2022OutboundConfigurationObject.class;
+                case "hysteria2":
+                    return Hysteria2OutboundConfigurationObject.class;
             }
             return null;
         }
@@ -718,6 +720,21 @@ public class V2RayConfig {
 
     }
 
+    public static class Hysteria2OutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public List<ServerObject> servers;
+
+        public static class ServerObject {
+
+            public String address;
+            public Integer port;
+            public String email;
+            public Integer level;
+
+        }
+
+    }
+
     public TransportObject transport;
 
     public static class TransportObject {
@@ -733,6 +750,7 @@ public class V2RayConfig {
         public GrpcObject grpcSettings;
         public MeekObject meekSettings;
         public HTTPUpgradeObject httpUpgradeSettings;
+        public Hy2Object hy2Settings;
 
     }
 
@@ -751,6 +769,7 @@ public class V2RayConfig {
         public GrpcObject grpcSettings;
         public MeekObject meekSettings;
         public HTTPUpgradeObject httpUpgradeSettings;
+        public Hy2Object hy2Settings;
         public SockoptObject sockopt;
 
         public static class SockoptObject {
@@ -914,6 +933,27 @@ public class V2RayConfig {
 
         public String host;
         public String path;
+
+    }
+
+    public static class Hy2Object {
+
+        public String password;
+        public CongestionObject congestion;
+        public Boolean ignore_client_bandwidth;
+        public Boolean use_udp_extension;
+        public OBFSObject obfs;
+
+        public static class CongestionObject {
+            public String type;
+            public Integer up_mbps;
+            public Integer down_mbps;
+        }
+
+        public static class OBFSObject {
+            public String type;
+            public String password;
+        }
 
     }
 

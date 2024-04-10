@@ -77,6 +77,21 @@
             app:key="serverPath"
             app:title="@string/http_path"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_file_file_upload"
+            app:key="serverUploadSpeed"
+            app:title="@string/hysteria_upload_mbps"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_download_24"
+            app:key="serverDownloadSpeed"
+            app:title="@string/hysteria_download_mbps"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverObfs"
+            app:title="@string/hysteria_obfs" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/transport_layer_encryption_entry"
             app:entryValues="@array/transport_layer_encryption_value"
