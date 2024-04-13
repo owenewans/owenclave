@@ -370,9 +370,7 @@ fun Project.setupPlugin(projectName: String) {
         }
     }
 
-    if (projName != "naive") {
-        dependencies.add("implementation", project(":plugin:api"))
-    }
+    dependencies.add("implementation", project(":plugin:api"))
 
 }
 
