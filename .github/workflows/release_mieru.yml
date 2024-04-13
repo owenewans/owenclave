@@ -1,4 +1,4 @@
-name: Mieru 2 Plugin Release Build
+name: Mieru Plugin Release Build
 on:
   workflow_dispatch:
     inputs:
@@ -16,14 +16,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Fetch Status
-        run: git submodule status 'plugin/mieru2/*' > mieru2_status
-      - name: Mieru 2 Cache
+        run: git submodule status 'plugin/mieru/*' > mieru_status
+      - name: Mieru Cache
         id: cache
         uses: actions/cache@v3
         with:
           path: |
-            plugin/mieru2/src/main/jniLibs
-          key: ${{ hashFiles('.github/workflows/*', 'bin/lib/mieru2/*', 'mieru2_status') }}
+            plugin/mieru/src/main/jniLibs
+          key: ${{ hashFiles('.github/workflows/*', 'bin/lib/mieru/*', 'mieru_status') }}
       - name: Gradle cache
         uses: actions/cache@v3
         with:
@@ -38,7 +38,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           export ANDROID_NDK_HOME=${ANDROID_NDK_LATEST_HOME}
-          ./run plugin mieru2
+          ./run plugin mieru
   build:
     name: Gradle Build
     runs-on: ubuntu-latest
@@ -48,13 +48,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Fetch Status
-        run: git submodule status 'plugin/mieru2/*' > mieru2_status
-      - name: Mieru 2 Cache
+        run: git submodule status 'plugin/mieru/*' > mieru_status
+      - name: Mieru Cache
         uses: actions/cache@v3
         with:
           path: |
-            plugin/mieru2/src/main/jniLibs
-          key: ${{ hashFiles('.github/workflows/*', 'bin/lib/mieru2/*', 'mieru2_status') }}
+            plugin/mieru/src/main/jniLibs
+          key: ${{ hashFiles('.github/workflows/*', 'bin/lib/mieru/*', 'mieru_status') }}
       - name: Gradle cache
         uses: actions/cache@v3
         with:
@@ -69,13 +69,13 @@ jobs:
       - name: Release Build
         env:
           SKIP_BUILD: on
-          BUILD_PLUGIN: mieru2
+          BUILD_PLUGIN: mieru
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           ./run init action library
-          ./gradlew :plugin:mieru2:assembleOssRelease
-          APK=$(find plugin/mieru2/build/outputs/apk -name '*arm64-v8a*.apk')
+          ./gradlew :plugin:mieru:assembleOssRelease
+          APK=$(find plugin/mieru/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname "$APK")
           echo "APK=$APK" >> $GITHUB_ENV
       - uses: actions/upload-artifact@v3

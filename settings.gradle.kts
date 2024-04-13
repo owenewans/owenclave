@@ -11,7 +11,7 @@ when {
         include(":plugin:naive")
         include(":plugin:brook")
         include(":plugin:hysteria2")
-        include(":plugin:mieru2")
+        include(":plugin:mieru")
         include(":plugin:shadowtls")
     }
     buildPlugin == "none" -> {

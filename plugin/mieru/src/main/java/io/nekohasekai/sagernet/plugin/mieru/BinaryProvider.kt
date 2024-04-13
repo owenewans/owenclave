@@ -16,7 +16,7 @@
  *                                                                            *
  ******************************************************************************/
 
-package io.nekohasekai.sagernet.plugin.mieru2
+package io.nekohasekai.sagernet.plugin.mieru
 
 import android.net.Uri
 import android.os.ParcelFileDescriptor
@@ -27,12 +27,12 @@ import java.io.FileNotFoundException
 
 class BinaryProvider : NativePluginProvider() {
     override fun populateFiles(provider: PathProvider) {
-        provider.addPath("mieru2-plugin", 0b111101101)
+        provider.addPath("mieru-plugin", 0b111101101)
     }
 
-    override fun getExecutable() = context!!.applicationInfo.nativeLibraryDir + "/libmieru2.so"
+    override fun getExecutable() = context!!.applicationInfo.nativeLibraryDir + "/libmieru.so"
     override fun openFile(uri: Uri): ParcelFileDescriptor = when (uri.path) {
-        "/mieru2-plugin" -> ParcelFileDescriptor.open(
+        "/mieru-plugin" -> ParcelFileDescriptor.open(
             File(getExecutable()), ParcelFileDescriptor.MODE_READ_ONLY
         )
         else -> throw FileNotFoundException()

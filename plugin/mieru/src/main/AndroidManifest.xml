@@ -15,11 +15,11 @@
         android:allowBackup="false"
         android:extractNativeLibs="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Mieru 2 Plugin"
+        android:label="Mieru Plugin"
         android:roundIcon="@mipmap/ic_launcher_round">
         <provider
-            android:name="io.nekohasekai.sagernet.plugin.mieru2.BinaryProvider"
-            android:authorities="com.github.dyhkwong.plugin.mieru2.BinaryProvider"
+            android:name="io.nekohasekai.sagernet.plugin.mieru.BinaryProvider"
+            android:authorities="com.github.dyhkwong.plugin.mieru.BinaryProvider"
             android:directBootAware="true"
             android:exported="true"
             tools:ignore="ExportedContentProvider">
@@ -30,16 +30,16 @@
                 <action android:name="io.nekohasekai.sagernet.plugin.ACTION_NATIVE_PLUGIN" />
                 <data
                     android:host="com.github.dyhkwong.sagernet"
-                    android:path="/mieru2-plugin"
+                    android:path="/mieru-plugin"
                     android:scheme="plugin" />
             </intent-filter>
 
             <meta-data
                 android:name="io.nekohasekai.sagernet.plugin.id"
-                android:value="mieru2-plugin" />
+                android:value="mieru-plugin" />
             <meta-data
                 android:name="io.nekohasekai.sagernet.plugin.executable_path"
-                android:value="libmieru2.so" />
+                android:value="libmieru.so" />
         </provider>
     </application>
 

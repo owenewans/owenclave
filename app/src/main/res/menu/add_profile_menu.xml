@@ -64,9 +64,6 @@
                         android:id="@+id/action_new_mieru"
                         android:title="@string/action_mieru" />
                     <item
-                        android:id="@+id/action_new_mieru2"
-                        android:title="@string/action_mieru2" />
-                    <item
                         android:id="@+id/action_new_tuic"
                         android:title="@string/action_tuic" />
                     <item

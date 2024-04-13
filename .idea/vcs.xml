@@ -10,7 +10,7 @@
     <mapping directory="$PROJECT_DIR$/library/core" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin/brook/src/main/go/brook" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin/hysteria2/src/main/go/hysteria2" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/plugin/mieru2/src/main/go/mieru2" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/plugin/mieru/src/main/go/mieru" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin/naive/src/main/jni/naiveproxy" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin/shadowtls/src/main/rust/shadowtls" vcs="Git" />
   </component>

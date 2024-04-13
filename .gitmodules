@@ -10,8 +10,8 @@
 [submodule "library/core"]
 	path = library/core
 	url = https://github.com/dyhkwong/LibSagerNetCore
-[submodule "plugin/mieru2/src/main/go/mieru2"]
-	path = plugin/mieru2/src/main/go/mieru2
+[submodule "plugin/mieru/src/main/go/mieru"]
+	path = plugin/mieru/src/main/go/mieru
 	url = https://github.com/enfein/mieru
 [submodule "plugin/shadowtls/src/main/rust/shadowtls"]
 	path = plugin/shadowtls/src/main/rust/shadowtls
