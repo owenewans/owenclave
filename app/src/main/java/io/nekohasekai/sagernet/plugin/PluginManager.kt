@@ -107,6 +107,11 @@ object PluginManager {
             Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "moe.matsuri.lite")), flags)
             .filter { it.providerInfo.exported }
         }
+        if (providers.isEmpty()) {
+            providers = SagerNet.application.packageManager.queryIntentContentProviders(
+            Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "fr.husi")), flags)
+            .filter { it.providerInfo.exported }
+        }
         if (providers.isEmpty()) return null
         if (providers.size > 1) {
             val message =
