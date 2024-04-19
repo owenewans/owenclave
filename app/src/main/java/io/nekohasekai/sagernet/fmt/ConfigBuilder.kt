@@ -1457,7 +1457,7 @@ fun buildV2RayConfig(
         if (bypassIP.isNotEmpty()) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
-                ip = bypassIP.toList()
+                ip = bypassIP.toList() //TODO: How to deal with IPOnDemand?
                 outboundTag = TAG_DIRECT
             })
         }
@@ -1479,10 +1479,7 @@ fun buildV2RayConfig(
             Uri.parse(dns).host?.takeIf { !it.isIpAddress() }?.also {
                 bypassDomain.add("full:$it")
             }
-        }
-
-        remoteDns.forEach { dns ->
-            { !dns.contains("://") && !dns.isIpAddress() && dns != "localhost" }?.also {
+            if (!dns.contains("://") && !dns.isIpAddress() && dns != "localhost") {
                 bypassDomain.add("full:$dns")
             }
         }
@@ -1491,10 +1488,7 @@ fun buildV2RayConfig(
             Uri.parse(dns).host?.takeIf { !it.isIpAddress() }?.also {
                 bootstrapDomain.add("full:$it")
             }
-        }
-
-        directDNS.forEach { dns ->
-            { !dns.contains("://") && !dns.isIpAddress() && dns != "localhost" }?.also {
+            if (!dns.contains("://") && !dns.isIpAddress() && dns != "localhost") {
                 bootstrapDomain.add("full:$dns")
             }
         }
@@ -1588,6 +1582,25 @@ fun buildV2RayConfig(
             })
         }
 
+        val directDNSIPs = HashSet<String>()
+        (directDNS + bootstrapDNS).forEach { dns ->
+            Uri.parse(dns).host?.also {
+                if (!dns.contains("+local://") && it.isIpAddress()) {
+                    directDNSIPs.add("$it")
+                }
+            }
+            if (!dns.contains("://") && dns != "localhost" && dns.isIpAddress()) {
+                directDNSIPs.add("$dns")
+            }
+        }
+        if (directDNSIPs.isNotEmpty()) {
+            routing.rules.add(0, RoutingObject.RuleObject().apply {
+                type = "field"
+                ip = directDNSIPs.toList() //TODO: How to deal with IPOnDemand?
+                outboundTag = TAG_BYPASS
+            })
+        }
+
         if (!hijackDns) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
@@ -1608,7 +1621,7 @@ fun buildV2RayConfig(
             // temp: fix crash
             routing.rules.add(RoutingObject.RuleObject().apply {
                 type = "field"
-                ip = listOf("255.255.255.255")
+                ip = listOf("255.255.255.255") //TODO: How to deal with IPOnDemand?
                 outboundTag = TAG_BLOCK
             })
         }
