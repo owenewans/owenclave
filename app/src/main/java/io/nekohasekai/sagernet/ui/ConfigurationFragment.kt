@@ -1540,6 +1540,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             val shareLayout: LinearLayout = view.findViewById(R.id.share)
             val shareLayer: LinearLayout = view.findViewById(R.id.share_layer)
             val shareButton: ImageView = view.findViewById(R.id.shareIcon)
+            val deleteButton: ImageView = view.findViewById(R.id.deleteIcon)
 
             fun bind(proxyEntity: ProxyEntity) {
                 val parent = parent ?: return
@@ -1653,7 +1654,24 @@ class ConfigurationFragment @JvmOverloads constructor(
                     )
                 }
 
+                deleteButton.setOnClickListener {
+                    MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(getString(R.string.delete_confirm_prompt))
+                        .setPositiveButton(R.string.yes) { _, _ ->
+                            val index = adapter.configurationIdList.indexOf(proxyEntity.id)
+                            if (index > 0) {
+                                adapter.remove(index)
+                                runOnDefaultDispatcher {
+                                    ProfileManager.deleteProfile(proxyEntity.groupId, proxyEntity.id)
+                                }
+                            }
+                        }
+                        .setNegativeButton(R.string.no, null)
+                        .show()
+                }
+
                 editButton.isGone = parent.select
+                deleteButton.isGone = parent.select
 
                 runOnDefaultDispatcher {
                     val selected = (parent.selectedItem?.id
@@ -1661,6 +1679,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                     val started = selected && SagerNet.started && DataStore.startedProfile == proxyEntity.id
                     onMainDispatcher {
                         editButton.isEnabled = !started
+                        deleteButton.isEnabled = !started
                         selectedView.visibility = if (selected) View.VISIBLE else View.INVISIBLE
                     }
 
