@@ -354,13 +354,13 @@ fun buildV2RayConfig(
                         outboundTag = TAG_DIRECT
                         when {
                             bean.host.isIpAddress() -> {
-                                ip = listOf(bean.host)
+                                ip = listOf(bean.host) //TODO: How to deal with IPOnDemand?
                             }
                             bean.host.isNotBlank() -> {
                                 domain = listOf(bean.host)
                             }
                             bean.serverAddress.isIpAddress() -> {
-                                ip = listOf(bean.serverAddress)
+                                ip = listOf(bean.serverAddress) //TODO: How to deal with IPOnDemand?
                             }
                             else -> domain = listOf(bean.serverAddress)
                         }
@@ -375,7 +375,7 @@ fun buildV2RayConfig(
                 rules.add(RoutingObject.RuleObject().apply {
                     type = "field"
                     outboundTag = TAG_BYPASS
-                    ip = listOf("geoip:private")
+                    ip = listOf("geoip:private") //TODO: How to deal with IPOnDemand?
                 })
             }
         }
@@ -1441,16 +1441,16 @@ fun buildV2RayConfig(
                     bean.serverAddresses.split("\n").forEach {
                         if (!it.isIpAddress()) {
                             bypassDomain.add("full:$it")
-                        } else {
+                        } /*else {
                             bypassIP.add(it)
-                        }
+                        }*/
                     }
                 }
                 if (!serverAddress.isIpAddress()) {
                     bypassDomain.add("full:$serverAddress")
-                } else {
+                } /*else {
                     bypassIP.add(serverAddress)
-                }
+                }*/
             }
         }
 
