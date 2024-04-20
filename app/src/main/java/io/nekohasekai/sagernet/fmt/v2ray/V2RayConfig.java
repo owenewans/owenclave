@@ -84,6 +84,7 @@ public class V2RayConfig {
             public String fallbackStrategy;
             public String domainMatcher;
             public List<StringOrFakeDnsObject> fakedns;
+            public String detour; // SagerNet private
 
             public static class StringOrFakeDnsObject extends JsonOr<String, FakeDnsObject> {
                 public StringOrFakeDnsObject() {

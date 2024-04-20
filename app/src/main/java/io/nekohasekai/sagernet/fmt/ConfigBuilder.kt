@@ -375,7 +375,7 @@ fun buildV2RayConfig(
                 rules.add(RoutingObject.RuleObject().apply {
                     type = "field"
                     outboundTag = TAG_BYPASS
-                    ip = listOf("geoip:private") //TODO: How to deal with IPOnDemand?
+                    ip = listOf("geoip:private") //TODO: Remove this rule and let user input manually in routing (for IPOnDemand)
                 })
             }
         }
@@ -1427,7 +1427,7 @@ fun buildV2RayConfig(
             }
         })
 
-        val bypassIP = HashSet<String>()
+        //val bypassIP = HashSet<String>()
         val bypassDomain = HashSet<String>()
         val proxyDomain = HashSet<String>()
         val bootstrapDomain = HashSet<String>()
@@ -1441,26 +1441,26 @@ fun buildV2RayConfig(
                     bean.serverAddresses.split("\n").forEach {
                         if (!it.isIpAddress()) {
                             bypassDomain.add("full:$it")
-                        } /*else {
+                        }/* else {
                             bypassIP.add(it)
                         }*/
                     }
                 }
                 if (!serverAddress.isIpAddress()) {
                     bypassDomain.add("full:$serverAddress")
-                } /*else {
+                }/* else {
                     bypassIP.add(serverAddress)
                 }*/
             }
         }
 
-        if (bypassIP.isNotEmpty()) {
+        /*if (bypassIP.isNotEmpty()) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
                 ip = bypassIP.toList() //TODO: How to deal with IPOnDemand?
                 outboundTag = TAG_DIRECT
             })
-        }
+        }*/
 
         if (enableDnsRouting) {
             for (bypassRule in extraRules.filter { it.isBypassRule() }) {
@@ -1498,7 +1498,7 @@ fun buildV2RayConfig(
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
                         address = it
-                        domains = proxyDomain.toList()
+                        domains = proxyDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
                         if (useFakeDns) {
                             fakedns = mutableListOf()
                             fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
@@ -1524,7 +1524,10 @@ fun buildV2RayConfig(
                     DnsObject.StringOrServerObject().apply {
                         valueY = DnsObject.ServerObject().apply {
                             address = it
-                            domains = bootstrapDomain.toList()
+                            domains = bootstrapDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
+                            if (!it.contains("+local://") && it != "localhost") {
+                                detour = TAG_BYPASS
+                            }
                         }
                     }
                 })
@@ -1533,7 +1536,11 @@ fun buildV2RayConfig(
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
                         address = it
-                        domains = bypassDomain.toList()
+                        //FIXME: This relies on the behavior of a bug.
+                        domains = bypassDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
+                        if (!it.contains("+local://") && it != "localhost") {
+                            detour = TAG_BYPASS
+                        }
                         if (useFakeDns) {
                             fakedns = mutableListOf()
                             fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
@@ -1582,25 +1589,6 @@ fun buildV2RayConfig(
             })
         }
 
-        val directDNSIPs = HashSet<String>()
-        (directDNS + bootstrapDNS).forEach { dns ->
-            Uri.parse(dns).host?.also {
-                if (!dns.contains("+local://") && it.isIpAddress()) {
-                    directDNSIPs.add("$it")
-                }
-            }
-            if (!dns.contains("://") && dns != "localhost" && dns.isIpAddress()) {
-                directDNSIPs.add("$dns")
-            }
-        }
-        if (directDNSIPs.isNotEmpty()) {
-            routing.rules.add(0, RoutingObject.RuleObject().apply {
-                type = "field"
-                ip = directDNSIPs.toList() //TODO: How to deal with IPOnDemand?
-                outboundTag = TAG_BYPASS
-            })
-        }
-
         if (!hijackDns) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
@@ -1621,7 +1609,7 @@ fun buildV2RayConfig(
             // temp: fix crash
             routing.rules.add(RoutingObject.RuleObject().apply {
                 type = "field"
-                ip = listOf("255.255.255.255") //TODO: How to deal with IPOnDemand?
+                ip = listOf("255.255.255.255")
                 outboundTag = TAG_BLOCK
             })
         }
