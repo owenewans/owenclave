@@ -370,14 +370,6 @@ fun buildV2RayConfig(
             }
 
             rules.addAll(wsRules.values)
-
-            if (!forTest && DataStore.bypassLan && (requireHttp || DataStore.bypassLanInCoreOnly)) {
-                rules.add(RoutingObject.RuleObject().apply {
-                    type = "field"
-                    outboundTag = TAG_BYPASS
-                    ip = listOf("geoip:private") //TODO: Remove this rule and let user input manually in routing (for IPOnDemand)
-                })
-            }
         }
 
         var rootBalancer: RoutingObject.RuleObject? = null
@@ -1602,6 +1594,14 @@ fun buildV2RayConfig(
                 type = "field"
                 inboundTag = listOf(TAG_DNS_IN)
                 outboundTag = TAG_DNS_OUT
+            })
+        }
+
+        if (!forTest && DataStore.bypassLan && (requireHttp || DataStore.bypassLanInCoreOnly)) {
+            routing.rules.add(RoutingObject.RuleObject().apply {
+                type = "field"
+                outboundTag = TAG_BYPASS
+                ip = listOf("geoip:private")
             })
         }
 
