@@ -31,6 +31,7 @@ import android.os.Build
 import android.text.format.Formatter
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
 import io.nekohasekai.sagernet.Action
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
@@ -205,8 +206,8 @@ class ServiceNotification(
         NotificationManagerCompat.from(service as Service).notify(notificationId, builder.build())
 
     fun destroy() {
-        (service as Service).stopForeground(true)
-        service.unregisterReceiver(this)
+        (service as Service).unregisterReceiver(this)
         updateCallback(false)
+        ServiceCompat.stopForeground(service, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }
 }
