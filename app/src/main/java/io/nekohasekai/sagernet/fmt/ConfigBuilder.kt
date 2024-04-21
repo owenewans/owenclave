@@ -1605,15 +1605,6 @@ fun buildV2RayConfig(
             })
         }
 
-        if (allowAccess) {
-            // temp: fix crash
-            routing.rules.add(RoutingObject.RuleObject().apply {
-                type = "field"
-                ip = listOf("255.255.255.255")
-                outboundTag = TAG_BLOCK
-            })
-        }
-
         if (rootBalancer != null) routing.rules.add(rootBalancer)
 
         if (trafficStatistics) stats = emptyMap()

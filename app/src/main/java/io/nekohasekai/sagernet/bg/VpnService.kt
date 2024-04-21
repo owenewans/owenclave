@@ -26,6 +26,7 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.IpPrefix
 import android.net.Network
 import android.net.ProxyInfo
 import android.os.Build
@@ -52,6 +53,7 @@ import kotlinx.coroutines.launch
 import libcore.*
 import java.io.FileDescriptor
 import java.io.IOException
+import java.net.InetAddress
 import android.net.VpnService as BaseVpnService
 
 class VpnService : BaseVpnService(),
@@ -200,7 +202,48 @@ class VpnService : BaseVpnService(),
                 builder.addRoute(PRIVATE_VLAN6_GATEWAY, 128)
             }
         } else {
-            builder.addRoute("0.0.0.0", 0)
+            if (DataStore.allowAccess) {
+                // it seems that v2ray can't handle broadcast address properly
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    builder.addRoute("0.0.0.0", 0)
+                    builder.excludeRoute(IpPrefix(InetAddress.getByName("255.255.255.255"), 32))
+                } else {
+                    builder.addRoute("0.0.0.0", 1)
+                    builder.addRoute("128.0.0.0", 2)
+                    builder.addRoute("192.0.0.0", 3)
+                    builder.addRoute("224.0.0.0", 4)
+                    builder.addRoute("240.0.0.0", 5)
+                    builder.addRoute("248.0.0.0", 6)
+                    builder.addRoute("252.0.0.0", 7)
+                    builder.addRoute("254.0.0.0", 8)
+                    builder.addRoute("255.0.0.0", 9)
+                    builder.addRoute("255.128.0.0", 10)
+                    builder.addRoute("255.192.0.0", 11)
+                    builder.addRoute("255.224.0.0", 12)
+                    builder.addRoute("255.240.0.0", 13)
+                    builder.addRoute("255.248.0.0", 14)
+                    builder.addRoute("255.252.0.0", 15)
+                    builder.addRoute("255.254.0.0", 16)
+                    builder.addRoute("255.255.0.0", 17)
+                    builder.addRoute("255.255.128.0", 18)
+                    builder.addRoute("255.255.192.0", 19)
+                    builder.addRoute("255.255.224.0", 20)
+                    builder.addRoute("255.255.240.0", 21)
+                    builder.addRoute("255.255.248.0", 22)
+                    builder.addRoute("255.255.252.0", 23)
+                    builder.addRoute("255.255.254.0", 24)
+                    builder.addRoute("255.255.255.0", 25)
+                    builder.addRoute("255.255.255.128", 26)
+                    builder.addRoute("255.255.255.192", 27)
+                    builder.addRoute("255.255.255.224", 28)
+                    builder.addRoute("255.255.255.240", 29)
+                    builder.addRoute("255.255.255.248", 30)
+                    builder.addRoute("255.255.255.252", 31)
+                    builder.addRoute("255.255.255.254", 32)
+                }
+            } else {
+                builder.addRoute("0.0.0.0", 0)
+            }
             if (ipv6Mode != IPv6Mode.DISABLE) {
                 builder.addRoute("::", 0)
             }
