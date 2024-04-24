@@ -650,14 +650,17 @@ class ConfigurationFragment @JvmOverloads constructor(
                 results.add(profile)
                 val index = results.size - 1
                 adapter.notifyItemInserted(index)
-                scrollTimer.schedule(timerTask {
-                    binding.listView.post {
-                        if (currentTask == this) binding.listView.smoothScrollToPosition(index)
-                    }
-                }.also {
-                    currentTask?.cancel()
-                    currentTask = it
-                }, 500L)
+                try {
+                    scrollTimer.schedule(timerTask {
+                        binding.listView.post {
+                            if (currentTask == this) binding.listView.smoothScrollToPosition(index)
+                        }
+                    }.also {
+                        currentTask?.cancel()
+                        currentTask = it
+                    }, 500L)
+                } catch (ignored: Exception) {
+                }
             }
         }
 
@@ -673,7 +676,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                 scrollTimer.schedule(timerTask {
                     scrollTimer.cancel()
                 }, 0)
-            } catch (ignored: IllegalStateException) {
+            } catch (ignored: Exception) {
             }
         }
 
