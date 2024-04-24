@@ -1659,7 +1659,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         .setTitle(getString(R.string.delete_confirm_prompt))
                         .setPositiveButton(R.string.yes) { _, _ ->
                             val index = adapter.configurationIdList.indexOf(proxyEntity.id)
-                            if (index > 0) {
+                            if (index >= 0) {
                                 adapter.remove(index)
                                 runOnDefaultDispatcher {
                                     ProfileManager.deleteProfile(proxyEntity.groupId, proxyEntity.id)
