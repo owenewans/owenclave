@@ -78,6 +78,11 @@ public class NaiveBean extends AbstractBean {
         }
     }
 
+    @Override
+    public boolean canTCPing() {
+        return !proto.equals("quic");
+    }
+
     @NotNull
     @Override
     public NaiveBean clone() {

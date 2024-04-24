@@ -422,6 +422,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
     }
 
     @Override
+    public boolean canTCPing() {
+        return !type.equals("kcp") && !type.equals("quic") && !type.equals("hysteria2");
+    }
+
+    @Override
     public void applyFeatureSettings(AbstractBean other) {
         if (!(other instanceof StandardV2RayBean)) return;
         StandardV2RayBean bean = ((StandardV2RayBean) other);

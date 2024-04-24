@@ -170,6 +170,11 @@ public class HysteriaBean extends AbstractBean {
         }
     }
 
+    @Override
+    public boolean canTCPing() {
+        return false; // Is "faketcp" real TCP?
+    }
+
     @NotNull
     @Override
     public HysteriaBean clone() {

@@ -144,6 +144,11 @@ public class Hysteria2Bean extends AbstractBean {
         }
     }
 
+    @Override
+    public boolean canTCPing() {
+        return false;
+    }
+
     @NotNull
     @Override
     public Hysteria2Bean clone() {

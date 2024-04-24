@@ -839,7 +839,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                     val start = SystemClock.elapsedRealtime()
                                     socket.connect(
                                         InetSocketAddress(
-                                            address, profile.requireBean().serverPort
+                                            address, profile.requireBean().serverPort // hysteria(2) can not tcping, no need to handle serverPorts here
                                         ), 5000
                                     )
                                     if (!isActive) break

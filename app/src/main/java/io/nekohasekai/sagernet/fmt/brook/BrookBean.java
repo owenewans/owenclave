@@ -135,6 +135,11 @@ public class BrookBean extends AbstractBean {
         }
     }
 
+    @Override
+    public boolean canTCPing() {
+        return !protocol.equals("quic");
+    }
+
     @NonNull
     @Override
     public BrookBean clone() {

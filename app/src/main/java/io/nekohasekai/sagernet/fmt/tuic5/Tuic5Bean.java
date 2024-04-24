@@ -88,6 +88,11 @@ public class Tuic5Bean extends AbstractBean {
         uuid = input.readString();
     }
 
+    @Override
+    public boolean canTCPing() {
+        return false;
+    }
+
     @NotNull
     @Override
     public Tuic5Bean clone() {

@@ -82,6 +82,11 @@ public class Mieru2Bean extends AbstractBean {
         }
     }
 
+    @Override
+    public boolean canTCPing() {
+        return protocol != PROTOCOL_UDP;
+    }
+
     @NotNull
     @Override
     public Mieru2Bean clone() {
