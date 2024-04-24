@@ -53,7 +53,7 @@ fun RelayBatonBean.buildRelayBatonConfig(port: Int): String {
         port = $port
         http_port = 0
         redir_port = 0
-        server = "$finalAddress"
+        server = "$serverAddress"
         username = "$username"
         password = "$password"
         proxy_all = true
