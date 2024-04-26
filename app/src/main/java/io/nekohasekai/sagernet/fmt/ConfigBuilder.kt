@@ -1597,6 +1597,8 @@ fun buildV2RayConfig(
             })
         }
 
+        if (rootBalancer != null) routing.rules.add(rootBalancer)
+
         if (!forTest && DataStore.bypassLan && (requireHttp || DataStore.bypassLanInCoreOnly)) {
             routing.rules.add(RoutingObject.RuleObject().apply {
                 type = "field"
@@ -1604,8 +1606,6 @@ fun buildV2RayConfig(
                 ip = listOf("geoip:private")
             })
         }
-
-        if (rootBalancer != null) routing.rules.add(rootBalancer)
 
         if (trafficStatistics) stats = emptyMap()
 
