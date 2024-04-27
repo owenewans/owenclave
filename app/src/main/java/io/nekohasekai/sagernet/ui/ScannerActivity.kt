@@ -252,7 +252,8 @@ class ScannerActivity : ThemedActivity() {
                                     }
                                 }
                             } else {
-                                Toast.makeText(app, R.string.action_import_err, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(app, R.string.action_import_err, Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         } catch (e: SubscriptionFoundException) {
                             startActivity(
@@ -267,7 +268,8 @@ class ScannerActivity : ThemedActivity() {
                         } catch (e: Throwable) {
                             Logs.w(e)
                             onMainDispatcher {
-                                Toast.makeText(app, R.string.action_import_err, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(app, R.string.action_import_err, Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                     }
@@ -303,9 +305,15 @@ class ScannerActivity : ThemedActivity() {
     private var useFront = false
     private lateinit var flash: MenuItem
 
+    private fun resetFlash() {
+        flash.setIcon(R.drawable.ic_action_flight_on)
+        flash.setTitle(R.string.action_flash_on)
+        flash.isVisible = true
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         flash = menu.findItem(R.id.action_flash)
-        return true
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -330,12 +338,13 @@ class ScannerActivity : ThemedActivity() {
             R.id.action_camera_switch -> {
                 useFront = !useFront
                 camera.cameraControl.enableTorch(false)
-                flash.setIcon(R.drawable.ic_action_flight_on)
-                flash.setTitle(R.string.action_flash_on)
-                flash.setVisible(!useFront)
                 val cameraSelector = if (useFront) {
+                    flash.isVisible = false
+
                     CameraSelector.DEFAULT_FRONT_CAMERA
                 } else {
+                    resetFlash()
+
                     CameraSelector.DEFAULT_BACK_CAMERA
                 }
                 cameraProvider.unbindAll()
