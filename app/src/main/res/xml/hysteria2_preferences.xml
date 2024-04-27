@@ -20,14 +20,14 @@
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_settings_password"
+            app:key="serverPassword"
+            app:title="@string/password" />
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverObfs"
             app:title="@string/hysteria_obfs" />
-        <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
-            app:icon="@drawable/ic_settings_password"
-            app:key="serverPassword"
-            app:title="@string/hysteria_auth" />
         <EditTextPreference
             app:icon="@drawable/ic_action_copyright"
             app:key="serverSNI"

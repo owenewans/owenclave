@@ -787,6 +787,9 @@ fun buildV2RayConfig(
                                         }
                                         "hysteria2" -> {
                                             hy2Settings = Hy2Object().apply {
+                                                if (bean.hy2Password.isNotBlank()) {
+                                                    password = bean.hy2Password
+                                                }
                                                 if (bean.hy2UpMbps > 0 && bean.hy2DownMbps > 0) {
                                                     congestion = Hy2Object.CongestionObject().apply {
                                                         type = "brutal"

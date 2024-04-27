@@ -83,6 +83,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         DataStore.serverUploadSpeed = hy2UpMbps
         DataStore.serverDownloadSpeed = hy2DownMbps
+        DataStore.serverPassword = hy2Password
         DataStore.serverObfs = hy2ObfsPassword
 
         DataStore.serverWsBrowserForwarding = wsUseBrowserForwarder
@@ -131,6 +132,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         hy2UpMbps = DataStore.serverUploadSpeed
         hy2DownMbps = DataStore.serverDownloadSpeed
+        hy2Password = DataStore.serverPassword
         hy2ObfsPassword = DataStore.serverObfs
 
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
@@ -162,6 +164,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
     lateinit var hy2UpMbps: EditTextPreference
     lateinit var hy2DownMbps: EditTextPreference
+    lateinit var hy2Password: EditTextPreference
     lateinit var hy2ObfsPassword: EditTextPreference
 
     lateinit var wsCategory: PreferenceCategory
@@ -206,6 +209,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         hy2DownMbps = findPreference(Key.SERVER_DOWNLOAD_SPEED)!!
         hy2DownMbps.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
+        hy2Password = findPreference(Key.SERVER_PASSWORD)!!
+        hy2Password.apply {
+            summaryProvider = PasswordSummaryProvider
         }
         hy2ObfsPassword = findPreference(Key.SERVER_OBFS)!!
         hy2ObfsPassword.apply {
@@ -304,6 +311,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isHysteria2 = network == "hysteria2"
         hy2UpMbps.isVisible = isHysteria2
         hy2DownMbps.isVisible = isHysteria2
+        hy2Password.isVisible = isHysteria2
         hy2ObfsPassword.isVisible = isHysteria2
         quicSecurity.isVisible = isQuic
         utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHTTP || isMeek || isHttpUpgrade)

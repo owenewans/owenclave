@@ -169,6 +169,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     public Integer hy2DownMbps;
     public Integer hy2UpMbps;
+    public String hy2Password;
     public String hy2ObfsPassword;
 
     @Override
@@ -214,13 +215,14 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (hy2DownMbps == null) hy2DownMbps = 0;
         if (hy2UpMbps == null) hy2UpMbps = 0;
+        if (StrUtil.isBlank(hy2Password)) hy2Password = "";
         if (StrUtil.isBlank(hy2ObfsPassword)) hy2ObfsPassword = "";
 
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(14);
+        output.writeInt(15);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -271,6 +273,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeInt(hy2DownMbps);
                 output.writeInt(hy2UpMbps);
                 output.writeString(hy2ObfsPassword);
+                output.writeString(hy2Password);
             }
         }
 
@@ -369,6 +372,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
                     hy2DownMbps = input.readInt();
                     hy2UpMbps = input.readInt();
                     hy2ObfsPassword = input.readString();
+                }
+                if (version >= 15) {
+                    hy2Password = input.readString();
                 }
             }
         }
