@@ -28,7 +28,6 @@ import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.databinding.LayoutNetworkBinding
 import io.nekohasekai.sagernet.databinding.LayoutProgressBinding
 import io.nekohasekai.sagernet.ktx.*
-import io.nekohasekai.sagernet.utils.Cloudflare
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

@@ -8,7 +8,7 @@ plugins {
 
 setupKotlinCommon()
 
-val protobufVersion = "3.25.3"
+val protobufVersion = "4.26.1"
 
 dependencies {
     protobuf(project(":library:proto"))
@@ -18,6 +18,11 @@ dependencies {
 }
 android {
     namespace = "com.v2ray.core"
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+        }
+    }
 }
 
 protobuf {
