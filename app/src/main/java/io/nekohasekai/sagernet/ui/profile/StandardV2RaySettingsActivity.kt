@@ -308,13 +308,14 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isHTTP = network == "http"
         val isMeek = network == "meek"
         val isHttpUpgrade = network == "httpupgrade"
+        val isGRPC = network == "grpc"
         val isHysteria2 = network == "hysteria2"
         hy2UpMbps.isVisible = isHysteria2
         hy2DownMbps.isVisible = isHysteria2
         hy2Password.isVisible = isHysteria2
         hy2ObfsPassword.isVisible = isHysteria2
         quicSecurity.isVisible = isQuic
-        utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHTTP || isMeek || isHttpUpgrade)
+        utlsFingerprint.isVisible = security.value == "tls" && (isTcp || isWs || isHTTP || isMeek || isHttpUpgrade || isGRPC)
         realityFingerprint.isVisible = security.value == "reality"
         if (isQuic) {
             if (DataStore.serverQuicSecurity !in quicSecurityValue) {
@@ -438,7 +439,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         realityPublicKey.isVisible = isReality
         realityShortId.isVisible = isReality
         realitySpiderX.isVisible = isReality
-        utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws" || network.value == "http" || network.value == "meek" || network.value == "httpupgrade")
+        utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws" || network.value == "http" || network.value == "meek" || network.value == "httpupgrade" || network.value == "grpc")
         realityFingerprint.isVisible = isReality
     }
 
