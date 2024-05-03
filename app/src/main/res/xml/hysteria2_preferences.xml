@@ -33,21 +33,21 @@
             app:key="serverSNI"
             app:title="@string/sni"
             app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
+        <!--EditTextPreference
             app:icon="@drawable/ic_baseline_vpn_key_24"
             app:key="serverCertificates"
             app:title="@string/certificates"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true" /-->
         <SwitchPreference
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverAllowInsecure"
             app:summary="@string/allow_insecure_sum"
             app:title="@string/allow_insecure" />
-        <EditTextPreference
+        <!--EditTextPreference
             app:icon="@drawable/ic_baseline_push_pin_24"
             app:key="serverPinnedCertificateChain"
             app:title="@string/pinned_peer_certificate_chain_sha256"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true" /-->
         <EditTextPreference
             app:key="serverHopInterval"
             app:title="@string/hysteria_hop_interval"

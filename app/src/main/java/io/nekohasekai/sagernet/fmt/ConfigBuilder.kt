@@ -776,7 +776,7 @@ fun buildV2RayConfig(
                                             }
                                         }
                                         "httpupgrade" -> {
-                                            httpUpgradeSettings = HTTPUpgradeObject().apply {
+                                            httpupgradeSettings = HTTPUpgradeObject().apply {
                                                 if (bean.host.isNotBlank()) {
                                                     host = bean.host
                                                 }
@@ -786,19 +786,19 @@ fun buildV2RayConfig(
                                             }
                                         }
                                         "hysteria2" -> {
-                                            hy2Settings = Hy2Object().apply {
+                                            hysteria2Settings = Hysteria2Object().apply {
                                                 if (bean.hy2Password.isNotBlank()) {
                                                     password = bean.hy2Password
                                                 }
                                                 if (bean.hy2UpMbps > 0 && bean.hy2DownMbps > 0) {
-                                                    congestion = Hy2Object.CongestionObject().apply {
+                                                    congestion = Hysteria2Object.CongestionObject().apply {
                                                         type = "brutal"
-                                                        down_mbps = bean.hy2DownMbps
-                                                        up_mbps = bean.hy2UpMbps
+                                                        downMbps = bean.hy2DownMbps
+                                                        upMbps = bean.hy2UpMbps
                                                     }
                                                 }
                                                 if (bean.hy2ObfsPassword.isNotBlank()) {
-                                                    obfs = Hy2Object.OBFSObject().apply {
+                                                    obfs = Hysteria2Object.OBFSObject().apply {
                                                         type = "salamander"
                                                         password = bean.hy2ObfsPassword
                                                     }
@@ -999,20 +999,20 @@ fun buildV2RayConfig(
                                     }
                                     network = "hysteria2"
                                     security = "tls"
-                                    hy2Settings = Hy2Object().apply {
-                                        use_udp_extension = true
+                                    hysteria2Settings = Hysteria2Object().apply {
+                                        useUDPExtension = true
                                         if (bean.auth.isNotBlank()) {
                                             password = bean.auth
                                         }
                                         if (bean.uploadMbps > 0 && bean.downloadMbps > 0) {
-                                            congestion = Hy2Object.CongestionObject().apply {
+                                            congestion = Hysteria2Object.CongestionObject().apply {
                                                 type = "brutal"
-                                                down_mbps = bean.downloadMbps
-                                                up_mbps = bean.uploadMbps
+                                                downMbps = bean.downloadMbps
+                                                upMbps = bean.uploadMbps
                                             }
                                         }
                                         if (bean.obfs.isNotBlank()) {
-                                            obfs = Hy2Object.OBFSObject().apply {
+                                            obfs = Hysteria2Object.OBFSObject().apply {
                                                 type = "salamander"
                                                 password = bean.obfs
                                             }

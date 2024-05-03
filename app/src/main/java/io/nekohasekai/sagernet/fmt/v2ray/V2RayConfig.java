@@ -750,8 +750,8 @@ public class V2RayConfig {
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
         public MeekObject meekSettings;
-        public HTTPUpgradeObject httpUpgradeSettings;
-        public Hy2Object hy2Settings;
+        public HTTPUpgradeObject httpupgradeSettings;
+        public Hysteria2Object hysteria2Settings;
 
     }
 
@@ -769,8 +769,8 @@ public class V2RayConfig {
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
         public MeekObject meekSettings;
-        public HTTPUpgradeObject httpUpgradeSettings;
-        public Hy2Object hy2Settings;
+        public HTTPUpgradeObject httpupgradeSettings;
+        public Hysteria2Object hysteria2Settings;
         public SockoptObject sockopt;
 
         public static class SockoptObject {
@@ -937,18 +937,18 @@ public class V2RayConfig {
 
     }
 
-    public static class Hy2Object {
+    public static class Hysteria2Object {
 
         public String password;
         public CongestionObject congestion;
-        public Boolean ignore_client_bandwidth;
-        public Boolean use_udp_extension;
+        public Boolean ignoreClientBandwidth;
+        public Boolean useUDPExtension;
         public OBFSObject obfs;
 
         public static class CongestionObject {
             public String type;
-            public Integer up_mbps;
-            public Integer down_mbps;
+            public Integer upMbps;
+            public Integer downMbps;
         }
 
         public static class OBFSObject {
