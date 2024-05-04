@@ -3,10 +3,8 @@
     <string name="app_desc">適用於 Android 的通用代理工具鏈，由 Kotlin 編寫。</string>
     <string name="project">專案</string>
     <string name="github">原始碼</string>
-    <string name="telegram">Telegram 更新頻道</string>
     <string name="app_version">版本</string>
     <string name="logcat">匯出 debug 所需資訊</string>
-    <string name="logcat_summary">這種非常有用啊(^O^)／</string>
     <string name="menu_configuration">設定檔</string>
     <string name="menu_group">組</string>
     <string name="menu_about">關於</string>
@@ -17,16 +15,13 @@
     <string name="group_subscription_link">訂閱連接</string>
     <string name="group_name_required">需要群組名稱</string>
     <string name="group_create">建立新組</string>
-    <string name="group_create_subscription">建立新訂閱</string>
     <string name="group_edit">編輯</string>
-    <string name="group_edit_subscription">編輯訂閱</string>
     <string name="group_status_empty">空組</string>
     <string name="group_status_empty_subscription">尚未更新</string>
     <string name="group_status_proxies">%d 個代理</string>
     <string name="group_status_proxies_subscription">%d 個代理 | 更新於 %s</string>
     <string name="group_no_difference">%s: 沒有變化</string>
     <string name="group_updated">%s: 更新了 %d 個代理</string>
-    <string name="group_show_diff">變化</string>
     <string name="group_delete_confirm_prompt">您真的希望刪除這個群組嗎？</string>
     <string name="group_added">新增：
 \n%s</string>
@@ -52,7 +47,6 @@
     <string name="ws_browser_forwarding">瀏覽器轉發</string>
     <string name="ws_browser_forwarding_sum">轉傳對應的 WebSocket 連線至瀏覽器。</string>
     <string name="speed_interval">速度通知更新間隔</string>
-    <string name="traffic">%1$s↑ %2$s↓</string>
     <string name="speed_detail">代理： %1$s↑ %2$s↓
 \n直連： %3$s↑ %4$s↓</string>
     <string name="speed">%s/s</string>
@@ -60,7 +54,6 @@
     <string name="connection_test_available">成功：HTTPS 握手花費 %dms</string>
     <string name="connection_test_error">失敗：%s</string>
     <string name="connection_test_fail">網路不可用</string>
-    <string name="connection_test_error_status_code">錯誤碼：#%d</string>
     <!-- proxy category -->
     <string name="profile_name">設定檔名稱</string>
     <string name="server_address">伺服器</string>
@@ -95,8 +88,6 @@
     <string name="show_system_apps">顯示系統應用</string>
     <string name="auto_connect">自動連線</string>
     <string name="auto_connect_summary">如果代理在開機或應用更新前正在運行則自動啓動</string>
-    <string name="direct_boot_aware">允許與解鎖前啓動</string>
-    <string name="direct_boot_aware_summary">您選取的設定檔將受到較少的保護</string>
     <!-- notification category -->
     <string name="service_vpn">VPN 服務</string>
     <string name="service_proxy">代理服務</string>
@@ -116,9 +107,7 @@
     <string name="edit">編輯</string>
     <string name="share">分享</string>
     <string name="add_profile">新增設定檔</string>
-    <string name="action_create_group">空白群組</string>
     <string name="action_from_link">來自訂閱</string>
-    <string name="action_scan_china_apps">掃描中國應用程式</string>
     <string name="action_export_file">匯出至檔案</string>
     <string name="action_export_clipboard">匯出至剪貼簿</string>
     <string name="action_import">自剪貼簿匯入</string>
@@ -165,7 +154,6 @@
     <string name="no">否</string>
     <string name="apply">套用</string>
     <string name="license">授權協定</string>
-    <string name="document">文檔</string>
     <string name="early_data_header_name">前置資料標頭</string>
     <string name="pinned_peer_certificate_chain_sha256">固定憑證鏈結雜湊</string>
     <string name="certificates">憑證（鏈結）</string>
@@ -197,8 +185,6 @@
     <string name="security_settings">安全設定</string>
     <string name="show_direct_speed_sum">在通知中一併顯示未被代理的流量速度</string>
     <string name="show_direct_speed">顯示直連速度</string>
-    <string name="show_stop_sum">如果您不想使用快速設定圖塊進行切換</string>
-    <string name="show_stop">顯示停止按鈕</string>
     <string name="cag_misc">其他設定</string>
     <string name="port_transproxy">透明代理連接埠</string>
     <string name="group_duplicate">重複：
@@ -284,7 +270,6 @@
     <string name="enable_log_sum">用於除錯用途</string>
     <string name="list">列表</string>
     <string name="random">隨機</string>
-    <string name="api_port">API 連接埠</string>
     <string name="probe_interval">負載平衡器觀測間隔</string>
     <string name="standard">標準</string>
     <string name="unavailable">無法使用</string>
@@ -326,11 +311,6 @@
     <string name="confirm">確認</string>
     <string name="missing_plugin">遺失外掛程式</string>
     <string name="profile_requiring_plugin">設定檔 %s 需要外掛程式 %s，但其未被安裝。</string>
-    <string name="action_learn_more">深入瞭解</string>
-    <string name="action_download">下載</string>
-    <string name="install_from_play_store">從 Play 商店安裝</string>
-    <string name="install_from_fdroid">從 F-Droid 安裝</string>
-    <string name="download">下載</string>
     <string name="ooc_subscription_token_invalid">無效的 OOCv1 權杖</string>
     <string name="update_subscription_warning">代理尚未連線，您真的希望繼續更新嗎？</string>
     <string name="ooc_warning">警告</string>
@@ -397,7 +377,6 @@
     <string name="hysteria_auth_type">認證類型</string>
     <string name="hysteria_obfs">混淆密碼</string>
     <string name="menu_tools">工具</string>
-    <string name="translate_platform">翻譯平台</string>
     <string name="menu_log">記錄檔</string>
     <string name="profile_traffic_statistics_summary">當停用時，使用的流量將不會被統計</string>
     <string name="app_statistics_disabled">應用程式流量統計資料被停用</string>
@@ -408,9 +387,6 @@
     <string name="wireguard_local_address">本機位址</string>
     <string name="wireguard_public_key">節點公開金鑰</string>
     <string name="wireguard_psk">節點預先共用金鑰</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) 是一個免費的 WireGuard VPN 提供者。使用此服務表示您同意其 [服務條款](https://www.cloudflare.com/application/terms/)。</string>
-    <string name="warp_generate">產生設定檔</string>
-    <string name="generating">正在產生……</string>
     <string name="enable_pcap">啟用 Pcap</string>
     <string name="pcap_summary">儲存流量資料至 .pcap 檔案</string>
     <string name="pcap_notice">Pcap 檔案將被儲存至 %s</string>
@@ -433,12 +409,9 @@
     <string name="stun_test_summary">使用 STUN 確定客戶端的 NAT 映射行為和 RFC 5780 中定義的 NAT 過濾行為。</string>
     <string name="start">開始</string>
     <string name="nat_mapping_behaviour">NAT 映射行為</string>
-    <string name="auto_mtu">自動 MTU</string>
-    <string name="auto_mtu_summary">使用上游網路界面的MTU</string>
     <string name="backup">備份</string>
     <string name="backup_rules">路由規則</string>
     <string name="invalid_backup_file">無效的備份文件</string>
-    <string name="disable_dns_expire_summary">忽略 DNS TTL，直到重新啟動。</string>
     <string name="tasker_action_start_service">開始服務</string>
     <string name="tasker_action_stop_service">停止服務</string>
     <string name="route_ssid">Wi-Fi SSID</string>
@@ -476,7 +449,6 @@
     <string name="nat_filtering_endpoint_independent">`端點獨立`
 \n
 \n這是三種方式中最寬容的一種。一旦您將 UDP 數據包發送到 NAT 另一端的任何地方，NAT 另一端的任何其他東西都可以在該端口上將 UDP 數據包發送回您。這種過濾策略讓系統管理員驚出一身冷汗，但 RFC 4787 建議在實時通信（或其他需要應用程序透明性的事物；例如游戲）是優先事項時使用它。請注意，如果您的 NAT 映射行為配置錯誤，這將無法很好地進行補償。 獲得正確的映射行為更為重要。</string>
-    <string name="disable_dns_expire">禁用 DNS 過期</string>
     <string name="mtu">最大傳輸單元</string>
     <string name="tasker_settings">Tasker 設置</string>
     <string name="tasker_action">行動</string>

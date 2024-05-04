@@ -9,7 +9,6 @@
     <string name="direct_dns">Прямий DNS</string>
     <string name="remote_dns">Віддалений DNS</string>
     <string name="cag_dns">Налаштування DNS</string>
-    <string name="connection_test_error_status_code">Код помилки: #%d</string>
     <string name="connection_test_fail">Інтернет недоступний</string>
     <string name="connection_test_error">Не вдалося: %s</string>
     <string name="connection_test_available_http">Успішно: рукостискання HTTP зайняло %dms</string>
@@ -22,8 +21,6 @@
     <string name="security_settings">Налаштування безпеки</string>
     <string name="show_direct_speed_sum">У сповіщенні також покажіть швидкість трафіку без проксі -сервера</string>
     <string name="show_direct_speed">Показати пряму швидкість</string>
-    <string name="show_stop_sum">Якщо ви не хочете використовувати Quick Tile як перемикач</string>
-    <string name="show_stop">Показати кнопку зупинки</string>
     <string name="cag_misc">Різні налаштування</string>
     <string name="speed_interval">Інтервал оновлення сповіщення про швидкість</string>
     <string name="ws_browser_forwarding_sum">Пересилайте відповідні WebSockets через браузер.</string>
@@ -50,16 +47,13 @@
 \n%s</string>
     <string name="group_delete_confirm_prompt">Ви впевнені, що хочете видалити цю групу\?</string>
     <string name="group_diff">Різниця (%s)</string>
-    <string name="group_show_diff">Різниця</string>
     <string name="group_updated">%s: Оновлено %d проксі</string>
     <string name="group_no_difference">%s: Не відрізняються</string>
     <string name="group_status_proxies_subscription">%d проксі | Оновлено на %s</string>
     <string name="group_status_proxies">%d проксі</string>
     <string name="group_status_empty_subscription">Ще не оновлено</string>
     <string name="group_status_empty">Порожня група</string>
-    <string name="group_edit_subscription">Редагувати підписку</string>
     <string name="group_edit">Редагувати групу</string>
-    <string name="group_create_subscription">Створити підписку</string>
     <string name="group_create">Створити групу</string>
     <string name="group_name_required">Потрібна назва групи</string>
     <string name="group_subscription_link">Посилання на підписку</string>
@@ -68,16 +62,13 @@
     <string name="tile_title">Перемикач</string>
     <string name="quick_toggle">Переключити</string>
     <string name="group_default">Розгрупований</string>
-    <string name="document">Документ</string>
     <string name="theme">Тема</string>
     <string name="menu_about">Про застосунок</string>
     <string name="menu_group">Група</string>
     <string name="menu_configuration">Конфігурація</string>
-    <string name="logcat_summary">Такі корисні аж вау</string>
     <string name="logcat">Експорт інформації про налагодження</string>
     <string name="version_x">Версія (%s)</string>
     <string name="app_version">Версія</string>
-    <string name="telegram">Канал оновлення Telegram</string>
     <string name="github">Вихідний код</string>
     <string name="project">Проєкт</string>
     <string name="app_desc">Універсальний набір інструментів проксі для Android, написаний на Kotlin.</string>
@@ -135,7 +126,6 @@
     <string name="probe_url">Настроювана тестова URL-адреса</string>
     <string name="invalid_server">Неправильна назва сервера</string>
     <string name="copy_label">Скопіювати ім\'я</string>
-    <string name="sai_error_conflict">Не вдається інсталювати програму, оскільки вона конфліктує з уже встановленою програмою з тим самим іменем пакета</string>
     <string name="route_proxy">Проксі</string>
     <string name="group_order_by_name">За іменем</string>
     <string name="flow">Алгоритм керування потоком</string>

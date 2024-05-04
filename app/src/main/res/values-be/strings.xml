@@ -3,7 +3,6 @@
     <string name="logcat">Экспартаваць інфармацыю пра адладку</string>
     <string name="version_x">Версія (%s)</string>
     <string name="app_version">Версія</string>
-    <string name="telegram">Канал абнаўлення тэлеграм</string>
     <string name="github">Зыходны код</string>
     <string name="project">Праект</string>
     <string name="app_desc">Універсальны набор інструментаў проксі для Android, напісаны на Kotlin.</string>
@@ -39,7 +38,6 @@
     <string name="direct_dns">Прамы DNS</string>
     <string name="remote_dns">Аддалены DNS</string>
     <string name="cag_dns">Налады DNS</string>
-    <string name="connection_test_error_status_code">Код памылкі: #%d</string>
     <string name="connection_test_fail">Інтэрнэт недаступны</string>
     <string name="connection_test_error">Не атрымалася: %s</string>
     <string name="connection_test_available_http">Поспех: поціск рукі HTTP заняў %dms</string>
@@ -53,8 +51,6 @@
     <string name="security_settings">Налады бяспекі</string>
     <string name="show_direct_speed_sum">У апавяшчэнні таксама паказвайце хуткасць руху без проксі</string>
     <string name="show_direct_speed">Паказаць прамую хуткасць</string>
-    <string name="show_stop_sum">Калі вы не хочаце выкарыстоўваць кнопку панэлі апавяшчэнняў у якасці пераключальніка злучэння</string>
-    <string name="show_stop">Паказаць кнопку прыпынку</string>
     <string name="cag_misc">Розныя налады</string>
     <string name="speed_interval">Інтэрвал абнаўлення апавяшчэнняў аб хуткасці</string>
     <string name="ws_browser_forwarding_sum">Перадайце адпаведныя WebSockets праз браўзэр.</string>
@@ -81,16 +77,13 @@
 \n%s</string>
     <string name="group_delete_confirm_prompt">Вы ўпэўненыя, што хочаце выдаліць гэтую групу\?</string>
     <string name="group_diff">Розніца (%s)</string>
-    <string name="group_show_diff">Розніца</string>
     <string name="group_updated">%s: Абноўлены %d проксі</string>
     <string name="group_no_difference">%s: няма розніцы</string>
     <string name="group_status_proxies_subscription">%d проксі | Абноўлена %s</string>
     <string name="group_status_proxies">%d проксі</string>
     <string name="group_status_empty_subscription">Пакуль не абноўлена</string>
     <string name="group_status_empty">Пустая група</string>
-    <string name="group_edit_subscription">Рэдагаваць падпіску</string>
     <string name="group_edit">Рэдагаваць групу</string>
-    <string name="group_create_subscription">Стварыць падпіску</string>
     <string name="group_create">Стварыць групу</string>
     <string name="group_name_required">Патрабуецца назва групы</string>
     <string name="group_subscription_link">Спасылка на падпіску</string>
@@ -100,10 +93,8 @@
     <string name="tile_title">Перамыкач</string>
     <string name="quick_toggle">Пераключыць</string>
     <string name="group_default">Разгрупаваны</string>
-    <string name="document">Дакумент</string>
     <string name="theme">Тэма</string>
     <string name="menu_about">Пра</string>
     <string name="menu_group">Група</string>
     <string name="menu_configuration">Канфігурацыя</string>
-    <string name="logcat_summary">Такі карысны вельмі нічога сабе</string>
 </resources>

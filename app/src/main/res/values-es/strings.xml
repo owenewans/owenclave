@@ -31,9 +31,7 @@
     <string name="not_connected">No conectado</string>
     <string name="ignore_battery_optimizations_sum">Eliminar algunas restricciones</string>
     <string name="ignore_battery_optimizations">Ignorar las optimizaciones de la batería</string>
-    <string name="action_download">DESCARGAR</string>
     <string name="action_import_msg">Importado con éxito!</string>
-    <string name="action_create_group">Grupo vacio</string>
     <string name="action_import_file">Importar desde un archivo</string>
     <string name="action_import">Importar desde el portapapeles</string>
     <string name="action_export_clipboard">Exportar al portapapeles</string>
@@ -71,26 +69,20 @@
     <string name="group_filter_tags">Etiquetas</string>
     <string name="service_subscription">Servicio actualizado</string>
     <string name="clear_profiles_message">¿Estás seguro de que deseas borrar este grupo\?</string>
-    <string name="install_from_play_store">Instalar de la Tienda</string>
     <string name="confirm">Confirmar</string>
-    <string name="install_from_fdroid">Instalar de F-Droid</string>
     <string name="group_filter_groups">Grupos</string>
     <string name="profile_import">Importar perfil</string>
     <string name="theme">Tema</string>
     <string name="group_update">Actualizar</string>
-    <string name="group_create_subscription">Crear subscripción</string>
     <string name="menu_group">Grupo</string>
     <string name="logcat">Exportar información depurada</string>
     <string name="menu_about">Acerca de</string>
     <string name="group_name_required">Requiere nombre de grupo</string>
     <string name="menu_configuration">Configuraciones</string>
-    <string name="document">Sagernet.org</string>
     <string name="group_subscription_link">Enlace de subscripción</string>
     <string name="group_name">Nombre del grupo</string>
     <string name="group_create">Crear grupo</string>
-    <string name="group_edit_subscription">Editar subscripción</string>
     <string name="group_edit">Editar grupo</string>
-    <string name="telegram">Canal de actualizaciones</string>
     <string name="ooc_missing_protocol">La suscripción requiere soporte para el protocolo %s, pero no se puede encontrar. Se ignorarán los perfiles no admitidos.</string>
     <string name="raw">Crudo</string>
     <string name="deduplication_sum">Eliminar configuraciones duplicadas al actualizar</string>
@@ -117,7 +109,6 @@
     <string name="group_filter_tags_nf">No hay etiquetas en esta suscripción</string>
     <string name="group_filter_groups_nf">No hay grupos en esta suscripción</string>
     <string name="group_filter_ns">Se requiere suscripción a OOCv1 para usar la función de filtrado</string>
-    <string name="action_learn_more">APRENDE MÁS</string>
     <string name="profile_import_message">Confirma que desea importar el perfil %s\?</string>
     <string name="route_bypass_domain">Regla de dominio para %s</string>
     <string name="route_reset">Reiniciar</string>
@@ -146,7 +137,6 @@
     <string name="direct_dns">DNS directo</string>
     <string name="remote_dns">DNS remoto</string>
     <string name="cag_dns">Configuración de DNS</string>
-    <string name="connection_test_error_status_code">Código de error: #%d</string>
     <string name="connection_test_fail">Internet no disponible</string>
     <string name="connection_test_error">Error al detectar la conexión a Internet: %s</string>
     <string name="connection_test_available_http">Éxito: el protocolo de enlace HTTP tomó %dms</string>
@@ -157,7 +147,6 @@
     <string name="allow_access">Permitir conexiones desde la LAN</string>
     <string name="group_status_empty_subscription">Aún no está actualizado</string>
     <string name="group_status_empty">Grupo vacio</string>
-    <string name="logcat_summary">Tan útil xd</string>
     <string name="service_mode_vpn">VPN</string>
     <string name="clear_selections">Borrar selecciones</string>
     <string name="invert_selections">Invertir selecciones</string>
@@ -218,8 +207,6 @@
     <string name="security_settings">Configuraciones de seguridad</string>
     <string name="show_direct_speed_sum">Muestre la velocidad del tráfico sin proxy en la notificación también</string>
     <string name="show_direct_speed">Mostrar velocidad directa</string>
-    <string name="show_stop_sum">Si no desea utilizar Quick Tile como interruptor</string>
-    <string name="show_stop">Mostrar botón de detener</string>
     <string name="cag_misc">Configuración miscelánea</string>
     <string name="speed_interval">Intervalo de actualización de notificación de velocidad</string>
     <string name="ws_browser_forwarding_sum">Reenvíe los WebSockets correspondientes a través del navegador.</string>
@@ -231,7 +218,6 @@
     <string name="port_http">Puerto proxy HTTP</string>
     <string name="port_proxy">Puerto proxy SOCKS5</string>
     <string name="service_mode_proxy">Proxy solamente</string>
-    <string name="group_show_diff">Diferencia</string>
     <string name="group_updated">%s: Actualizar %d Proxys</string>
     <string name="group_no_difference">%s: sin diferencia</string>
     <string name="group_status_proxies">%d Proxys</string>
@@ -250,7 +236,6 @@
     <string name="subscription_user_agent">Agente de usuario</string>
     <string name="missing_plugin">Falta Complemento</string>
     <string name="profile_requiring_plugin">El perfil %s requiere que se instale el complemento %s, pero no se encontró.</string>
-    <string name="download">Descargar</string>
     <string name="ooc_subscription_token_invalid">Token OOCv1 no válido</string>
     <string name="update_subscription_warning">El proxy no está conectado, ¿está seguro de que desea continuar con la actualización\?</string>
     <string name="ooc_warning">Advertencia</string>
@@ -286,7 +271,6 @@
     <string name="ssh_public_key">Llave pública</string>
     <string name="ssh_private_key">Llave privada</string>
     <string name="ssh_private_key_passphrase">Frase de contraseña de clave privada</string>
-    <string name="translate_platform">Plataforma de traducción</string>
     <string name="menu_tools">Herramientas</string>
     <string name="menu_log">Registros</string>
     <string name="clear_logcat">Borrar Logcat</string>
@@ -329,7 +313,6 @@
     <string name="unavailable">Indisponible</string>
     <string name="standard">Estándar</string>
     <string name="probe_interval">Intervalo de observación del equilibrador</string>
-    <string name="api_port">Puerto API</string>
     <string name="random">Aleatorio</string>
     <string name="list">Lista</string>
     <string name="enable_log_sum">Para fines de depuración</string>
@@ -357,7 +340,6 @@
     <string name="profile_config">Configuración de perfil</string>
     <string name="file_manager_missing">Su dispositivo carece de un selector de archivos estándar de Android; instale uno, como Archivos de materiales.</string>
     <string name="action_export_file">Exportar a archivo</string>
-    <string name="action_scan_china_apps">Escanear aplicaciones de China</string>
     <string name="action_from_link">De suscripción</string>
     <string name="clear_profiles">Limpiar</string>
     <string name="circular_reference_sum">La ruta no puede contenerse a sí misma.</string>
@@ -377,8 +359,6 @@
     <string name="forward_success">Proxy iniciado.</string>
     <string name="service_proxy">Servicio de proxy</string>
     <string name="service_vpn">Servicio VPN</string>
-    <string name="direct_boot_aware_summary">La información de su perfil seleccionada estará menos protegida</string>
-    <string name="direct_boot_aware">Permitir alternar en la pantalla de bloqueo</string>
     <string name="auto_connect_summary">Habilite el proxy en el inicio / actualización de la aplicación si se estaba ejecutando antes</string>
     <string name="show_system_apps">Mostrar aplicaciones del sistema</string>
     <string name="bypass_apps">Derivación</string>
@@ -395,7 +375,6 @@
     <string name="nat_mapping_behaviour">Comportamiento de mapeo NAT</string>
     <string name="endpoint_independent_no_nat">Independiente del punto final (sin NAT)</string>
     <string name="endpoint_independent">Independiente del punto final</string>
-    <string name="auto_mtu">MTU automático</string>
     <string name="naive_insecure_concurrency">Concurrencia insegura</string>
     <string name="nat_mapping_endpoint_independent">%s
 \n
@@ -432,15 +411,12 @@
     <string name="naive_insecure_concurrency_summary">Usa N conexiones de túnel concurrentes para ser más robusto en malas condiciones de red. Más conexiones hacen que el túnel sea más fácil de detectar y menos seguro. Este proyecto se esfuerza por lograr la mayor seguridad contra el análisis de tráfico. Usarlo de una manera insegura derrota su propósito.
 \n
 \nSi debe usar esto, pruebe N = 2 primero para ver si resuelve sus problemas. Se recomienda encarecidamente no usar más de 4 conexiones aquí.</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) es un proveedor gratuito de la VPN WireGuard. Al usarlo, usted acepta los [TOS](https://www.cloudflare.com/application/terms/).</string>
     <string name="enable_pcap">Activar Pcap</string>
     <string name="use_local_dns_as_direct_dns">Usar DNS local como DNS directo</string>
     <string name="profile_traffic_statistics_summary">Cuando se desactiva, el tráfico utilizado no se contará</string>
     <string name="app_traffic_statistics">Estadísticas de tráfico de apps</string>
     <string name="profile_traffic_statistics">Estadísticas de tráfico de perfil</string>
     <string name="app_statistics_disabled">Estadísticas de tráfico de apps desactivado</string>
-    <string name="warp_generate">Generar configuración</string>
-    <string name="generating">Generando…</string>
     <string name="tun_implementation">Implementación de TUN</string>
     <string name="destination_override">Anular destino</string>
     <string name="resolve_destination_summary">Si la dirección de destino es un dominio, se distribuye en función de la estrategia IPv6.</string>
@@ -455,8 +431,6 @@
     <string name="nat_filtering_endpoint_independent">`Independiente del punto final`
 \n
 \nEste es el más permisivo de los tres. Una vez que haya enviado un paquete UDP a cualquier lugar del otro lado de la NAT, cualquier otra cosa en el otro lado de la NAT puede enviarle paquetes UDP en ese puerto. Esta política de filtrado da a los administradores de sistemas sudores fríos, pero RFC 4787 recomienda su uso cuando la comunicación en tiempo real (u otras cosas que requieren transparencia de la aplicación; por ejemplo, juegos) es una prioridad. Tenga en cuenta que esto no hará un muy buen trabajo de compensación si el comportamiento de asignación de su NAT está mal configurado. Es más importante obtener el comportamiento de mapeo correcto.</string>
-    <string name="disable_dns_expire">Desactivar caducidad de DNS</string>
-    <string name="disable_dns_expire_summary">Ignorar DNS TTL hasta que reinicie.</string>
     <string name="network_wifi">Wi-Fi</string>
     <string name="network_bt">Bluetooth</string>
     <string name="network_eth">Ethernet</string>
@@ -478,29 +452,10 @@
     <string name="root_ca_provider">Proveedor de certificados de CA raíz</string>
     <string name="root_ca_mozilla">Mozilla</string>
     <string name="root_ca_system">Sistema</string>
-    <string name="acquire_wake_lock">Adquirir WakeLock</string>
-    <string name="auto_mtu_summary">Usar MTU de la interfaz de red ascendente</string>
-    <string name="release_wake_lock">Liberar WakeLock</string>
-    <string name="acquire_wake_lock_summary">Mantener la CPU encendida</string>
     <string name="action_switch">Cambiar</string>
-    <string name="disconnect">Desconectar</string>
-    <string name="sai_error_conflict">La aplicación no se pudo instalar porque entra en conflicto con una aplicación ya instalada del mismo nombre</string>
-    <string name="sai_error_generic">Instalación fallida</string>
     <string name="hysteria_disable_mtu_discovery">Inhabilitar el descubrimiento de la ruta MTU</string>
-    <string name="sai">Instalador de APK separado</string>
-    <string name="sai_succeed">Instalado exitosamente</string>
-    <string name="sai_error_aborted">La instalación fue cancelada por el usuario</string>
-    <string name="sai_error_blocked">Instalación bloqueada por %s</string>
-    <string name="sai_error_blocked_device">Dispositivo</string>
-    <string name="sai_error_incompatible">Esta aplicación no es compatible con este dispositivo</string>
-    <string name="sai_error_invalid">APKs no válidas</string>
-    <string name="sai_error_storage">No hay suficiente espacio libre para instalar la aplicación</string>
-    <string name="installer_provider">Proveedor del instalador</string>
-    <string name="shizuku_unavailable">Shizuku no disponible</string>
     <string name="udp_over_tcp">UDP sobre TCP</string>
-    <string name="udp_over_tcp_summary">El protocolo SUoT requiere soporte del lado del servidor.</string>
     <string name="without_brook_protocol">Sin Protocolo Brook</string>
-    <string name="grpc_mode">Modo gRPC</string>
     <string name="tuic_token">Token</string>
     <string name="tuic_udp_relay_mode">Modo de retransmisión UDP</string>
     <string name="tuic_congestion_controller">Controlador de sobrecarga</string>

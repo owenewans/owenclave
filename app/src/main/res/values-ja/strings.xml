@@ -18,16 +18,13 @@
 \n%s</string>
     <string name="group_delete_confirm_prompt">このグループを削除してもよろしいですか？</string>
     <string name="group_diff">差分 (%s)</string>
-    <string name="group_show_diff">差分</string>
     <string name="group_updated">%s：更新された %d プロキシ</string>
     <string name="group_no_difference">%s：違いなし</string>
     <string name="group_status_proxies_subscription">%d プロキシ| %s で更新</string>
     <string name="group_status_proxies">%d プロキシ</string>
     <string name="group_status_empty_subscription">まだ更新されていません</string>
     <string name="group_status_empty">空のグループ</string>
-    <string name="group_edit_subscription">サブスクリプションの編集</string>
     <string name="group_edit">グループを編集</string>
-    <string name="group_create_subscription">サブスクリプションを作成する</string>
     <string name="group_create">グループを作成します</string>
     <string name="group_name_required">グループ名が必要です</string>
     <string name="group_subscription_link">サブスクリプションリンク</string>
@@ -36,22 +33,18 @@
     <string name="tile_title">スイッチャー</string>
     <string name="quick_toggle">トグル</string>
     <string name="group_default">グループ化されていない</string>
-    <string name="document">ドキュメント（英語）</string>
     <string name="theme">テーマ</string>
     <string name="menu_about">このアプリについて</string>
     <string name="menu_group">グループ</string>
     <string name="menu_configuration">設定</string>
-    <string name="logcat_summary">そのような便利な非常にすごい</string>
     <string name="logcat">デバッグ情報のエクスポート</string>
     <string name="version_x">バージョン (%s)</string>
     <string name="app_version">バージョン</string>
-    <string name="telegram">Telegram 更新チャンネル</string>
     <string name="github">ソースコード</string>
     <string name="project">プロジェクト</string>
     <string name="app_desc">Kotlinで記述されたAndroid用のユニバーサルプロキシツールチェーン。</string>
     <string name="cag_dns">DNS設定</string>
     <string name="speed">%s/s</string>
-    <string name="traffic">%1$s↑ %2$s↓</string>
     <string name="general_settings">アブリ設定</string>
     <string name="service_mode_vpn">VPN</string>
     <string name="menu_route">ルート</string>
@@ -77,7 +70,6 @@
     <string name="enable_dns_routing">DNSルーティングを有効化</string>
     <string name="direct_dns">ダイレクトDNS</string>
     <string name="remote_dns">リモートDNS</string>
-    <string name="connection_test_error_status_code">エラーコード: #%d</string>
     <string name="connection_test_fail">インターネットは利用できません</string>
     <string name="connection_test_error">失敗: %s</string>
     <string name="connection_test_testing">テスト中…</string>
@@ -85,8 +77,6 @@
 \nダイレクト： %3$s↑ %4$s↓</string>
     <string name="security_settings">セキュリティ設定</string>
     <string name="show_direct_speed">ダイレクト接続のスピードを表示</string>
-    <string name="show_stop_sum">クィックタイトルを使えなくなりたいの場合</string>
-    <string name="show_stop">中止バタンを表示</string>
     <string name="ws_browser_forwarding">ブラウザへ転送</string>
     <string name="cag_ws">WebSocket 設定</string>
     <string name="require_http">HTTPでインバウンドを開く</string>

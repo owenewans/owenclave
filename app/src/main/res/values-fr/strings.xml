@@ -28,9 +28,6 @@
     <string name="profile_requiring_plugin">%s nécessite l\'installation du greffon %s, mais il n\'a pas été trouvé.</string>
     <string name="missing_plugin">Greffon manquant</string>
     <string name="confirm">Confirmer</string>
-    <string name="action_download">TÉLÉCHARGER</string>
-    <string name="action_learn_more">EN SAVOIR PLUS</string>
-    <string name="download">Télécharger</string>
     <string name="apps_message">%d applications</string>
     <string name="select_apps">Sélectionnez les applications</string>
     <string name="apps">Applications</string>
@@ -44,16 +41,13 @@
     <string name="service_mode">Mode service</string>
     <string name="group_delete_confirm_prompt">Êtes-vous sûr(e) de vouloir supprimer ce groupe \?</string>
     <string name="group_diff">Diff (%s)</string>
-    <string name="group_show_diff">Diff</string>
     <string name="group_updated">%s : %d proxys mis à jour</string>
     <string name="group_no_difference">%s : aucune différence</string>
     <string name="group_status_proxies_subscription">%d proxys | Mis à jour le %s</string>
     <string name="group_status_proxies">%d proxys</string>
     <string name="group_status_empty_subscription">Pas encore mis à jour</string>
     <string name="group_status_empty">Groupe vide</string>
-    <string name="group_edit_subscription">Modifier l\'abonnement</string>
     <string name="group_edit">Modifier le groupe</string>
-    <string name="group_create_subscription">Créer un abonnement</string>
     <string name="group_create">Créer un groupe</string>
     <string name="group_name_required">Nom de groupe requis</string>
     <string name="group_subscription_link">Lien d’abonnement</string>
@@ -61,7 +55,6 @@
     <string name="group_name">Nom du groupe</string>
     <string name="quick_toggle">Basculer</string>
     <string name="group_default">Dégroupé</string>
-    <string name="document">Document</string>
     <string name="theme">Thème</string>
     <string name="menu_about">À propos</string>
     <string name="menu_group">Groupe</string>
@@ -69,7 +62,6 @@
     <string name="logcat">Exporter les informations de débogage</string>
     <string name="version_x">Version (%s)</string>
     <string name="app_version">Version</string>
-    <string name="telegram">Canal de mise à jour Telegram</string>
     <string name="github">Code source</string>
     <string name="project">Projet</string>
     <string name="app_desc">La chaîne d\'outils proxy universelle pour Android, écrite en Kotlin.</string>
@@ -86,7 +78,6 @@
     <string name="service_mode_proxy">Agent seulement</string>
     <string name="group_duplicate">Reproduction:
 \n%s</string>
-    <string name="logcat_summary">Ça marche</string>
     <string name="connection_test_clear_results">Effacer les résultats des tests</string>
     <string name="action_export_err">Échec de l\'export.</string>
     <string name="ssh_private_key">Clé privée</string>
@@ -134,7 +125,6 @@
     <string name="cag_dns">Paramètres DNS</string>
     <string name="protocol">Protocole</string>
     <string name="port_proxy">Port du Proxy SOCKS5</string>
-    <string name="connection_test_error_status_code">Code d\'erreur : #%d</string>
     <string name="route_asset_updated">Mis à jour</string>
     <string name="action_export_file">Exporter dans un fichier</string>
     <string name="connection_test_available">Succès : la négociation HTTPS a pris %dms</string>
@@ -162,8 +152,6 @@
     <string name="allow_access">Autoriser les Connexions depuis le réseau local</string>
     <string name="inbound_settings">Paramètres Entrants</string>
     <string name="speed_interval">Intervalle de mise à jour des notifications de vitesse</string>
-    <string name="show_stop">Afficher le bouton d\'arrêt</string>
-    <string name="show_stop_sum">Si vous ne souhaitez pas utiliser Quick Tile comme commutateur</string>
     <string name="allow_insecure_sum">Désactivez la vérification des certificats. Lorsque cette option est activée, cette configuration est aussi sécurisée que le texte en clair</string>
     <string name="speed">%s/s</string>
     <string name="connection_test_fail">Internet non disponible</string>
@@ -201,7 +189,6 @@
         <item quantity="other">%d éléments supprimés</item>
     </plurals>
     <string name="ooc_warning">Notice</string>
-    <string name="install_from_fdroid">Installer depuis F-Droid</string>
     <string name="subscription_update_message">Mise à jour de %s…</string>
     <string name="group_filter_owners">Propriétaires</string>
     <string name="group_order">Ordre</string>
@@ -214,7 +201,6 @@
     <string name="route_for">Règle pour %s</string>
     <string name="no_statistics">Aucune statistique pour l\'instant</string>
     <string name="ssh_public_key">Clé publique</string>
-    <string name="generating">Génération…</string>
     <string name="route_reset">Rétablir</string>
     <string name="ssh_auth_type_none">Aucun</string>
     <string name="direct_dns">DNS Direct</string>
@@ -237,7 +223,6 @@
     <string name="subscription_settings">Préférences de souscription</string>
     <string name="group_type">Type du groupe</string>
     <string name="subscription_type">Type de souscription</string>
-    <string name="install_from_play_store">Installer depuis le Play Store</string>
     <string name="group_filter_groups_nf">Aucun groupe pour cette souscription</string>
     <string name="subscription_used">%s utilisé</string>
     <string name="group_order_by_delay">Par délai</string>
@@ -257,7 +242,6 @@
     <string name="profile_empty">Veuillez sélectionner un profil</string>
     <string name="no_proxies_found_in_file">Aucun proxy trouvé dans ce fichier</string>
     <string name="profile_config">Configuration du profil</string>
-    <string name="translate_platform">Plateforme de traduction</string>
     <string name="root_ca_provider">Fournisseur de certificat racine CA</string>
     <string name="tasker_action">Action</string>
     <string name="mtu">MTU</string>
@@ -284,9 +268,7 @@
     <string name="root_ca_mozilla">Mozilla</string>
     <string name="root_ca_system">Système</string>
     <string name="packet_encoding">Codage du paquet</string>
-    <string name="auto_mtu">MTU auto</string>
     <string name="auto_connect">Connexion auto</string>
-    <string name="api_port">Port de l\'API</string>
     <string name="hysteria_auth_type">Type d\'authentification</string>
     <string name="ws_host">Hôte WebSocket</string>
     <string name="invert_selections">Inverser la sélection</string>
@@ -295,7 +277,6 @@
     <string name="stopping">En train de s\'éteindre…</string>
     <string name="add_profile">Ajouter un profile</string>
     <string name="circular_reference">Référence circulaire</string>
-    <string name="action_create_group">Groupe vide</string>
     <string name="action_export_msg">Export avec succès !</string>
     <string name="action_import_msg">Importation avec succès !</string>
     <string name="vpn_connected">Connecté, tapez pour vérifier la connexion</string>
@@ -313,10 +294,8 @@
     <string name="subscription_import">Importer une souscription</string>
     <string name="group_filter_owners_nf">Aucun propriétaire dans cette souscription</string>
     <string name="profile_import">Importer un profil</string>
-    <string name="warp_generate">Générer une configuration</string>
     <string name="stun_attest_loading">Cela peut prendre quelques minutes…</string>
     <string name="recheck">Revérifier</string>
-    <string name="disable_dns_expire">Désactiver l\'expiration DNS</string>
     <string name="network_wifi">Wifi</string>
     <string name="network_bt">Bluetooth</string>
     <string name="network_data">Données mobile</string>

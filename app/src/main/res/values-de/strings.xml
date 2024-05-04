@@ -6,16 +6,13 @@
     <string name="tile_title">Umschalter</string>
     <string name="quick_toggle">Umschalten</string>
     <string name="group_default">Ungruppiert</string>
-    <string name="document">Dokument</string>
     <string name="theme">Thema</string>
     <string name="menu_about">Über</string>
     <string name="menu_group">Gruppe</string>
     <string name="menu_configuration">Konfiguration</string>
     <string name="app_version">Version</string>
-    <string name="logcat_summary">So nützlich sehr wow</string>
     <string name="logcat">Debug-Informationen exportieren</string>
     <string name="version_x">Version (%s)</string>
-    <string name="telegram">Telegram-Update-Kanal</string>
     <string name="github">Quellcode</string>
     <string name="project">Projekt</string>
     <string name="app_desc">Die universelle Proxy-Toolchain für Android, geschrieben in Kotlin.</string>
@@ -26,7 +23,6 @@
     <string name="license">Lizenz</string>
     <string name="lines">%d Linien</string>
     <string name="auto">Automatisch</string>
-    <string name="api_port">API-Port</string>
     <string name="night_mode">Nachtmodus</string>
     <string name="follow_system">System folgen</string>
     <string name="enable">Aktivieren</string>
@@ -36,14 +32,12 @@
     <string name="random">Zufällig</string>
     <string name="enable_log_sum">Für Debugging-Zwecke</string>
     <string name="service_mode_proxy">Nur Proxy</string>
-    <string name="group_create_subscription">Abonnement erstellen</string>
     <string name="group_status_empty_subscription">Noch nicht aktualisiert</string>
     <string name="group_status_proxies_subscription">%d Proxies | Aktualisiert am %s</string>
     <string name="group_added">Hinzugefügt:
 \n%s</string>
     <string name="group_deleted">Gelöscht:
 \n%s</string>
-    <string name="group_edit_subscription">Abonnement bearbeiten</string>
     <string name="group_changed">Aktualisiert:
 \n%s</string>
     <string name="group_edit">Gruppe bearbeiten</string>
@@ -60,12 +54,10 @@
     <string name="append_http_proxy">HTTP Proxy an VPN anhängen</string>
     <string name="deprecated">Veraltet</string>
     <string name="update_settings">Aktualisierungseinstellungen</string>
-    <string name="action_create_group">Leere Gruppe</string>
     <string name="vpn_connected">Verbunden, tippe, um Verbindung zu überprüfen</string>
     <string name="vpn_error">%s</string>
     <string name="connection_test_timeout">Zeitüberschreitung</string>
     <string name="copy_package_name">Kopiere Paketnamen</string>
-    <string name="grpc_mode">gRPC-Modus</string>
     <string name="connection_test_url">URL für Verbindungstest</string>
     <string name="show_system_apps">Zeige Systemapps</string>
     <string name="encryption">Verschlüsselung</string>
@@ -75,11 +67,9 @@
     <string name="plugin_unknown">Unbekanntes Plugin %s</string>
     <string name="route_reset">Zurücksetzen</string>
     <string name="ssh_private_key">Privater Schlüssel</string>
-    <string name="sai_error_generic">Installation fehlgeschlagen</string>
     <string name="allow_insecure">Erlaube unsichere</string>
     <string name="no_statistics">Bisher keine Statistiken</string>
     <string name="cleartext_http_warning">Klartext HTTP-Verkehr ist unsicher</string>
-    <string name="sai_error_invalid">Ungültige APKs</string>
     <string name="connection_test_fail">Internet nicht verfügbar</string>
     <string name="cag_dns">DNS-Einstellungen</string>
     <string name="balancer_type">Typ</string>
@@ -92,7 +82,6 @@
     <string name="invalid_server">Ungültiger Servername</string>
     <string name="service_failed">Fehlgeschlagen:</string>
     <string name="route_ssid">WLAN SSID</string>
-    <string name="connection_test_error_status_code">Fehlercode: #%d</string>
     <string name="ss_cat">Shadowsockseinstellungen</string>
     <string name="apps">Anwendungen</string>
     <string name="action_import_file">Aus Datei importieren</string>
@@ -111,7 +100,6 @@
     <string name="route_add">Pfad erstellen</string>
     <string name="proxied_apps_summary">Konfiguriere VPN-Modus für ausgewählte Apps</string>
     <string name="tuic_reduce_rtt">RTT reduzieren</string>
-    <string name="sai_error_aborted">Installation vom Benutzer abgebrochen</string>
     <string name="stun_attest_loading">Dies kann einige Minuten dauern…</string>
     <string name="security_settings">Sicherheitseinstellungen</string>
     <string name="auto_connect">Automatisch verbinden</string>
@@ -119,7 +107,6 @@
     <string name="no_proxies_found_in_file">Keine Proxys in der Datei gefunden</string>
     <string name="direct_dns">Direkter DNS</string>
     <string name="on">An</string>
-    <string name="direct_boot_aware">Erlaube Umschalten im Sperrblidschirm</string>
     <string name="edit">Bearbeiten</string>
     <string name="connecting">Verbinde…</string>
     <string name="donate_info">Ich liebe Geld</string>
@@ -148,7 +135,6 @@
     <string name="location_disabled">Standort Deaktiviert</string>
     <string name="backup_import">Importieren</string>
     <string name="ignore_battery_optimizations_sum">Einige Einschränkungen entfernen</string>
-    <string name="install_from_fdroid">Von F-Droid installieren</string>
     <string name="subscription_traffic">%s Verbraucht / %s Übrig</string>
     <string name="backup_groups_and_configurations">Gruppen und Konfigurationen</string>
     <string name="delete">Löschen</string>
@@ -157,7 +143,6 @@
     <string name="add_profile">Profil hinzufügen</string>
     <string name="route_profile">Wähle Profil…</string>
     <string name="general_settings">Anwendungseinstellungen</string>
-    <string name="disconnect">Verbindung trennen</string>
     <string name="route_rules_official">Offiziell</string>
     <string name="certificates">Zertifikate</string>
     <string name="route_name">Pfadname</string>
@@ -169,7 +154,6 @@
     <string name="allow_insecure_sum">Deaktiviere Zertifikatüberprüfung. Wenn aktiviert, ist diese Konfiguration so sicher wie Klartext</string>
     <string name="group_type">Gruppentyp</string>
     <string name="config_settings">Konfigurationseinstellungen</string>
-    <string name="install_from_play_store">Vom Play Store installieren</string>
     <string name="profile_name">Profilname</string>
     <string name="traffic_statistics_summary">Kann Energieverbauch erhöhen</string>
     <string name="empty_route">Leerer Pfad</string>
@@ -177,9 +161,7 @@
     <string name="shadowsocks_plugin_simple_obfs">Einfaches Obfs (Shadowsocks Android Plugin)</string>
     <string name="subscription_used">%s Verbraucht</string>
     <string name="http_path">HTTP Pfad</string>
-    <string name="download">Herunterladen</string>
     <string name="create_rule">Regel erstellen</string>
-    <string name="action_download">HERUNTERLADEN</string>
     <string name="backup">Sicherung</string>
     <string name="connection_test_error">Fehlgeschlagen: %s</string>
     <string name="enc_method">Verschlüsselungsmethode</string>
@@ -195,11 +177,7 @@
     <string name="circular_reference_sum">Der Pfad kann sich nicht selbst enthalten.</string>
     <string name="delete_group_prompt">Bist du sicher, dass du diese Gruppe löschen willst?</string>
     <string name="cag_ws">WebSocket-Einstellungen</string>
-    <string name="disable_dns_expire_summary">DNS TTL bis zum Neustart ignorieren.</string>
-    <string name="sai_succeed">Installation abgeschlossen</string>
-    <string name="action_learn_more">MEHR ERFAHREN</string>
     <string name="ooc_subscription_token_invalid">Ungültiges OOCv1 Token</string>
-    <string name="sai_error_storage">Nicht genügen Speicherplatz, um Anwendung zu installieren</string>
     <string name="profile_import">Profil importieren</string>
     <string name="add_profile_methods_scan_qr_code">QR-Code scannen</string>
     <string name="tasker_start_current_profile">Aktuelles Profil</string>
@@ -222,9 +200,7 @@
     <string name="menu_tools">Werkzeuge</string>
     <string name="connection_test_icmp_ping_unavailable">ICMPing nicht verfügbar</string>
     <string name="username_opt">Benutzername (Optional)</string>
-    <string name="warp_generate">Konfiguration generieren</string>
     <string name="quic_key">Quic SCHLÜSSEL</string>
-    <string name="generating">Generiere…</string>
     <string name="confirm">Bestätigen</string>
     <string name="action_import_msg">Erfolgreich importiert!</string>
     <string name="delete_confirm_prompt">Bist du dir sicher, dass du dieses Profil löschen willst?</string>
@@ -233,7 +209,6 @@
     <string name="route_asset_no_update">Keine Aktualisierung</string>
     <string name="group_settings">Gruppeneinstellungen</string>
     <string name="wireguard_local_address">Lokale Adresse</string>
-    <string name="sai_error_blocked">Installation wurde von %s blockiert</string>
     <string name="insecure">Unsicher</string>
     <string name="missing_permission">Fehlende Berechtigung</string>
     <string name="plugin_disabled">Deaktiviert</string>
@@ -251,9 +226,7 @@
     <string name="udp_over_tcp">UDP über TCP</string>
     <string name="network_type">Netzwerktyp</string>
     <string name="allow_access">Erlaube Verbindungen aus dem LAN</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) ist ein kostenloser WireGuard VPN Anbieter. Durch das Verwenden stimmst du den [TOS](https://www.cloudflare.com/application/terms/) zu.</string>
     <string name="action_export_err">Exportieren fehlgeschlagen.</string>
-    <string name="sai_error_incompatible">Anwendung ist mit diesem Gerät nicht kompatibel</string>
     <string name="udp_connections">%d UDP-Verbindungen</string>
     <string name="port_local_dns">Lokaler DNS-Port</string>
     <string name="ssh_public_key">Öffentlicher Schlüssel</string>

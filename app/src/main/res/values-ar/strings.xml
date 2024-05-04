@@ -2,20 +2,16 @@
 <resources>
     <string name="menu_group">مجموعة</string>
     <string name="menu_configuration">ترتيب</string>
-    <string name="logcat_summary">هذا مفيد جدا نجاح باهر</string>
     <string name="logcat">تصدير معلومات التصحيح</string>
     <string name="version_x">الإصدار (%s)</string>
     <string name="app_version">إصدار</string>
-    <string name="telegram">قناة تحديث Telegram</string>
     <string name="github">مصدر الرمز</string>
     <string name="app_desc">سلسلة أدوات البروکسی العالمية لنظام Android ، مكتوبة بلغة Kotlin.</string>
     <string name="project">مشروع</string>
     <string name="group_status_proxies">%d البروکسیز</string>
     <string name="group_status_empty_subscription">لم يتم تحديثه بعد</string>
     <string name="group_status_empty">مجموعة فارغة</string>
-    <string name="group_edit_subscription">تحرير الاشتراك‬</string>
     <string name="group_edit">تحرير المجموعة</string>
-    <string name="group_create_subscription">إنشاء اشتراك</string>
     <string name="group_create">إنشاء مجموعة</string>
     <string name="group_name_required">اسم المجموعة مطلوب</string>
     <string name="group_subscription_link">رابط الاشتراك</string>
@@ -24,7 +20,6 @@
     <string name="tile_title">الجلاد</string>
     <string name="quick_toggle">تبديل</string>
     <string name="group_default">غير مجمعة</string>
-    <string name="document">وثيقة</string>
     <string name="theme">موضوع</string>
     <string name="menu_about">حول</string>
     <string name="group_status_proxies_subscription">%d البروکسیز | تم التحديث في %s</string>
@@ -45,7 +40,6 @@
 \n%s</string>
     <string name="group_delete_confirm_prompt">هل أنت متأكد أنك تريد إزالة هذه المجموعة؟</string>
     <string name="group_diff">الفارق (%s)</string>
-    <string name="group_show_diff">الفارق</string>
     <string name="group_no_difference">%s: لا فرق</string>
     <string name="grpc_service_name">اسم خدمة gRPC</string>
     <string name="kcp_seed">mKCP بذور(Seed)</string>
@@ -84,7 +78,6 @@
     <string name="direct_dns">DNS المباشر</string>
     <string name="remote_dns">DNS البعيد</string>
     <string name="cag_dns">إعدادات DNS</string>
-    <string name="connection_test_error_status_code">رمز الخطأ: #%d</string>
     <string name="connection_test_fail">الإنترنت غير متوفر</string>
     <string name="connection_test_error">فشل: %s</string>
     <string name="connection_test_available_http">نجاح: استغرقت مصافحة HTTP %dms</string>
@@ -95,15 +88,12 @@
 \n\t%1$s↑ %2$s↓
 \nمباشر:
 \n\t%3$s↑ %4$s↓</string>
-    <string name="traffic">%1$s↑ %2$s↓</string>
     <string name="allow_insecure_sum">تعطيل فحص الشهادة. عند التمكين ، يكون هذا التكوين آمنًا مثل النص العادي</string>
     <string name="allow_insecure">السماح بعدم الأمان</string>
     <string name="security_settings">اعدادات الامان</string>
     <string name="show_direct_speed_sum">أظهر سرعة المرور بدون وكيل في الإشعار أيضًا</string>
     <string name="show_direct_speed">عرض السرعة المباشرة</string>
-    <string name="show_stop_sum">إذا كنت لا تريد استخدام \"اللوحة السريعة\" كمفتاح التبديل</string>
     <string name="allow_access_sum">ربط خوادم الإدخال إلى 0.0.0.0</string>
-    <string name="show_stop">إظهار زر الإيقاف</string>
     <string name="cag_misc">إعدادات متنوعة</string>
     <string name="speed_interval">الفاصل الزمني لتحديث إشعار السرعة</string>
     <string name="ws_browser_forwarding_sum">إعادة توجيه WebSockets المقابلة من خلال المتصفح.</string>
@@ -166,9 +156,7 @@
     <string name="action_export">يصدر</string>
     <string name="action_export_clipboard">تصدير إلى الحافظة</string>
     <string name="action_export_file">تصدير إلى ملف</string>
-    <string name="action_scan_china_apps">فحص تطبيقات الصين</string>
     <string name="action_from_link">من الاشتراك</string>
-    <string name="action_create_group">مجموعة فارغة</string>
     <string name="clear_profiles">صافي</string>
     <string name="circular_reference_sum">لا يمكن أن يحتوي المسار على نفسه.</string>
     <string name="circular_reference">مرجع دائري</string>
@@ -198,8 +186,6 @@
     <string name="forward_success">بدأت البروکسی.</string>
     <string name="service_proxy">خدمة البروکسی</string>
     <string name="service_vpn">خدمة VPN</string>
-    <string name="direct_boot_aware_summary">ستكون معلومات ملف التعريف المحدد أقل حماية</string>
-    <string name="direct_boot_aware">السماح بالتبديل في شاشة القفل</string>
     <string name="auto_connect_summary">قم بتمكين البروکسی عند تحديث بدء التشغيل/التطبيق إذا كان يعمل من قبل</string>
     <string name="auto_connect">اتصال تلقائي</string>
     <string name="show_system_apps">عرض تطبيقات النظام</string>
@@ -251,11 +237,6 @@
     <string name="ooc_warning">تحذير</string>
     <string name="update_subscription_warning">البروکسی غير متصل، هل أنت متأكد أنك تريد متابعة التحديث؟</string>
     <string name="ooc_subscription_token_invalid">رمز OOCv1 غير صالح</string>
-    <string name="download">تحميل</string>
-    <string name="install_from_fdroid">التثبيت من F-Droid</string>
-    <string name="install_from_play_store">التثبيت من متجر Play</string>
-    <string name="action_download">تحميل</string>
-    <string name="action_learn_more">يتعلم أكثر</string>
     <string name="profile_requiring_plugin">يتطلب ملف التعريف %s تثبيت المكون الإضافي %s، لكن لم يتم العثور عليه.</string>
     <string name="missing_plugin">في عداد المفقودين المكونات في</string>
     <string name="confirm">أكد</string>
@@ -296,7 +277,6 @@
     <string name="unavailable">غير متوفره</string>
     <string name="standard">معيار</string>
     <string name="probe_interval">الفاصل الزمني لرصد الموازن</string>
-    <string name="api_port">منفذ API</string>
     <string name="random">عشوائي</string>
     <string name="list">قائمة</string>
     <string name="enable_log_sum">من أجل إصلاح الخلل</string>
@@ -394,25 +374,21 @@
     <string name="clear_logcat">تقارير أداء واضحة</string>
     <string name="menu_log">السجلات</string>
     <string name="menu_tools">أدوات</string>
-    <string name="translate_platform">منصة الترجمة</string>
     <string name="ssh_private_key_passphrase">عبارة مرور المفتاح الخاص</string>
     <string name="ssh_private_key">مفتاح خاص</string>
     <string name="ssh_public_key">المفتاح العمومي</string>
     <string name="ssh_auth_type_none">لا شيء</string>
     <string name="probe_url">اختبار URL مخصص</string>
-    <string name="generating">توليد…</string>
     <string name="route_play_store">قاعدة متجر Play لـ %s</string>
     <string name="route_opt_block_analysis">تحليل الكتلة</string>
     <string name="group_filter_owners">أصحاب</string>
     <string name="app_statistics_disabled">تم تعطيل إحصاءات حركة مرور التطبيق</string>
     <string name="profile_traffic_statistics">إحصائيات حركة المرور الشخصية</string>
     <string name="profile_traffic_statistics_summary">عند تعطيله، لن يتم احتساب حركة المرور المستخدمة</string>
-    <string name="warp_license">[CloudFlare Warp] (https://blog.cloudflare.com/1111-warp-better-vpn/) هو مزود مجاني لـ WireGuard VPN. باستخدامه، فإنك توافق على [TOS] (https://www.cloudflare.com/application/terms/).</string>
     <string name="flow">خوارزمية التحكم في التدفق</string>
     <string name="app_traffic_statistics">إحصائيات حركة مرور التطبيق</string>
     <string name="wireguard_local_address">العنوان المحلي</string>
     <string name="wireguard_public_key">المفتاح العام للأقران</string>
     <string name="wireguard_psk">مفتاح الأقران المشترك مسبقا</string>
-    <string name="warp_generate">توليد التكوين</string>
     <string name="group_filter_owners_nf">لا يوجد مالكون في هذا الاشتراك</string>
 </resources>

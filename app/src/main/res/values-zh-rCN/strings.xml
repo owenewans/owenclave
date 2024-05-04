@@ -3,10 +3,8 @@
     <string name="app_desc">适用于 Android 之通用代理工具, 使用 Kotlin 编写。</string>
     <string name="project">项目</string>
     <string name="github">源代码</string>
-    <string name="telegram">Telegram 更新频道</string>
     <string name="app_version">版本</string>
     <string name="logcat">导出调试信息</string>
-    <string name="logcat_summary">这种非常有用哇</string>
     <string name="menu_configuration">配置</string>
     <string name="menu_group">分组</string>
     <string name="menu_about">关于</string>
@@ -18,16 +16,13 @@
     <string name="group_subscription_link">订阅链接</string>
     <string name="group_name_required">需要分组名称</string>
     <string name="group_create">创建分组</string>
-    <string name="group_create_subscription">添加订阅</string>
     <string name="group_edit">编辑</string>
-    <string name="group_edit_subscription">编辑订阅</string>
     <string name="group_status_empty">空</string>
     <string name="group_status_empty_subscription">从未更新</string>
     <string name="group_status_proxies">%d 个配置</string>
     <string name="group_status_proxies_subscription">%d 个配置 | 更新于 %s</string>
     <string name="group_no_difference">%s: 没有变化</string>
     <string name="group_updated">%s: 更新了 %d 个节点</string>
-    <string name="group_show_diff">变化</string>
     <string name="group_delete_confirm_prompt">您确定要删除这个分组吗\?</string>
     <string name="group_added">新增:
 \n%s</string>
@@ -53,7 +48,6 @@
     <string name="ws_browser_forwarding">浏览器转发</string>
     <string name="ws_browser_forwarding_sum">转发相应的 WebSockets 到浏览器.</string>
     <string name="speed_interval">速度通知更新间隔</string>
-    <string name="traffic">%1$s↑ %2$s↓</string>
     <string name="speed_detail">代理： %1$s↑ %2$s↓
 \n直连： %3$s↑ %4$s↓</string>
     <string name="speed">%s/s</string>
@@ -61,7 +55,6 @@
     <string name="connection_test_available">连接成功: HTTPS 握手耗时 %dms</string>
     <string name="connection_test_error">失败: %s</string>
     <string name="connection_test_fail">网络不可用</string>
-    <string name="connection_test_error_status_code">错误代码: #%d</string>
     <!-- proxy category -->
     <string name="profile_name">配置名称</string>
     <string name="server_address">服务器</string>
@@ -98,8 +91,6 @@
     <string name="show_system_apps">显示系统应用</string>
     <string name="auto_connect">自动连接</string>
     <string name="auto_connect_summary">手机启动或更新后代理会自动重新连接</string>
-    <string name="direct_boot_aware">允许在解锁前启动</string>
-    <string name="direct_boot_aware_summary">您正在使用的服务器可能会受到更少的保护</string>
     <!-- notification category -->
     <string name="service_vpn">VPN 服务</string>
     <string name="service_proxy">代理服务</string>
@@ -120,9 +111,7 @@
     <string name="edit">编辑</string>
     <string name="share">分享</string>
     <string name="add_profile">添加服务器配置</string>
-    <string name="action_create_group">空白组</string>
     <string name="action_from_link">添加订阅</string>
-    <string name="action_scan_china_apps">扫描中国应用</string>
     <string name="action_export_file">导出到文件</string>
     <string name="action_export_clipboard">导出到剪切板</string>
     <string name="action_import">从剪切板导入</string>
@@ -193,8 +182,6 @@
 \n%s</string>
     <string name="deduplication">去重</string>
     <string name="version_x">版本 (%s)</string>
-    <string name="show_stop">显示停止按钮</string>
-    <string name="show_stop_sum">如果您不想使用快捷图块</string>
     <string name="ss_cat">Shadowsocks 设置</string>
     <string name="insecure">不安全</string>
     <string name="deprecated">已废弃</string>
@@ -244,7 +231,6 @@
     <string name="pinned_peer_certificate_chain_sha256">固定证书链散列</string>
     <string name="ignore_battery_optimizations">忽略电池优化</string>
     <string name="ignore_battery_optimizations_sum">移除一些限制</string>
-    <string name="document">文档</string>
     <string name="early_data_header_name">前置数据标头</string>
     <string name="config_settings">配置设置</string>
     <string name="custom_config">自定义配置</string>
@@ -276,7 +262,6 @@
     <string name="balancer_strategy">策略</string>
     <string name="list">列表</string>
     <string name="random">随机</string>
-    <string name="api_port">API 端口</string>
     <string name="probe_interval">负载均衡观测间隔</string>
     <string name="standard">标准</string>
     <string name="unavailable">不可用</string>
@@ -318,11 +303,6 @@
     <string name="confirm">确认</string>
     <string name="missing_plugin">缺少插件</string>
     <string name="profile_requiring_plugin">配置 %s 需要插件 %s, 但找不到.</string>
-    <string name="action_learn_more">了解更多</string>
-    <string name="action_download">下载</string>
-    <string name="install_from_play_store">从 Play Store 安装</string>
-    <string name="install_from_fdroid">从 F-Droid 安装</string>
-    <string name="download">下载</string>
     <string name="ooc_subscription_token_invalid">无效的 OOCv1 Token</string>
     <string name="ooc_warning">警告</string>
     <string name="ooc_missing_protocol">该订阅要求 %s 协议支持, 但找不到. 不支持的配置将被忽略.</string>
@@ -401,19 +381,14 @@
     <string name="clear_logcat">清空日志</string>
     <string name="menu_log">日志</string>
     <string name="menu_tools">工具</string>
-    <string name="translate_platform">翻译平台</string>
     <string name="wireguard_local_address">本地地址</string>
     <string name="wireguard_public_key">节点公钥</string>
     <string name="wireguard_psk">节点预共享密钥</string>
-    <string name="cloudflare_wrap">Warp</string>
     <string name="resolve_destination_summary">如果目标地址是一个域, 则根据 IPv6 策略传出.</string>
     <string name="resolve_destination">解析目标地址</string>
     <string name="destination_override_summary">使用探测的域来覆盖目标地址, 而不是仅用于路由</string>
     <string name="destination_override">覆盖目标地址</string>
     <string name="tun_implementation">TUN 实现</string>
-    <string name="generating">正在生成…</string>
-    <string name="warp_generate">生成配置</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) 是一个免费的 WireGuard VPN 提供源. 使用它, 代表您同意其 [服务条款](https://www.cloudflare.com/application/terms/)。</string>
     <string name="profile_traffic_statistics_summary">禁用后将不统计使用的流量</string>
     <string name="app_statistics_disabled">应用流量统计已禁用</string>
     <string name="enable_pcap">启用 Pcap</string>
@@ -437,14 +412,12 @@
     <string name="start">开始</string>
     <string name="stun_attest_loading">这可能需要几分钟的时间…</string>
     <string name="recheck">重新测试</string>
-    <string name="disable_dns_expire_summary">忽略 DNS TTL，直到重新启动。</string>
     <string name="route_play_store">%s Play 商店规则</string>
     <string name="route_opt_block_analysis">屏蔽跟踪器</string>
     <string name="naive_insecure_concurrency">不安全并发</string>
     <string name="naive_insecure_concurrency_summary">使用N个并发的隧道连接，在恶劣的网络条件下效果更好，但是并发连接使隧道更容易被发现，安全性降低。以不安全的方式使用它违背了这个项目力求对抗流量分析的目的
 \n
 \n如果你必须使用它，先试试N=2，看看是否能解决你的问题。强烈建议不要使用超过4个并发连接。</string>
-    <string name="disable_dns_expire">禁用 DNS 过期</string>
     <string name="route_ssid">Wi-Fi SSID</string>
     <string name="missing_permission">缺少权限</string>
     <string name="location_disabled">位置已禁用</string>
@@ -480,8 +453,6 @@
 \n
 \n如果你从相同的端口发送两个 UDP 数据包到 NAT 另一侧的不同地方，NAT 将使用相同的端口来发送这些数据包，如果目标地址是相同的；目标端口并不重要。发送到两个不同的主机将使用不同的端口。如果双方都使用它，这就需要使用 TURN 服务器，除非双方都不做特定端口过滤，而且至少有一方为 `端点独立`。如果你想使用 webrtc 或其他使用 P2P UDP 网络的东西，***不要像这样配置你的 NAT***。这种映射类型（松散地）对应于 [RFC 3489第5节](https://tools.ietf.org/html/rfc3489#section-5) 中定义的经典 STUN 中的对称 NATs。</string>
     <string name="tasker_settings">Tasker 设置</string>
-    <string name="auto_mtu_summary">使用上游网络接口的 MTU</string>
-    <string name="auto_mtu">自动 MTU</string>
     <string name="tasker_action_start_service">启动服务</string>
     <string name="tasker_action_stop_service">停止服务</string>
     <string name="tasker_start_current_profile">当前配置</string>
@@ -490,32 +461,14 @@
     <string name="mtu">MTU</string>
     <string name="root_ca_provider">根证书提供商</string>
     <string name="root_ca_system">系统</string>
-    <string name="acquire_wake_lock_summary">使 CPU 保持唤醒状态</string>
-    <string name="shizuku_unavailable">Shizuku 不可用</string>
     <string name="packet_encoding">数据包编码</string>
-    <string name="acquire_wake_lock">获取唤醒锁定</string>
     <string name="tasker_action">动作</string>
     <string name="experimental_reduced_iv_head_entropy">这是GFWReport针对GFW对随机流协议的阻塞行为而提出的对策。
 \n
 \n这个选项将IV的前6个字节重新映射为可打印的字符，启用本选项后，私密网络路径上的任何人都有可能识别该协议。</string>
-    <string name="sai">分离APK安装程序</string>
-    <string name="release_wake_lock">释放唤醒锁</string>
     <string name="action_switch">切换</string>
-    <string name="sai_succeed">成功安装</string>
-    <string name="disconnect">断开</string>
-    <string name="sai_error_generic">安装失败</string>
-    <string name="sai_error_aborted">用户已取消安装</string>
-    <string name="sai_error_blocked">安装被 %s 阻止</string>
-    <string name="sai_error_storage">不够存储空间安装本app</string>
-    <string name="sai_error_blocked_device">设备</string>
     <string name="without_brook_protocol">不含Brook协议</string>
-    <string name="sai_error_conflict">因为与已安装的同名app冲突而未能安装本app</string>
-    <string name="sai_error_incompatible">本应用不兼容本设备</string>
-    <string name="sai_error_invalid">无效的APK</string>
-    <string name="installer_provider">安装程序提供者</string>
     <string name="udp_over_tcp">基于TCP的UDP</string>
-    <string name="udp_over_tcp_summary">SUoT 协议需要服务器端支持。</string>
-    <string name="grpc_mode">gRPC模式</string>
     <string name="flow">流控算法</string>
     <string name="tuic_disable_sni">禁用 SNI</string>
     <string name="tuic_reduce_rtt">降低 RTT</string>

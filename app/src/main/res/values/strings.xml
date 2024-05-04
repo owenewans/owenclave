@@ -4,16 +4,13 @@
     <string name="app_desc">The universal proxy toolchain for Android, written in Kotlin.</string>
     <string name="project">Project</string>
     <string name="github">Source code</string>
-    <string name="telegram">Telegram update channel</string>
     <string name="app_version">Version</string>
     <string name="version_x">Version (%s)</string>
     <string name="logcat">Export debug information</string>
-    <string name="logcat_summary">Such useful very wow</string>
     <string name="menu_configuration">Configuration</string>
     <string name="menu_group">Group</string>
     <string name="menu_about">About</string>
     <string name="theme">Theme</string>
-    <string name="document">Document</string>
     <string name="group_default">Ungrouped</string>
     <string name="quick_toggle">Toggle</string>
     <string name="tile_title">Switcher</string>
@@ -24,16 +21,13 @@
     <string name="group_subscription_link">Subscription Link</string>
     <string name="group_name_required">Group name required</string>
     <string name="group_create">Create group</string>
-    <string name="group_create_subscription">Create subscription</string>
     <string name="group_edit">Edit group</string>
-    <string name="group_edit_subscription">Edit subscription</string>
     <string name="group_status_empty">Empty group</string>
     <string name="group_status_empty_subscription">Not updated yet</string>
     <string name="group_status_proxies">%d Proxies</string>
     <string name="group_status_proxies_subscription">%d Proxies | Updated on %s</string>
     <string name="group_no_difference">%s: No difference</string>
     <string name="group_updated">%s: Updated %d proxies</string>
-    <string name="group_show_diff">Diff</string>
     <string name="group_diff">Diff (%s)</string>
     <string name="group_delete_confirm_prompt">Are you sure you want to remove this group?</string>
     <string name="group_added">Added: \n%s</string>
@@ -54,13 +48,11 @@
     <string name="general_settings">App Settings</string>
     <string name="require_http">Enable HTTP inbound</string>
     <string name="cag_ws">WebSocket Settings</string>
-    <string name="ws_max_early_data" translatable="false">Max early data</string>
+    <string name="ws_max_early_data">Max early data</string>
     <string name="ws_browser_forwarding">Browser Forwarding</string>
     <string name="ws_browser_forwarding_sum">Forward corresponding WebSockets through the browser.</string>
     <string name="speed_interval">Speed Notification Update Interval</string>
     <string name="cag_misc">Misc Settings</string>
-    <string name="show_stop">Show Stop Button</string>
-    <string name="show_stop_sum">If you don’t want to use Quick Tile as the switch</string>
     <string name="show_direct_speed">Show Direct Speed</string>
     <string name="show_direct_speed_sum">Show the traffic speed without proxy in the notification as well</string>
     <string name="security_settings">Security Settings</string>
@@ -74,7 +66,6 @@
     <string name="connection_test_available_http">Success: HTTP handshake took %dms</string>
     <string name="connection_test_error">Failed: %s</string>
     <string name="connection_test_fail">Internet Unavailable</string>
-    <string name="connection_test_error_status_code">Error code: #%d</string>
     <string name="cag_dns">DNS Settings</string>
     <string name="remote_dns">Remote DNS</string>
     <string name="direct_dns">Direct DNS</string>
@@ -181,8 +172,6 @@
     <string name="show_system_apps">Show system apps</string>
     <string name="auto_connect">Auto Connect</string>
     <string name="auto_connect_summary">Enable proxy on startup/app update if it was running before</string>
-    <string name="direct_boot_aware">Allow Toggling in Lock Screen</string>
-    <string name="direct_boot_aware_summary">Your selected profile information will be less protected</string>
     <!-- notification category -->
     <string name="service_vpn">VPN Service</string>
     <string name="service_proxy">Proxy Service</string>
@@ -236,9 +225,7 @@
     <string name="circular_reference">Circular reference</string>
     <string name="circular_reference_sum">The route cannot contain itself.</string>
     <string name="clear_profiles">Clear</string>
-    <string name="action_create_group">Empty group</string>
     <string name="action_from_link">From subscription</string>
-    <string name="action_scan_china_apps">Scan China apps</string>
     <string name="action_export_file">Export to file</string>
     <string name="action_export_clipboard">Export to Clipboard</string>
     <string name="action_export">Export</string>
@@ -315,7 +302,6 @@
     <string name="list">List</string>
     <string name="random">Random</string>
     <string name="leastPing" translatable="false">Ping</string>
-    <string name="api_port">API Port</string>
     <string name="probe_interval">Balancer observation interval</string>
     <string name="standard">Standard</string>
     <string name="v2rayn" translatable="false">V2RayN</string>
@@ -330,7 +316,7 @@
     <string name="connection_test_tcp_ping_unavailable">TCPing unavailable</string>
     <string name="connection_test_icmp_ping" translatable="false">ICMPing</string>
     <string name="connection_test_icmp_ping_unavailable">ICMPing unavailable</string>
-    <string name="connection_test_url_test" translatable="false">URL Test</string>
+    <string name="connection_test_url_test">URL Test</string>
     <string name="connection_test_domain_not_found">Domain not found</string>
     <string name="connection_test_refused">Connection refused</string>
     <string name="connection_test_unreachable">Unreachable</string>
@@ -361,12 +347,7 @@
     <string name="confirm">Confirm</string>
     <string name="missing_plugin">Missing Plugin</string>
     <string name="profile_requiring_plugin">Profile %s requires the %s plugin to be installed, but it was not found.</string>
-    <string name="action_learn_more">LEARN MORE</string>
-    <string name="action_download">DOWNLOAD</string>
-    <string name="install_from_play_store">Install from Play Store</string>
-    <string name="install_from_fdroid">Install from F-Droid</string>
-    <string name="download">Download</string>
-    <string name="ooc_subscription_token" translatable="false">OOCv1 API Token</string>
+    <string name="ooc_subscription_token">OOCv1 API Token</string>
     <string name="ooc_subscription_token_invalid">Invalid OOCv1 Token</string>
     <string name="update_subscription_warning">Proxy is not connected, are you sure you want to continue updating?</string>
     <string name="ooc_warning">Warning</string>
@@ -397,7 +378,6 @@
     <string name="hysteria_auth_payload">Authentication Payload</string>
     <string name="hysteria_upload_mbps">Max Upload Speed (in Mbps)</string>
     <string name="hysteria_download_mbps">Max Download Speed (in Mbps)</string>
-    <string name="hysteria_auth">Auth</string>
     <string name="hysteria_init_stream_receive_window">QUIC Init Stream Receive Window</string>
     <string name="hysteria_max_stream_receive_window">QUIC Max Stream Receive Window</string>
     <string name="hysteria_init_conn_receive_window">QUIC Init Connection Receive Window</string>
@@ -446,23 +426,18 @@
     <string name="ssh_public_key">Public Key</string>
     <string name="ssh_private_key">Private Key</string>
     <string name="ssh_private_key_passphrase">Private Key Passphrase</string>
-    <string name="translate_platform">Translation Platform</string>
     <string name="menu_tools">Tools</string>
     <string name="menu_log">Logs</string>
     <string name="clear_logcat">Clear Logcat</string>
     <string name="wireguard_local_address">Local Address</string>
     <string name="wireguard_public_key">Peer Public Key</string>
     <string name="wireguard_psk">Peer Pre-Shared Key</string>
-    <string name="cloudflare_wrap" translatable="false">Warp</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) is a free WireGuard VPN provider. By using it, you agree to the [TOS](https://www.cloudflare.com/application/terms/).</string>
-    <string name="warp_generate">Generate Configuration</string>
-    <string name="generating">Generating…</string>
     <string name="tun_implementation">TUN Implementation</string>
     <string name="destination_override">Override Destination</string>
     <string name="destination_override_summary">Use the sniffed domain to overwrite the destination address, not just for routing</string>
     <string name="resolve_destination">Resolve Destination</string>
     <string name="resolve_destination_summary">If the destination address is a domain, it is then passed out based on the IPv6 strategy.</string>
-    <string name="pcap" translatable="false">Pcap</string>
+    <string name="pcap">Pcap</string>
     <string name="enable_pcap">Enable Pcap</string>
     <string name="pcap_summary">Save traffic to .pcap file</string>
     <string name="pcap_notice">Pcap files will be saved to %s</string>
@@ -484,8 +459,6 @@
     <string name="nat_filtering_endpoint_independent">`Endpoint independent`\n\nThis is the most permissive of the three. Once you have sent a UDP packet to anywhere on the other side of the NAT, anything else on the other side of the NAT can send UDP packets back to you on that port. This filtering policy gives sysadmins cold sweats, but RFC 4787 recommends its use when real-time-communication (or other things that require "application transparency"; eg gaming) is a priority. Note that this will not do a very good job of compensating if your NAT\'s mapping behavior is misconfigured. It is more important to get the mapping behavior right.</string>
     <string name="nat_filtering_address_dependent">`Address dependent`\n\nThis is a middle ground that sysadmins have an easier time justifying, but my impression is that it is harder to configure. Once you have sent a UDP packet to a host on the other side of the NAT, the NAT will allow return UDP traffic from that host, regardless of the port that host sends from, but will not allow inbound UDP traffic from other addresses. If your mapping behavior is configured appropriately, this should function as well as `endpoint independent filtering`.</string>
     <string name="nat_filtering_address_and_port_dependent">`Address and port dependent`\n\nThis is the strictest of the three. Your NAT will only allow return traffic from exactly where you sent your UDP packet. Using this is ***not recommended***, even if you configure mapping behavior correctly, because it will work poorly when the other NAT is misconfigured (fairly common).</string>
-    <string name="disable_dns_expire">Disable DNS Expire</string>
-    <string name="disable_dns_expire_summary">Ignore DNS TTL until restart.</string>
     <string name="route_ssid">Wi-Fi SSID</string>
     <string name="missing_permission">Missing Permission</string>
     <string name="location_disabled">Location Disabled</string>
@@ -527,29 +500,9 @@
     <string name="mtu">MTU</string>
     <string name="experimental_reduced_iv_head_entropy">This is GFWReport\'s proposal for a countermeasure for the random stream like protocol blocking behaviour observed on GFW.
 \n\nThis option remap the first 6 bytes of IV to printable characters, it\'s possible for anyone on the privileged network path to identify the protocol when enabled.</string>
-    <string name="auto_mtu">Auto MTU</string>
-    <string name="auto_mtu_summary">Use MTU of the upstream network interface</string>
-    <string name="acquire_wake_lock">Acquire WakeLock</string>
-    <string name="release_wake_lock">Release WakeLock</string>
-    <string name="acquire_wake_lock_summary">Keep the CPU on</string>
     <string name="action_switch">Switch</string>
-    <string name="disconnect">Disconnect</string>
-    <string name="sai">Split APKs Installer</string>
-    <string name="sai_succeed">Installation succeeded</string>
-    <string name="sai_error_generic">Installation failed</string>
-    <string name="sai_error_aborted">Installation was cancelled by user</string>
-    <string name="sai_error_blocked">Installation was blocked by %s</string>
-    <string name="sai_error_blocked_device">device</string>
-    <string name="sai_error_conflict">Unable to install the app because it conflicts with an already installed app with same package name</string>
-    <string name="sai_error_incompatible">Application is incompatible with this device</string>
-    <string name="sai_error_invalid">Invalid APKs</string>
-    <string name="sai_error_storage">Not enough storage space to install the app</string>
-    <string name="installer_provider">Installer Provider</string>
-    <string name="shizuku_unavailable">Shizuku unavailable</string>
     <string name="udp_over_tcp">UDP Over TCP</string>
-    <string name="udp_over_tcp_summary">Enable the SUoT protocol, requires server support.</string>
     <string name="without_brook_protocol">Without Brook Protocol</string>
-    <string name="grpc_mode">gRPC Mode</string>
     <string name="tuic_token">Token</string>
     <string name="tuic_udp_relay_mode">UDP Relay Mode</string>
     <string name="tuic_congestion_controller">Congestion Controller</string>

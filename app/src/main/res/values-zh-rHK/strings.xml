@@ -4,12 +4,9 @@
     <string name="app_version">版本</string>
     <string name="version_x">版本 (%s)</string>
     <string name="menu_about">關於</string>
-    <string name="telegram">Telegram 更新頻道</string>
     <string name="app_desc">以 Kotlin 編寫的 Android 通用代理工具鏈。</string>
-    <string name="logcat_summary">超級有用啊wow</string>
     <string name="group_update">更新</string>
     <string name="theme">主題</string>
-    <string name="document">文件</string>
     <string name="project">項目</string>
     <string name="menu_group">分組</string>
     <string name="group_name">分組名稱</string>
@@ -37,8 +34,6 @@
     <string name="domain_strategy">域名解析策略</string>
     <string name="share_qr_nfc">二維碼</string>
     <string name="plugin">插件</string>
-    <string name="action_download">下載</string>
-    <string name="install_from_fdroid">從 F-Droid 安裝</string>
     <string name="menu_tools">工具</string>
     <string name="recheck">重新測試</string>
     <string name="network_eth">以太網絡</string>
@@ -54,13 +49,10 @@
     <string name="route_bypass">繞過</string>
     <string name="route_block">封鎖</string>
     <string name="add_profile_methods_scan_qr_code">掃描二維碼</string>
-    <string name="install_from_play_store">從 Play Store 安裝</string>
     <string name="auto_update">自動更新</string>
     <string name="auto_connect">自動連接</string>
     <string name="disable">禁用</string>
     <string name="auto">自動</string>
-    <string name="action_scan_china_apps">尋找國產應用程式</string>
-    <string name="download">下載</string>
     <string name="apply">套用</string>
     <string name="random">隨機</string>
     <string name="connection_test">連接測試</string>
@@ -69,7 +61,6 @@
     <string name="group_status_proxies">%d 個代理</string>
     <string name="group_status_proxies_subscription">%d 個代理 | 於 %s 更新</string>
     <string name="group_diff">變化 (%s)</string>
-    <string name="group_show_diff">變化</string>
     <string name="group_duplicate">重複：
 \n%s</string>
     <string name="service_mode_vpn">VPN</string>
@@ -109,7 +100,6 @@
     <string name="menu_traffic">流量</string>
     <string name="group_default">未分組</string>
     <string name="menu_configuration">設定檔</string>
-    <string name="group_edit_subscription">編輯訂閱</string>
     <string name="port_proxy">SOCKS5 代理連接埠</string>
     <string name="port_transproxy">透明代理連接埠</string>
     <string name="cag_route">路由設定</string>

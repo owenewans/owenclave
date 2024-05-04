@@ -3,13 +3,11 @@
     <string name="github">Mã nguồn</string>
     <string name="app_version">Phiên bản</string>
     <string name="logcat">Xuất thông tin gỡ lỗi</string>
-    <string name="logcat_summary">Rất hữu ích</string>
     <string name="menu_configuration">Cấu hình</string>
     <string name="menu_group">Nhóm</string>
     <string name="project">Dự án</string>
     <string name="version_x">Phiên bản (%s)</string>
     <string name="app_desc">Công cụ proxy phổ biến dành cho Android, được viết bằng Kotlin</string>
-    <string name="telegram">Cập nhật nhóm Telegram</string>
     <string name="theme">Chủ đề</string>
     <string name="group_default">Chưa được nhóm</string>
     <string name="quick_toggle">Bật/Tắt</string>
@@ -18,19 +16,15 @@
     <string name="group_update">Cập nhật</string>
     <string name="group_name_required">Tên nhóm bắt buộc</string>
     <string name="group_create">Tạo nhóm</string>
-    <string name="group_create_subscription">Tạo subscription</string>
     <string name="group_edit">Chỉnh sửa nhóm</string>
-    <string name="group_edit_subscription">Chỉnh sửa subscription</string>
     <string name="group_status_empty">Nhóm trống</string>
     <string name="group_status_empty_subscription">Chưa cập nhật</string>
     <string name="group_no_difference">%s: Không khác biệt</string>
     <string name="group_updated">%s: Cập nhật %d máy chủ</string>
-    <string name="group_show_diff">Khác</string>
     <string name="group_added">Thêm: %s</string>
     <string name="group_changed">Đã cập nhật: %s</string>
     <string name="action_switch">Đổi máy chủ</string>
     <string name="menu_about">Giới thiệu</string>
-    <string name="document">Tài liệu</string>
     <string name="group_status_proxies">%d máy chủ</string>
     <string name="group_diff">Khác (%s)</string>
     <string name="group_status_proxies_subscription">%d máy chủ | Cập nhật vào %s</string>
@@ -43,7 +37,6 @@
     <string name="cag_route">Cài đặt quy tắc</string>
     <string name="allow_access">Cho phép kết nối từ mạng LAN</string>
     <string name="connection_test_error">Thất bại: %s</string>
-    <string name="connection_test_error_status_code">Error code: #%d</string>
     <string name="group_deleted">Đã xoá: %s</string>
     <string name="group_duplicate">Nhân bản: %s</string>
     <string name="service_mode">Chế độ dịch vụ</string>
@@ -62,7 +55,6 @@
     <string name="enc_method">Phương pháp mã hoá</string>
     <string name="inbound_settings">Cài đặt đến</string>
     <string name="cag_ws">Cài đặt WebSocket</string>
-    <string name="show_stop">Hiển thị nút ngắt kết nối</string>
     <string name="password_opt">Mật khẩu (Tùy chọn)</string>
     <string name="network">Mạng</string>
     <string name="metered">Gợi ý đo</string>
@@ -122,10 +114,7 @@
     <string name="naive_insecure_concurrency">Đồng thời không an toàn</string>
     <string name="stun_test">Khám phá hành vi NAT</string>
     <string name="start">Bắt đầu</string>
-    <string name="disable_dns_expire">Tắt DNS hết hạn</string>
-    <string name="disable_dns_expire_summary">Bỏ qua DNS TTL cho đến khi khởi động lại.</string>
     <string name="clear_profiles">Xoá</string>
-    <string name="action_create_group">Nhóm trống</string>
     <string name="action_from_link">Từ kênh đăng ký</string>
     <string name="action_export_file">Xuất sang tệp</string>
     <string name="action_export_clipboard">Xuất sang Bộ nhớ tạm</string>
@@ -149,7 +138,6 @@
     <string name="update_when_connected_only_sum">Ngăn chặn rò rỉ địa chỉ IP</string>
     <string name="confirm">Xác nhận</string>
     <string name="profile_requiring_plugin">Cấu hình %s yêu cầu %s plugin được cài đặt, nhưng nó không được tìm thấy.</string>
-    <string name="action_download">TẢI XUỐNG</string>
     <string name="service_subscription">Dịch vụ cập nhật kênh đăng ký</string>
     <string name="group_filter_owners">Chủ sở hữu</string>
     <string name="group_filter_ns">Cần đăng ký để sử dụng tính năng lọc</string>
@@ -158,7 +146,6 @@
     <string name="select_apps">Chọn ứng dụng</string>
     <string name="apps_message">%d Ứng dụng</string>
     <string name="copy_failed">Sao chép không thành công.</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) là nhà cung cấp WireGuard VPN miễn phí. Bằng cách sử dụng nó, bạn đồng ý với [TOS](https://www.cloudflare.com/application/terms/).</string>
     <string name="stun_test_summary">Xác định hành vi ánh xạ NAT của máy khách và hành vi lọc NAT được xác định trong RFC 5780 bằng cách sử dụng STUN.</string>
     <string name="network_type">Kiểu kết nối</string>
     <string name="network_data">Dữ liệu di động</string>
@@ -168,10 +155,6 @@
     <string name="backup_import">Nhập</string>
     <string name="tasker_action">Hoạt động</string>
     <string name="tasker_action_start_service">Bắt đầu dịch vụ</string>
-    <string name="auto_mtu">Tự động MTU</string>
-    <string name="auto_mtu_summary">Sử dụng MTU của giao diện mạng ngược dòng</string>
-    <string name="disconnect">Ngắt kết nối</string>
-    <string name="grpc_mode">Chế độ gRPC</string>
     <string name="require_http">Bật HTTP đến</string>
     <string name="ws_browser_forwarding">Chuyển tiếp trình duyệt</string>
     <string name="ws_browser_forwarding_sum">Chuyển tiếp WebSockets tương ứng thông qua trình duyệt.</string>
@@ -279,10 +262,8 @@
     <string name="open_settings">Mở Cài đặt</string>
     <string name="no_statistics">Chưa có thống kê</string>
     <string name="menu_tools">Công cụ</string>
-    <string name="translate_platform">Nền tảng dịch thuật</string>
     <string name="menu_log">Nhật ký</string>
     <string name="clear_logcat">Xóa nhật ký lỗi</string>
-    <string name="warp_generate">Tạo cấu hình</string>
     <string name="tun_implementation">Thực hiện TUN</string>
     <string name="destination_override">Ghi đè Đích</string>
     <string name="resolve_destination">Giải quyết điểm đến</string>
@@ -301,12 +282,8 @@
     <string name="root_ca_provider">Nhà cung cấp chứng chỉ Root CA</string>
     <string name="root_ca_system">Hệ thống</string>
     <string name="packet_encoding">Mã hóa gói</string>
-    <string name="acquire_wake_lock">Bật WakeLock</string>
-    <string name="release_wake_lock">Tắt WakeLock</string>
-    <string name="acquire_wake_lock_summary">Giữ cho CPU luôn hoạt động</string>
     <string name="speed_detail">Proxy： %1$s↑ %2$s↓
 \nDirect： %3$s↑ %4$s↓</string>
-    <string name="show_stop_sum">Nếu bạn không muốn sử dụng Quick Tile làm công tắc</string>
     <string name="probe_url">URL thử nghiệm tự chọn</string>
     <string name="username">Tên người dùng</string>
     <string name="username_opt">Tên người dùng (Không bắt buộc)</string>

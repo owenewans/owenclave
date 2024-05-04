@@ -3,7 +3,6 @@
     <string name="logcat">Esporta informazioni di debug</string>
     <string name="version_x">Versione (%s)</string>
     <string name="app_version">Versione</string>
-    <string name="telegram">Canale di aggiornamento di Telegram</string>
     <string name="github">Codice sorgente</string>
     <string name="project">Progetto</string>
     <string name="app_desc">La toolchain proxy universale per Android, scritta in Kotlin.</string>
@@ -15,8 +14,6 @@
     <string name="enable_log_sum">Per scopi di debug</string>
     <string name="circular_reference">Riferimento Circolare</string>
     <string name="clear_profiles">Cancella</string>
-    <string name="action_create_group">Cancella gruppo</string>
-    <string name="action_scan_china_apps">Scansiona app China</string>
     <string name="action_export_file">Esporta in un file</string>
     <string name="action_export_clipboard">Esporta nella Clipboard</string>
     <string name="action_export">Esporta</string>
@@ -51,7 +48,6 @@
     <string name="no">No</string>
     <string name="restart">Ricarica il servizio proxy per applicare le modifiche</string>
     <string name="license">Licenza</string>
-    <string name="api_port">Porta dell\'API</string>
     <string name="probe_interval">Intervallo Osservazione Balancer</string>
     <string name="standard">Standard</string>
     <string name="unavailable">Non disponibile</string>
@@ -71,10 +67,6 @@
     <string name="confirm">Conferma</string>
     <string name="missing_plugin">Plugin Mancante</string>
     <string name="profile_requiring_plugin">Il profilo %s richiede il plugin %s, ma non è installato.</string>
-    <string name="action_learn_more">ULTERIORI INFORMAZIONI</string>
-    <string name="action_download">SCARICA</string>
-    <string name="install_from_play_store">Installa da Play Store</string>
-    <string name="install_from_fdroid">Installa da F-Droid</string>
     <string name="group_filter_tags">Tag</string>
     <string name="group_filter_tags_nf">Nessun tag in questa sottoscrizione</string>
     <string name="group_filter_owners_nf">Nessun proprietario in questa sottoscrizione</string>
@@ -95,7 +87,6 @@
     <string name="security_settings">Impostazioni di Sicurezza</string>
     <string name="allow_insecure">Permetti Non-Sicuro</string>
     <string name="route_add">Crea Percorso</string>
-    <string name="direct_boot_aware">Permetti di Attivare/Disattivare anche nella schermata di blocco</string>
     <string name="subscriptions">Iscrizioni</string>
     <string name="stop">Ferma</string>
     <string name="circular_reference_sum">Il percorso non può contenere se stesso.</string>
@@ -163,7 +154,6 @@
 \n%s</string>
     <string name="quick_toggle">Attiva</string>
     <string name="require_http">Abilità HTTP in entrata</string>
-    <string name="document">Documento</string>
     <string name="ws_browser_forwarding">Trasferimento Browser</string>
     <string name="speed_interval">Intervallo Aggiornamento della Notifica sulla Velocità</string>
     <string name="connection_test_timeout">Timeout</string>
@@ -181,15 +171,12 @@
     <string name="service_mode_proxy">Solo Proxy</string>
     <string name="cag_route">Impostazioni Route</string>
     <string name="connection_test_refused">Connessione rifiutata</string>
-    <string name="show_stop_sum">Se non vuoi usare Quick Tile come interruttore</string>
     <string name="group_status_empty_subscription">Non ancora aggiornato</string>
-    <string name="show_stop">Mostra Pulsante Stop</string>
     <string name="connection_test_available_http">Operazione Riuscita: l\'handshake HTTP ha richiesto %dms</string>
     <string name="server_address">Server</string>
     <string name="route_rules_official">Ufficiale</string>
     <string name="group_update">Aggiornamento</string>
     <string name="menu_about">Circa</string>
-    <string name="logcat_summary">Veramente utile molto wow</string>
     <string name="menu_configuration">Configurazione</string>
     <string name="tile_title">Interruttore</string>
     <string name="append_http_proxy_sum">Il proxy HTTP verrà usato direttamente da (browser / app supportate), senza passare tramite il dispositivo NIC virtuale (Android 10+)</string>
@@ -261,7 +248,6 @@
     <string name="invert_selections">Inverti selezione</string>
     <string name="auto_connect">Connetti Automaticamente</string>
     <string name="auto_connect_summary">Abilità il proxy all\'avvio o dopo aggiornamento dell\'app, se prima era in esecuzione</string>
-    <string name="direct_boot_aware_summary">Le informazioni del profilo che hai selezionato saranno meno protette</string>
     <string name="service_vpn">Servizio VPN</string>
     <string name="service_proxy">Servizio Proxy</string>
     <string name="forward_success">Proxy avviato.</string>
@@ -293,7 +279,6 @@
     <string name="subscription">Iscrizione</string>
     <string name="subscription_settings">Impostazioni Iscrizione</string>
     <string name="group_type">Tipo Gruppo</string>
-    <string name="download">Scarica</string>
     <string name="ooc_subscription_token_invalid">Token OOCv1 non valido</string>
     <string name="ooc_warning">Attenzione</string>
     <string name="ooc_missing_protocol">La sottoscrizione richiede il supporto per il protocollo %s, ma non è stato trovato. I profili non supportati verranno ignorati.</string>
@@ -309,11 +294,8 @@
     <string name="group_name_required">Nome Gruppo Obbligatorio</string>
     <string name="group_edit">Modifica Gruppo</string>
     <string name="group_subscription_link">Link Iscrizione</string>
-    <string name="group_create_subscription">Crea Iscrizione</string>
-    <string name="group_edit_subscription">Modifica Iscrizione</string>
     <string name="group_updated">%s: Aggiornato/i %d proxy</string>
     <string name="group_delete_confirm_prompt">Sicuro di voler rimuovere il gruppo\?</string>
-    <string name="group_show_diff">Diff</string>
     <string name="group_changed">Aggiornato:
 \n%s</string>
     <string name="group_deleted">Cancellato:
@@ -335,7 +317,6 @@
     <string name="connection_test_available">Operazione Riuscita: l\'handshake HTTPS ha richiesto %dms</string>
     <string name="connection_test_error">Non Riuscito: %s</string>
     <string name="connection_test_fail">Internet non Disponibile</string>
-    <string name="connection_test_error_status_code">Codice errore: #%d</string>
     <string name="cag_dns">Impostazioni DNS</string>
     <string name="direct_dns">DNS Diretto</string>
     <string name="dns_hosts">Riscrittura del Dominio</string>

@@ -9,7 +9,6 @@
     <string name="key_opt">Ключ (необязательно)</string>
     <string name="password_opt">Пароль (необязательно)</string>
     <string name="username">Имя пользователя</string>
-    <string name="traffic">%1$s↑ %2$s↓</string>
     <string name="transproxy_mode">Режим транспрокси</string>
     <string name="require_transproxy">Включить входящий прокси-сервер</string>
     <string name="port_local_dns">Локальный порт DNS</string>
@@ -21,7 +20,6 @@
     <string name="direct_dns">Прямой DNS</string>
     <string name="remote_dns">Удалённый DNS</string>
     <string name="cag_dns">Настройки DNS</string>
-    <string name="connection_test_error_status_code">Код ошибки: #%d</string>
     <string name="connection_test_fail">Интернет недоступен</string>
     <string name="connection_test_error">Ошибка: %s</string>
     <string name="connection_test_available_http">Успех: рукопожатие HTTP заняло %d мс</string>
@@ -34,8 +32,6 @@
     <string name="security_settings">Настройки безопасности</string>
     <string name="show_direct_speed_sum">Также в уведомлении показывать скорость трафика без прокси</string>
     <string name="show_direct_speed">Показать прямую скорость</string>
-    <string name="show_stop_sum">Если не хотите использовать быструю плитку в качестве переключателя</string>
-    <string name="show_stop">Показать кнопку остановки</string>
     <string name="cag_misc">Прочие настройки</string>
     <string name="speed_interval">Интервал обновления уведомлений о скорости</string>
     <string name="ws_browser_forwarding_sum">Перенаправьте соответствующие веб-сокеты через браузер.</string>
@@ -60,16 +56,13 @@
 \n%s</string>
     <string name="group_delete_confirm_prompt">Вы уверены, что хотите удалить эту группу\?</string>
     <string name="group_diff">различия (%s)</string>
-    <string name="group_show_diff">Сравнить группы</string>
     <string name="group_updated">%s: Обновлено %d прокси</string>
     <string name="group_no_difference">%s: Не отличаются</string>
     <string name="group_status_proxies_subscription">%d прокси | Обновлено %s</string>
     <string name="group_status_proxies">%d прокси</string>
     <string name="group_status_empty_subscription">Ещё не обновлено</string>
     <string name="group_status_empty">Пустая группа</string>
-    <string name="group_edit_subscription">Редактировать подписку</string>
     <string name="group_edit">Редактировать группу</string>
-    <string name="group_create_subscription">Создать подписку</string>
     <string name="group_create">Создать группу</string>
     <string name="group_name_required">Требуется название группы</string>
     <string name="group_subscription_link">Ссылка для подписки</string>
@@ -78,12 +71,10 @@
     <string name="tile_title">Переключатель</string>
     <string name="quick_toggle">Переключить</string>
     <string name="group_default">Разгруппировано</string>
-    <string name="document">Документация</string>
     <string name="theme">Тема</string>
     <string name="menu_about">О приложении</string>
     <string name="menu_group">Группы</string>
     <string name="menu_configuration">Конфигурация</string>
-    <string name="logcat_summary">Такой полезный очень вау</string>
     <string name="logcat">Экспорт отладочной информации</string>
     <string name="version_x">Версия (%s)</string>
     <string name="server_port">Удалённый порт</string>
@@ -94,7 +85,6 @@
     <string name="port_proxy">Порт прокси SOCKS5</string>
     <string name="service_mode_vpn">VPN</string>
     <string name="app_version">Версия</string>
-    <string name="telegram">Канал обновлений в Telegram</string>
     <string name="github">Исходный код</string>
     <string name="project">Проект</string>
     <string name="app_desc">Универсальный набор инструментов прокси для Android, написанный на Kotlin.</string>
@@ -134,11 +124,6 @@
     <string name="ooc_warning">Предупреждение</string>
     <string name="update_subscription_warning">Прокси-сервер не подключён, вы уверены, что хотите продолжить обновление\?</string>
     <string name="ooc_subscription_token_invalid">Недействительный токен OOCv1</string>
-    <string name="download">Скачать</string>
-    <string name="install_from_fdroid">Установить с F-Droid</string>
-    <string name="install_from_play_store">Установить из Play Store</string>
-    <string name="action_download">СКАЧАТЬ</string>
-    <string name="action_learn_more">УЗНАТЬ БОЛЬШЕ</string>
     <string name="profile_requiring_plugin">Профиль %s требует установки подключаемого модуля %s, но он не найден.</string>
     <string name="missing_plugin">Отсутствующий плагин</string>
     <string name="confirm">Подтвердить</string>
@@ -179,7 +164,6 @@
     <string name="unavailable">Недоступно</string>
     <string name="standard">Стандарт</string>
     <string name="probe_interval">Интервал наблюдения балансировщика</string>
-    <string name="api_port">Порт API</string>
     <string name="random">Случайный</string>
     <string name="list">Список</string>
     <string name="enable_log_sum">В целях отладки</string>
@@ -241,9 +225,7 @@
     <string name="action_export">Экспортировать</string>
     <string name="action_export_clipboard">Экспорт в буфер обмена</string>
     <string name="action_export_file">Экспорт в файл</string>
-    <string name="action_scan_china_apps">Сканировать китайские приложения</string>
     <string name="action_from_link">По подписке</string>
-    <string name="action_create_group">Пустая группа</string>
     <string name="clear_profiles">Очистить</string>
     <string name="circular_reference_sum">Маршрут не может содержать сам себя.</string>
     <string name="circular_reference">Циклическая ссылка</string>
@@ -273,8 +255,6 @@
     <string name="forward_success">Прокси запустился.</string>
     <string name="service_proxy">Прокси-сервис</string>
     <string name="service_vpn">VPN-сервис</string>
-    <string name="direct_boot_aware_summary">Выбранная вами информация профиля будет менее защищена</string>
-    <string name="direct_boot_aware">Разрешить переключение на экране блокировки</string>
     <string name="auto_connect_summary">Включить прокси при запуске/обновлении приложения, если он был запущен до этого</string>
     <string name="auto_connect">Автоматическое подключение</string>
     <string name="show_system_apps">Показать системные приложения</string>
@@ -387,7 +367,6 @@
     <string name="clear_logcat">Очистить Logcat</string>
     <string name="menu_log">Журналы</string>
     <string name="menu_tools">Инструменты</string>
-    <string name="translate_platform">Платформа локализации</string>
     <string name="ssh_private_key_passphrase">Парольная фраза закрытого ключа</string>
     <string name="ssh_private_key">Закрытый ключ</string>
     <string name="ssh_public_key">Открытый ключ</string>
@@ -398,8 +377,6 @@
     <string name="app_traffic_statistics">Статистика трафика приложений</string>
     <string name="profile_traffic_statistics_summary">Когда отключено, использованный трафик не будет отображаться</string>
     <string name="app_statistics_disabled">Статистика трафика приложений отключена в настройках</string>
-    <string name="warp_generate">Создать конфигурацию</string>
-    <string name="generating">Создание…</string>
     <string name="tun_implementation">Реализация TUN</string>
     <string name="wireguard_local_address">Частный адрес</string>
     <string name="enable_pcap">Включить Pcap</string>
@@ -428,10 +405,7 @@
     <string name="recheck">Проверить ещё раз</string>
     <string name="nat_mapping_behaviour">Поведение сопоставления адресов NAT</string>
     <string name="nat_filtering_behaviour">Поведение фильтрации NAT</string>
-    <string name="disable_dns_expire">Отключить устаревание кэша DNS</string>
-    <string name="disable_dns_expire_summary">Игнорировать TTL кэша DNS до перезапуска.</string>
     <string name="stun_test_summary">Определить поведение сопоставления адресов NAT и поведение фильтрации NAT в соответствии с RFC 5780 при помощи STUN.</string>
-    <string name="warp_license">[CloudFlare Warp](https://blog.cloudflare.com/1111-warp-better-vpn/) - это бесплатный провайдер WireGuard VPN. Используя его, вы соглашаетесь с [условиями использования](https://www.cloudflare.com/application/terms/).</string>
     <string name="nat_filtering_endpoint_independent">\"Endpoint-Independent Mapping\"
 \n
 \nЭто самое разрешающее поведение NAT из трёх вариантов. Как только вы отправили UDP-пакет куда-либо по другую сторону NAT, все хосты по ту сторону NAT могут отправлять UDP-пакеты обратно вам на этот порт. Эта политика фильтрации вызывает ночные кошмары у системных администраторов, но RFC 4787 рекомендует использовать её, когда передача данных в реальном времени (или другие вещи, требующие прозрачности приложений, например, игры) является приоритетной. Обратите внимание, что данное поведение не очень хорошо компенсирует неверную настройку NAT. Правильная настройка поведения сопоставления адресов играет более важную роль.</string>
@@ -469,8 +443,6 @@
     <string name="backup_groups_and_configurations">Группы и конфигурации</string>
     <string name="backup_summary">Если правила маршрутизации резервируются без конфигураций, то пользовательские исходящие соединения будут потеряны.</string>
     <string name="tasker_action_stop_service">Остановить сервис</string>
-    <string name="auto_mtu">Автоматический MTU</string>
-    <string name="auto_mtu_summary">Использовать MTU восходящего сетевого интерфейса</string>
     <string name="experimental_reduced_iv_head_entropy">Это предложение GFWReport по контрмерам блокировке потоковых протоколов случайных данных, наблюдаемой на GFW.
 \n
 \nЭта функция заменяет первые 6 байт вектора инициализации на буквенные символы, что позволяет кому угодно в сети провайдера идентифицировать протокол когда функция включена.</string>
@@ -485,28 +457,10 @@
     <string name="tasker_settings">Настройки заданий</string>
     <string name="tasker_action">Действие</string>
     <string name="action_switch">Переключить</string>
-    <string name="acquire_wake_lock">Получить WakeLock</string>
-    <string name="release_wake_lock">Освободить WakeLock</string>
-    <string name="acquire_wake_lock_summary">Сохранять CPU включённым</string>
     <string name="hysteria_disable_mtu_discovery">Отключить обнаружение пути MTU</string>
-    <string name="disconnect">Отключиться</string>
-    <string name="sai_succeed">Успешно установлено</string>
-    <string name="sai_error_generic">Установка не удалась</string>
-    <string name="sai">Установщик раздельных APK</string>
     <string name="flow">Алгоритм управления потоком</string>
-    <string name="sai_error_blocked">Установка была заблокирована %s</string>
-    <string name="sai_error_blocked_device">устройство</string>
-    <string name="sai_error_conflict">Невозможно установить приложение, потому что оно конфликтует с уже установленным приложением, имеющим то же имя пакета</string>
-    <string name="sai_error_incompatible">Приложение несовместимо с этим устройством</string>
-    <string name="sai_error_invalid">Недопустимые APK</string>
-    <string name="sai_error_storage">Недостаточно свободного места для установки приложения</string>
-    <string name="shizuku_unavailable">Shizuku недоступен</string>
     <string name="udp_over_tcp">UDP поверх TCP</string>
-    <string name="udp_over_tcp_summary">Включение протокола SUoT требует поддержки со стороны сервера.</string>
     <string name="without_brook_protocol">Без протокола Brook</string>
-    <string name="grpc_mode">Режим gRPC</string>
-    <string name="sai_error_aborted">Установка была отменена пользователем</string>
-    <string name="installer_provider">Провайдер установщика</string>
     <string name="tuic_disable_sni">Отключить SNI</string>
     <string name="tuic_reduce_rtt">Уменьшить RTT</string>
     <string name="tuic_congestion_controller">Контроллер перегрузки</string>
