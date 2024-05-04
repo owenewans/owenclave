@@ -34,8 +34,6 @@ android {
 
 dependencies {
 
-    val hutoolVersion = rootProject.extra["hutoolVersion"].toString()
-
     implementation(fileTree("libs"))
     compileOnly(project(":library:stub"))
     implementation(project(":library:include"))
@@ -64,8 +62,8 @@ dependencies {
     implementation("com.takisoft.preferencex:preferencex-colorpicker:1.1.0")
 
     implementation("com.google.android.material:material:1.12.0")
-    implementation("cn.hutool:hutool-core:$hutoolVersion")
-    implementation("cn.hutool:hutool-json:$hutoolVersion")
+    implementation("cn.hutool:hutool-core:5.8.27")
+    implementation("cn.hutool:hutool-json:5.8.27")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.google.zxing:core:3.5.3")
 

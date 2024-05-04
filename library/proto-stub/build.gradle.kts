@@ -8,13 +8,11 @@ plugins {
 
 setupKotlinCommon()
 
-val protobufVersion = "4.26.1"
-
 dependencies {
     protobuf(project(":library:proto"))
 
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-    api("com.google.protobuf:protobuf-java:$protobufVersion")
+    api("com.google.protobuf:protobuf-java:4.26.1")
 }
 android {
     namespace = "com.v2ray.core"
@@ -27,7 +25,7 @@ android {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
+        artifact = "com.google.protobuf:protoc:4.26.1"
     }
     generateProtoTasks {
         all().forEach {
