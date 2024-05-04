@@ -44,7 +44,7 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         DataStore.serverPassword = authPayload
         DataStore.serverSNI = sni
         DataStore.serverALPN = alpn
-        //DataStore.serverCertificates = caText
+        DataStore.serverCertificates = caText
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverUploadSpeed = uploadMbps
         DataStore.serverDownloadSpeed = downloadMbps
@@ -65,7 +65,7 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         protocol = DataStore.serverProtocolVersion
         sni = DataStore.serverSNI
         alpn = DataStore.serverALPN
-        //caText = DataStore.serverCertificates
+        caText = DataStore.serverCertificates
         allowInsecure = DataStore.serverAllowInsecure
         uploadMbps = DataStore.serverUploadSpeed
         downloadMbps = DataStore.serverDownloadSpeed

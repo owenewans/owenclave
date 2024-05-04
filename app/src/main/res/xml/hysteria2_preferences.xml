@@ -33,11 +33,11 @@
             app:key="serverSNI"
             app:title="@string/sni"
             app:useSimpleSummaryProvider="true" />
-        <!--EditTextPreference
+        <EditTextPreference
             app:icon="@drawable/ic_baseline_vpn_key_24"
             app:key="serverCertificates"
             app:title="@string/certificates"
-            app:useSimpleSummaryProvider="true" /-->
+            app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverAllowInsecure"

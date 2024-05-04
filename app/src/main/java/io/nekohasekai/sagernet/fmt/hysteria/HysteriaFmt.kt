@@ -183,11 +183,11 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
             it["server_name"] = sni
         }
         if (alpn.isNotBlank()) it["alpn"] = alpn
-        /*if (caText.isNotBlank() && cacheFile != null) {
+        if (caText.isNotBlank() && cacheFile != null) {
             val caFile = cacheFile()
             caFile.writeText(caText)
             it["ca"] = caFile.absolutePath
-        }*/
+        }
 
         if (allowInsecure) it["insecure"] = true
         if (streamReceiveWindow > 0) it["recv_window_conn"] = streamReceiveWindow
