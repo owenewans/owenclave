@@ -125,7 +125,6 @@
     <string name="edit_config">Yapılandırmayı Düzenle</string>
     <string name="config_type">Yapılandırma Türü</string>
     <string name="extra_headers">Ekstra Başlıklar</string>
-    <string name="encryption">Şifreleme</string>
     <string name="early_data_header_name">Erken Veri Başlığı Adı</string>
     <string name="pinned_peer_certificate_chain_sha256">Sabitlenmiş Sertifika Zinciri</string>
     <string name="bypass_apps">Atlat</string>

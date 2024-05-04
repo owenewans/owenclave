@@ -28,7 +28,7 @@
             app:entryValues="@array/vmess_encryption_value"
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverEncryption"
-            app:title="@string/encryption"
+            app:title="@string/enc_method"
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/xtls_flow_entry"

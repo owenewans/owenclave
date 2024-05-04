@@ -307,7 +307,6 @@
     <string name="edit_config">Изменить конфигурацию</string>
     <string name="config_type">Тип конфигурации</string>
     <string name="extra_headers">Дополнительные заголовки</string>
-    <string name="encryption">Шифрование</string>
     <string name="early_data_header_name">Имя заголовка ранних данных</string>
     <string name="pinned_peer_certificate_chain_sha256">Цепочка закреплённых сертификатов</string>
     <string name="certificates">Сертификаты</string>

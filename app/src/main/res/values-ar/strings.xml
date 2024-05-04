@@ -134,7 +134,6 @@
     <string name="edit_config">تحرير التكوين</string>
     <string name="config_type">نوع التكوين</string>
     <string name="extra_headers">رؤوس إضافية</string>
-    <string name="encryption">التشفير</string>
     <string name="early_data_header_name">اسم رأس البيانات المبكر</string>
     <string name="pinned_peer_certificate_chain_sha256">سلسلة الشهادات المثبتة</string>
     <string name="certificates">الشهادات</string>

@@ -181,7 +181,6 @@
     <string name="edit_config">Editar configuración</string>
     <string name="config_type">Tipo de configuración</string>
     <string name="extra_headers">Encabezados adicionales</string>
-    <string name="encryption">Cifrado</string>
     <string name="alpn">Negociación del protocolo de capa de aplicación</string>
     <string name="quic_security">Seguridad QUIC</string>
     <string name="http_path">Ruta HTTP</string>

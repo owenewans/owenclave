@@ -132,7 +132,6 @@
     <string name="server_port">Port distant</string>
     <string name="show_direct_speed">Afficher la vitesse directe</string>
     <string name="username_opt">Nom d\'utilisateur (facultatif)</string>
-    <string name="encryption">Cryptage</string>
     <string name="stop">Arrêter</string>
     <string name="speed_detail">Proxy： %1$s↑ %2$s↓
 \nDirecte： %3$s↑ %4$s↓</string>

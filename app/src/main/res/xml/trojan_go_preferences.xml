@@ -46,7 +46,7 @@
             app:entryValues="@array/trojan_go_security_value"
             app:icon="@drawable/ic_baseline_layers_24"
             app:key="serverEncryption"
-            app:title="@string/encryption"
+            app:title="@string/enc_method"
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/trojan_go_utls_entry"

@@ -95,7 +95,6 @@
     <string name="ssh_public_key">Kunci Publik</string>
     <string name="profile_empty">Silakan pilih profil</string>
     <string name="auto_connect">Sambungkan Otomatis</string>
-    <string name="encryption">Enkripsi</string>
     <string name="kcp_seed">mKCP Seed</string>
     <string name="select_profile">Pilih Profil</string>
     <string name="add_profile">Tambah Profil</string>

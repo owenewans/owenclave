@@ -108,7 +108,6 @@
     <string name="edit_config">ویرایش پیکربندی</string>
     <string name="config_type">نوع پیکربندی</string>
     <string name="extra_headers">سربرگ های اضافی</string>
-    <string name="encryption">رمزنگاری</string>
     <string name="early_data_header_name">نام سربرگ داده های اولیه</string>
     <string name="pinned_peer_certificate_chain_sha256">زنجیره گواهینامه پین شده</string>
     <string name="certificates">گواهینامه ها</string>

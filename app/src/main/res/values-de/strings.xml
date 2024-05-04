@@ -60,7 +60,6 @@
     <string name="copy_package_name">Kopiere Paketnamen</string>
     <string name="connection_test_url">URL für Verbindungstest</string>
     <string name="show_system_apps">Zeige Systemapps</string>
-    <string name="encryption">Verschlüsselung</string>
     <string name="mux_for_all_sum">Wenn der Server kein Mux unterstützt, werden wir uns nicht verbinden können.</string>
     <string name="network_wifi">WLAN</string>
     <string name="group_order_by_name">Nach Name</string>

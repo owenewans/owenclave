@@ -71,7 +71,6 @@
     <string name="header_type">標頭類型</string>
     <string name="tls">使用 TLS</string>
     <string name="sni">伺服器名稱指示</string>
-    <string name="encryption">加密</string>
     <!-- feature category -->
     <string name="metered">計量付費提示</string>
     <string name="metered_summary">提示系統將 VPN 視為計量付費</string>

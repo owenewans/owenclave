@@ -125,7 +125,6 @@
     <string name="prefer">Preferisci</string>
     <string name="bypass_apps">Bypassa</string>
     <string name="apply">Applica</string>
-    <string name="encryption">Crittografia</string>
     <string name="tcp_keep_alive_interval">Intervallo consegna pacchetti TCP Keep-Active</string>
     <string name="profile_config">Configurazione del profilo</string>
     <string name="balancer_settings">Impostazioni Balancer</string>

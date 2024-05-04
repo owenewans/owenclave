@@ -185,7 +185,6 @@
     <string name="certificates">Chứng chỉ</string>
     <string name="pinned_peer_certificate_chain_sha256">Chuỗi chứng chỉ được ghim</string>
     <string name="early_data_header_name">Tên tiêu đề dữ liệu ban đầu</string>
-    <string name="encryption">Mã hóa</string>
     <string name="route_reset">Đặt lại</string>
     <string name="route_manage_assets">Quản lý quy tắc</string>
     <string name="route_rules_provider">Nhà cung cấp nội dung quy tắc</string>

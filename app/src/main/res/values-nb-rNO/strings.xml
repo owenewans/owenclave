@@ -43,7 +43,6 @@
     <string name="prefer">Foretrekk</string>
     <string name="edit_config">Rediger oppsett</string>
     <string name="extra_headers">Ekstra hoder</string>
-    <string name="encryption">Kryptering</string>
     <string name="tls">Bruk TLS</string>
     <string name="http_path">HTTP-sti</string>
     <string name="header_type">Hodetype</string>
