@@ -422,7 +422,6 @@
     <string name="pcap_summary">Guardar tráfico en un archivo .pcap</string>
     <string name="pcap_notice">Los archivos Pcap se guardarán en %s</string>
     <string name="start">Empezar</string>
-    <string name="recheck">Revisión</string>
     <string name="stun_attest_loading">Esto puede tardar unos minutos…</string>
     <string name="address_dependent">Dependiente de la dirección</string>
     <string name="address_and_port_dependent">Dependiente de la dirección y el puerto</string>

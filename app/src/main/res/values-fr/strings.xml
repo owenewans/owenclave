@@ -294,7 +294,6 @@
     <string name="group_filter_owners_nf">Aucun propriétaire dans cette souscription</string>
     <string name="profile_import">Importer un profil</string>
     <string name="stun_attest_loading">Cela peut prendre quelques minutes…</string>
-    <string name="recheck">Revérifier</string>
     <string name="network_wifi">Wifi</string>
     <string name="network_bt">Bluetooth</string>
     <string name="network_data">Données mobile</string>

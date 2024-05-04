@@ -401,7 +401,6 @@
     <string name="endpoint_independent_no_nat">Используется Endpoint-Independent Mapping (NAT не обнаружен)</string>
     <string name="address_and_port_dependent">Используется Address and Port-Dependent Mapping</string>
     <string name="stun_test">Обнаружение поведения NAT</string>
-    <string name="recheck">Проверить ещё раз</string>
     <string name="nat_mapping_behaviour">Поведение сопоставления адресов NAT</string>
     <string name="nat_filtering_behaviour">Поведение фильтрации NAT</string>
     <string name="stun_test_summary">Определить поведение сопоставления адресов NAT и поведение фильтрации NAT в соответствии с RFC 5780 при помощи STUN.</string>

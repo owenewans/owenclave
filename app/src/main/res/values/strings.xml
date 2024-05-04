@@ -446,7 +446,6 @@
     <string name="stun_test">NAT behavior discovery</string>
     <string name="stun_test_summary">Discover client\'s NAT mapping behavior and NAT filtering behavior defined in RFC 5780 using STUN.</string>
     <string name="start">Start</string>
-    <string name="recheck">Recheck</string>
     <string name="stun_attest_loading">This may take a few minutes…</string>
     <string name="nat_mapping_behaviour">NAT mapping behavior</string>
     <string name="endpoint_independent_no_nat">Endpoint independent (no NAT)</string>
@@ -528,5 +527,6 @@
     <string name="hysteria_hop_interval">Hop interval</string>
     <string name="connection_test_delete_unavailable">Clear unavailable</string>
     <string name="hysteria2_provider">Hysteria 2 provider</string>
+    <string name="nat_stun_server_hint">STUN server</string>
 
 </resources>

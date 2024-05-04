@@ -51,8 +51,6 @@ class StunActivity : ThemedActivity() {
         binding.stunTest.setOnClickListener {
             doTest()
         }
-
-        doTest()
     }
 
     fun doTest() {
@@ -60,7 +58,7 @@ class StunActivity : ThemedActivity() {
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
             val result = try {
-                Libcore.stunTest("", DataStore.socksPort)
+                Libcore.stunTest(binding.natStunServer.text.toString(), DataStore.socksPort)
             } catch (e: Exception) {
                 onMainDispatcher {
                     AlertDialog.Builder(this@StunActivity)

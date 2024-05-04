@@ -360,7 +360,6 @@
     <string name="stun_test">Penemuan perilaku NAT</string>
     <string name="stun_test_summary">Tentukan perilaku pemetaan NAT klien dan perilaku pemfilteran NAT yang ditentukan dalam RFC 5780 menggunakan STUN.</string>
     <string name="start">Mulai</string>
-    <string name="recheck">Periksa ulang</string>
     <string name="stun_attest_loading">Ini mungkin memakan waktu beberapa menit…</string>
     <string name="nat_mapping_behaviour">Perilaku pemetaan NAT</string>
     <string name="endpoint_independent_no_nat">Titik akhir(endpoint) independen (tanpa NAT)</string>

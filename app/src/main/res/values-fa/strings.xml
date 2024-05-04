@@ -425,7 +425,6 @@
     <string name="root_ca_system">سیستم</string>
     <string name="packet_encoding">کدکننده پکت‌ها</string>
     <string name="mtu">MTU</string>
-    <string name="recheck">بررسی مجدد</string>
     <string name="stun_attest_loading">این ممکن است چند دقیقه طول بکشد…</string>
     <string name="nat_mapping_behaviour">رفتار نقشه‌برداری NAT</string>
     <string name="endpoint_independent_no_nat">مستقل از نقطه پایانی (بدونNAT)</string>
