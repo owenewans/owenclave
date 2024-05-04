@@ -31,15 +31,27 @@ KEYSTORE_PASS=your_keystore_pass
 ALIAS_NAME=your_alias_name
 ALIAS_PASS=your_alias_pass
 ```
-- Build APK:
-```
-./run lib core
-./gradlew assembleOssRelease
-```
-- APK files will be in `app/build/outputs/apk`.
-- Build plugin:
-```
-./gradlew :plugin:[plugin_name]:assembleOssRelease
-```
-- Plugin files will be in `plugin/[plugin_name]/build/outputs/apk`.
-- To build another flavor, replace `Oss` with a flavor name.
+- Build app:
+  - Build libcore:
+    ```
+    ./run lib core
+    ```
+  - Download assets:
+    ```
+    ./gradlew :app:downloadAssets
+    ```
+  - Build app:
+    ```
+    ./gradlew :app:assembleOssRelease
+    ```
+  - APK files will be located in `app/build/outputs/apk/`.
+- Build a plugin:
+  - Build plugin binaries (the next command already includes this command):
+    ```
+    ./run plugin [plugin_name]
+    ```
+  - Build plugin:
+    ```
+    ./gradlew :plugin:[plugin_name]:assembleOssRelease
+    ```
+  - Plugin APK files will be located in `plugin/[plugin_name]/build/outputs/apk/`.

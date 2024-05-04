@@ -440,11 +440,6 @@ fun Project.setupApp() {
                 downloadAssets()
             }
         }
-        tasks.configureEach {
-            if (name == "pre${requireFlavor()}Build") {
-                dependsOn("downloadAssets")
-            }
-        }
     }
 
     dependencies {
