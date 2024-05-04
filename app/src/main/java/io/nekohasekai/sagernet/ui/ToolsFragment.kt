@@ -26,7 +26,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.databinding.LayoutToolsBinding
-import io.nekohasekai.sagernet.ktx.isExpert
 
 class ToolsFragment : ToolbarFragment(R.layout.layout_tools) {
 
@@ -37,8 +36,6 @@ class ToolsFragment : ToolbarFragment(R.layout.layout_tools) {
         val tools = mutableListOf<NamedFragment>()
         tools.add(NetworkFragment())
         tools.add(BackupFragment())
-
-        if (BuildConfig.DEBUG || isExpert) tools.add(DebugFragment())
 
         val binding = LayoutToolsBinding.bind(view)
         binding.toolsPager.adapter = ToolsAdapter(tools)

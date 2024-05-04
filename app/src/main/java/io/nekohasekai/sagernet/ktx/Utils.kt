@@ -307,9 +307,6 @@ fun Context.getColorAttr(@AttrRes resId: Int): Int {
     }.resourceId)
 }
 
-const val isDefaultFlavor = BuildConfig.FLAVOR == "oss"
-const val isExpert = BuildConfig.FLAVOR == "expert"
-
 val LAUNCH_DELAY = System.currentTimeMillis() - SystemClock.elapsedRealtime()
 
 private val protectDirectAvailable by lazy {

@@ -78,7 +78,6 @@ class BaseService {
             when (intent.action) {
                 Intent.ACTION_SHUTDOWN -> service.persistStats()
                 Action.RELOAD -> service.forceLoad()
-                Action.SWITCH_WAKE_LOCK -> service.switchWakeLock()
                 else -> service.stopRunner(keepState = false)
             }
         }
@@ -413,10 +412,6 @@ class BaseService {
         }
 
         fun killProcesses() {
-            wakeLock?.apply {
-                release()
-                wakeLock = null
-            }
             data.proxy?.close()
         }
 
@@ -460,30 +455,6 @@ class BaseService {
 
         suspend fun preInit() {}
 
-        var wakeLock: PowerManager.WakeLock?
-        fun acquireWakeLock()
-        fun switchWakeLock() {
-            runOnMainDispatcher {
-                wakeLock?.apply {
-                    release()
-                    wakeLock = null
-                } ?: apply {
-                    acquireWakeLock()
-                }
-            }
-        }
-
-        suspend fun lateInit() {
-            wakeLock?.apply {
-                release()
-                wakeLock = null
-            }
-
-            if (DataStore.acquireWakeLock) {
-                acquireWakeLock()
-            }
-        }
-
         fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
             val data = data
@@ -504,14 +475,12 @@ class BaseService {
                         addAction(Action.RELOAD)
                         addAction(Intent.ACTION_SHUTDOWN)
                         addAction(Action.CLOSE)
-                        addAction(Action.SWITCH_WAKE_LOCK)
                     }, "$packageName.SERVICE", null, Context.RECEIVER_EXPORTED)
                 } else {
                     registerReceiver(data.receiver, IntentFilter().apply {
                         addAction(Action.RELOAD)
                         addAction(Intent.ACTION_SHUTDOWN)
                         addAction(Action.CLOSE)
-                        addAction(Action.SWITCH_WAKE_LOCK)
                     }, "$packageName.SERVICE", null)
                 }
                 data.closeReceiverRegistered = true
@@ -544,8 +513,6 @@ class BaseService {
                             it.routeAlert(type, routeName)
                         }
                     }
-
-                    lateInit()
                 } catch (_: CancellationException) { // if the job was cancelled, it is canceller's responsibility to call stopRunner
                 } catch (_: UnknownHostException) {
                     stopRunner(false, getString(R.string.invalid_server))

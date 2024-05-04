@@ -62,7 +62,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.global_preferences)
         val appTheme = findPreference<ColorPickerPreference>(Key.APP_THEME)!!
-        if (!(isExpert || DataStore.showAppTheme)) {
+        if (!DataStore.showAppTheme) {
             appTheme.remove()
         } else {
             appTheme.setOnPreferenceChangeListener { _, newTheme ->
@@ -237,8 +237,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val mtu = findPreference<EditTextPreference>(Key.MTU)!!
         mtu.setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
 
-        val acquireWakeLock = findPreference<SwitchPreference>(Key.ACQUIRE_WAKE_LOCK)!!
-
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
         portHttp.onPreferenceChangeListener = reloadListener
@@ -275,7 +273,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         destinationOverride.onPreferenceChangeListener = reloadListener
         resolveDestination.onPreferenceChangeListener = reloadListener
         mtu.onPreferenceChangeListener = reloadListener
-        acquireWakeLock.onPreferenceChangeListener = reloadListener
 
         enablePcap.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {

@@ -98,7 +98,6 @@ object Key {
     const val TUN_IMPLEMENTATION = "tunImplementation"
     const val ENABLE_PCAP = "enablePcap"
     const val MTU = "mtu"
-    const val ACQUIRE_WAKE_LOCK = "acquireWakeLock"
 
     const val APP_TRAFFIC_STATISTICS = "appTrafficStatistics"
     const val PROFILE_TRAFFIC_STATISTICS = "profileTrafficStatistics"
@@ -310,7 +309,6 @@ object Action {
     const val CLOSE = "io.nekohasekai.sagernet.CLOSE"
     const val RELOAD = "io.nekohasekai.sagernet.RELOAD"
     const val ABORT = "io.nekohasekai.sagernet.ABORT"
-    const val SWITCH_WAKE_LOCK = "io.nekohasekai.sagernet.SWITCH_WAKELOCK"
 
     const val EXTRA_PROFILE_ID = "io.nekohasekai.sagernet.EXTRA_PROFILE_ID"
 }

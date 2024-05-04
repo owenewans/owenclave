@@ -28,10 +28,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
+import android.os.PowerManager
 import android.text.format.Formatter
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
+import androidx.core.content.getSystemService
 import io.nekohasekai.sagernet.Action
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
@@ -145,7 +147,7 @@ class ServiceNotification(
         Theme.apply(service)
         builder.color = service.getColorAttr(androidx.appcompat.R.attr.colorPrimary)
 
-        updateCallback(SagerNet.power.isInteractive)
+        updateCallback(service.getSystemService<PowerManager>()?.isInteractive != false)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             service.registerReceiver(this, IntentFilter().apply {
                 addAction(Intent.ACTION_SCREEN_ON)

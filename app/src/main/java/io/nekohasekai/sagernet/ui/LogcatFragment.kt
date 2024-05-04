@@ -105,29 +105,27 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
             )
         }
 
-        if (!isExpert) {
-            args += arrayOf(
-                "AndroidRuntime:D",
-                "ProxyInstance:D",
-                "GuardedProcessPool:D",
-                "VpnService:D",
-                "libcore:D",
-                "v2ray-core:D",
-                "su:D",
-                "libtrojan:D",
-                "libnaive:D",
-                "libbrook:D",
-                "libhysteria:D",
-                "libhysteria2:D",
-                "librelaybaton:D",
-                "libmieru:D",
-                "libmieru2:D",
-                "libtuic:D",
-                "libtuic5:D",
-                "libshadowtls:D",
-                "*:S",
-            )
-        }
+        args += arrayOf(
+            "AndroidRuntime:D",
+            "ProxyInstance:D",
+            "GuardedProcessPool:D",
+            "VpnService:D",
+            "libcore:D",
+            "v2ray-core:D",
+            "su:D",
+            "libtrojan:D",
+            "libnaive:D",
+            "libbrook:D",
+            "libhysteria:D",
+            "libhysteria2:D",
+            "librelaybaton:D",
+            "libmieru:D",
+            "libmieru2:D",
+            "libtuic:D",
+            "libtuic5:D",
+            "libshadowtls:D",
+            "*:S",
+        )
 
         val session = TerminalSession(
             "/system/bin/logcat",
