@@ -226,50 +226,6 @@ fun Project.setupAppCommon() {
                 getByName("debug").signingConfig = key
             }
         }
-        val calculateTaskName = "calculate${requireFlavor()}APKsSHA256"
-        (this as? AbstractAppExtension)?.apply {
-            tasks.register(calculateTaskName) {
-                val githubEnv = File(System.getenv("GITHUB_ENV") ?: "this-file-does-not-exist")
-
-                doLast {
-                    applicationVariants.all {
-                        if (name.equals(requireFlavor(), ignoreCase = true)) outputs.all {
-                            if (outputFile.isFile) {
-                                val sha256 = DigestUtil.sha256Hex(outputFile)
-                                val sum = File(
-                                    outputFile.parentFile,
-                                    outputFile.nameWithoutExtension + ".sha256sum.txt"
-                                )
-                                sum.writeText(sha256)
-                                if (githubEnv.isFile) when {
-                                    outputFile.name.contains("-arm64") -> {
-                                        githubEnv.appendText("SUM_ARM64=${sum.absolutePath}\n")
-                                        githubEnv.appendText("SHA256_ARM64=$sha256\n")
-                                    }
-                                    outputFile.name.contains("-armeabi") -> {
-                                        githubEnv.appendText("SUM_ARM=${sum.absolutePath}\n")
-                                        githubEnv.appendText("SHA256_ARM=$sha256\n")
-                                    }
-                                    outputFile.name.contains("-x86_64") -> {
-                                        githubEnv.appendText("SUM_X64=${sum.absolutePath}\n")
-                                        githubEnv.appendText("SHA256_X64=$sha256\n")
-                                    }
-                                    outputFile.name.contains("-x86") -> {
-                                        githubEnv.appendText("SUM_X86=${sum.absolutePath}\n")
-                                        githubEnv.appendText("SHA256_X86=$sha256\n")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                dependsOn("package${requireFlavor()}")
-            }
-            val assemble = "assemble${requireFlavor()}"
-            tasks.configureEach {
-                if (name == assemble) dependsOn(calculateTaskName)
-            }
-        }
     }
 }
 
