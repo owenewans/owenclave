@@ -290,6 +290,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverBrookUdpOverTcp by profileCacheStore.boolean(Key.SERVER_BROOK_UDP_OVER_TCP)
     var serverBrookTlsFingerprint by profileCacheStore.string(Key.SERVER_BROOK_TLS_FINGERPRINT)
     var serverBrookFragment by profileCacheStore.string(Key.SERVER_BROOK_FRAGMENT)
+    var serverBrookUdpOverStream by profileCacheStore.boolean(Key.SERVER_BROOK_UDP_OVER_STREAM)
     var serverEncryptedProtocolExtension by profileCacheStore.boolean(Key.SERVER_ENCRYPTED_PROTOCOL_EXTENSION)
 
     var serverUDPRelayMode by profileCacheStore.string(Key.SERVER_UDP_RELAY_MODE)

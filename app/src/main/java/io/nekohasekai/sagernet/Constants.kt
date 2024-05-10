@@ -181,6 +181,7 @@ object Key {
     const val SERVER_BROOK_UDP_OVER_TCP = "serverBrookUdpOverTcp"
     const val SERVER_BROOK_TLS_FINGERPRINT = "serverBrookTlsFingerprint"
     const val SERVER_BROOK_FRAGMENT = "serverBrookFragment"
+    const val SERVER_BROOK_UDP_OVER_STREAM = "serverBrookUdpOverStream"
     const val SERVER_ENCRYPTED_PROTOCOL_EXTENSION = "serverEncryptedProtocolExtension"
 
     const val SERVER_UDP_RELAY_MODE = "serverUDPRelayMode"

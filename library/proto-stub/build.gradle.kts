@@ -11,7 +11,7 @@ setupKotlinCommon()
 dependencies {
     protobuf(project(":library:proto"))
 
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     api("com.google.protobuf:protobuf-java:4.26.1")
 }
 android {

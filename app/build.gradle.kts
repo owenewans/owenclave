@@ -40,7 +40,7 @@ dependencies {
     implementation(project(":library:termux:terminal-view"))
     implementation(project(":library:termux:terminal-emulator"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-ktx:1.9.0")
     implementation("androidx.fragment:fragment-ktx:1.7.0")

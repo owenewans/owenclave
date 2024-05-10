@@ -38,6 +38,7 @@ public class BrookBean extends AbstractBean {
     public String tlsfingerprint;
     public String fragment;
     public String sni;
+    public Boolean udpoverstream;
 
     @Override
     public boolean allowInsecure() {
@@ -56,11 +57,12 @@ public class BrookBean extends AbstractBean {
         if (tlsfingerprint == null) tlsfingerprint = "";
         if (fragment == null) fragment = "";
         if (sni == null) sni = "";
+        if (udpoverstream == null) udpoverstream = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(5);
+        output.writeInt(6);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(password);
@@ -82,6 +84,7 @@ public class BrookBean extends AbstractBean {
                 output.writeBoolean(insecure);
                 output.writeBoolean(withoutBrookProtocol);
                 output.writeString(sni);
+                output.writeBoolean(udpoverstream);
                 break;
             }
             default:
@@ -124,6 +127,9 @@ public class BrookBean extends AbstractBean {
                 }
                 if (version >= 5) {
                     sni = input.readString();
+                }
+                if (version >= 6) {
+                    udpoverstream = input.readBoolean();
                 }
                 break;
             }

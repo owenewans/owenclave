@@ -528,5 +528,6 @@
     <string name="connection_test_delete_unavailable">Clear unavailable</string>
     <string name="hysteria2_provider">Hysteria 2 provider</string>
     <string name="nat_stun_server_hint">STUN server</string>
+    <string name="brook_udp_over_stream">UDP over stream</string>
 
 </resources>

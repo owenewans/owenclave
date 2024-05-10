@@ -380,6 +380,10 @@ abstract class V2RayInstance(
                             commands.add("--udpovertcp")
                         }
 
+                        if (bean.protocol == "quic" && bean.udpoverstream) {
+                            commands.add("--udpoverstream")
+                        }
+
                         if (bean.protocol != "wss" && bean.password.isNotBlank()) {
                             commands.add("--password")
                             commands.add(bean.password)

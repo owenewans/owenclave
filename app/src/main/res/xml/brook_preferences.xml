@@ -72,6 +72,10 @@
             app:key="serverAllowInsecure"
             app:title="@string/allow_insecure"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="serverBrookUdpOverStream"
+            app:title="@string/brook_udp_over_stream"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 

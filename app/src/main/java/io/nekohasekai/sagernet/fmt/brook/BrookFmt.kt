@@ -139,6 +139,9 @@ fun parseBrook(text: String): AbstractBean {
             if (link.queryParameter("insecure") == "true") {
                 bean.insecure = true
             }
+            if (link.queryParameter("udpoverstream") == "true") {
+                bean.udpoverstream = true
+            }
 
         }
         "socks5" -> {
@@ -226,6 +229,9 @@ fun BrookBean.toUri(): String {
             if (insecure) {
                 builder.addQueryParameter("insecure", "true")
             }
+            if (udpoverstream) {
+                builder.addQueryParameter("udpoverstream", "true")
+            }
         }
         else -> {
             builder.host = "server"
@@ -282,6 +288,9 @@ fun BrookBean.toInternalUri(): String {
             }
             if (insecure) {
                 builder.addQueryParameter("insecure", "true")
+            }
+            if (udpoverstream) {
+                builder.addQueryParameter("udpoverstream", "true")
             }
             builder.addQueryParameter("address", addressString)
         }
