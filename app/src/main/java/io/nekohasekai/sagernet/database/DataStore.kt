@@ -302,6 +302,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverMieruMuxLevel by profileCacheStore.stringToInt(Key.SERVER_MIERU_MUX_LEVEL)
     var serverWireGuardReserved by profileCacheStore.string(Key.SERVER_WIREGUARD_RESERVED)
 
+    var serverNaiveNoPostQuantum by profileCacheStore.boolean(Key.SERVER_NAIVE_NO_POST_QUANTUM)
+
     var balancerType by profileCacheStore.stringToInt(Key.BALANCER_TYPE)
     var balancerGroup by profileCacheStore.stringToLong(Key.BALANCER_GROUP)
     var balancerStrategy by profileCacheStore.string(Key.BALANCER_STRATEGY)

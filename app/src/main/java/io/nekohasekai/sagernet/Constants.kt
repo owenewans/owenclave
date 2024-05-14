@@ -196,6 +196,8 @@ object Key {
     const val SERVER_PORTS = "serverPorts"
     const val SERVER_HOP_INTERVAL = "serverHopInterval"
 
+    const val SERVER_NAIVE_NO_POST_QUANTUM = "serverNaiveNoPostQuantum"
+
     const val BALANCER_TYPE = "balancerType"
     const val BALANCER_GROUP = "balancerGroup"
     const val BALANCER_STRATEGY = "balancerStrategy"

@@ -39,6 +39,7 @@ public class NaiveBean extends AbstractBean {
     public String password;
     public String extraHeaders;
     public Integer insecureConcurrency;
+    public Boolean noPostQuantum;
 
     @Override
     public void initializeDefaultValues() {
@@ -49,17 +50,19 @@ public class NaiveBean extends AbstractBean {
         if (password == null) password = "";
         if (extraHeaders == null) extraHeaders = "";
         if (insecureConcurrency == null) insecureConcurrency = 0;
+        if (noPostQuantum == null) noPostQuantum = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
         super.serialize(output);
         output.writeString(proto);
         output.writeString(username);
         output.writeString(password);
         output.writeString(extraHeaders);
         output.writeInt(insecureConcurrency);
+        output.writeBoolean(noPostQuantum);
     }
 
     @Override
@@ -75,6 +78,9 @@ public class NaiveBean extends AbstractBean {
         }
         if (version == 2) {
             input.readBoolean(); // uot, removed
+        }
+        if (version >= 4) {
+            noPostQuantum = input.readBoolean();
         }
     }
 

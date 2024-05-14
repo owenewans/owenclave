@@ -49,6 +49,10 @@
             app:key="serverInsecureConcurrency"
             app:title="@string/naive_insecure_concurrency"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="serverNaiveNoPostQuantum"
+            app:title="@string/naive_no_post_quantum"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 

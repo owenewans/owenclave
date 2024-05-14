@@ -215,7 +215,7 @@
     <string name="theme">主题颜色</string>
     <string name="donate">捐款</string>
     <string name="donate_info">世界很可爱 请给世界钱</string>
-    <string name="extra_headers">附加标头</string>
+    <string name="extra_headers">附加头</string>
     <string name="username">用户名</string>
     <string name="key_opt">密钥（可选）</string>
     <string name="group_diff">变化（%s）</string>
@@ -507,4 +507,5 @@
     <string name="hysteria2_provider">Hysteria 2 提供程序</string>
     <string name="nat_stun_server_hint">STUN 服务器</string>
     <string name="brook_udp_over_stream">UDP over stream</string>
+    <string name="naive_no_post_quantum">禁用后量子密钥协商</string>
 </resources>
