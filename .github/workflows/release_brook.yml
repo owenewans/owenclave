@@ -17,23 +17,23 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch Status
         run: git submodule status 'plugin/brook/*' > brook_status
+      - name: Install Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.22.3
+          cache-dependency-path: "**/go.sum"
       - name: Brook Cache
         id: cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             plugin/brook/src/main/jniLibs
           key: ${{ hashFiles('.github/workflows/*', 'bin/lib/brook/*', 'brook_status') }}
       - name: Gradle cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Install Golang
-        uses: actions/setup-go@v5
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          go-version: 1.22.3
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -49,23 +49,23 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch Status
         run: git submodule status 'plugin/brook/*' > brook_status
-      - name: brook Cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            plugin/brook/src/main/jniLibs
-          key: ${{ hashFiles('.github/workflows/*', 'bin/lib/brook/*', 'brook_status') }}
-      - name: Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle
-          key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Setup Java
         uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           distribution: 'zulu'
           java-version: 17
+      - name: brook Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            plugin/brook/src/main/jniLibs
+          key: ${{ hashFiles('.github/workflows/*', 'bin/lib/brook/*', 'brook_status') }}
+      - name: Gradle cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle
+          key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Release Build
         env:
           SKIP_BUILD: on
@@ -78,7 +78,7 @@ jobs:
           APK=$(find plugin/brook/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname "$APK")
           echo "APK=$APK" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: APKs
           path: ${{ env.APK }}
@@ -91,7 +91,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Donwload Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: APKs
           path: artifacts
@@ -102,4 +102,4 @@ jobs:
           mv ghr*linux_amd64/ghr .
           mkdir apks
           find artifacts -name "*.apk" -exec cp {} apks \;
-          ./ghr -delete -prerelease -t "${{ github.token }}" -n "${{ github.event.inputs.tag }}" "${{ github.event.inputs.tag }}" apks
+          ./ghr -replace -prerelease -t "${{ github.token }}" -n "${{ github.event.inputs.tag }}" "${{ github.event.inputs.tag }}" apks
