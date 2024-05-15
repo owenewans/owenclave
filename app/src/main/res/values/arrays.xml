@@ -170,6 +170,7 @@
         <item>2022-BLAKE3-CHACHA20-POLY1305</item>
         <item>RC4</item>
         <item>RC4-MD5</item>
+        <item>RC4-MD5-6</item>
         <item>AES-128-CTR</item>
         <item>AES-192-CTR</item>
         <item>AES-256-CTR</item>
@@ -198,6 +199,7 @@
         <item>CHACHA20</item>
         <item>CHACHA20-IETF</item>
         <item>XCHACHA20</item>
+        <item>TABLE</item>
     </string-array>
 
     <string-array name="enc_method_value">
@@ -212,6 +214,7 @@
         <item>2022-blake3-chacha20-poly1305</item>
         <item>rc4</item>
         <item>rc4-md5</item>
+        <item>rc4-md5-6</item>
         <item>aes-128-ctr</item>
         <item>aes-192-ctr</item>
         <item>aes-256-ctr</item>
@@ -240,12 +243,14 @@
         <item>chacha20</item>
         <item>chacha20-ietf</item>
         <item>xchacha20</item>
+        <item>table</item>
     </string-array>
 
     <string-array name="ssr_enc_method_entry">
         <item>NONE</item>
         <item>RC4</item>
         <item>RC4-MD5</item>
+        <item>RC4-MD5-6</item>
         <item>AES-128-CTR</item>
         <item>AES-192-CTR</item>
         <item>AES-256-CTR</item>
@@ -274,12 +279,14 @@
         <item>CHACHA20</item>
         <item>CHACHA20-IETF</item>
         <item>XCHACHA20</item>
+        <item>TABLE</item>
     </string-array>
 
     <string-array name="ssr_enc_method_value">
         <item>none</item>
         <item>rc4</item>
         <item>rc4-md5</item>
+        <item>rc4-md5-6</item>
         <item>aes-128-ctr</item>
         <item>aes-192-ctr</item>
         <item>aes-256-ctr</item>
@@ -308,6 +315,7 @@
         <item>chacha20</item>
         <item>chacha20-ietf</item>
         <item>xchacha20</item>
+        <item>table</item>
     </string-array>
 
     <string-array name="service_modes">
