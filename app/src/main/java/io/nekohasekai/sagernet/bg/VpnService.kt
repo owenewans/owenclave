@@ -32,8 +32,6 @@ import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.system.ErrnoException
 import android.system.Os
-import android.util.Log
-import go.Seq
 import io.nekohasekai.sagernet.*
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.SagerDatabase
@@ -50,7 +48,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import libcore.*
 import java.io.FileDescriptor
-import java.io.IOException
 import java.net.InetAddress
 import android.net.VpnService as BaseVpnService
 

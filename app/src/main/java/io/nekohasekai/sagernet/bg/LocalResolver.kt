@@ -22,8 +22,6 @@ import android.net.DnsResolver
 import android.net.Network
 import android.os.Build
 import android.os.CancellationSignal
-import android.system.ErrnoException
-import androidx.annotation.RequiresApi
 import cn.hutool.core.lang.Validator
 import io.nekohasekai.sagernet.ktx.tryResume
 import io.nekohasekai.sagernet.ktx.tryResumeWithException
@@ -33,7 +31,6 @@ import kotlinx.coroutines.runBlocking
 import libcore.LocalResolver
 import java.net.InetAddress
 import java.net.UnknownHostException
-import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 interface LocalResolver : LocalResolver {

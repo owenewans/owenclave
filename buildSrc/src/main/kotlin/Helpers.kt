@@ -1,19 +1,13 @@
 import cn.hutool.core.codec.Base64
-import cn.hutool.core.util.RuntimeUtil
-import cn.hutool.crypto.digest.DigestUtil
 import com.android.build.api.dsl.*
 import com.android.build.gradle.AbstractAppExtension
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.apache.tools.ant.filters.StringInputStream
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.api.tasks.Exec
 import org.gradle.kotlin.dsl.*
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
-import java.io.File
 import java.util.*
-import kotlin.system.exitProcess
 
 private val Project.android
     get() = extensions.getByName<CommonExtension<BuildFeatures, BuildType, DefaultConfig, ProductFlavor, AndroidResources, Installation>>(
@@ -160,12 +154,6 @@ fun Project.setupCommon() {
 
 fun Project.setupKotlinCommon() {
     setupCommon()
-    (android as ExtensionAware).extensions.getByName<KotlinJvmOptions>("kotlinOptions").apply {
-        jvmTarget = javaVersion.toString()
-    }
-    dependencies.apply {
-        add("implementation", kotlin("stdlib-jdk8"))
-    }
 }
 
 fun Project.setupNdk() {

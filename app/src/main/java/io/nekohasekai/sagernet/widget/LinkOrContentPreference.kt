@@ -28,7 +28,6 @@ import com.takisoft.preferencex.EditTextPreference
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.readableMessage
-import libcore.Libcore
 
 class LinkOrContentPreference : EditTextPreference {
 

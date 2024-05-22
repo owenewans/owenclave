@@ -34,7 +34,6 @@ import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.Hysteria2Provider
 import io.nekohasekai.sagernet.Shadowsocks2022Implementation
-import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.bg.VpnService
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
@@ -65,7 +64,6 @@ import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.ktx.wrapUri
 import io.nekohasekai.sagernet.utils.PackageCache
-import libcore.Libcore
 
 const val TAG_SOCKS = "socks"
 const val TAG_HTTP = "http"
@@ -181,7 +179,6 @@ fun buildV2RayConfig(
     val resolveDestination = DataStore.resolveDestination
     val destinationOverride = DataStore.destinationOverride
     val trafficStatistics = !forTest && DataStore.profileTrafficStatistics
-    val needIncludeSelf = DataStore.tunImplementation == TunImplementation.SYSTEM
 
     val outboundDomainStrategy = when {
         !resolveDestination -> "AsIs"
@@ -558,7 +555,7 @@ fun buildV2RayConfig(
                                                             if (bean.experimentalNoTerminationSignal) {
                                                                 experimental += "NoTerminationSignal"
                                                             }
-                                                            if (experimental.isBlank()) experimental = null;
+                                                            if (experimental.isBlank()) experimental = null
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
@@ -1643,15 +1640,6 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
         ?.filterIsInstance<JSONObject>()
         ?.map { gson.fromJson(it.toString(), InboundObject::class.java) }
         ?.toMutableList() ?: ArrayList()
-
-    val dnsArr = config.getJSONObject("dns")?.getJSONArray("servers")?.map {
-        if (it is String) DnsObject.StringOrServerObject().apply {
-            valueX = it
-        } else DnsObject.StringOrServerObject().apply {
-            valueY = gson.fromJson(it.toString(), DnsObject.ServerObject::class.java)
-        }
-    }
-    val ipv6Mode = DataStore.ipv6Mode
 
     var socksInbound = inbounds.find { it.tag == TAG_SOCKS }?.apply {
         if (protocol != "socks") error("Inbound $tag with type $protocol, excepted socks.")

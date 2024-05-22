@@ -29,7 +29,6 @@ import com.takisoft.preferencex.EditTextPreference
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.readableMessage
 import libcore.Libcore
-import java.net.URL
 
 class OOCv1TokenPreference : EditTextPreference {
 

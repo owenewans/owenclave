@@ -24,7 +24,6 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.widget.ScrollView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.core.graphics.TypefaceCompat

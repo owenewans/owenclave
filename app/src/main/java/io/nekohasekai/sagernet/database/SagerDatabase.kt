@@ -20,10 +20,8 @@
 package io.nekohasekai.sagernet.database
 
 import androidx.room.*
-import androidx.room.migration.AutoMigrationSpec
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.database.preference.KeyValuePair
 import io.nekohasekai.sagernet.fmt.KryoConverters
 import io.nekohasekai.sagernet.fmt.gson.GsonConverters
 import kotlinx.coroutines.GlobalScope

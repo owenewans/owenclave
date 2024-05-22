@@ -26,10 +26,8 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import go.Seq
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.TrojanProvider
 import io.nekohasekai.sagernet.bg.AbstractInstance
 import io.nekohasekai.sagernet.bg.ExternalInstance
 import io.nekohasekai.sagernet.bg.GuardedProcessPool
@@ -56,7 +54,6 @@ import io.nekohasekai.sagernet.fmt.pingtunnel.PingTunnelBean
 import io.nekohasekai.sagernet.fmt.relaybaton.RelayBatonBean
 import io.nekohasekai.sagernet.fmt.relaybaton.buildRelayBatonConfig
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
-import io.nekohasekai.sagernet.fmt.trojan.buildTrojanConfig
 import io.nekohasekai.sagernet.fmt.trojan.buildTrojanGoConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
 import io.nekohasekai.sagernet.fmt.trojan_go.buildCustomTrojanConfig
@@ -452,8 +449,6 @@ abstract class V2RayInstance(
                         configFile.writeText(config)
                         cacheFiles.add(configFile)
 
-                        val plugin = initPlugin("mieru-plugin")
-
                         env["MIERU_CONFIG_JSON_FILE"] = configFile.absolutePath
 
                         val commands = mutableListOf(
@@ -471,8 +466,6 @@ abstract class V2RayInstance(
                         configFile.parentFile?.mkdirs()
                         configFile.writeText(config)
                         cacheFiles.add(configFile)
-
-                        val plugin = initPlugin("mieru2-plugin")
 
                         env["MIERU2_CONFIG_JSON_FILE"] = configFile.absolutePath
 

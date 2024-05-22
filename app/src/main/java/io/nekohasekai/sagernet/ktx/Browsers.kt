@@ -23,7 +23,6 @@ import android.content.Context
 import android.net.Uri
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
-import io.nekohasekai.sagernet.R
 
 fun Context.launchCustomTab(link: String) {
     CustomTabsIntent.Builder().apply {

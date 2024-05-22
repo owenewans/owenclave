@@ -29,7 +29,6 @@ import io.nekohasekai.sagernet.utils.DefaultNetworkListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import libcore.Libcore
 
 class ProxyService : Service(),
     BaseService.Interface,

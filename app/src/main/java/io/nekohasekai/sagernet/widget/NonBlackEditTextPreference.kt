@@ -20,15 +20,8 @@
 package io.nekohasekai.sagernet.widget
 
 import android.content.Context
-import android.content.Intent
 import android.util.AttributeSet
-import android.widget.Toast
-import androidx.preference.Preference
 import com.takisoft.preferencex.EditTextPreference
-import io.nekohasekai.sagernet.R
-import io.nekohasekai.sagernet.database.DataStore
-import io.nekohasekai.sagernet.ktx.app
-import io.nekohasekai.sagernet.ui.profile.ConfigEditActivity
 
 class NonBlackEditTextPreference : EditTextPreference {
 

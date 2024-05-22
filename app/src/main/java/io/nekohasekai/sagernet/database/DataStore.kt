@@ -22,7 +22,6 @@
 package io.nekohasekai.sagernet.database
 
 import android.os.Binder
-import android.os.Build
 import androidx.preference.PreferenceDataStore
 import io.nekohasekai.sagernet.*
 import io.nekohasekai.sagernet.bg.VpnService

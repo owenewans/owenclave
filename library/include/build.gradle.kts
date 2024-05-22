@@ -5,7 +5,7 @@ plugins {
 setupCommon()
 
 dependencies {
-    implementation("androidx.annotation:annotation:1.7.1")
+    implementation("androidx.annotation:annotation:1.8.0")
 }
 android {
     namespace = "com.android.stub"

@@ -20,3 +20,4 @@ local.properties
 /app/src/main/assets/mozilla_included.pem.sha256sum
 /service_account_credentials.json
 jniLibs/
+/.kotlin
