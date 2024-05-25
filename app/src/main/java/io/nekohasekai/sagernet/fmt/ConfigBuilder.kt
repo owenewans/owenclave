@@ -77,6 +77,8 @@ const val TAG_BLOCK = "block"
 const val TAG_DNS_IN = "dns-in"
 const val TAG_DNS_OUT = "dns-out"
 
+const val TAG_DNS_DIRECT = "dns-direct"
+
 const val TAG_API_IN = "api-in"
 
 const val LOCALHOST = "127.0.0.1"
@@ -1485,6 +1487,7 @@ fun buildV2RayConfig(
             }
         }
 
+        var hasDnsTagDirect = false
         if (bypassDomain.isNotEmpty()) {
             dns.servers.addAll(remoteDns.map {
                 DnsObject.StringOrServerObject().apply {
@@ -1518,7 +1521,8 @@ fun buildV2RayConfig(
                             address = it
                             domains = bootstrapDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
                             if (!it.contains("+local://") && it != "localhost") {
-                                detour = TAG_BYPASS
+                                tag = TAG_DNS_DIRECT
+                                hasDnsTagDirect = true
                             }
                         }
                     }
@@ -1531,7 +1535,8 @@ fun buildV2RayConfig(
                         //FIXME: This relies on the behavior of a bug.
                         domains = bypassDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
                         if (!it.contains("+local://") && it != "localhost") {
-                            detour = TAG_BYPASS
+                            tag = TAG_DNS_DIRECT
+                            hasDnsTagDirect = true
                         }
                         if (useFakeDns) {
                             fakedns = mutableListOf()
@@ -1581,7 +1586,15 @@ fun buildV2RayConfig(
             })
         }
 
-        if (!hijackDns) {
+        if (!forTest && hasDnsTagDirect) {
+            routing.rules.add(0, RoutingObject.RuleObject().apply {
+                type = "field"
+                inboundTag = listOf(TAG_DNS_DIRECT)
+                outboundTag = TAG_BYPASS
+            })
+        }
+
+        if (!forTest && !hijackDns) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
                 protocol = listOf("dns")
