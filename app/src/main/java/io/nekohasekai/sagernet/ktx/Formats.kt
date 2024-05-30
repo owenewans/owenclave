@@ -35,7 +35,6 @@ import io.nekohasekai.sagernet.fmt.relaybaton.parseRelayBaton
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
-import io.nekohasekai.sagernet.fmt.trojan.parseTrojan
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
 
@@ -84,17 +83,10 @@ fun parseProxies(text: String): List<AbstractBean> {
             }.onFailure {
                 Logs.w(it)
             }
-        } else if (startsWith("vmess://") || startsWith("vless://")) {
+        } else if (startsWith("vmess://") || startsWith("vless://") || startsWith("trojan://")) {
             Logs.d("Try parse v2ray link: $this")
             runCatching {
                 entities.add(parseV2Ray(this))
-            }.onFailure {
-                Logs.w(it)
-            }
-        } else if (startsWith("trojan://")) {
-            Logs.d("Try parse trojan link: $this")
-            runCatching {
-                entities.add(parseTrojan(this))
             }.onFailure {
                 Logs.w(it)
             }

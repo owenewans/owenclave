@@ -24,58 +24,11 @@ import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
+import io.nekohasekai.sagernet.fmt.v2ray.toUri
 import io.nekohasekai.sagernet.ktx.isIpAddress
-import io.nekohasekai.sagernet.ktx.queryParameter
-import io.nekohasekai.sagernet.ktx.urlSafe
-import libcore.Libcore
-
-// WTF
-// https://github.com/trojan-gfw/igniter/issues/318
-fun parseTrojan(server: String): TrojanBean {
-
-    val link = Libcore.parseURL(server)
-
-    return TrojanBean().apply {
-        serverAddress = link.host
-        serverPort = link.port
-        password = link.username
-
-        if (link.password.isNotBlank()) {
-            password += ":" + link.password
-        }
-
-        security = link.queryParameter("security") ?: "tls"
-        sni = link.queryParameter("sni") ?: link.queryParameter("peer")
-        alpn = link.queryParameter("alpn")
-        name = link.fragment
-    }
-
-}
 
 fun TrojanBean.toUri(): String {
-
-    val builder = Libcore.newURL("trojan")
-    builder.host = serverAddress
-    builder.port = serverPort
-    builder.username = password
-
-    if (sni.isNotBlank()) {
-        builder.addQueryParameter("sni", sni)
-    }
-    if (alpn.isNotBlank()) {
-        builder.addQueryParameter("alpn", alpn)
-    }
-    if (allowInsecure) {
-        // bad format from where?
-        builder.addQueryParameter("allowInsecure", "1")
-    }
-
-    if (name.isNotBlank()) {
-        builder.setRawFragment(name.urlSafe())
-    }
-
-    return builder.string
-
+    return toUri()
 }
 
 fun TrojanBean.buildTrojanConfig(port: Int): String {

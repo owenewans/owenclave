@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.v2ray
 
 import cn.hutool.core.codec.Base64
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.ktx.*
 import libcore.Libcore
 
@@ -30,10 +31,10 @@ fun parseV2Ray(link: String): StandardV2RayBean {
     }
 
     val url = Libcore.parseURL(link)
-    val bean = if (url.scheme == "vmess") {
-        VMessBean()
-    } else {
-        VLESSBean()
+    val bean = when (url.scheme) {
+        "vmess" -> VMessBean()
+        "vless" -> VLESSBean()
+        else -> TrojanBean()
     }
 
     bean.serverAddress = url.host
@@ -109,16 +110,32 @@ fun parseV2Ray(link: String): StandardV2RayBean {
         // https://github.com/XTLS/Xray-core/issues/91
         // https://github.com/XTLS/Xray-core/discussions/716
 
-        bean.uuid = url.username
+        if (bean is TrojanBean) {
+            bean.password = url.username
+            if (url.password.isNotBlank()) {
+                // https://github.com/trojan-gfw/igniter/issues/318
+                bean.password += ":" + url.password
+            }
+        } else {
+            bean.uuid = url.username
+        }
 
         val protocol = url.queryParameter("type") ?: "tcp"
         bean.type = protocol
 
-        when (url.queryParameter("security")) {
+        if (bean is TrojanBean) {
+            bean.security = url.queryParameter("security") ?: "tls"
+        } else {
+            bean.security = url.queryParameter("security") ?: "none"
+        }
+        when (bean.security) {
             "tls" -> {
-                bean.security = "tls"
-                url.queryParameter("sni")?.let {
-                    bean.sni = it
+                if (bean is TrojanBean) {
+                    bean.sni = url.queryParameter("sni") ?: url.queryParameter("peer")
+                } else {
+                    url.queryParameter("sni")?.let {
+                        bean.sni = it
+                    }
                 }
                 url.queryParameter("alpn")?.let {
                     bean.alpn = it
@@ -129,10 +146,17 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                         bean.packetEncoding = 2 // xudp
                     }
                 }
+                if (bean is TrojanBean) {
+                    // bad format from where?
+                    url.queryParameter("allowInsecure")?.let {
+                        if (it == "1" || it.lowercase() == "true") {
+                            bean.allowInsecure = true
+                        }
+                    }
+                }
                 //url.queryParameter("fp")?.let {} // do not support this intentionally
             }
             "reality" -> {
-                bean.security = "reality"
                 url.queryParameter("sni")?.let {
                     bean.sni = it
                 }
@@ -395,14 +419,21 @@ fun VMessBean.toV2rayN(): String {
 fun StandardV2RayBean.toUri(): String {
 //    if (this is VMessBean && alterId > 0) return toV2rayN()
 
-    val builder = Libcore.newURL(if (this is VMessBean) "vmess" else "vless")
+    val builder = Libcore.newURL(
+        if (this is VMessBean) "vmess" else if (this is VLESSBean) "vless" else "trojan"
+    )
     builder.host = serverAddress
     builder.port = serverPort
-    builder.username = this.uuidOrGenerate()
-
+    if (this is TrojanBean) {
+        builder.username = password
+    } else {
+        builder.username = this.uuidOrGenerate()
+    }
 
     builder.addQueryParameter("type", type)
-    builder.addQueryParameter("encryption", encryption)
+    if (this !is TrojanBean) {
+        builder.addQueryParameter("encryption", encryption)
+    }
 
     when (type) {
         "tcp" -> {
@@ -455,6 +486,9 @@ fun StandardV2RayBean.toUri(): String {
         }
     }
 
+    if (this is TrojanBean && security.isNotBlank() && security == "none") {
+        builder.addQueryParameter("security", security)
+    }
     if (security.isNotBlank() && security != "none") {
         builder.addQueryParameter("security", security)
         when (security) {
@@ -464,6 +498,10 @@ fun StandardV2RayBean.toUri(): String {
                 }
                 if (alpn.isNotBlank()) {
                     builder.addQueryParameter("alpn", alpn)
+                }
+                if (allowInsecure) {
+                    // bad format from where?
+                    builder.addQueryParameter("allowInsecure", "1")
                 }
                 if (this is VLESSBean && flow.isNotBlank()) {
                     builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
