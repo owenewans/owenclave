@@ -121,7 +121,7 @@ class TrojanGoSettingsActivity : ProfileSettingsActivity<TrojanGoBean>(),
     lateinit var method: SimpleMenuPreference
     lateinit var utlsFingerprint: SimpleMenuPreference
 
-    val trojanGoMethods = app.resources.getStringArray(R.array.trojan_go_methods)
+    val trojanGoMethods = app.resources.getStringArray(R.array.trojan_go_methods_value)
     val trojanGoNetworks = app.resources.getStringArray(R.array.trojan_go_networks_value)
 
     override fun PreferenceFragmentCompat.createPreferences(

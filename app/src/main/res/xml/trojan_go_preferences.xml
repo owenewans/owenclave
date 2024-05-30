@@ -77,9 +77,9 @@
         app:title="@string/ss_cat">
 
         <com.takisoft.preferencex.SimpleMenuPreference
-            app:defaultValue="AES-128-GCM"
+            app:defaultValue="aes-128-gcm"
             app:entries="@array/trojan_go_methods"
-            app:entryValues="@array/trojan_go_methods"
+            app:entryValues="@array/trojan_go_methods_value"
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverMethod"
             app:title="@string/enc_method"

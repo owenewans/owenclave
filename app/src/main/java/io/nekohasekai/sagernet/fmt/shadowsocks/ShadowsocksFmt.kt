@@ -22,11 +22,7 @@ package io.nekohasekai.sagernet.fmt.shadowsocks
 import cn.hutool.core.codec.Base64
 import cn.hutool.json.JSONObject
 import com.github.shadowsocks.plugin.PluginConfiguration
-import com.github.shadowsocks.plugin.PluginManager
 import com.github.shadowsocks.plugin.PluginOptions
-import io.nekohasekai.sagernet.IPv6Mode
-import io.nekohasekai.sagernet.database.DataStore
-import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.decodeBase64UrlSafe
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.unUrlSafe
@@ -78,7 +74,7 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
 
         // ss-android style
 
-        if (link.password.isNotBlank()) {
+        if (link.password.isNotBlank() || url.substringAfter("ss://").substringBefore("@").endsWith(":")) {
 
             return ShadowsocksBean().apply {
 
@@ -145,15 +141,19 @@ fun ShadowsocksBean.toUri(): String {
     val builder = Libcore.newURL("ss")
     builder.host = serverAddress
     builder.port = serverPort
-    if (method.startsWith("2022")) {
+    if (method.startsWith("2022-blake3-")) {
         builder.username = method
         builder.password = password
     } else {
         builder.username = Base64.encodeUrlSafe("$method:$password")
     }
 
-    if (plugin.isNotBlank()) {
-        builder.addQueryParameter("plugin", plugin)
+    if (plugin.isNotBlank() && PluginConfiguration(plugin).selected.isNotBlank()) {
+        var p = PluginConfiguration(plugin).selected
+        if (PluginConfiguration(plugin).getOptions().toString().isNotBlank()) {
+            p += ";" + PluginConfiguration(plugin).getOptions().toString()
+        }
+        builder.addQueryParameter("plugin", p)
     }
 
     if (name.isNotBlank()) {
@@ -182,31 +182,4 @@ fun JSONObject.parseShadowsocks(): ShadowsocksBean {
 
         fixInvalidParams()
     }
-}
-
-
-fun ShadowsocksBean.buildShadowsocksConfig(port: Int): String {
-    val proxyConfig = JSONObject().also {
-        it["server"] = finalAddress
-        it["server_port"] = finalPort
-        it["method"] = method
-        it["password"] = password
-        it["local_address"] = LOCALHOST
-        it["local_port"] = port
-        it["local_udp_address"] = LOCALHOST
-        it["local_udp_port"] = port
-        it["mode"] = "tcp_and_udp"
-        it["ipv6_first"] = DataStore.ipv6Mode >= IPv6Mode.PREFER
-        it["keep_alive"] = DataStore.tcpKeepAliveInterval
-    }
-
-    if (plugin.isNotBlank()) {
-        val pluginConfiguration = PluginConfiguration(plugin ?: "")
-        PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
-            proxyConfig["plugin"] = path
-            proxyConfig["plugin_opts"] = opts.toString()
-        }
-    }
-
-    return proxyConfig.toStringPretty()
 }

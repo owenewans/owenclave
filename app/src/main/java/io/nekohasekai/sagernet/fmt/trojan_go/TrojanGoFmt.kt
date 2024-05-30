@@ -95,11 +95,15 @@ fun TrojanGoBean.toUri(): String {
             }
         }
     }
-    if (type.isNotBlank() && type != "none") {
+    if (encryption.isNotBlank() && encryption != "none") {
         builder.addQueryParameter("encryption", encryption)
     }
-    if (plugin.isNotBlank()) {
-        builder.addQueryParameter("plugin", plugin)
+    if (plugin.isNotBlank() && PluginConfiguration(plugin).selected.isNotBlank()) {
+        var p = PluginConfiguration(plugin).selected
+        if (PluginConfiguration(plugin).getOptions().toString().isNotBlank()) {
+            p += ";" + PluginConfiguration(plugin).getOptions().toString()
+        }
+        builder.addQueryParameter("plugin", p)
     }
 
     if (name.isNotBlank()) {
@@ -160,7 +164,7 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int, mux: Boolean): String {
 
         if (plugin.isNotBlank()) {
             val pluginConfiguration = PluginConfiguration(plugin ?: "")
-            PluginManager.init(pluginConfiguration)?.let { (path, opts, isV2) ->
+            PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
                 conf["transport_plugin"] = JSONObject().also {
                     it["enabled"] = true
                     it["type"] = "shadowsocks"
