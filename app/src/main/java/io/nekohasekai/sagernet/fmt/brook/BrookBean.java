@@ -62,7 +62,7 @@ public class BrookBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(6);
+        output.writeInt(7);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(password);
@@ -71,6 +71,7 @@ public class BrookBean extends AbstractBean {
             case "ws":
                 output.writeString(wsPath);
                 output.writeBoolean(withoutBrookProtocol);
+                break;
             case "wss": {
                 output.writeString(wsPath);
                 output.writeBoolean(insecure);
@@ -106,6 +107,9 @@ public class BrookBean extends AbstractBean {
                 wsPath = input.readString();
                 if (version >= 2) {
                     withoutBrookProtocol = input.readBoolean();
+                }
+                if (version >= 7) {
+                    break;
                 }
             case "wss": {
                 wsPath = input.readString();

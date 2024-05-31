@@ -162,6 +162,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var realitySpiderX: EditTextPreference
     lateinit var realityFingerprint: SimpleMenuPreference
 
+    lateinit var packetEncoding: SimpleMenuPreference
+
     lateinit var hy2UpMbps: EditTextPreference
     lateinit var hy2DownMbps: EditTextPreference
     lateinit var hy2Password: EditTextPreference
@@ -267,7 +269,12 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         vmessExperimentsCategory.isVisible = bean is VMessBean
         xtlsFlow.isVisible = bean is VLESSBean
 
-        findPreference<SimpleMenuPreference>(Key.SERVER_PACKET_ENCODING)!!.isVisible = bean !is TrojanBean
+        packetEncoding = findPreference(Key.SERVER_PACKET_ENCODING)!!
+        packetEncoding.isVisible = bean !is TrojanBean
+        val pev = resources.getStringArray(R.array.packet_encoding_value)
+        if (packetEncoding.value !in pev) {
+            packetEncoding.value = pev[0]
+        }
     }
 
     val tcpHeadersValue = app.resources.getStringArray(R.array.tcp_headers_value)

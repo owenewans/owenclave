@@ -39,7 +39,7 @@
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/packet_encoding_entry"
-            app:entryValues="@array/int_array_3"
+            app:entryValues="@array/packet_encoding_value"
             app:icon="@drawable/baseline_widgets_24"
             app:key="serverPacketEncoding"
             app:title="@string/packet_encoding"

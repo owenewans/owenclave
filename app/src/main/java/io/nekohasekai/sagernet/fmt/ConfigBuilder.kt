@@ -561,13 +561,13 @@ fun buildV2RayConfig(
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
-                                                1 -> {
+                                                "packet" -> {
                                                     packetEncoding = "packet"
                                                     if (currentDomainStrategy == "AsIs") {
                                                         currentDomainStrategy = "UseIP"
                                                     }
                                                 }
-                                                2 -> packetEncoding = "xudp"
+                                                "xudp" -> packetEncoding = "xudp"
                                             }
                                         })
                                 } else if (bean is VLESSBean) {
@@ -588,13 +588,13 @@ fun buildV2RayConfig(
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
-                                                1 -> {
+                                                "packet" -> {
                                                     packetEncoding = "packet"
                                                     if (currentDomainStrategy == "AsIs") {
                                                         currentDomainStrategy = "UseIP"
                                                     }
                                                 }
-                                                2 -> packetEncoding = "xudp"
+                                                "xudp" -> packetEncoding = "xudp"
                                             }
                                         })
                                 } else if (bean is TrojanBean) {
@@ -1033,13 +1033,13 @@ fun buildV2RayConfig(
                                     concurrency = DataStore.muxConcurrency
                                     if (bean is StandardV2RayBean) {
                                         when (bean.packetEncoding) {
-                                            1 -> {
+                                            "packet" -> {
                                                 packetEncoding = "packet"
                                                 if (currentDomainStrategy == "AsIs") {
                                                     currentDomainStrategy = "UseIP"
                                                 }
                                             }
-                                            2 -> {
+                                            "xudp" -> {
                                                 packetEncoding = "xudp"
                                             }
                                         }

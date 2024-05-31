@@ -160,7 +160,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     public Boolean wsUseBrowserForwarder;
     public Boolean allowInsecure;
-    public Integer packetEncoding; // 0: none, 1: packet, 2: xudp
+    public String packetEncoding;
 
     public String realityPublicKey;
     public String realityShortId;
@@ -205,7 +205,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (pinnedPeerCertificateChainSha256 == null) pinnedPeerCertificateChainSha256 = "";
         if (earlyDataHeaderName == null) earlyDataHeaderName = "";
         if (allowInsecure == null) allowInsecure = false;
-        if (packetEncoding == null) packetEncoding = 0;
+        if (packetEncoding == null) packetEncoding = "";
         if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
 
         if (StrUtil.isBlank(realityPublicKey)) realityPublicKey = "";
@@ -222,7 +222,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(15);
+        output.writeInt(16);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -249,7 +249,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(earlyDataHeaderName);
                 break;
             }
-            case "http": {
+            case "http", "httpupgrade": {
                 output.writeString(host);
                 output.writeString(path);
                 break;
@@ -258,22 +258,22 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(headerType);
                 output.writeString(quicSecurity);
                 output.writeString(quicKey);
+                break;
             }
             case "grpc": {
                 output.writeString(grpcServiceName);
+                break;
             }
             case "meek": {
                 output.writeString(meekUrl);
-            }
-            case "httpupgrade": {
-                output.writeString(host);
-                output.writeString(path);
+                break;
             }
             case "hysteria2": {
                 output.writeInt(hy2DownMbps);
                 output.writeInt(hy2UpMbps);
                 output.writeString(hy2ObfsPassword);
                 output.writeString(hy2Password);
+                break;
             }
         }
 
@@ -307,7 +307,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
             output.writeString(((VLESSBean) this).flow);
         }
 
-        output.writeInt(packetEncoding);
+        output.writeString(packetEncoding);
     }
 
     @Override
@@ -349,22 +349,34 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 headerType = input.readString();
                 quicSecurity = input.readString();
                 quicKey = input.readString();
+                if (version >= 16) {
+                    break;
+                }
             }
             case "grpc": {
                 grpcServiceName = input.readString();
                 if (version >= 8 && version <= 12) {
                     input.readString(); // grpcMode, removed
                 }
+                if (version >= 16) {
+                    break;
+                }
             }
             case "meek": {
                 if (version >= 10) {
                     meekUrl = input.readString();
+                }
+                if (version >= 16) {
+                    break;
                 }
             }
             case "httpupgrade": {
                 if (version >= 12) {
                     host = input.readString();
                     path = input.readString();
+                }
+                if (version >= 16) {
+                    break;
                 }
             }
             case "hysteria2": {
@@ -376,6 +388,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (version >= 15) {
                     hy2Password = input.readString();
                 }
+                break;
             }
         }
 
@@ -401,6 +414,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 sni = input.readString();
                 alpn = input.readString();
                 input.readString(); // flow, removed
+                if (version >= 16) {
+                    break;
+                }
             }
             case "reality": {
                 if (version >= 11) {
@@ -410,6 +426,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                     realitySpiderX = input.readString();
                     realityFingerprint = input.readString();
                 }
+                break;
             }
         }
         if (this instanceof VMessBean && version != 4 && version < 6) {
@@ -422,8 +439,21 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (this instanceof VLESSBean && version >= 11) {
             ((VLESSBean) this).flow = input.readString();
         }
-        if (version >= 7) {
-            packetEncoding = input.readInt();
+        if (version >= 7 && version <= 15) {
+            switch (input.readInt()) {
+                case 0:
+                    packetEncoding = "none";
+                    break;
+                case 1:
+                    packetEncoding = "packet";
+                    break;
+                case 2:
+                    packetEncoding = "xudp";
+                    break;
+            }
+        }
+        if (version >= 16) {
+            packetEncoding = input.readString();
         }
     }
 

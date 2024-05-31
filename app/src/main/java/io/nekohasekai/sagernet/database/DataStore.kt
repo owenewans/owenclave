@@ -255,7 +255,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverEarlyDataHeaderName by profileCacheStore.string(Key.SERVER_EARLY_DATA_HEADER_NAME)
     var serverHeaders by profileCacheStore.string(Key.SERVER_HEADERS)
     var serverAllowInsecure by profileCacheStore.boolean(Key.SERVER_ALLOW_INSECURE)
-    var serverPacketEncoding by profileCacheStore.stringToInt(Key.SERVER_PACKET_ENCODING)
+    var serverPacketEncoding by profileCacheStore.string(Key.SERVER_PACKET_ENCODING)
     var serverUTLSFingerprint by profileCacheStore.string(Key.SERVER_UTLS_FINGERPRINT)
     var serverRealityPublicKey by profileCacheStore.string(Key.SERVER_REALITY_PUBLIC_KEY)
     var serverRealityShortId by profileCacheStore.string(Key.SERVER_REALITY_SHORT_ID)

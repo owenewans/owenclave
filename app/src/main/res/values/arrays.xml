@@ -903,6 +903,12 @@
         <item>XUDP</item>
     </string-array>
 
+    <string-array name="packet_encoding_value">
+        <item>none</item>
+        <item>packet</item>
+        <item>xudp</item>
+    </string-array>
+
     <string-array name="grpc_mode_entry">
         <item>Gun</item>
         <item>Multi</item>

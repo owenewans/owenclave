@@ -143,7 +143,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 if (bean is VLESSBean) {
                     url.queryParameter("flow")?.let {
                         bean.flow = it
-                        bean.packetEncoding = 2 // xudp
+                        bean.packetEncoding = "xudp"
                     }
                 }
                 if (bean is TrojanBean) {
@@ -175,7 +175,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 if (bean is VLESSBean) {
                     url.queryParameter("flow")?.let {
                         bean.flow = it
-                        bean.packetEncoding = 2 // xudp
+                        bean.packetEncoding = "xudp"
                     }
                 }
             }
