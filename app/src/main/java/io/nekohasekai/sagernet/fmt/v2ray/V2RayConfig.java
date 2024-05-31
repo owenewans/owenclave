@@ -152,6 +152,7 @@ public class V2RayConfig {
             public String tag;
             public List<String> selector;
             public StrategyObject strategy;
+            public String fallbackTag;
 
             public static class StrategyObject {
 
@@ -196,6 +197,7 @@ public class V2RayConfig {
             public Boolean statsInboundDownlink;
             public Boolean statsOutboundUplink;
             public Boolean statsOutboundDownlink;
+            public Boolean overrideAccessLogDest;
 
         }
 
@@ -273,7 +275,18 @@ public class V2RayConfig {
                     return ShadowsocksInboundConfigurationObject.class;
                 case "trojan":
                     return TrojanInboundConfigurationObject.class;
-
+                case "vliteu":
+                    return VLiteUInboundConfigurationObject.class;
+                case "mixed":
+                    return MixedInboundConfigurationObject.class;
+                case "shadowsocks-2022":
+                    return Shadowsocks2022InboundConfigurationObject.class;
+                case "shadowsocks-2022-multi":
+                    return Shadowsocks2022MultiInboundConfigurationObject.class;
+                case "shadowsocks-2022-relay":
+                    return Shadowsocks2022RelayInboundConfigurationObject.class;
+                case "hysteria2":
+                    return Hysteria2InboundConfigurationObject.class;
             }
             return null;
         }
@@ -305,7 +318,7 @@ public class V2RayConfig {
 
             public String user;
             public String pass;
-
+            public Map<String, String> headers;
         }
 
     }
@@ -317,7 +330,9 @@ public class V2RayConfig {
         public List<AccountObject> accounts;
         public Boolean udp;
         public String ip;
+        public Integer timeout;
         public Integer userLevel;
+        public String packetEncoding;
 
         public static class AccountObject {
 
@@ -343,6 +358,7 @@ public class V2RayConfig {
             public Integer level;
             public Integer alterId;
             public String email;
+            public String experiments;
 
         }
 
@@ -379,8 +395,10 @@ public class V2RayConfig {
 
             public String alpn;
             public String path;
-            public Integer dest;
+            public String dest; // fxxk
             public Integer xver;
+            public String name;
+            public String type;
 
         }
 
@@ -391,11 +409,26 @@ public class V2RayConfig {
         public String email;
         public String method;
         public String password;
+        public Boolean udp;
         public Integer level;
         public String network;
+        public Boolean ivCheck;
         public String plugin;
         public String pluginOpts;
         public List<String> pluginArgs;
+        public String packetEncoding;
+        public List<UserObject> clients;
+        public List<UserObject> users;
+
+        public static class UserObject {
+
+            public String password;
+            public Integer level;
+            public String email;
+            public String address;
+            public Integer port;
+
+        }
 
     }
 
@@ -403,6 +436,7 @@ public class V2RayConfig {
 
         public List<ClientObject> clients;
         public List<FallbackObject> fallbacks;
+        public String packetEncoding;
 
         public static class ClientObject {
 
@@ -414,10 +448,111 @@ public class V2RayConfig {
 
         public static class FallbackObject {
 
+            public String name;
             public String alpn;
             public String path;
-            public Integer dest;
+            public String type;
+            public String dest; // fxxk
             public Integer xver;
+
+        }
+
+    }
+
+    public static class MixedInboundConfigurationObject implements InboundConfigurationObject {
+
+        public String auth;
+        public List<AccountObject> accounts;
+        public Boolean udp;
+        public String ip;
+        public Integer timeout;
+        public Integer userLevel;
+        public Boolean allowTransparent;
+        public String packetEncoding;
+
+        public static class AccountObject {
+
+            public String user;
+            public String pass;
+
+        }
+
+    }
+
+    public static class Shadowsocks2022InboundConfigurationObject implements InboundConfigurationObject {
+
+        public String method;
+        public String key;
+        public Integer level;
+        public String email;
+        public String network;
+        public String plugin;
+        public String pluginOpts;
+        public List<String> pluginArgs;
+
+    }
+
+    public static class Shadowsocks2022MultiInboundConfigurationObject implements InboundConfigurationObject {
+
+        public String method;
+        public String key;
+        public String network;
+        public String plugin;
+        public String pluginOpts;
+        public List<String> pluginArgs;
+        public List<UserObject> users;
+
+        public static class UserObject {
+
+            public String key;
+            public Integer level;
+            public String email;
+
+        }
+
+    }
+
+    public static class Shadowsocks2022RelayInboundConfigurationObject implements InboundConfigurationObject {
+
+        public String method;
+        public String key;
+        public String network;
+        public String plugin;
+        public String pluginOpts;
+        public List<String> pluginArgs;
+        public List<DestinationObject> destinations;
+
+        public static class DestinationObject {
+
+            public String key;
+            public String address;
+            public Integer port;
+            public Integer level;
+            public String email;
+
+        }
+
+    }
+
+    public static class VLiteUInboundConfigurationObject implements InboundConfigurationObject {
+
+        public String password;
+        public Boolean scramblePacket;
+        public Boolean enableFEC;
+        public Boolean enableStabilization;
+        public Boolean enableRenegotiation;
+        public Integer handshakeMaskingPaddingSize;
+
+    }
+
+    public static class Hysteria2InboundConfigurationObject implements InboundConfigurationObject {
+
+        public List<ClientObject> clients;
+
+        public static class ClientObject {
+
+            public String email;
+            public Integer level;
 
         }
 
@@ -499,12 +634,16 @@ public class V2RayConfig {
                     return TrojanOutboundConfigurationObject.class;
                 case "loopback":
                     return LoopbackOutboundConfigurationObject.class;
+                case "vliteu":
+                    return VLiteUOutboundConfigurationObject.class;
                 case "wireguard":
-                    return WireGuardOutbounzConfigurationObject.class;
+                    return WireGuardOutboundConfigurationObject.class;
                 case "ssh":
                     return SSHOutbountConfigurationObject.class;
-                case "shadowsocks2022":
+                case "shadowsocks-2022":
                     return Shadowsocks2022OutboundConfigurationObject.class;
+                case "shadowsocks2022":
+                    return Shadowsocks_2022OutboundConfigurationObject.class;
                 case "hysteria2":
                     return Hysteria2OutboundConfigurationObject.class;
             }
@@ -518,8 +657,6 @@ public class V2RayConfig {
     public static class BlackholeOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public ResponseObject response;
-        public Boolean keepConnection;
-        public Integer userLevel;
 
         public static class ResponseObject {
             public String type;
@@ -532,8 +669,6 @@ public class V2RayConfig {
         public String network;
         public String address;
         public Integer port;
-
-        // SagerNet private
         public Integer userLevel;
 
     }
@@ -541,6 +676,7 @@ public class V2RayConfig {
     public static class FreedomOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public String domainStrategy;
+        public String timeout;
         public String redirect;
         public Integer userLevel;
 
@@ -550,6 +686,7 @@ public class V2RayConfig {
     public static class HTTPOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public List<ServerObject> servers;
+        public Boolean h1SkipWaitForReply;
 
         public static class ServerObject {
 
@@ -621,6 +758,7 @@ public class V2RayConfig {
             public String password;
             public Integer level;
             public String email;
+            public Boolean ivCheck;
             public Boolean experimentReducedIvHeadEntropy;
 
         }
@@ -632,6 +770,18 @@ public class V2RayConfig {
     }
 
     public static class Shadowsocks2022OutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public String method;
+        public String key;
+        public String plugin;
+        public String pluginOpts;
+        public List<String> pluginArgs;
+
+    }
+
+    public static class Shadowsocks_2022OutboundConfigurationObject implements OutboundConfigurationObject {
 
         public String address;
         public Integer port;
@@ -690,19 +840,36 @@ public class V2RayConfig {
 
     }
 
-    public static class WireGuardOutbounzConfigurationObject implements OutboundConfigurationObject {
+    public static class VLiteUOutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public String password;
+        public Boolean scramblePacket;
+        public Boolean enableFEC;
+        public Boolean enableStabilization;
+        public Boolean enableRenegotiation;
+        public Integer handshakeMaskingPaddingSize;
+
+    }
+
+    public static class WireGuardOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public List<String> address;
         public String secretKey;
         public Integer mtu;
+        public Integer workers;
         public List<WireGuardPeerObject> peers;
         public List<Integer> reserved;
+        public String domainStrategy;
 
         public static class WireGuardPeerObject {
 
             public String publicKey;
             public String preSharedKey;
             public String endpoint;
+            public Boolean keepAlive;
+            public List<String> allowedIPs;
 
         }
 
@@ -717,6 +884,8 @@ public class V2RayConfig {
         public String privateKey;
         public String publicKey;
         public Integer userLevel;
+        public String clientVersion;
+        public List<String> hostKeyAlgorithms;
 
     }
 
@@ -759,6 +928,7 @@ public class V2RayConfig {
         public String network;
         public String security;
         public TLSObject tlsSettings;
+        public UTLSObject utlsSettings;
         public RealityObject realitySettings;
         public TcpObject tcpSettings;
         public KcpObject kcpSettings;
@@ -776,8 +946,15 @@ public class V2RayConfig {
 
             public Integer mark;
             public Boolean tcpFastOpen;
+            public Boolean acceptProxyProtocol;
             public String tproxy;
             public Integer tcpKeepAliveInterval;
+            public Integer tcpKeepAliveIdle;
+            public Integer tcpFastOpenQueueLength;
+            public String bindToDevice;
+            public Integer rxBufSize;
+            public Integer txBufSize;
+            public Boolean forceBufSize;
 
         }
 
@@ -788,10 +965,14 @@ public class V2RayConfig {
         public String serverName;
         public Boolean allowInsecure;
         public List<String> alpn;
+        public Boolean enableSessionResumption;
         public List<CertificateObject> certificates;
         public Boolean disableSystemRoot;
         public List<String> pinnedPeerCertificateChainSha256;
+        public Boolean verifyClientCertificate;
         public String fingerprint;
+        public String minVersion;
+        public String maxVersion;
 
         public static class CertificateObject {
 
@@ -805,13 +986,33 @@ public class V2RayConfig {
 
     }
 
-        public static class RealityObject {
+    public static class UTLSObject {
 
+        public TLSObject tlsConfig;
+        public String imitate;
+        public Boolean noSNI;
+        public String forceALPN;
+
+    }
+
+    public static class RealityObject {
+
+        public Boolean show;
+        public String dest; // fxxk
+        public String type;
+        public Integer xver;
+        public List<String> serverNames;
+        public String privateKey;
+        public String minClientVer;
+        public String maxClientVer;
+        public Integer maxTimeDiff;
+        public List<String> shortIds;
         public String serverName;
         public String publicKey;
         public String shortId;
         public String spiderX;
         public String fingerprint;
+        public String version;
 
     }
 
@@ -891,6 +1092,8 @@ public class V2RayConfig {
 
         public List<String> host;
         public String path;
+        public String method;
+        public Map<String, List<String>> headers;
 
     }
 
@@ -1010,6 +1213,7 @@ public class V2RayConfig {
         public List<MultiObservatoryItem> observers;
 
         public static class MultiObservatoryItem {
+            public String type;
             public String tag;
             public ObservatoryObject settings;
         }

@@ -820,7 +820,7 @@ fun buildV2RayConfig(
                                 if (bean is ShadowsocksBean && bean.method.startsWith("2022-blake3-") && DataStore.shadowsocks2022Implementation == Shadowsocks2022Implementation.V2FLY_V2RAY_CORE) {
                                     protocol = "shadowsocks2022"
                                     settings = LazyOutboundConfigurationObject(this,
-                                        Shadowsocks2022OutboundConfigurationObject().apply {
+                                        Shadowsocks_2022OutboundConfigurationObject().apply {
                                             address = bean.serverAddress
                                             port = bean.serverPort
                                             method = bean.method
@@ -929,7 +929,7 @@ fun buildV2RayConfig(
                             } else if (bean is WireGuardBean) {
                                 protocol = "wireguard"
                                 settings = LazyOutboundConfigurationObject(this,
-                                    WireGuardOutbounzConfigurationObject().apply {
+                                    WireGuardOutboundConfigurationObject().apply {
                                         address = bean.localAddress.split("\n")
                                         secretKey = bean.privateKey
                                         mtu = bean.mtu
@@ -942,7 +942,7 @@ fun buildV2RayConfig(
                                                 reserved = listOf(reserved0, reserved1, reserved2)
                                             }
                                         }
-                                        peers = listOf(WireGuardOutbounzConfigurationObject.WireGuardPeerObject().apply {
+                                        peers = listOf(WireGuardOutboundConfigurationObject.WireGuardPeerObject().apply {
                                             publicKey = bean.peerPublicKey
                                             preSharedKey = bean.peerPreSharedKey
                                             endpoint = bean.wrapUri()
