@@ -70,6 +70,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         if (this is VLESSBean) {
             DataStore.serverFlow = flow
         }
+        if (this is VMessBean) {
+            DataStore.serverVMessExperimentalAuthenticatedLength = experimentalAuthenticatedLength
+            DataStore.serverVMessExperimentalNoTerminationSignal = experimentalNoTerminationSignal
+        }
         DataStore.serverPinnedCertificateChain = pinnedPeerCertificateChainSha256
         DataStore.serverQuicSecurity = quicSecurity
         DataStore.serverWsMaxEarlyData = wsMaxEarlyData
@@ -119,6 +123,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         pinnedPeerCertificateChainSha256 = DataStore.serverPinnedCertificateChain
         if (this is VLESSBean) {
             flow = DataStore.serverFlow
+        }
+        if (this is VMessBean) {
+            experimentalAuthenticatedLength = DataStore.serverVMessExperimentalAuthenticatedLength
+            experimentalNoTerminationSignal = DataStore.serverVMessExperimentalNoTerminationSignal
         }
         quicSecurity = DataStore.serverQuicSecurity
         wsMaxEarlyData = DataStore.serverWsMaxEarlyData

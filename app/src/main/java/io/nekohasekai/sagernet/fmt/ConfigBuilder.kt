@@ -550,14 +550,17 @@ fun buildV2RayConfig(
                                                             id = bean.uuidOrGenerate()
                                                             security = bean.encryption.takeIf { it.isNotBlank() }
                                                                 ?: "auto"
-                                                            experimental = ""
+                                                            experiments = ""
                                                             if (bean.experimentalAuthenticatedLength) {
-                                                                experimental += "AuthenticatedLength"
+                                                                experiments += "AuthenticatedLength"
                                                             }
                                                             if (bean.experimentalNoTerminationSignal) {
-                                                                experimental += "NoTerminationSignal"
+                                                                if (experiments != "") {
+                                                                    experiments += "|"
+                                                                }
+                                                                experiments += "NoTerminationSignal"
                                                             }
-                                                            if (experimental.isBlank()) experimental = null
+                                                            if (experiments.isBlank()) experiments = null
                                                         })
                                                 })
                                             when (bean.packetEncoding) {

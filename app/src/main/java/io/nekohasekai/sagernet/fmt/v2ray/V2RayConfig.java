@@ -601,7 +601,7 @@ public class V2RayConfig {
                 public Integer alterId;
                 public String security;
                 public Integer level;
-                public String experimental;
+                public String experiments;
 
             }
 
