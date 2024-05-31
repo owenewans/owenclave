@@ -19,66 +19,10 @@
 
 package io.nekohasekai.sagernet.ui.profile
 
-import android.os.Bundle
-import androidx.preference.EditTextPreference
-import androidx.preference.SwitchPreference
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
-import io.nekohasekai.sagernet.Key
-import io.nekohasekai.sagernet.R
-import io.nekohasekai.sagernet.database.DataStore
-import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 
-class HttpSettingsActivity : ProfileSettingsActivity<HttpBean>() {
+class HttpSettingsActivity : StandardV2RaySettingsActivity() {
 
     override fun createEntity() = HttpBean()
-
-    override fun HttpBean.init() {
-        DataStore.profileName = name
-        DataStore.serverAddress = serverAddress
-        DataStore.serverPort = serverPort
-        DataStore.serverUsername = username
-        DataStore.serverPassword = password
-        DataStore.serverTLS = tls
-        DataStore.serverSNI = sni
-        DataStore.serverUTLSFingerprint = utlsFingerprint
-    }
-
-    override fun HttpBean.serialize() {
-        name = DataStore.profileName
-        serverAddress = DataStore.serverAddress
-        serverPort = DataStore.serverPort
-        username = DataStore.serverUsername
-        password = DataStore.serverPassword
-        tls = DataStore.serverTLS
-        sni = DataStore.serverSNI
-        utlsFingerprint = DataStore.serverUTLSFingerprint
-    }
-
-    override fun PreferenceFragmentCompat.createPreferences(
-        savedInstanceState: Bundle?,
-        rootKey: String?,
-    ) {
-        addPreferencesFromResource(R.xml.http_preferences)
-        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
-            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
-        }
-        findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
-            summaryProvider = PasswordSummaryProvider
-        }
-        val useTLS = findPreference<SwitchPreference>(Key.SERVER_TLS)!!
-        val sni = findPreference<EditTextPreference>(Key.SERVER_SNI)!!
-        val utlsFingerprint = findPreference<SimpleMenuPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
-        fun updateTLS(useTLS: Boolean) {
-            sni.isVisible = useTLS
-            utlsFingerprint.isVisible = useTLS
-        }
-        updateTLS(DataStore.serverTLS)
-        useTLS.setOnPreferenceChangeListener { _, newValue ->
-            updateTLS(newValue as Boolean)
-            true
-        }
-    }
 
 }

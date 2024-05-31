@@ -52,8 +52,6 @@ fun parseSOCKS(link: String): SOCKSBean {
             username = url.username
             password = url.password
             name = url.fragment
-            tls = url.queryParameter("tls") == "true"
-            sni = url.queryParameter("sni")
         }
     }
 }
@@ -64,12 +62,6 @@ fun SOCKSBean.toUri(): String {
     builder.port = serverPort
     if (!username.isNullOrBlank()) builder.username = username
     if (!password.isNullOrBlank()) builder.password = password
-    if (tls) {
-        builder.addQueryParameter("tls", "true")
-        if (sni.isNotBlank()) {
-            builder.addQueryParameter("sni", sni)
-        }
-    }
     if (!name.isNullOrBlank()) builder.setRawFragment(name.urlSafe())
     return builder.string
 

@@ -19,81 +19,10 @@
 
 package io.nekohasekai.sagernet.ui.profile
 
-import android.os.Bundle
-import androidx.preference.EditTextPreference
-import androidx.preference.SwitchPreference
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
-import io.nekohasekai.sagernet.Key
-import io.nekohasekai.sagernet.R
-import io.nekohasekai.sagernet.database.DataStore
-import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 
-class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
+class SocksSettingsActivity : StandardV2RaySettingsActivity() {
 
     override fun createEntity() = SOCKSBean()
-
-    override fun SOCKSBean.init() {
-        DataStore.profileName = name
-        DataStore.serverAddress = serverAddress
-        DataStore.serverPort = serverPort
-
-        DataStore.serverProtocolVersion = protocol
-        DataStore.serverUsername = username
-        DataStore.serverPassword = password
-        DataStore.serverTLS = tls
-        DataStore.serverSNI = sni
-        DataStore.serverUTLSFingerprint = utlsFingerprint
-    }
-
-    override fun SOCKSBean.serialize() {
-        name = DataStore.profileName
-        serverAddress = DataStore.serverAddress
-        serverPort = DataStore.serverPort
-
-        protocol = DataStore.serverProtocolVersion
-        username = DataStore.serverUsername
-        password = DataStore.serverPassword
-        tls = DataStore.serverTLS
-        sni = DataStore.serverSNI
-        utlsFingerprint = DataStore.serverUTLSFingerprint
-    }
-
-    override fun PreferenceFragmentCompat.createPreferences(
-        savedInstanceState: Bundle?,
-        rootKey: String?,
-    ) {
-        addPreferencesFromResource(R.xml.socks_preferences)
-        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
-            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
-        }
-        val password = findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
-            summaryProvider = PasswordSummaryProvider
-        }
-        val protocol = findPreference<SimpleMenuPreference>(Key.SERVER_PROTOCOL)!!
-        val useTLS = findPreference<SwitchPreference>(Key.SERVER_TLS)!!
-        val sni = findPreference<EditTextPreference>(Key.SERVER_SNI)!!
-        val utlsFingerprint = findPreference<SimpleMenuPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
-
-        fun updateProtocol(version: Int) {
-            password.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
-        }
-        fun updateTLS(useTLS: Boolean) {
-            sni.isVisible = useTLS
-            utlsFingerprint.isVisible = useTLS
-        }
-
-        updateProtocol(DataStore.serverProtocolVersion)
-        protocol.setOnPreferenceChangeListener { _, newValue ->
-            updateProtocol((newValue as String).toInt())
-            true
-        }
-        updateTLS(DataStore.serverTLS)
-        useTLS.setOnPreferenceChangeListener { _, newValue ->
-            updateTLS(newValue as Boolean)
-            true
-        }
-    }
 
 }

@@ -19,6 +19,11 @@
             app:title="@string/server_port"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="serverUsername"
+            app:title="@string/username"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_baseline_person_24"
             app:key="serverUserId"
@@ -29,6 +34,14 @@
             app:icon="@drawable/ic_notification_enhanced_encryption"
             app:key="serverEncryption"
             app:title="@string/enc_method"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:defaultValue="2"
+            app:entries="@array/socks_versions"
+            app:entryValues="@array/int_array_3"
+            app:icon="@drawable/ic_baseline_nfc_24"
+            app:key="serverProtocol"
+            app:title="@string/app_version"
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/xtls_flow_entry"
@@ -202,5 +215,32 @@
             app:title="NoTerminationSignal" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:key="serverPluginCategory"
+        app:title="@string/plugin">
+        <com.github.shadowsocks.preference.PluginPreference
+            app:key="serverPlugin"
+            app:persistent="false"
+            app:title="@string/plugin"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_action_settings"
+            app:key="serverPluginConfigure"
+            app:persistent="false"
+            app:title="@string/plugin_configure"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:icon="@drawable/ic_baseline_grid_3x3_24"
+        app:key="serverSsExperimentsCategory"
+        app:title="@string/experimental_settings">
+        <SwitchPreference
+            app:icon="@drawable/baseline_construction_24"
+            app:key="serverReducedIvHeadEntropy"
+            app:summary="@string/experimental_reduced_iv_head_entropy"
+            app:title="ReducedIvHeadEntropy"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

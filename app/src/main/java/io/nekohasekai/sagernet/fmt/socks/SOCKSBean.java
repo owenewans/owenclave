@@ -26,10 +26,10 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean;
 
-public class SOCKSBean extends AbstractBean {
+public class SOCKSBean extends StandardV2RayBean {
 
     public Integer protocol;
 
@@ -67,9 +67,6 @@ public class SOCKSBean extends AbstractBean {
 
     public String username;
     public String password;
-    public boolean tls;
-    public String sni;
-    public String utlsFingerprint;
 
     public static final int PROTOCOL_SOCKS4 = 0;
     public static final int PROTOCOL_SOCKS4A = 1;
@@ -88,34 +85,38 @@ public class SOCKSBean extends AbstractBean {
         if (protocol == null) protocol = PROTOCOL_SOCKS5;
         if (username == null) username = "";
         if (password == null) password = "";
-        if (sni == null) sni = "";
-        if (utlsFingerprint == null) utlsFingerprint = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
         super.serialize(output);
         output.writeInt(protocol);
         output.writeString(username);
         output.writeString(password);
-        output.writeBoolean(tls);
-        output.writeString(sni);
-        output.writeString(utlsFingerprint);
     }
 
     @Override
     public void deserialize(ByteBufferInput input) {
         int version = input.readInt();
-        super.deserialize(input);
+        if (version >= 3) {
+            super.deserialize(input);
+        } else {
+            serverAddress = input.readString();
+            serverPort = input.readInt();
+        }
         if (version >= 1) {
             protocol = input.readInt();
         }
         username = input.readString();
         password = input.readString();
-        tls = input.readBoolean();
-        sni = input.readString();
-        if (version >= 2) {
+        if (version <= 2) {
+            if (input.readBoolean()) {
+                security = "tls";
+            }
+            sni = input.readString();
+        }
+        if (version == 2) {
             utlsFingerprint = input.readString();
         }
     }

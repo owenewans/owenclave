@@ -20,7 +20,6 @@
 package io.nekohasekai.sagernet.ui.profile
 
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
-import io.nekohasekai.sagernet.ktx.app
 
 class TrojanSettingsActivity : StandardV2RaySettingsActivity() {
 

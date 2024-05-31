@@ -160,19 +160,10 @@ abstract class GroupUpdater {
 
         with(bean) {
             when (this) {
-                is SOCKSBean -> {
-                    if (tls && sni.isBlank()) sni = bean.serverAddress
-                }
-                is HttpBean -> {
-                    if (tls && sni.isBlank()) sni = bean.serverAddress
-                }
                 is StandardV2RayBean -> {
                     when (security) {
                         "tls" -> if (sni.isBlank()) sni = bean.serverAddress
                     }
-                }
-                is TrojanBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
                 }
                 is TrojanGoBean -> {
                     if (sni.isBlank()) sni = bean.serverAddress

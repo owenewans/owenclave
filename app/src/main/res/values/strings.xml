@@ -530,5 +530,6 @@
     <string name="nat_stun_server_hint">STUN server</string>
     <string name="brook_udp_over_stream">UDP over stream</string>
     <string name="naive_no_post_quantum">Disable post-quantum key agreement</string>
+    <string name="hysteria2_password">Hysteria2 password</string>
 
 </resources>

@@ -32,14 +32,15 @@ fun parseHttp(link: String): HttpBean {
         serverPort = url.port
         username = url.username
         password = url.password
-        sni = url.queryParameter("sni")
         name = url.fragment
-        tls = url.scheme == "https"
+        if (url.scheme == "https") {
+            security = "tls"
+        }
     }
 }
 
 fun HttpBean.toUri(): String {
-    val builder = Libcore.newURL(if (tls) "https" else "http")
+    val builder = Libcore.newURL(if (security == "tls") "https" else "http")
     builder.host = serverAddress
     builder.port = serverPort
 
@@ -48,9 +49,6 @@ fun HttpBean.toUri(): String {
     }
     if (password.isNotBlank()) {
         builder.password = password
-    }
-    if (sni.isNotBlank()) {
-        builder.addQueryParameter("sni", sni)
     }
     if (name.isNotBlank()) {
         builder.setRawFragment(name.urlSafe())

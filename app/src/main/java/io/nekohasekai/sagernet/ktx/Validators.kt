@@ -60,9 +60,9 @@ fun AbstractBean.isInsecure(): ValidateResult {
     } else if (this is ShadowsocksRBean) {
         return ResultDeprecated(R.raw.shadowsocksr)
     } else if (this is HttpBean) {
-        if (!tls) return ResultInsecure(R.raw.not_encrypted)
+        if (security.isNullOrBlank() || security == "none") return ResultInsecure(R.raw.not_encrypted)
     } else if (this is SOCKSBean) {
-        if (!tls) return ResultInsecure(R.raw.not_encrypted)
+        if (security.isNullOrBlank() || security == "none") return ResultInsecure(R.raw.not_encrypted)
     } else if (this is VMessBean) {
         if (security in arrayOf("", "none")) {
             if (encryption in arrayOf("none", "zero")) {

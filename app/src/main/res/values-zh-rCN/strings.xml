@@ -508,4 +508,5 @@
     <string name="nat_stun_server_hint">STUN 服务器</string>
     <string name="brook_udp_over_stream">UDP over stream</string>
     <string name="naive_no_post_quantum">禁用后量子密钥协商</string>
+    <string name="hysteria2_password">Hysteria2 密码</string>
 </resources>

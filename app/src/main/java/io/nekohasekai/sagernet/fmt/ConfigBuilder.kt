@@ -459,84 +459,7 @@ fun buildV2RayConfig(
                             val keepAliveInterval = DataStore.tcpKeepAliveInterval
                             val needKeepAliveInterval = keepAliveInterval !in intArrayOf(0, 15)
 
-                            if (bean is SOCKSBean) {
-                                protocol = "socks"
-                                settings = LazyOutboundConfigurationObject(this,
-                                    SocksOutboundConfigurationObject().apply {
-                                        servers = listOf(SocksOutboundConfigurationObject.ServerObject()
-                                            .apply {
-                                                address = bean.serverAddress
-                                                port = bean.serverPort
-                                                if (!bean.username.isNullOrBlank()) {
-                                                    users = listOf(SocksOutboundConfigurationObject.ServerObject.UserObject()
-                                                        .apply {
-                                                            user = bean.username
-                                                            pass = bean.password
-                                                        })
-                                                }
-                                            })
-                                        version = bean.protocolVersionName()
-                                    })
-                                if (bean.tls || needKeepAliveInterval) {
-                                    streamSettings = StreamSettingsObject().apply {
-                                        network = "tcp"
-                                        if (bean.tls) {
-                                            security = "tls"
-                                            tlsSettings = TLSObject().apply {
-                                                if (bean.sni.isNotBlank()) {
-                                                    serverName = bean.sni
-                                                }
-                                                if (bean.utlsFingerprint.isNotBlank()) {
-                                                    fingerprint = bean.utlsFingerprint
-                                                }
-                                            }
-                                        }
-                                        if (needKeepAliveInterval) {
-                                            sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                tcpKeepAliveInterval = keepAliveInterval
-                                            }
-                                        }
-                                    }
-                                }
-                            } else if (bean is HttpBean) {
-                                protocol = "http"
-                                settings = LazyOutboundConfigurationObject(this,
-                                    HTTPOutboundConfigurationObject().apply {
-                                        servers = listOf(HTTPOutboundConfigurationObject.ServerObject()
-                                            .apply {
-                                                address = bean.serverAddress
-                                                port = bean.serverPort
-                                                if (!bean.username.isNullOrBlank()) {
-                                                    users = listOf(HTTPInboundConfigurationObject.AccountObject()
-                                                        .apply {
-                                                            user = bean.username
-                                                            pass = bean.password
-                                                        })
-                                                }
-                                            })
-                                    })
-                                if (bean.tls || needKeepAliveInterval) {
-                                    streamSettings = StreamSettingsObject().apply {
-                                        network = "tcp"
-                                        if (bean.tls) {
-                                            security = "tls"
-                                            tlsSettings = TLSObject().apply {
-                                                if (bean.sni.isNotBlank()) {
-                                                    serverName = bean.sni
-                                                }
-                                                if (bean.utlsFingerprint.isNotBlank()) {
-                                                    fingerprint = bean.utlsFingerprint
-                                                }
-                                            }
-                                        }
-                                        if (needKeepAliveInterval) {
-                                            sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                tcpKeepAliveInterval = keepAliveInterval
-                                            }
-                                        }
-                                    }
-                                }
-                            } else if (bean is StandardV2RayBean) {
+                            if (bean is StandardV2RayBean) {
                                 if (bean is VMessBean) {
                                     protocol = "vmess"
                                     settings = LazyOutboundConfigurationObject(this,
@@ -611,6 +534,110 @@ fun buildV2RayConfig(
                                                     password = bean.password
                                                 })
                                         })
+                                } else if (bean is ShadowsocksBean) {
+                                    if (bean.method.startsWith("2022-blake3-") && DataStore.shadowsocks2022Implementation == Shadowsocks2022Implementation.V2FLY_V2RAY_CORE) {
+                                        protocol = "shadowsocks2022"
+                                        settings = LazyOutboundConfigurationObject(this,
+                                            Shadowsocks_2022OutboundConfigurationObject().apply {
+                                                address = bean.serverAddress
+                                                port = bean.serverPort
+                                                method = bean.method
+                                                val keys = bean.password.split(":")
+                                                if (keys.size == 1) {
+                                                    psk = keys[0]
+                                                }
+                                                if (keys.size > 1) {
+                                                    ipsk = mutableListOf()
+                                                    for (i in 0..(keys.size - 2)) {
+                                                        ipsk.add(keys[i])
+                                                    }
+                                                    psk = keys[keys.size - 1]
+                                                }
+                                                if (bean.plugin.isNotBlank()) {
+                                                    val pluginConfiguration = PluginConfiguration(bean.plugin)
+                                                    try {
+                                                        PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
+                                                            plugin = path
+                                                            pluginOpts = opts.toString()
+                                                        }
+                                                    } catch (e: PluginManager.PluginNotFoundException) {
+                                                        if (e.plugin in arrayOf("v2ray-plugin", "obfs-local")) {
+                                                            plugin = e.plugin
+                                                            pluginOpts = pluginConfiguration.getOptions().toString()
+                                                        } else {
+                                                            throw e
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        )
+                                    } else {
+                                        protocol = "shadowsocks"
+                                        settings = LazyOutboundConfigurationObject(this,
+                                            ShadowsocksOutboundConfigurationObject().apply {
+                                                servers = listOf(ShadowsocksOutboundConfigurationObject.ServerObject().apply {
+                                                    address = bean.serverAddress
+                                                    port = bean.serverPort
+                                                    password = bean.password
+                                                        method = bean.method
+                                                    if (!bean.method.startsWith("2022-blake3-") && bean.experimentReducedIvHeadEntropy) {
+                                                        experimentReducedIvHeadEntropy = bean.experimentReducedIvHeadEntropy
+                                                    }
+                                                    if (bean.plugin.isNotBlank()) {
+                                                        val pluginConfiguration = PluginConfiguration(bean.plugin)
+                                                        try {
+                                                            PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
+                                                                plugin = path
+                                                                pluginOpts = opts.toString()
+                                                            }
+                                                        } catch (e: PluginManager.PluginNotFoundException) {
+                                                            if (e.plugin in arrayOf("v2ray-plugin", "obfs-local")) {
+                                                                plugin = e.plugin
+                                                                pluginOpts = pluginConfiguration.getOptions().toString()
+                                                            } else {
+                                                                throw e
+                                                            }
+                                                        }
+                                                    }
+                                                })
+                                            }
+                                        )
+                                    }
+                                } else if (bean is SOCKSBean) {
+                                    protocol = "socks"
+                                    settings = LazyOutboundConfigurationObject(this,
+                                        SocksOutboundConfigurationObject().apply {
+                                            servers = listOf(SocksOutboundConfigurationObject.ServerObject().apply {
+                                                address = bean.serverAddress
+                                                port = bean.serverPort
+                                                if (!bean.username.isNullOrBlank()) {
+                                                    users = listOf(SocksOutboundConfigurationObject.ServerObject.UserObject().apply {
+                                                        user = bean.username
+                                                        if (!bean.password.isNullOrBlank() && bean.protocolName() == "SOCKS5") {
+                                                            pass = bean.password
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                            version = bean.protocolVersionName()
+                                        }
+                                    )
+                                } else if (bean is HttpBean) {
+                                    protocol = "http"
+                                    settings = LazyOutboundConfigurationObject(this,
+                                        HTTPOutboundConfigurationObject().apply {
+                                            servers = listOf(HTTPOutboundConfigurationObject.ServerObject().apply {
+                                                address = bean.serverAddress
+                                                port = bean.serverPort
+                                                if (!bean.username.isNullOrBlank()) {
+                                                    users = listOf(HTTPInboundConfigurationObject.AccountObject().apply {
+                                                        user = bean.username
+                                                        pass = bean.password
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    )
                                 }
 
                                 streamSettings = StreamSettingsObject().apply {
@@ -816,116 +843,33 @@ fun buildV2RayConfig(
                                     }
 
                                 }
-                            } else if (bean is ShadowsocksBean || bean is ShadowsocksRBean) {
-                                if (bean is ShadowsocksBean && bean.method.startsWith("2022-blake3-") && DataStore.shadowsocks2022Implementation == Shadowsocks2022Implementation.V2FLY_V2RAY_CORE) {
-                                    protocol = "shadowsocks2022"
-                                    settings = LazyOutboundConfigurationObject(this,
-                                        Shadowsocks_2022OutboundConfigurationObject().apply {
-                                            address = bean.serverAddress
-                                            port = bean.serverPort
-                                            method = bean.method
-                                            val keys = bean.password.split(":")
-                                            if (keys.size == 1) {
-                                                psk = keys[0]
+                            } else if (bean is ShadowsocksRBean) {
+                                protocol = "shadowsocks"
+                                settings = LazyOutboundConfigurationObject(this,
+                                    ShadowsocksOutboundConfigurationObject().apply {
+                                        servers = listOf(ShadowsocksOutboundConfigurationObject.ServerObject().apply {
+                                                address = bean.serverAddress
+                                                port = bean.serverPort
+                                                method = bean.method
+                                                password = bean.password
                                             }
-                                            if (keys.size > 1) {
-                                                ipsk = mutableListOf()
-                                                for (i in 0..(keys.size - 2)) {
-                                                    ipsk.add(keys[i])
-                                                }
-                                                psk = keys[keys.size - 1]
-                                            }
-                                            if (bean.plugin.isNotBlank()) {
-                                                val pluginConfiguration = PluginConfiguration(bean.plugin)
-                                                try {
-                                                    PluginManager.init(pluginConfiguration)
-                                                        ?.let { (path, opts, _) ->
-                                                            plugin = path
-                                                            pluginOpts = opts.toString()
-                                                        }
-                                                } catch (e: PluginManager.PluginNotFoundException) {
-                                                    if (e.plugin in arrayOf(
-                                                            "v2ray-plugin", "obfs-local"
-                                                        )
-                                                    ) {
-                                                        plugin = e.plugin
-                                                        pluginOpts = pluginConfiguration.getOptions()
-                                                            .toString()
-                                                    } else {
-                                                        throw e
-                                                    }
+                                        )
+                                        if (needKeepAliveInterval) {
+                                            streamSettings = StreamSettingsObject().apply {
+                                                sockopt = StreamSettingsObject.SockoptObject().apply {
+                                                    tcpKeepAliveInterval = keepAliveInterval
                                                 }
                                             }
                                         }
-                                    )
-                                    if (needKeepAliveInterval) {
-                                        streamSettings = StreamSettingsObject().apply {
-                                            sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                tcpKeepAliveInterval = keepAliveInterval
-                                            }
-                                        }
+                                        plugin = "shadowsocksr"
+                                        pluginArgs = listOf(
+                                            "--obfs=${bean.obfs}",
+                                            "--obfs-param=${bean.obfsParam}",
+                                            "--protocol=${bean.protocol}",
+                                            "--protocol-param=${bean.protocolParam}"
+                                        )
                                     }
-                                } else {
-                                    protocol = "shadowsocks"
-                                    settings = LazyOutboundConfigurationObject(this,
-                                        ShadowsocksOutboundConfigurationObject().apply {
-                                            servers = listOf(ShadowsocksOutboundConfigurationObject.ServerObject()
-                                                .apply {
-                                                    address = bean.serverAddress
-                                                    port = bean.serverPort
-                                                    when (bean) {
-                                                        is ShadowsocksBean -> {
-                                                            method = bean.method
-                                                            password = bean.password
-                                                            if (bean.experimentReducedIvHeadEntropy) {
-                                                                experimentReducedIvHeadEntropy = true
-                                                            }
-                                                        }
-                                                        is ShadowsocksRBean -> {
-                                                            method = bean.method
-                                                            password = bean.password
-                                                        }
-                                                    }
-                                                })
-                                            if (needKeepAliveInterval) {
-                                                streamSettings = StreamSettingsObject().apply {
-                                                    sockopt = StreamSettingsObject.SockoptObject()
-                                                        .apply {
-                                                            tcpKeepAliveInterval = keepAliveInterval
-                                                        }
-                                                }
-                                            }
-                                            if (bean is ShadowsocksRBean) {
-                                                plugin = "shadowsocksr"
-                                                pluginArgs = listOf(
-                                                    "--obfs=${bean.obfs}",
-                                                    "--obfs-param=${bean.obfsParam}",
-                                                    "--protocol=${bean.protocol}",
-                                                    "--protocol-param=${bean.protocolParam}"
-                                                )
-                                            } else if (bean is ShadowsocksBean && bean.plugin.isNotBlank()) {
-                                                val pluginConfiguration = PluginConfiguration(bean.plugin)
-                                                try {
-                                                    PluginManager.init(pluginConfiguration)
-                                                        ?.let { (path, opts, _) ->
-                                                            plugin = path
-                                                            pluginOpts = opts.toString()
-                                                        }
-                                                } catch (e: PluginManager.PluginNotFoundException) {
-                                                    if (e.plugin in arrayOf(
-                                                            "v2ray-plugin", "obfs-local"
-                                                        )
-                                                    ) {
-                                                        plugin = e.plugin
-                                                        pluginOpts = pluginConfiguration.getOptions()
-                                                            .toString()
-                                                    } else {
-                                                        throw e
-                                                    }
-                                                }
-                                            }
-                                        })
-                                }
+                                )
                             } else if (bean is WireGuardBean) {
                                 protocol = "wireguard"
                                 settings = LazyOutboundConfigurationObject(this,

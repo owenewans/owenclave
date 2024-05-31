@@ -254,8 +254,8 @@ data class ProxyEntity(
 
     fun displayType() = when (type) {
         TYPE_SOCKS -> socksBean!!.protocolName()
-        TYPE_HTTP -> if (httpBean!!.tls) "HTTPS" else "HTTP"
-        TYPE_SS -> "Shadowsocks"
+        TYPE_HTTP -> if (httpBean!!.security == "tls") "HTTPS" else "HTTP"
+        TYPE_SS -> if (ssBean!!.method.startsWith("2022-blake3-")) "Shadowsocks 2022" else "Shadowsocks"
         TYPE_SSR -> "ShadowsocksR"
         TYPE_VMESS -> "VMess"
         TYPE_VLESS -> "VLESS"

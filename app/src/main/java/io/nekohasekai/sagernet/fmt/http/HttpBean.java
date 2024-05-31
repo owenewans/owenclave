@@ -26,46 +26,45 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean;
 
-public class HttpBean extends AbstractBean {
+public class HttpBean extends StandardV2RayBean {
 
     public String username;
     public String password;
-    public boolean tls;
-    public String sni;
-    public String utlsFingerprint;
 
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
         if (username == null) username = "";
         if (password == null) password = "";
-        if (sni == null) sni = "";
-        if (utlsFingerprint == null) utlsFingerprint = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(1);
+        output.writeInt(2);
         super.serialize(output);
         output.writeString(username);
         output.writeString(password);
-        output.writeBoolean(tls);
-        output.writeString(sni);
-        output.writeString(utlsFingerprint);
     }
 
     @Override
     public void deserialize(ByteBufferInput input) {
         int version = input.readInt();
-        super.deserialize(input);
+        if (version >= 2) {
+            super.deserialize(input);
+        } else {
+            serverAddress = input.readString();
+            serverPort = input.readInt();
+        }
         username = input.readString();
         password = input.readString();
-        tls = input.readBoolean();
-        sni = input.readString();
-        if (version >= 1) {
+        if (version <= 1) {
+            if (input.readBoolean()) {
+                security = "tls";
+            }
+            sni = input.readString();
             utlsFingerprint = input.readString();
         }
     }

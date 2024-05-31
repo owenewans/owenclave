@@ -29,8 +29,9 @@ import org.jetbrains.annotations.NotNull;
 import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean;
 
-public class ShadowsocksBean extends AbstractBean {
+public class ShadowsocksBean extends StandardV2RayBean {
 
     public String method;
     public String password;
@@ -50,7 +51,7 @@ public class ShadowsocksBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(4);
+        output.writeInt(5);
         super.serialize(output);
         output.writeString(method);
         output.writeString(password);
@@ -61,7 +62,12 @@ public class ShadowsocksBean extends AbstractBean {
     @Override
     public void deserialize(ByteBufferInput input) {
         int version = input.readInt();
-        super.deserialize(input);
+        if (version >= 5) {
+            super.deserialize(input);
+        } else {
+            serverAddress = input.readString();
+            serverPort = input.readInt();
+        }
         method = input.readString();
         password = input.readString();
         plugin = input.readString();

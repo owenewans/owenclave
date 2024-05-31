@@ -240,7 +240,9 @@ object RawUpdater : GroupUpdater() {
                                 serverPort = proxy["port"].toString().toInt()
                                 username = proxy["username"]?.toString()
                                 password = proxy["password"]?.toString()
-                                tls = proxy["tls"]?.toString() == "true"
+                                if (proxy["tls"]?.toString() == "true") {
+                                    security = "tls"
+                                }
                                 sni = proxy["sni"]?.toString()
                                 name = proxy["name"]?.toString()
                             })
@@ -251,7 +253,9 @@ object RawUpdater : GroupUpdater() {
                                 serverPort = proxy["port"].toString().toInt()
                                 username = proxy["username"]?.toString()
                                 password = proxy["password"]?.toString()
-                                tls = proxy["tls"]?.toString() == "true"
+                                if (proxy["tls"]?.toString() == "true") {
+                                    security = "tls"
+                                }
                                 sni = proxy["sni"]?.toString()
                                 name = proxy["name"]?.toString()
                             })
@@ -558,7 +562,7 @@ object RawUpdater : GroupUpdater() {
                     streamSettings?.apply {
                         when (security) {
                             "tls" -> {
-                                httpBean.tls = true
+                                httpBean.security = "tls"
                                 tlsSettings?.serverName?.also {
                                     httpBean.sni = it
                                 }
@@ -584,7 +588,7 @@ object RawUpdater : GroupUpdater() {
                     streamSettings?.apply {
                         when (security) {
                             "tls" -> {
-                                socksBean.tls = true
+                                socksBean.security = "tls"
                                 tlsSettings?.serverName?.also {
                                     socksBean.sni = it
                                 }
