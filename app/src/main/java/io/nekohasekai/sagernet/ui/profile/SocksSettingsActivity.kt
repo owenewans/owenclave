@@ -72,20 +72,26 @@ class SocksSettingsActivity : ProfileSettingsActivity<SOCKSBean>() {
             summaryProvider = PasswordSummaryProvider
         }
         val protocol = findPreference<SimpleMenuPreference>(Key.SERVER_PROTOCOL)!!
-        val useTls = findPreference<SwitchPreference>(Key.SERVER_TLS)!!
+        val useTLS = findPreference<SwitchPreference>(Key.SERVER_TLS)!!
         val sni = findPreference<EditTextPreference>(Key.SERVER_SNI)!!
         val utlsFingerprint = findPreference<SimpleMenuPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
 
         fun updateProtocol(version: Int) {
             password.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
-            useTls.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
-            sni.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
-            utlsFingerprint.isVisible = version == SOCKSBean.PROTOCOL_SOCKS5
+        }
+        fun updateTLS(useTLS: Boolean) {
+            sni.isVisible = useTLS
+            utlsFingerprint.isVisible = useTLS
         }
 
         updateProtocol(DataStore.serverProtocolVersion)
         protocol.setOnPreferenceChangeListener { _, newValue ->
             updateProtocol((newValue as String).toInt())
+            true
+        }
+        updateTLS(DataStore.serverTLS)
+        useTLS.setOnPreferenceChangeListener { _, newValue ->
+            updateTLS(newValue as Boolean)
             true
         }
     }

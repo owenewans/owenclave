@@ -21,7 +21,9 @@ package io.nekohasekai.sagernet.ui.profile
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
+import androidx.preference.SwitchPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
+import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -64,6 +66,18 @@ class HttpSettingsActivity : ProfileSettingsActivity<HttpBean>() {
         }
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
+        }
+        val useTLS = findPreference<SwitchPreference>(Key.SERVER_TLS)!!
+        val sni = findPreference<EditTextPreference>(Key.SERVER_SNI)!!
+        val utlsFingerprint = findPreference<SimpleMenuPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
+        fun updateTLS(useTLS: Boolean) {
+            sni.isVisible = useTLS
+            utlsFingerprint.isVisible = useTLS
+        }
+        updateTLS(DataStore.serverTLS)
+        useTLS.setOnPreferenceChangeListener { _, newValue ->
+            updateTLS(newValue as Boolean)
+            true
         }
     }
 
