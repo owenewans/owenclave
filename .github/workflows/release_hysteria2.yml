@@ -20,7 +20,7 @@ jobs:
       - name: Install Golang
         uses: actions/setup-go@v5
         with:
-          go-version: 1.22.3
+          go-version: 1.22.4
           cache-dependency-path: "**/go.sum"
       - name: Hysteria 2 Cache
         id: cache
