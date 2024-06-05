@@ -138,7 +138,13 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     }
                 }
                 url.queryParameter("alpn")?.let {
-                    bean.alpn = it
+                    bean.alpn = it.split(",").joinToString("\n")
+                }
+                url.queryParameter("cert")?.let {
+                    bean.certificates = it // non-standard
+                }
+                url.queryParameter("chain")?.let {
+                    bean.pinnedPeerCertificateChainSha256 = it // non-standard
                 }
                 if (bean is VLESSBean) {
                     url.queryParameter("flow")?.let {
@@ -150,7 +156,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     // bad format from where?
                     url.queryParameter("allowInsecure")?.let {
                         if (it == "1" || it.lowercase() == "true") {
-                            bean.allowInsecure = true
+                            bean.allowInsecure = true // non-standard
+                        }
+                    }
+                    url.queryParameter("insecure")?.let {
+                        if (it == "1" || it.lowercase() == "true") {
+                            bean.allowInsecure = true // non-standard
                         }
                     }
                 }
@@ -216,6 +227,13 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 }
                 url.queryParameter("path")?.let {
                     bean.path = it
+                }
+                url.queryParameter("ed")?.let { ed ->
+                    bean.wsMaxEarlyData = ed.toInt() // non-standard
+
+                    url.queryParameter("eh")?.let {
+                        bean.earlyDataHeaderName = it // non-standard
+                    }
                 }
             }
             "quic" -> {
@@ -463,6 +481,14 @@ fun StandardV2RayBean.toUri(): String {
             if (path.isNotBlank()) {
                 builder.addQueryParameter("path", path)
             }
+            if (type == "ws") {
+                if (wsMaxEarlyData > 0) {
+                    builder.addQueryParameter("ed", "$wsMaxEarlyData") // non-standard
+                    if (earlyDataHeaderName.isNotBlank()) {
+                        builder.addQueryParameter("eh", earlyDataHeaderName) // non-standard
+                    }
+                }
+            }
         }
         "quic" -> {
             if (headerType.isNotBlank() && headerType != "none") {
@@ -497,7 +523,13 @@ fun StandardV2RayBean.toUri(): String {
                     builder.addQueryParameter("sni", sni)
                 }
                 if (alpn.isNotBlank()) {
-                    builder.addQueryParameter("alpn", alpn)
+                    builder.addQueryParameter("alpn", alpn.split("\n").joinToString(","))
+                }
+                if (certificates.isNotBlank()) {
+                    builder.addQueryParameter("cert", certificates) // non-standard
+                }
+                if (pinnedPeerCertificateChainSha256.isNotBlank()) {
+                    builder.addQueryParameter("chain", pinnedPeerCertificateChainSha256) // non-standard
                 }
                 if (allowInsecure) {
                     // bad format from where?

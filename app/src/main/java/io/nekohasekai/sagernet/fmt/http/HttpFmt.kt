@@ -50,6 +50,9 @@ fun HttpBean.toUri(): String {
     if (password.isNotBlank()) {
         builder.password = password
     }
+    if (security == "tls" && sni.isNotBlank()) {
+        builder.addQueryParameter("sni", sni) // non-standard
+    }
     if (name.isNotBlank()) {
         builder.setRawFragment(name.urlSafe())
     }

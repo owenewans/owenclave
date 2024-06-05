@@ -62,6 +62,12 @@ fun SOCKSBean.toUri(): String {
     builder.port = serverPort
     if (!username.isNullOrBlank()) builder.username = username
     if (!password.isNullOrBlank()) builder.password = password
+    if (security == "tls") {
+        builder.addQueryParameter("tls", "true") // non-standard
+        if (sni.isNotBlank()) {
+            builder.addQueryParameter("sni", sni) // non-standard
+        }
+    }
     if (!name.isNullOrBlank()) builder.setRawFragment(name.urlSafe())
     return builder.string
 
