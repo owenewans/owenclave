@@ -83,7 +83,6 @@ object Key {
     const val ENABLE_MUX = "enableMux"
     const val ENABLE_MUX_FOR_ALL = "enableMuxForAll"
     const val MUX_CONCURRENCY = "muxConcurrency"
-    const val SECURITY_ADVISORY = "securityAdvisory"
     const val TCP_KEEP_ALIVE_INTERVAL = "tcpKeepAliveInterval"
     const val RULES_PROVIDER = "rulesProvider"
     const val ENABLE_LOG = "enableLog"

@@ -30,8 +30,6 @@
         <item quantity="other"/>
     </plurals>
     <string name="undo">Annulla</string>
-    <string name="insecure_warn">Avviso di sicurezza</string>
-    <string name="insecure_warn_sum">Fornito dalla comunità di sviluppatori Qv2ray</string>
     <string name="insecure">Non sicuro</string>
     <string name="deprecated">Obsoleto</string>
     <string name="connecting">Connessione…</string>

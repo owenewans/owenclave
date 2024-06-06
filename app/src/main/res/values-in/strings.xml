@@ -207,7 +207,6 @@
     <string name="plugin_unknown">plugin tidak ada %s</string>
     <string name="circular_reference_sum">Rute tidak dapat berisi dirinya sendiri.</string>
     <string name="action_import_msg">Impor berhasil!</string>
-    <string name="insecure_warn_sum">Disediakan oleh Komunitas Pengembang Qv2ray</string>
     <string name="ooc_warning">Peringatan</string>
     <string name="subscriptions">Langganan</string>
     <string name="apply">Terapkan</string>
@@ -230,7 +229,6 @@
     </plurals>
     <string name="connection_test">Tes koneksi</string>
     <string name="no_proxies_found_in_file">Tidak ditemukan proksi di berkas</string>
-    <string name="insecure_warn">Saran Keamanan</string>
     <plurals name="removed">
         <item quantity="other">%d item terhapus</item>
     </plurals>

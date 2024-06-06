@@ -27,8 +27,6 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.provider.OpenableColumns
 import android.text.format.Formatter
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -95,7 +93,6 @@ class ConfigurationFragment @JvmOverloads constructor(
     lateinit var groupPager: ViewPager2
     val selectedGroup get() = if (tabLayout.isGone && adapter.groupList.size > 0) adapter.groupList[0] else (if (adapter.groupList.size > 0 && tabLayout.selectedTabPosition > -1) adapter.groupList[tabLayout.selectedTabPosition] else ProxyGroup())
     val alwaysShowAddress by lazy { DataStore.alwaysShowAddress }
-    val securityAdvisory by lazy { DataStore.securityAdvisory }
 
     val updateSelectedCallback = object : ViewPager2.OnPageChangeCallback() {
         override fun onPageScrolled(
@@ -1717,69 +1714,14 @@ class ConfigurationFragment @JvmOverloads constructor(
                     }
 
                     if (!parent.select) {
+                        onMainDispatcher {
+                            shareLayer.setBackgroundColor(Color.TRANSPARENT)
+                            shareButton.setImageResource(R.drawable.ic_social_share)
+                            shareButton.setColorFilter(Color.GRAY)
+                            shareButton.isVisible = true
 
-                        val validateResult = if (parent.securityAdvisory) {
-                            proxyEntity.requireBean().isInsecure()
-                        } else ResultLocal
-
-                        when (validateResult) {
-                            is ResultInsecure -> onMainDispatcher {
-                                shareLayout.isVisible = true
-
-                                shareLayer.setBackgroundColor(Color.RED)
-                                shareButton.setImageResource(R.drawable.ic_baseline_warning_24)
-                                shareButton.setColorFilter(Color.WHITE)
-
-                                shareLayout.setOnClickListener {
-                                    MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.insecure)
-                                        .setMessage(resources.openRawResource(validateResult.textRes)
-                                            .bufferedReader()
-                                            .use { it.readText() })
-                                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                                            showShare(it)
-                                        }
-                                        .show()
-                                        .apply {
-                                            findViewById<TextView>(android.R.id.message)?.apply {
-                                                Linkify.addLinks(this, Linkify.WEB_URLS)
-                                                movementMethod = LinkMovementMethod.getInstance()
-                                            }
-                                        }
-                                }
-                            }
-                            is ResultDeprecated -> onMainDispatcher {
-                                shareLayout.isVisible = true
-
-                                shareLayer.setBackgroundColor(Color.YELLOW)
-                                shareButton.setImageResource(R.drawable.ic_baseline_warning_24)
-                                shareButton.setColorFilter(Color.GRAY)
-
-                                shareLayout.setOnClickListener {
-                                    MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.deprecated)
-                                        .setMessage(resources.openRawResource(validateResult.textRes)
-                                            .bufferedReader()
-                                            .use { it.readText() })
-                                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                                            showShare(it)
-                                        }
-                                        .show()
-                                        .apply {
-                                            findViewById<TextView>(android.R.id.message)?.apply {
-                                                Linkify.addLinks(this, Linkify.WEB_URLS)
-                                                movementMethod = LinkMovementMethod.getInstance()
-                                            }
-                                        }
-                                }
-                            }
-                            else -> onMainDispatcher {
-                                shareLayer.setBackgroundColor(Color.TRANSPARENT)
-                                shareButton.setImageResource(R.drawable.ic_social_share)
-                                shareButton.setColorFilter(Color.GRAY)
-                                shareButton.isVisible = true
-
-                                shareLayout.setOnClickListener {
-                                    showShare(it)
-                                }
+                            shareLayout.setOnClickListener {
+                                showShare(it)
                             }
                         }
                     }

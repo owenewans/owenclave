@@ -326,8 +326,6 @@
     <string name="vpn_connected">Conectado, toque para comprobar la conexión</string>
     <string name="deprecated">Obsoleto</string>
     <string name="insecure">Inseguro</string>
-    <string name="insecure_warn_sum">Proporcionado por la comunidad de desarrolladores de Qv2ray</string>
-    <string name="insecure_warn">Asesoramiento de seguridad</string>
     <string name="undo">Deshacer</string>
     <plurals name="removed">
         <item quantity="one">Remoto</item>

@@ -205,8 +205,6 @@
     <string name="share_qr_nfc">Mã QR</string>
     <string name="add_profile_methods_scan_qr_code">Quét mã QR</string>
     <string name="add_profile_methods_manual_settings">Cài đặt thủ công</string>
-    <string name="insecure_warn">Tư vấn bảo mật</string>
-    <string name="insecure_warn_sum">Được cung cấp bởi Cộng đồng nhà phát triển Qv2ray</string>
     <string name="insecure">Không an toàn</string>
     <string name="connecting">Đang kết nối…</string>
     <string name="vpn_connected">Đã kết nối, nhấn để kiểm tra kết nối</string>

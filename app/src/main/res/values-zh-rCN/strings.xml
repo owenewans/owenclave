@@ -184,8 +184,6 @@
     <string name="ss_cat">Shadowsocks 设置</string>
     <string name="insecure">不安全</string>
     <string name="deprecated">已废弃</string>
-    <string name="insecure_warn">安全建议</string>
-    <string name="insecure_warn_sum">由 Qv2ray 开发者社区提供</string>
     <string name="show_direct_speed">显示直连速度</string>
     <string name="show_direct_speed_sum">在通知中显示不经过代理的流量速度</string>
     <string name="select_profile">选择配置</string>

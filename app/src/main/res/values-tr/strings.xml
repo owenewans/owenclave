@@ -141,8 +141,6 @@
     <string name="bypass_lan_in_core_only">Yerel Ağı Sadece Çekirdekte Atlat</string>
     <string name="always_show_address_sum">Yapılandırma kartının üzerinde her zaman sunucu adresini göster</string>
     <string name="probe_interval">Dengeleyici gözlem aralığı</string>
-    <string name="insecure_warn_sum">Qv2ray Geliştirici Topluluğu Tarafından Sağlanmıştır</string>
-    <string name="insecure_warn">Güvenlik Danışmanlığı</string>
     <string name="add_profile_methods_manual_settings">Elle Ayar Ekle</string>
     <string name="profile_config">Profil yapılandırması</string>
     <string name="file_manager_missing">Cihazınızda dosya yöneticisi bulunamadı, lütfen bir tane kurun, örneğin Material Files.</string>

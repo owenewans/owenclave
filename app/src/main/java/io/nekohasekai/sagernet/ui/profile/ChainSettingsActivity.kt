@@ -22,11 +22,8 @@ package io.nekohasekai.sagernet.ui.profile
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.text.format.Formatter
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -319,56 +316,6 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
 
             shareLayout.isVisible = false
 
-            if (proxyEntity.type != 8) runOnDefaultDispatcher {
-
-                val validateResult = if (DataStore.securityAdvisory) {
-                    proxyEntity.requireBean().isInsecure()
-                } else ResultLocal
-
-                when (validateResult) {
-                    is ResultInsecure -> onMainDispatcher {
-                        shareLayout.isVisible = true
-
-                        shareLayer.setBackgroundColor(Color.RED)
-                        shareButton.setImageResource(R.drawable.ic_baseline_warning_24)
-                        shareButton.setColorFilter(Color.WHITE)
-
-                        shareLayout.setOnClickListener {
-                            MaterialAlertDialogBuilder(this@ChainSettingsActivity).setTitle(R.string.insecure)
-                                .setMessage(resources.openRawResource(validateResult.textRes)
-                                    .bufferedReader().use { it.readText() })
-                                .setPositiveButton(android.R.string.ok, null).show().apply {
-                                    findViewById<TextView>(android.R.id.message)?.apply {
-                                        Linkify.addLinks(this, Linkify.WEB_URLS)
-                                        movementMethod = LinkMovementMethod.getInstance()
-                                    }
-                                }
-                        }
-                    }
-                    is ResultDeprecated -> onMainDispatcher {
-                        shareLayout.isVisible = true
-
-                        shareLayer.setBackgroundColor(Color.YELLOW)
-                        shareButton.setImageResource(R.drawable.ic_baseline_warning_24)
-                        shareButton.setColorFilter(Color.GRAY)
-
-                        shareLayout.setOnClickListener {
-                            MaterialAlertDialogBuilder(this@ChainSettingsActivity).setTitle(R.string.deprecated)
-                                .setMessage(resources.openRawResource(validateResult.textRes)
-                                    .bufferedReader().use { it.readText() })
-                                .setPositiveButton(android.R.string.ok, null).show().apply {
-                                    findViewById<TextView>(android.R.id.message)?.apply {
-                                        Linkify.addLinks(this, Linkify.WEB_URLS)
-                                        movementMethod = LinkMovementMethod.getInstance()
-                                    }
-                                }
-                        }
-                    }
-                    else -> onMainDispatcher {
-                        shareLayout.isVisible = false
-                    }
-                }
-            }
         }
 
     }

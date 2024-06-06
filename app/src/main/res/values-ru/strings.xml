@@ -206,8 +206,6 @@
     <string name="connecting">Подключение…</string>
     <string name="deprecated">Устарело</string>
     <string name="insecure">Ненадёжный</string>
-    <string name="insecure_warn_sum">Предоставлено сообществом разработчиков Qv2ray</string>
-    <string name="insecure_warn">Советы по безопасности</string>
     <string name="undo">Отменить</string>
     <string name="add_profile_methods_manual_settings">Ручные настройки</string>
     <string name="add_profile_methods_scan_qr_code">Отсканировать QR-код</string>

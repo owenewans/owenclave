@@ -175,8 +175,6 @@
     <string name="vpn_connected">Tilkoblet, trykk for å kontrollere tilkoblingen</string>
     <string name="deprecated">Utfaset</string>
     <string name="insecure">Utrygg</string>
-    <string name="insecure_warn_sum">Levert av Qv2ray Developer Community</string>
-    <string name="insecure_warn">Sikkerhetsrådgivning</string>
     <plurals name="added">
         <item quantity="one">La til</item>
         <item quantity="other">%d fullmakter lagt til</item>

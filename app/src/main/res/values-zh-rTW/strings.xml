@@ -245,8 +245,6 @@
     <string name="circular_reference_sum">路由中不能包含自己。</string>
     <string name="clear_profiles">清除</string>
     <string name="action_export">匯出</string>
-    <string name="insecure_warn">安全性建議</string>
-    <string name="insecure_warn_sum">由 Qv2ray 開發者社群提供</string>
     <string name="insecure">不安全</string>
     <string name="deprecated">已被取代</string>
     <string name="no_proxies_found_in_subscription">未在此訂閱中找到代理</string>

@@ -123,7 +123,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var hosts by configurationStore.string(Key.DNS_HOSTS)
     var enableDnsRouting by configurationStore.boolean(Key.ENABLE_DNS_ROUTING) { true }
 
-    var securityAdvisory by configurationStore.boolean(Key.SECURITY_ADVISORY) { true }
     var rulesProvider by configurationStore.stringToInt(Key.RULES_PROVIDER)
     var enableLog by configurationStore.boolean(Key.ENABLE_LOG) { BuildConfig.DEBUG }
     var enablePcap by configurationStore.boolean(Key.ENABLE_PCAP)

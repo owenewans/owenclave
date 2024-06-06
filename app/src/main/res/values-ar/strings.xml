@@ -318,8 +318,6 @@
     <string name="connecting">يتصل…</string>
     <string name="deprecated">مهجور</string>
     <string name="insecure">غير آمن</string>
-    <string name="insecure_warn_sum">مقدم من مجتمع مطوري Qv2ray</string>
-    <string name="insecure_warn">استشارات أمنية</string>
     <string name="undo">تراجع</string>
     <plurals name="added">
         <item quantity="zero">مضاف</item>

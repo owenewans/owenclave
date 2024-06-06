@@ -95,7 +95,6 @@
     <string name="plugin_configure">Konfiguriere…</string>
     <string name="tools_network">Netzwerk</string>
     <string name="no">Nein</string>
-    <string name="insecure_warn_sum">Bereitgestellt von der Qv2ray Entwicklercommunity</string>
     <string name="route_add">Pfad erstellen</string>
     <string name="proxied_apps_summary">Konfiguriere VPN-Modus für ausgewählte Apps</string>
     <string name="tuic_reduce_rtt">RTT reduzieren</string>

@@ -186,8 +186,6 @@
     <string name="connecting">درحال اتصال…</string>
     <string name="deprecated">منسوخ شده</string>
     <string name="insecure">ناامن</string>
-    <string name="insecure_warn_sum">ارائه شده توسط انجمن توسعه دهندگان Qv2ray</string>
-    <string name="insecure_warn">مشاوره امنیتی</string>
     <string name="undo">بازگردانی</string>
     <plurals name="added">
         <item quantity="one">اضافه شد</item>
