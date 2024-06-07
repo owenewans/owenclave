@@ -46,6 +46,7 @@ import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
+import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
 import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
@@ -997,6 +998,10 @@ fun buildV2RayConfig(
                     }
 
                     currentOutbound.domainStrategy = currentDomainStrategy
+
+                    if (bean is JuicityBean && DataStore.enableFakeDns && currentOutbound.domainStrategy == "AsIs") {
+                        currentOutbound.domainStrategy = "UseIP" // https://github.com/juicity/juicity/issues/140
+                    }
 
                     if (bean is ConfigBean && bean.type == "v2ray_outbound") {
                         currentOutbound = gson.fromJson(bean.content, OutboundObject::class.java).apply { init() }
