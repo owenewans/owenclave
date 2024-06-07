@@ -45,6 +45,9 @@ import io.nekohasekai.sagernet.fmt.hysteria2.toUri
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
+import io.nekohasekai.sagernet.fmt.juicity.buildJuicityConfig
+import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
+import io.nekohasekai.sagernet.fmt.juicity.toUri
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
 import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean
@@ -119,6 +122,7 @@ data class ProxyEntity(
     var shadowtlsBean: ShadowTLSBean? = null,
     var sshBean: SSHBean? = null,
     var wgBean: WireGuardBean? = null,
+    var juicityBean: JuicityBean? = null,
     var configBean: ConfigBean? = null,
     var chainBean: ChainBean? = null,
     var balancerBean: BalancerBean? = null
@@ -147,6 +151,7 @@ data class ProxyEntity(
         const val TYPE_TUIC = 20
         const val TYPE_TUIC5 = 23
         const val TYPE_SHADOWTLS = 24
+        const val TYPE_JUICITY = 25
 
         const val TYPE_CHAIN = 8
         const val TYPE_BALANCER = 14
@@ -245,6 +250,7 @@ data class ProxyEntity(
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
             TYPE_TUIC5 -> tuic5Bean = KryoConverters.tuic5Deserialize(byteArray)
             TYPE_SHADOWTLS -> shadowtlsBean = KryoConverters.shadowtlsDeserialize(byteArray)
+            TYPE_JUICITY -> juicityBean = KryoConverters.juicityDeserialize(byteArray)
 
             TYPE_CONFIG -> configBean = KryoConverters.configDeserialize(byteArray)
             TYPE_CHAIN -> chainBean = KryoConverters.chainDeserialize(byteArray)
@@ -275,6 +281,7 @@ data class ProxyEntity(
         TYPE_TUIC -> "TUIC"
         TYPE_TUIC5 -> "TUIC v5"
         TYPE_SHADOWTLS -> "ShadowTLS"
+        TYPE_JUICITY -> "Juicity"
 
         TYPE_CHAIN -> chainName
         TYPE_CONFIG -> configName
@@ -308,6 +315,7 @@ data class ProxyEntity(
             TYPE_TUIC -> tuicBean
             TYPE_TUIC5 -> tuic5Bean
             TYPE_SHADOWTLS -> shadowtlsBean
+            TYPE_JUICITY -> juicityBean
 
             TYPE_CONFIG -> configBean
             TYPE_CHAIN -> chainBean
@@ -347,6 +355,7 @@ data class ProxyEntity(
             is HysteriaBean -> toUri()
             is Hysteria2Bean -> toUri()
             is BrookBean -> toUri()
+            is JuicityBean -> toUri()
 
             is RelayBatonBean -> toUniversalLink()
             is ConfigBean -> toUniversalLink()
@@ -433,6 +442,12 @@ data class ProxyEntity(
                                     Logs.d(it)
                                 })
                             }
+                            is JuicityBean -> {
+                                append("\n\n")
+                                append(bean.buildJuicityConfig(port).also {
+                                    Logs.d(it)
+                                })
+                            }
                         }
                     }
                 }
@@ -461,6 +476,7 @@ data class ProxyEntity(
             TYPE_TUIC -> true
             TYPE_TUIC5 -> true
             TYPE_SHADOWTLS -> true
+            TYPE_JUICITY -> true
 
             else -> false
         }
@@ -469,7 +485,7 @@ data class ProxyEntity(
     fun isV2RayNetworkTcp(): Boolean {
         val bean = requireBean() as StandardV2RayBean
         return when (bean.type) {
-            "tcp", "ws", "http" -> true
+            "tcp", "ws", "http", "grpc", "httpupgrade", "meek" -> true
             else -> false
         }
     }
@@ -505,6 +521,7 @@ data class ProxyEntity(
         tuicBean = null
         tuic5Bean = null
         shadowtlsBean = null
+        juicityBean = null
 
         configBean = null
         chainBean = null
@@ -595,6 +612,10 @@ data class ProxyEntity(
                 type = TYPE_SHADOWTLS
                 shadowtlsBean = bean
             }
+            is JuicityBean -> {
+                type = TYPE_JUICITY
+                juicityBean = bean
+            }
 
             is ConfigBean -> {
                 type = TYPE_CONFIG
@@ -637,6 +658,7 @@ data class ProxyEntity(
                 TYPE_TUIC -> TuicSettingsActivity::class.java
                 TYPE_TUIC5 -> Tuic5SettingsActivity::class.java
                 TYPE_SHADOWTLS -> ShadowTLSSettingsActivity::class.java
+                TYPE_JUICITY -> JuicitySettingsActivity::class.java
 
                 TYPE_CONFIG -> ConfigSettingsActivity::class.java
                 TYPE_CHAIN -> ChainSettingsActivity::class.java

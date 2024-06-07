@@ -16,3 +16,6 @@
 [submodule "plugin/shadowtls/src/main/rust/shadowtls"]
 	path = plugin/shadowtls/src/main/rust/shadowtls
 	url = https://github.com/ihciah/shadow-tls
+[submodule "plugin/juicity/src/main/go/juicity"]
+	path = plugin/juicity/src/main/go/juicity
+	url = https://github.com/juicity/juicity

@@ -38,6 +38,7 @@ import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean;
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean;
 import io.nekohasekai.sagernet.fmt.internal.ChainBean;
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean;
+import io.nekohasekai.sagernet.fmt.juicity.JuicityBean;
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean;
 import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean;
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean;
@@ -210,6 +211,12 @@ public class KryoConverters {
     public static ShadowTLSBean shadowtlsDeserialize(byte[] bytes) {
         if (ArrayUtil.isEmpty(bytes)) return null;
         return deserialize(new ShadowTLSBean(), bytes);
+    }
+
+    @TypeConverter
+    public static JuicityBean juicityDeserialize(byte[] bytes) {
+        if (ArrayUtil.isEmpty(bytes)) return null;
+        return deserialize(new JuicityBean(), bytes);
     }
 
     @TypeConverter

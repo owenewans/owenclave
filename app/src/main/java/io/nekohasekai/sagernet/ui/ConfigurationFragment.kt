@@ -353,6 +353,9 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_new_shadowtls -> {
                 startActivity(Intent(requireActivity(), ShadowTLSSettingsActivity::class.java))
             }
+            R.id.action_new_juicity -> {
+                startActivity(Intent(requireActivity(), JuicitySettingsActivity::class.java))
+            }
             R.id.action_new_config -> {
                 startActivity(Intent(requireActivity(), ConfigSettingsActivity::class.java))
             }

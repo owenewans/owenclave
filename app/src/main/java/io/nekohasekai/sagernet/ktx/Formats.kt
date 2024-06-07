@@ -28,6 +28,7 @@ import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.parseHttp
 import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria
 import io.nekohasekai.sagernet.fmt.hysteria2.parseHysteria2
+import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.naive.parseNaive
 import io.nekohasekai.sagernet.fmt.parseUniversal
 import io.nekohasekai.sagernet.fmt.pingtunnel.parsePingTunnel
@@ -150,6 +151,14 @@ fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse hysteria 2 link: $this")
             runCatching {
                 entities.add(parseHysteria2(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        }
+        else if (startsWith("juicity://")) {
+            Logs.d("Try parse juicity link: $this")
+            runCatching {
+                entities.add(parseJuicity(this))
             }.onFailure {
                 Logs.w(it)
             }

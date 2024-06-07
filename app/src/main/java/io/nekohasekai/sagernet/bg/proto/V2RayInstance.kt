@@ -44,6 +44,8 @@ import io.nekohasekai.sagernet.fmt.hysteria.buildHysteriaConfig
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.hysteria2.buildHysteria2Config
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
+import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
+import io.nekohasekai.sagernet.fmt.juicity.buildJuicityConfig
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
 import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean
@@ -195,6 +197,10 @@ abstract class V2RayInstance(
                     }
                     is ShadowTLSBean -> {
                         initPlugin("shadowtls-plugin")
+                    }
+                    is JuicityBean -> {
+                        initPlugin("juicity-plugin")
+                        pluginConfigs[port] = profile.type to bean.buildJuicityConfig(port)
                     }
                     is ConfigBean -> {
                         when (bean.type) {
@@ -533,6 +539,23 @@ abstract class V2RayInstance(
                             commands.add("--password")
                             commands.add(bean.password)
                         }
+                        processes.start(commands, env)
+                    }
+                    bean is JuicityBean -> {
+                        val configFile = File(
+                            context.noBackupFilesDir,
+                            "juicity_" + SystemClock.elapsedRealtime() + ".json"
+                        )
+                        configFile.parentFile?.mkdirs()
+                        configFile.writeText(config)
+                        cacheFiles.add(configFile)
+                        val commands = mutableListOf(
+                            initPlugin("juicity-plugin").path,
+                            "run",
+                            "-c",
+                            configFile.absolutePath,
+                        )
+                        
                         processes.start(commands, env)
                     }
                 }

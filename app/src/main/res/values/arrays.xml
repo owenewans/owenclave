@@ -971,4 +971,16 @@
         <item>chrome</item>
     </string-array>
 
+    <string-array name="juicity_congestion_control_entry">
+        <item>BBR</item>
+        <item>CUBIC</item>
+        <item>NEW_RENO</item>
+    </string-array>
+
+    <string-array name="juicity_congestion_control_value">
+        <item>bbr</item>
+        <item>cubic</item>
+        <item>new_reno</item>
+    </string-array>
+
 </resources>

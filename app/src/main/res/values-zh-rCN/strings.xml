@@ -507,4 +507,5 @@
     <string name="brook_udp_over_stream">UDP over stream</string>
     <string name="naive_no_post_quantum">禁用后量子密钥协商</string>
     <string name="hysteria2_password">Hysteria2 密码</string>
+    <string name="juicity_congestion_control">拥塞控制</string>
 </resources>

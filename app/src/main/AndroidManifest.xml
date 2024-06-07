@@ -131,7 +131,7 @@
                 <data android:scheme="ssr" />
                 <data android:scheme="socks" />
                 <data android:scheme="socks4" />
-                <data android:scheme="socksa" />
+                <data android:scheme="socks4a" />
                 <data android:scheme="sock5" />
                 <data android:scheme="vmess" />
                 <data android:scheme="vless" />
@@ -215,6 +215,9 @@
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.ShadowTLSSettingsActivity"
+            android:configChanges="uiMode" />
+        <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.JuicitySettingsActivity"
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.ConfigSettingsActivity"

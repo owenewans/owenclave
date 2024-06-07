@@ -529,5 +529,7 @@
     <string name="brook_udp_over_stream">UDP over stream</string>
     <string name="naive_no_post_quantum">Disable post-quantum key agreement</string>
     <string name="hysteria2_password">Hysteria2 password</string>
+    <string name="action_juicity" translatable="false">Juicity</string>
+    <string name="juicity_congestion_control">Congestion control</string>
 
 </resources>

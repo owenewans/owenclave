@@ -44,6 +44,7 @@ object Executable {
         "libtuic.so",
         "libtuic5.so",
         "libshadowtls.so",
+        "libjuicity.so",
     )
 
     fun killAll() {

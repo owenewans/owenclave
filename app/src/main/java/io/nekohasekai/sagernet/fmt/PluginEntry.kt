@@ -40,6 +40,7 @@ enum class PluginEntry(
     TUIC("tuic-plugin", R.string.action_tuic, "io.nekohasekai.sagernet.plugin.tuic"),
     TUIC5("tuic5-plugin", R.string.action_tuic5, "io.nekohasekai.sagernet.plugin.tuic5"),
     ShadowTLS("shadowtls-plugin", R.string.action_shadowtls, "com.github.dyhkwong.sagernet.plugin.shadowtls"),
+    Juicity("juicity-plugin", R.string.action_juicity, "com.github.dyhkwong.sagernet.plugin.juicity"),
 
     // shadowsocks plugins
 

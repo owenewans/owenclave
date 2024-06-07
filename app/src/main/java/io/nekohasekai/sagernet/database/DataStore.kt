@@ -301,6 +301,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverWireGuardReserved by profileCacheStore.string(Key.SERVER_WIREGUARD_RESERVED)
 
     var serverNaiveNoPostQuantum by profileCacheStore.boolean(Key.SERVER_NAIVE_NO_POST_QUANTUM)
+    var serverJuicityCongestionControl by profileCacheStore.string(Key.SERVER_JUICITY_CONGESTION_CONTROL)
 
     var balancerType by profileCacheStore.stringToInt(Key.BALANCER_TYPE)
     var balancerGroup by profileCacheStore.stringToLong(Key.BALANCER_GROUP)

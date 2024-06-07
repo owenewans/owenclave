@@ -196,6 +196,7 @@ object Key {
     const val SERVER_HOP_INTERVAL = "serverHopInterval"
 
     const val SERVER_NAIVE_NO_POST_QUANTUM = "serverNaiveNoPostQuantum"
+    const val SERVER_JUICITY_CONGESTION_CONTROL = "serverJuicityCongestionControl"
 
     const val BALANCER_TYPE = "balancerType"
     const val BALANCER_GROUP = "balancerGroup"
