@@ -81,8 +81,8 @@ public class HysteriaBean extends AbstractBean {
         if (alpn == null) alpn = "";
         if (caText == null) caText = "";
 
-        if (uploadMbps == null) uploadMbps = 0;
-        if (downloadMbps == null) downloadMbps = 0;
+        if (uploadMbps == null) uploadMbps = 10;
+        if (downloadMbps == null) downloadMbps = 50;
         if (allowInsecure == null) allowInsecure = false;
 
         if (streamReceiveWindow == null) streamReceiveWindow = 0;
