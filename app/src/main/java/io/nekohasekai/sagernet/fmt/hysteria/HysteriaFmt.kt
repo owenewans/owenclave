@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.hysteria
 
 import cn.hutool.core.util.NumberUtil
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.*
@@ -148,6 +149,10 @@ fun JSONObject.parseHysteria(): HysteriaBean {
 fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {
         if (serverPorts.contains("-") || serverPorts.contains(",")) {
+            if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
+                error("Please switch to TUN gVisor stack for port hopping.")
+                // system stack need some protector hacks.
+            }
             // hopping is incompatible with chain
             if (serverAddress.isIpv6Address()) {
                 it["server"] = "[$serverAddress]:$serverPorts"
