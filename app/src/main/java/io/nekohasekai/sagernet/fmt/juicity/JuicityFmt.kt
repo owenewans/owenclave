@@ -63,9 +63,6 @@ fun JuicityBean.buildJuicityConfig(port: Int): String {
         if (allowInsecure) {
             it["allow_insecure"] = allowInsecure
         }
-        if (allowInsecure) {
-            it["allow_insecure"] = allowInsecure
-        }
         if (DataStore.enableLog) {
             it["log_level"] = "debug"
         } else {

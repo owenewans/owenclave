@@ -42,13 +42,3 @@ subprojects {
         if (name.contains("uploadCrashlyticsMappingFile")) enabled = false
     }
 }
-
-tasks.named<Wrapper>("wrapper") {
-    doLast {
-        val sha256 = java.net.URL("$distributionUrl.sha256")
-            .openStream()
-            .use { it.reader().readText().trim() }
-
-        file("gradle/wrapper/gradle-wrapper.properties").appendText("distributionSha256Sum=$sha256")
-    }
-}
