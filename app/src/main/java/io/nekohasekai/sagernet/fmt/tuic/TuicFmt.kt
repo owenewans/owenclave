@@ -20,6 +20,7 @@ package io.nekohasekai.sagernet.fmt.tuic
 
 import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
@@ -45,6 +46,11 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
                 caFile.writeText(caText)
                 it["certificates"] = JSONArray().apply {
                     put(caFile.absolutePath)
+                }
+            } else if (DataStore.providerRootCA == RootCAProvider.SYSTEM && caText.isBlank()) {
+                it["certificates"] = JSONArray().apply {
+                    // workaround tuic can't load Android system root certificates without forking it
+                    File("/system/etc/security/cacerts").listFiles()?.forEach { put(it) }
                 }
             }
 
