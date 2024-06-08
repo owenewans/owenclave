@@ -170,5 +170,6 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
         }
     }
     conf += "\nsocks5:\n  listen: " + "\"$LOCALHOST:$port\"\n"
+    conf += "\nlazy: true\n"
     return conf
 }

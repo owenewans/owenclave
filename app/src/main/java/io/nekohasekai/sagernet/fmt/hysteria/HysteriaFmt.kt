@@ -200,5 +200,6 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         if (disableMtuDiscovery) it["disable_mtu_discovery"] = true
 
         it["resolver"] = "udp://127.0.0.1:" + DataStore.localDNSPort
+        it["lazy_start"] = true
     }.toStringPretty()
 }
