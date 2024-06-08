@@ -176,7 +176,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         val shadowsocks2022Implementation = findPreference<SimpleMenuPreference>(Key.SHADOWSOCKS_2022_IMPLEMENTATION)!!
-        val providerTrojan = findPreference<SimpleMenuPreference>(Key.PROVIDER_TROJAN)!!
         val providerHysteria2 = findPreference<SimpleMenuPreference>(Key.PROVIDER_HYSTERIA2)!!
         val dnsHosts = findPreference<EditTextPreference>(Key.DNS_HOSTS)!!
 
@@ -264,7 +263,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         enableLog.onPreferenceChangeListener = reloadListener
 
         shadowsocks2022Implementation.onPreferenceChangeListener = reloadListener
-        providerTrojan.onPreferenceChangeListener = reloadListener
         providerHysteria2.onPreferenceChangeListener = reloadListener
         appTrafficStatistics.onPreferenceChangeListener = reloadListener
         tunImplementation.onPreferenceChangeListener = reloadListener

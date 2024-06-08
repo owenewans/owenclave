@@ -159,14 +159,6 @@
         <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/baseline_flight_takeoff_24"
             app:defaultValue="0"
-            app:entries="@array/trojan_provider"
-            app:entryValues="@array/trojan_provider_value"
-            app:key="providerTrojan"
-            app:title="@string/trojan_provider"
-            app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
-            android:icon="@drawable/baseline_flight_takeoff_24"
-            app:defaultValue="0"
             app:entries="@array/hysteria2_provider"
             app:entryValues="@array/hysteria2_provider_value"
             app:key="providerHysteria2"

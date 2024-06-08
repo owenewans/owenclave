@@ -218,7 +218,6 @@
     <string name="subscription">Abonelik</string>
     <string name="group_settings">Grup Ayarları</string>
     <string name="group_basic">Basit</string>
-    <string name="trojan_provider">Trojan Sağlayıcısı</string>
     <string name="protocol_settings">Protokol Ayarları</string>
     <string name="append_http_proxy_sum">HTTP vekil sunucu direkt tarayıcı veya bazı destekli uygulamalar tarafından, sanal NIC aygıtından geçmeden kullanılır (Android 10+)</string>
     <string name="append_http_proxy">HTTP Vekil Sunucuyu VPN\'e Dahil Et</string>

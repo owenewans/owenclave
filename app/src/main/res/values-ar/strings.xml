@@ -256,7 +256,6 @@
     <string name="subscription">الاشتراك</string>
     <string name="group_settings">إعدادات المجموعة</string>
     <string name="group_basic">أساسي</string>
-    <string name="trojan_provider">Trojan مزود</string>
     <string name="protocol_settings">إعدادات البروتوكول</string>
     <string name="bypass_lan_in_core_only_sum">إذا لم يعمل Lineage\'s السماح لعملاء نقطة الاتصال باستخدام شبكات VPN، فجرّب ذلك.</string>
     <string name="bypass_lan_in_core_only">تجاوز LAN في النواة فقط</string>

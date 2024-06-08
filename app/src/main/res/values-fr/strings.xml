@@ -284,7 +284,6 @@
     <string name="no_proxies_found_in_clipboard">Aucun proxy trouve dans le presse-papiers</string>
     <string name="not_connected">Non connecté</string>
     <string name="connection_test">Test de connexion</string>
-    <string name="trojan_provider">Fournisseur de torjan</string>
     <string name="ooc_subscription_token_invalid">Jeton OOCv1 invalide</string>
     <string name="update_when_connected_only">Mettre à jour que quand connecté</string>
     <string name="auto_update_delay">Délai de mise à jour automatique (en minutes)</string>

@@ -131,7 +131,6 @@
     <string name="subscription">Abonnement</string>
     <string name="group_settings">Gruppeinnstillinger</string>
     <string name="group_basic">Grunnleggende</string>
-    <string name="trojan_provider">Trojansk leverandør</string>
     <string name="protocol_settings">Protokollinnstillinger</string>
     <string name="bypass_lan_in_core_only_sum">Hvis Lineage\'s Tillat hotspot -klienter å bruke VPN -er ikke fungerer, kan du prøve dette.</string>
     <string name="bypass_lan_in_core_only">Omgå LAN i Core bare</string>

@@ -90,7 +90,6 @@ object Key {
     const val ALWAYS_SHOW_ADDRESS = "alwaysShowAddress"
 
     const val SHADOWSOCKS_2022_IMPLEMENTATION = "shadowsocks2022Implementation"
-    const val PROVIDER_TROJAN = "providerTrojan"
     const val PROVIDER_HYSTERIA2 = "providerHysteria2"
     const val PROVIDER_ROOT_CA = "providerRootCA"
 

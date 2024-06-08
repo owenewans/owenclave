@@ -464,7 +464,6 @@ data class ProxyEntity(
             return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || !bean.canMapping()
         }
         return when (type) {
-            TYPE_TROJAN -> DataStore.providerTrojan != TrojanProvider.V2RAY
             TYPE_TROJAN_GO -> true
             TYPE_NAIVE -> true
             TYPE_PING_TUNNEL -> true

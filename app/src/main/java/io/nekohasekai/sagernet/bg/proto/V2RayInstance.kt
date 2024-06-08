@@ -112,12 +112,6 @@ abstract class V2RayInstance(
                 val needMux = enableMux && (isBalancer || index == chain.size - 1)
 
                 when (val bean = profile.requireBean()) {
-                    is TrojanBean -> {
-                        initPlugin("trojan-go-plugin")
-                        pluginConfigs[port] = profile.type to bean.buildTrojanGoConfig(
-                            port, needMux
-                        )
-                    }
                     is TrojanGoBean -> {
                         initPlugin("trojan-go-plugin")
                         pluginConfigs[port] = profile.type to bean.buildTrojanGoConfig(
@@ -248,22 +242,6 @@ abstract class V2RayInstance(
                 when {
                     externalInstances.containsKey(port) -> {
                         externalInstances[port]!!.launch()
-                    }
-                    bean is TrojanBean -> {
-                        val configFile = File(
-                            context.noBackupFilesDir,
-                            "trojan_" + SystemClock.elapsedRealtime() + ".json"
-                        )
-
-                        configFile.parentFile?.mkdirs()
-                        configFile.writeText(config)
-                        cacheFiles.add(configFile)
-
-                        val commands = listOf(
-                            initPlugin("trojan-go-plugin").path, "--config", configFile.absolutePath
-                        )
-
-                        processes.start(commands, env)
                     }
                     bean is TrojanGoBean || bean is ConfigBean && bean.type == "trojan-go" -> {
                         val configFile = File(

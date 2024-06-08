@@ -300,7 +300,6 @@
     <string name="bypass_lan_in_core_only">Lewati LAN hanya di Core saja</string>
     <string name="bypass_lan_in_core_only_sum">Jika fitur Izinkan klien hotspot untuk menggunakan VPN milik Lineage tidak berfungsi, coba ini.</string>
     <string name="protocol_settings">Pengaturan Protokol</string>
-    <string name="trojan_provider">Penyedia Trojan</string>
     <string name="subscription">Langganan</string>
     <string name="subscription_settings">Pengaturan Langganan</string>
     <string name="group_type">Tipe Grup</string>

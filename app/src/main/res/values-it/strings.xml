@@ -79,7 +79,6 @@
     <string name="menu_group">Gruppo</string>
     <string name="group_status_empty">Gruppo Vuoto</string>
     <string name="group_status_proxies">%d Proxy</string>
-    <string name="trojan_provider">Provider Trojan</string>
     <string name="remote_dns">DNS Remoto</string>
     <string name="dns_routing_message">Risolvi i domini nei percorsi di bypass con il DNS Diretto. Attenzione ai potenziali DNS leaks</string>
     <string name="security_settings">Impostazioni di Sicurezza</string>

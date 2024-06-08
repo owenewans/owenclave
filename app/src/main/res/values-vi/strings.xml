@@ -89,7 +89,6 @@
     <string name="route_warn">Đảm bảo rằng bạn đã đọc tài liệu trước khi thêm các quy tắc tùy chỉnh, nếu không, bạn có thể không kết nối được với Internet.</string>
     <string name="follow_system">Theo hệ thống</string>
     <string name="protocol_settings">Cài đặt giao thức</string>
-    <string name="trojan_provider">Nhà cung cấp Trojan</string>
     <string name="update_when_connected_only">Chỉ cập nhật khi được kết nối</string>
     <string name="subscription_update">Cập nhật Đăng ký</string>
     <string name="group_filter">Bộ lọc</string>

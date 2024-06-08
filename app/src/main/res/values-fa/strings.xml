@@ -123,7 +123,6 @@
     <string name="subscription">اشتراک‌ها</string>
     <string name="group_settings">تنظیمات گروه</string>
     <string name="group_basic">پایه</string>
-    <string name="trojan_provider">ارائه دهنده Trojan</string>
     <string name="protocol_settings">تنظیمات پروتکل</string>
     <string name="bypass_lan_in_core_only_sum">اگر لاین هات‌اسپات برای استفاده کاربرها از VPN کار نمی کند، این را امتحان کنید.</string>
     <string name="bypass_lan_in_core_only">بای‌پس LAN فقط در هسته</string>
