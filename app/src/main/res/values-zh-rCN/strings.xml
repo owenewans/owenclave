@@ -400,7 +400,7 @@
     <string name="endpoint_independent">端点独立</string>
     <string name="address_dependent">地址依赖</string>
     <string name="address_and_port_dependent">地址和端口依赖</string>
-    <string name="endpoint_independent_no_nat">端点独立 （无 NAT）</string>
+    <string name="endpoint_independent_no_nat">端点独立（无 NAT）</string>
     <string name="nat_filtering_behaviour">NAT 过滤行为</string>
     <string name="nat_filtering_address_and_port_dependent">`地址和端口依赖`
 \n
@@ -507,4 +507,8 @@
     <string name="naive_no_post_quantum">禁用后量子密钥协商</string>
     <string name="hysteria2_password">Hysteria2 密码</string>
     <string name="juicity_congestion_control">拥塞控制</string>
+    <string name="nat_type">NAT 类型</string>
+    <string name="stun_legacy_test">NAT 类型测试</string>
+    <string name="stun_legacy_test_summary">使用 STUN 确定客户端的 RFC 3489 中定义的 NAT 类型。</string>
+
 </resources>

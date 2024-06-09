@@ -36,6 +36,9 @@ class NetworkFragment : NamedFragment(R.layout.layout_network) {
         binding.stunTest.setOnClickListener {
             startActivity(Intent(requireContext(), StunActivity::class.java))
         }
+        binding.stunLegacyTest.setOnClickListener {
+            startActivity(Intent(requireContext(), StunLegacyActivity::class.java))
+        }
 
     }
 
