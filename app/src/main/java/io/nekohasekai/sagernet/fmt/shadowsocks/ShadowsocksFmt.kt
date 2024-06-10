@@ -31,23 +31,11 @@ import libcore.Libcore
 
 fun PluginConfiguration.fixInvalidParams() {
 
-    if (selected.contains("v2ray") && selected != "v2ray-plugin") {
-
-        pluginsOptions["v2ray-plugin"] = getOptions().apply { id = "v2ray-plugin" }
-        pluginsOptions.remove(selected)
-        selected = "v2ray-plugin"
-
-        // resolve v2ray plugin
-
-    }
-
-    if (selected.contains("obfs") && selected != "obfs-local") {
+    if (selected == "simple-obfs") {
 
         pluginsOptions["obfs-local"] = getOptions().apply { id = "obfs-local" }
         pluginsOptions.remove(selected)
         selected = "obfs-local"
-
-        // resolve clash obfs
 
     }
 
