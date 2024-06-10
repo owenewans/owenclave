@@ -153,6 +153,7 @@ fun ShadowsocksBean.toUri(): String {
         if (PluginConfiguration(plugin).getOptions().toString().isNotBlank()) {
             p += ";" + PluginConfiguration(plugin).getOptions().toString()
         }
+        builder.rawPath = "/"
         builder.addQueryParameter("plugin", p)
     }
 
