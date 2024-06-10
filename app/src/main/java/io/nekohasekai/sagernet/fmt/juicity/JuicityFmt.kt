@@ -57,7 +57,7 @@ fun JuicityBean.buildJuicityConfig(port: Int): String {
         it["congestion_control"] = congestionControl
         if (sni.isNotBlank()) {
             it["sni"] = sni
-        } else if (finalAddress == LOCALHOST && !serverAddress.isIpAddress()) {
+        } else if (!serverAddress.isIpAddress()) {
             it["sni"] = serverAddress
         }
         if (allowInsecure) {

@@ -47,7 +47,11 @@ fun parseNaive(link: String): NaiveBean {
 
 fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     val builder = Libcore.newURL(if (proxyOnly) proto else "naive+$proto")
-    builder.host = serverAddress
+    if (sni.isNotBlank() && proxyOnly) {
+        builder.host = sni
+    } else {
+        builder.host = serverAddress
+    }
     if (proxyOnly) {
         builder.port = finalPort
     } else {
@@ -69,6 +73,9 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
         if (insecureConcurrency > 0) {
             builder.addQueryParameter("insecure-concurrency", "$insecureConcurrency")
         }
+        if (sni.isNotBlank()) {
+            builder.addQueryParameter("sni", sni)
+        }
     }
     return builder.string
 }
@@ -80,8 +87,17 @@ fun NaiveBean.buildNaiveConfig(port: Int): String {
         if (extraHeaders.isNotBlank()) {
             it["extra-headers"] = extraHeaders.split("\n").joinToString("\r\n")
         }
-        if (!serverAddress.isIpAddress() && finalAddress == LOCALHOST) {
-            it["host-resolver-rules"] = "MAP $serverAddress $LOCALHOST"
+        if (sni.isNotBlank()) {
+            it["host-resolver-rules"] = "MAP $sni $finalAddress"
+        } else {
+            if (!serverAddress.isIpAddress()) {
+                it["host-resolver-rules"] = "MAP $serverAddress $finalAddress"
+            } else {
+                // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/1b022eb2f1d6a939531d8ccdc5b3fa5495f1a2ee/app/src/main/java/io/nekohasekai/sagernet/fmt/naive/NaiveFmt.kt#L69-L71
+                // for naive, using IP as SNI name hardly happens
+                // and host-resolver-rules cannot resolve the SNI problem
+                // so do nothing
+            }
         }
         if (DataStore.enableLog) {
             it["log"] = ""

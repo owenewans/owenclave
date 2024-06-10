@@ -142,7 +142,7 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int, mux: Boolean): String {
             }
         }
 
-        if (sni.isBlank() && finalAddress == LOCALHOST && !serverAddress.isIpAddress()) {
+        if (sni.isBlank() && !serverAddress.isIpAddress()) {
             sni = serverAddress
         }
 

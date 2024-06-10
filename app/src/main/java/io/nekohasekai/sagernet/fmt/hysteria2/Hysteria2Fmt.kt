@@ -124,7 +124,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     conf += "\ntls:\n  insecure: " + allowInsecure + "\n"
     if (sni.isBlank() && !serverAddress.isIpAddress()) {
-        if (finalAddress == LOCALHOST && !serverPorts.contains("-") && !serverPorts.contains(",")) {
+        if (!serverPorts.contains("-") && !serverPorts.contains(",")) {
             sni = serverAddress
         }
     }

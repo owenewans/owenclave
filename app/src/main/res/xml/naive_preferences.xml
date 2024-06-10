@@ -39,6 +39,11 @@
             app:title="@string/protocol"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_action_copyright"
+            app:key="serverSNI"
+            app:title="@string/sni"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverHeaders"
             app:title="@string/extra_headers"

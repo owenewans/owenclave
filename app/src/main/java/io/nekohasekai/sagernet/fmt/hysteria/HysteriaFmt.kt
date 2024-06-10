@@ -180,7 +180,7 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
             HysteriaBean.TYPE_STRING -> it["auth_str"] = authPayload
         }
         if (sni.isBlank() && !serverAddress.isIpAddress()) {
-            if (finalAddress == LOCALHOST && !serverPorts.contains("-") && !serverPorts.contains(",")) {
+            if (!serverPorts.contains("-") && !serverPorts.contains(",")) {
                 sni = serverAddress
             }
         }
