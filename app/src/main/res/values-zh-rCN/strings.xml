@@ -395,7 +395,7 @@
     <string name="profile_traffic_statistics">配置流量统计</string>
     <string name="group_filter_owners">拥有者</string>
     <string name="group_filter_owners_nf">该订阅中没有拥有者</string>
-    <string name="stun_test_summary">使用 STUN 确定客户端的 RFC 5780 中定义的 NAT 映射行为和 NAT 过滤行为。</string>
+    <string name="stun_test_summary">使用 STUN 发现客户端的 RFC 5780 中定义的 NAT 映射行为和 NAT 过滤行为。</string>
     <string name="nat_mapping_behaviour">NAT 映射行为</string>
     <string name="endpoint_independent">端点独立</string>
     <string name="address_dependent">地址依赖</string>

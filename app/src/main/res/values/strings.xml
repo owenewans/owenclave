@@ -532,6 +532,6 @@
     <string name="juicity_congestion_control">Congestion control</string>
     <string name="nat_type">NAT Type</string>
     <string name="stun_legacy_test">NAT type test</string>
-    <string name="stun_legacy_test_summary">Discover client\'s NAT type defined in RFC 3489 using STUN.</string>
+    <string name="stun_legacy_test_summary">Determine client\'s NAT type defined in RFC 3489 using STUN.</string>
 
 </resources>
