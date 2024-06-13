@@ -12,7 +12,6 @@ when {
         include(":plugin:brook")
         include(":plugin:hysteria2")
         include(":plugin:mieru")
-        include(":plugin:shadowtls")
         include(":plugin:juicity")
     }
     buildPlugin == "none" -> {

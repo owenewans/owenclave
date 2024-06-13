@@ -14,6 +14,5 @@
     <mapping directory="$PROJECT_DIR$/plugin/juicity/src/main/go/juicity" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin/mieru/src/main/go/mieru" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin/naive/src/main/jni/naiveproxy" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/plugin/shadowtls/src/main/rust/shadowtls" vcs="Git" />
   </component>
 </project>
