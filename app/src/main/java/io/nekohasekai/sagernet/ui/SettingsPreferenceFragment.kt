@@ -60,21 +60,17 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.global_preferences)
         val appTheme = findPreference<ColorPickerPreference>(Key.APP_THEME)!!
-        if (!DataStore.showAppTheme) {
-            appTheme.remove()
-        } else {
-            appTheme.setOnPreferenceChangeListener { _, newTheme ->
-                if (SagerNet.started) {
-                    SagerNet.reloadService()
-                }
-                val theme = Theme.getTheme(newTheme as Int)
-                app.setTheme(theme)
-                requireActivity().apply {
-                    setTheme(theme)
-                    ActivityCompat.recreate(this)
-                }
-                true
+        appTheme.setOnPreferenceChangeListener { _, newTheme ->
+            if (SagerNet.started) {
+                SagerNet.reloadService()
             }
+            val theme = Theme.getTheme(newTheme as Int)
+            app.setTheme(theme)
+            requireActivity().apply {
+                setTheme(theme)
+                ActivityCompat.recreate(this)
+            }
+            true
         }
         val nightTheme = findPreference<SimpleMenuPreference>(Key.NIGHT_THEME)!!
         nightTheme.setOnPreferenceChangeListener { _, newTheme ->
@@ -109,21 +105,21 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         val portLocalDns = findPreference<EditTextPreference>(Key.LOCAL_DNS_PORT)!!
-        val showDirectSpeed = findPreference<SwitchPreference>(Key.SHOW_DIRECT_SPEED)!!
         val ipv6Mode = findPreference<Preference>(Key.IPV6_MODE)!!
         val domainStrategy = findPreference<Preference>(Key.DOMAIN_STRATEGY)!!
-        val trafficSniffing = findPreference<Preference>(Key.TRAFFIC_SNIFFING)!!
         val enableMux = findPreference<Preference>(Key.ENABLE_MUX)!!
         val enableMuxForAll = findPreference<Preference>(Key.ENABLE_MUX_FOR_ALL)!!
         enableMuxForAll.isEnabled = DataStore.enableMux
+        val muxConcurrency = findPreference<EditTextPreference>(Key.MUX_CONCURRENCY)!!
+        muxConcurrency.isEnabled = DataStore.enableMux
 
         enableMux.setOnPreferenceChangeListener { _, newValue ->
             enableMuxForAll.isEnabled = newValue as Boolean
+            muxConcurrency.isEnabled = newValue as Boolean
             needReload()
             true
         }
 
-        val muxConcurrency = findPreference<EditTextPreference>(Key.MUX_CONCURRENCY)!!
         val tcpKeepAliveInterval = findPreference<EditTextPreference>(Key.TCP_KEEP_ALIVE_INTERVAL)!!
 
         val bypassLan = findPreference<SwitchPreference>(Key.BYPASS_LAN)!!
@@ -197,10 +193,13 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         val appTrafficStatistics = findPreference<SwitchPreference>(Key.APP_TRAFFIC_STATISTICS)!!
+        val showDirectSpeed = findPreference<SwitchPreference>(Key.SHOW_DIRECT_SPEED)!!
         val profileTrafficStatistics = findPreference<SwitchPreference>(Key.PROFILE_TRAFFIC_STATISTICS)!!
         speedInterval.isEnabled = profileTrafficStatistics.isChecked
         profileTrafficStatistics.setOnPreferenceChangeListener { _, newValue ->
-            speedInterval.isEnabled = newValue as Boolean
+            newValue as Boolean
+            speedInterval.isEnabled = newValue
+            showDirectSpeed.isEnabled = newValue
             needReload()
             true
         }
@@ -218,9 +217,17 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
 
         val tunImplementation = findPreference<SimpleMenuPreference>(Key.TUN_IMPLEMENTATION)!!
+        val trafficSniffing = findPreference<SwitchPreference>(Key.TRAFFIC_SNIFFING)!!
         val destinationOverride = findPreference<SwitchPreference>(Key.DESTINATION_OVERRIDE)!!
+        destinationOverride.isEnabled = trafficSniffing.isChecked
+        trafficSniffing.setOnPreferenceChangeListener { _, newValue ->
+            destinationOverride.isEnabled = newValue as Boolean
+            needReload()
+            true
+        }
         val resolveDestination = findPreference<SwitchPreference>(Key.RESOLVE_DESTINATION)!!
         val enablePcap = findPreference<SwitchPreference>(Key.ENABLE_PCAP)!!
+        enablePcap.isEnabled = tunImplementation.value == "${TunImplementation.GVISOR}"
         val providerRootCA = findPreference<SimpleMenuPreference>(Key.PROVIDER_ROOT_CA)!!
 
         providerRootCA.setOnPreferenceChangeListener { _, newValue ->
@@ -240,7 +247,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         appendHttpProxy.onPreferenceChangeListener = reloadListener
         showDirectSpeed.onPreferenceChangeListener = reloadListener
         domainStrategy.onPreferenceChangeListener = reloadListener
-        trafficSniffing.onPreferenceChangeListener = reloadListener
         enableMuxForAll.onPreferenceChangeListener = reloadListener
         muxConcurrency.onPreferenceChangeListener = reloadListener
         tcpKeepAliveInterval.onPreferenceChangeListener = reloadListener
@@ -270,6 +276,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         resolveDestination.onPreferenceChangeListener = reloadListener
         mtu.onPreferenceChangeListener = reloadListener
 
+        tunImplementation.setOnPreferenceChangeListener { _, newValue ->
+            enablePcap.isEnabled = newValue == "${TunImplementation.GVISOR}"
+            needReload()
+            true
+        }
         enablePcap.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
                 val path = File(
@@ -287,10 +298,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                         snackbar(R.string.copy_success).show()
                     }
                 }.show()
-                if (tunImplementation.value != "${TunImplementation.GVISOR}") {
-                    tunImplementation.value = "${TunImplementation.GVISOR}"
-                }
-            } else needReload()
+            }
+            needReload()
             true
         }
 

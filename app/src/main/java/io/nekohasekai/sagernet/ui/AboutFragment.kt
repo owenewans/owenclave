@@ -158,9 +158,6 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                     "https://sekai.icu/sponsors/"
                                 )
                             }
-                            .setOnLongClickAction {
-                                DataStore.showAppTheme = !DataStore.showAppTheme
-                            }
                             .build())
                     }
                     .build())
