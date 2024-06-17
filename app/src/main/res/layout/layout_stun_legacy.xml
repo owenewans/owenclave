@@ -98,7 +98,6 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="16dp"
@@ -126,6 +125,40 @@
                             android:textAppearance="?attr/textAppearanceBody2"
                             android:textColor="?android:textColorSecondary" />
                     </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nat_external_address"
+                            android:textAppearance="?attr/textAppearanceSubtitle2" />
+
+                        <TextView
+                            android:id="@+id/nat_external_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:textAppearance="?attr/textAppearanceBody2"
+                            android:textColor="?android:textColorSecondary" />
+                    </LinearLayout>
+
                 </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>

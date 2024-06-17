@@ -55,81 +55,19 @@ class StunActivity : ThemedActivity() {
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = try {
-                Libcore.stunTest(binding.natStunServer.text.toString(), DataStore.socksPort)
-            } catch (e: Exception) {
-                onMainDispatcher {
+            val result = Libcore.stunTest(binding.natStunServer.text.toString(), DataStore.socksPort)
+            onMainDispatcher {
+                if (result.error.length > 0) {
                     AlertDialog.Builder(this@StunActivity)
                         .setTitle(R.string.error_title)
-                        .setMessage(e.readableMessage)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            finish()
-                        }
-                        .setOnCancelListener {
-                            finish()
-                        }
-                        .runCatching { show() }
-
+                        .setMessage(result.error)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .show()
                 }
-                return@runOnDefaultDispatcher
-            }
-            onMainDispatcher {
                 binding.waitLayout.isVisible = false
                 binding.resultLayout.isVisible = true
-                when (result.natMapping) {
-                    Libcore.StunEndpointIndependentNoNAT -> {
-                        markwon.setMarkdown(
-                            binding.natMappingBehaviour, getString(
-                                R.string.nat_mapping_endpoint_independent,
-                                getString(R.string.endpoint_independent_no_nat)
-                            )
-                        )
-                    }
-                    Libcore.StunEndpointIndependent -> {
-                        markwon.setMarkdown(
-                            binding.natMappingBehaviour, getString(
-                                R.string.nat_mapping_endpoint_independent,
-                                getString(R.string.endpoint_independent)
-                            )
-                        )
-                    }
-                    Libcore.StunAddressDependent -> {
-                        markwon.setMarkdown(
-                            binding.natMappingBehaviour, getString(
-                                R.string.nat_mapping_address_dependent_and_address_and_port_dependent,
-                                getString(R.string.address_dependent)
-                            )
-                        )
-                    }
-                    Libcore.StunAddressAndPortDependent -> {
-                        markwon.setMarkdown(
-                            binding.natMappingBehaviour, getString(
-                                R.string.nat_mapping_address_dependent_and_address_and_port_dependent,
-                                getString(R.string.address_and_port_dependent)
-                            )
-                        )
-                    }
-                }
-                when (result.natFiltering) {
-                    Libcore.StunEndpointIndependent -> {
-                        markwon.setMarkdown(
-                            binding.natFilteringBehaviour,
-                            getString(R.string.nat_filtering_endpoint_independent)
-                        )
-                    }
-                    Libcore.StunAddressDependent -> {
-                        markwon.setMarkdown(
-                            binding.natFilteringBehaviour,
-                            getString(R.string.nat_filtering_address_dependent)
-                        )
-                    }
-                    Libcore.StunAddressAndPortDependent -> {
-                        markwon.setMarkdown(
-                            binding.natFilteringBehaviour,
-                            getString(R.string.nat_filtering_address_and_port_dependent)
-                        )
-                    }
-                }
+                markwon.setMarkdown(binding.natMappingBehaviour, result.natMapping)
+                markwon.setMarkdown(binding.natFilteringBehaviour, result.natFiltering)
             }
         }
     }

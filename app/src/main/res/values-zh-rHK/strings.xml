@@ -69,9 +69,6 @@
     <string name="connection_test_error">失敗：%s</string>
     <string name="connection_test_available_http">連接成功: HTTP 握手需時 %dms</string>
     <string name="password_opt">密碼（可選）</string>
-    <string name="nat_mapping_address_dependent_and_address_and_port_dependent">`%s`
-\n
-\n如果你從相同的端口發送兩個 UDP 數據包到 NAT 另一側的不同地方，並且目標地址是相同的，那麼NAT 將使用相同的端口來發送這些數據包；目標端口無關重要。發送到兩個不同的主機將使用不同的端口。如果雙方都使用它，那就需要使用 TURN 伺服器，除非雙方都不做特定端口過濾，而且至少有一方為 `端點獨立過濾`。如果你想使用 webrtc 或其他使用 P2P UDP 網絡的東西，***不要像這樣配置你的 NAT***。這種映射類型（大致）對應於 [RFC 3489第5節](https://tools.ietf.org/html/rfc3489#section-5) 中定義的經典 STUN 中的對稱 NATs。</string>
     <string name="start">開始</string>
     <string name="quick_toggle">切換</string>
     <string name="group_edit">編輯</string>

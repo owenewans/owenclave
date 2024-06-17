@@ -359,19 +359,6 @@
     <string name="start">Mulai</string>
     <string name="stun_attest_loading">Ini mungkin memakan waktu beberapa menit…</string>
     <string name="nat_mapping_behaviour">Perilaku pemetaan NAT</string>
-    <string name="endpoint_independent_no_nat">Titik akhir(endpoint) independen (tanpa NAT)</string>
-    <string name="endpoint_independent">Titik akhir(endpoint) independen</string>
-    <string name="address_dependent">Bergantung pada alamat</string>
-    <string name="address_and_port_dependent">Bergantung pada alamat dan port</string>
-    <string name="nat_mapping_address_dependent_and_address_and_port_dependent">`%s`
-\n
-\nJika Anda mengirim dua paket UDP dari port yang sama ke tempat berbeda di sisi lain NAT, NAT akan menggunakan port yang sama untuk mengirim paket tersebut jika alamat tujuannya sama; port tujuan tidak masalah. Mengirim ke dua host yang berbeda akan menggunakan port yang berbeda. Ini akan membutuhkan penggunaan server TURN jika kedua belah pihak menggunakannya, kecuali tidak ada pihak yang melakukan pemfilteran khusus port, dan setidaknya satu pihak melakukan `penyaringan independen titik akhir`. Jika Anda menginginkan webrtc atau apa pun yang menggunakan jaringan P2P UDP, ***jangan konfigurasikan NAT Anda seperti ini***. Jenis pemetaan ini (biasanya) sesuai dengan NAT simetris dalam STUN klasik yang ditentukan dalam [RFC 3489 bagian 5](https://tools.ietf.org/html/rfc3489#section-5).</string>
-    <string name="nat_filtering_address_dependent">`Bergantung pada Alamat`
-\n
-\nIni adalah jalan tengah yang lebih mudah dibenarkan oleh sysadmin, tetapi kesan saya adalah lebih sulit untuk dikonfigurasi. Setelah Anda mengirim paket UDP ke host di sisi lain NAT, NAT akan mengizinkan lalu lintas UDP kembali dari host tersebut, terlepas dari port asal pengiriman host, tetapi tidak akan mengizinkan lalu lintas UDP masuk dari alamat lain. Jika perilaku pemetaan Anda dikonfigurasi dengan tepat, ini akan berfungsi juga sebagai `pemfilteran independen titik akhir`.</string>
-    <string name="nat_filtering_address_and_port_dependent">\'Bergantung pada Alamat dan port\'
-\n
-\nIni yang paling ketat dari ketiganya. NAT Anda hanya akan mengizinkan lalu lintas kembali dari tempat Anda mengirim paket UDP Anda. Menggunakan ini adalah ***tidak disarankan***, bahkan jika Anda mengkonfigurasi perilaku pemetaan dengan benar, karena itu akan bekerja buruk ketika NAT lain salah dikonfigurasi (cukup umum).</string>
     <string name="route_ssid">SSID Wifi</string>
     <string name="missing_permission">Izin Tidak Ada</string>
     <string name="location_disabled">Lokasi Dinonaktifkan</string>
@@ -449,10 +436,4 @@
     <string name="naive_insecure_concurrency_summary">Gunakan koneksi terowongan konkuren N agar lebih kuat dalam kondisi jaringan yang buruk. Lebih banyak koneksi membuat tunneling lebih mudah dideteksi dan kurang aman. Proyek ini mengupayakan keamanan terkuat terhadap analisis lalu lintas. Menggunakannya dengan cara yang tidak aman mengalahkan tujuannya.
 \n
 \nJika Anda harus menggunakan ini, coba N = 2 terlebih dahulu untuk melihat apakah itu menyelesaikan masalah Anda. Sangat menyarankan untuk tidak menggunakan lebih dari 4 koneksi di sini.</string>
-    <string name="nat_mapping_endpoint_independent">`%s` 
-\n 
-\nJika Anda mengirim dua paket UDP dari port yang sama ke tempat berbeda di sisi lain NAT, NAT akan menggunakan port yang sama untuk mengirim paket tersebut. Ini adalah satu-satunya perilaku pemetaan ramah RTC, dan RFC 4787 membutuhkannya sebagai praktik terbaik (REQ-1) di semua NAT. Jika kedua NAT melakukan ini, ICE akan dapat terhubung secara langsung, untuk semua perilaku pemfilteran yang dijelaskan di bawah. Ini adalah pengaturan yang paling penting untuk dilakukan dengan benar. Jenis pemetaan ini sesuai dengan NAT kerucut di STUN klasik yang ditentukan di [RFC 3489 bagian 5](https://tools.ietf.org/html/rfc3489#section-5).</string>
-    <string name="nat_filtering_endpoint_independent">`Titik akhir independen`
-\n
-\nIni yang paling permisif dari ketiganya. Setelah Anda mengirim paket UDP ke mana saja di sisi lain NAT, apa pun di sisi lain NAT dapat mengirim paket UDP kembali kepada Anda di port itu. Kebijakan pemfilteran ini membuat sysadmin berkeringat dingin, tetapi RFC 4787 merekomendasikan penggunaannya saat komunikasi real-time (atau hal lain yang memerlukan transparansi aplikasi; misalnya game) adalah prioritas. Perhatikan bahwa ini tidak akan memberikan kompensasi yang baik jika perilaku pemetaan NAT Anda salah konfigurasi. Lebih penting untuk mendapatkan perilaku pemetaan dengan benar.</string>
 </resources>

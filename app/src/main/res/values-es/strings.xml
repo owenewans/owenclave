@@ -369,18 +369,7 @@
     <string name="stun_test">Descubrimiento del comportamiento NAT</string>
     <string name="stun_test_summary">Determinar el comportamiento de asignación NAT del cliente y el comportamiento de filtrado NAT definido en RFC 5780 mediante STUN.</string>
     <string name="nat_mapping_behaviour">Comportamiento de mapeo NAT</string>
-    <string name="endpoint_independent_no_nat">Independiente del punto final (sin NAT)</string>
-    <string name="endpoint_independent">Independiente del punto final</string>
     <string name="naive_insecure_concurrency">Concurrencia insegura</string>
-    <string name="nat_mapping_endpoint_independent">%s
-\n
-\nSi envía dos paquetes UDP desde el mismo puerto a diferentes lugares al otro lado de la NAT, la NAT usará el mismo puerto para enviar esos paquetes. Este es el único comportamiento de mapeo compatible con RTC, y RFC 4787 lo requiere como una práctica recomendada (REQ-1) en todas las NAT. Si ambas NAT hacen esto, ICE podrá conectarse directamente, para todos los comportamientos de filtrado que se describen a continuación. Este es el ajuste más importante para acertar. Este tipo de mapeo corresponde a las NATs de cono en el STUN clásico definido en [RFC 3489 sección 5](https://tools.ietf.org/html/rfc3489#section-5).</string>
-    <string name="nat_filtering_address_dependent">`Dependiente de la dirección`
-\n
-\nEste es un término medio que los administradores de sistemas tienen más fácil de justificar, pero mi impresión es que es más difícil de configurar. Una vez que haya enviado un paquete UDP a un host al otro lado de la NAT, la NAT permitirá devolver el tráfico UDP desde ese host, independientemente del puerto desde el que envíe el host, pero no permitirá el tráfico UDP entrante desde otras direcciones. Si su comportamiento de asignación está configurado adecuadamente, esto debería funcionar tan bien como el `filtrado independiente del punto final`.</string>
-    <string name="nat_mapping_address_dependent_and_address_and_port_dependent">`%s`
-\n
-\nSi envía dos paquetes UDP desde el mismo puerto a diferentes lugares al otro lado de la NAT, la NAT usará el mismo puerto para enviar esos paquetes si la dirección de destino es la misma; el puerto de destino no importa. El envío a dos hosts diferentes utilizará puertos diferentes. Esto requerirá el uso de un servidor TURN si ambos lados lo están usando, a menos que ninguno de los lados esté realizando un filtrado específico del puerto y al menos uno esté haciendo un `filtrado independiente del punto final`. Si desea webrtc o cualquier otra cosa que use redes P2P UDP, ***no configure su NAT de esta manera***. Este tipo de mapeo (vagamente) corresponde a las NATs simétricas en el STUN clásico definido en [RFC 3489 sección 5](https://tools.ietf.org/html/rfc3489#section-5).</string>
     <string name="tasker_action">Acción</string>
     <string name="tasker_settings">Ajustes de Tasker</string>
     <string name="packet_encoding">Codificación de paquetes</string>
@@ -395,9 +384,6 @@
     <string name="route_play_store">Regla de la Play Store para %s</string>
     <string name="route_opt_block_analysis">Bloquear analítica</string>
     <string name="group_filter_owners">Propietarios</string>
-    <string name="nat_filtering_address_and_port_dependent">`Dependiente de la dirección y el puerto`
-\n
-\nEste es el más estricto de los tres. Su NAT solo permitirá el tráfico de retorno desde exactamente donde envió su paquete UDP. El uso de esto es ***no recomendado***, incluso si configura el comportamiento de asignación correctamente, ya que funcionará mal cuando la otra NAT esté mal configurada (bastante común).</string>
     <string name="missing_permission">Permiso faltante</string>
     <string name="location_disabled">Ubicación desactivada</string>
     <string name="route_need_ssid">La regla de enrutamiento `%s` requiere acceso a su **SSID Wi-Fi**, pero esto requiere **permiso de ubicación en segundo plano** y **ubicación activada** en Android 8.0 o superior</string>
@@ -420,12 +406,7 @@
     <string name="pcap_notice">Los archivos Pcap se guardarán en %s</string>
     <string name="start">Empezar</string>
     <string name="stun_attest_loading">Esto puede tardar unos minutos…</string>
-    <string name="address_dependent">Dependiente de la dirección</string>
-    <string name="address_and_port_dependent">Dependiente de la dirección y el puerto</string>
     <string name="nat_filtering_behaviour">Comportamiento de filtrado NAT</string>
-    <string name="nat_filtering_endpoint_independent">`Independiente del punto final`
-\n
-\nEste es el más permisivo de los tres. Una vez que haya enviado un paquete UDP a cualquier lugar del otro lado de la NAT, cualquier otra cosa en el otro lado de la NAT puede enviarle paquetes UDP en ese puerto. Esta política de filtrado da a los administradores de sistemas sudores fríos, pero RFC 4787 recomienda su uso cuando la comunicación en tiempo real (u otras cosas que requieren transparencia de la aplicación; por ejemplo, juegos) es una prioridad. Tenga en cuenta que esto no hará un muy buen trabajo de compensación si el comportamiento de asignación de su NAT está mal configurado. Es más importante obtener el comportamiento de mapeo correcto.</string>
     <string name="network_wifi">Wi-Fi</string>
     <string name="network_bt">Bluetooth</string>
     <string name="network_eth">Ethernet</string>

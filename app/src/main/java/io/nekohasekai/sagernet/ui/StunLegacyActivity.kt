@@ -55,30 +55,19 @@ class StunLegacyActivity : ThemedActivity() {
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = try {
-                Libcore.stunLegacyTest(binding.natStunServer.text.toString(), DataStore.socksPort)
-            } catch (e: Exception) {
-                onMainDispatcher {
+            val result = Libcore.stunLegacyTest(binding.natStunServer.text.toString(), DataStore.socksPort)
+            onMainDispatcher {
+                if (result.error.length > 0) {
                     AlertDialog.Builder(this@StunLegacyActivity)
                         .setTitle(R.string.error_title)
-                        .setMessage(e.readableMessage)
-                        .setPositiveButton(android.R.string.ok) { _, _ ->
-                            finish()
-                        }
-                        .setOnCancelListener {
-                            finish()
-                        }
-                        .runCatching { show() }
-
+                        .setMessage(result.error)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .show()
                 }
-                return@runOnDefaultDispatcher
-            }
-            onMainDispatcher {
                 binding.waitLayout.isVisible = false
                 binding.resultLayout.isVisible = true
-                markwon.setMarkdown(
-                    binding.natType, result
-                )
+                markwon.setMarkdown(binding.natType, result.natType)
+                markwon.setMarkdown(binding.natExternalAddress, result.host)
             }
         }
     }
