@@ -111,6 +111,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         when (this) {
             is VLESSBean -> DataStore.serverFlow = flow
             is VMessBean -> {
+                DataStore.serverAlterId = alterId
                 DataStore.serverVMessExperimentalAuthenticatedLength = experimentalAuthenticatedLength
                 DataStore.serverVMessExperimentalNoTerminationSignal = experimentalNoTerminationSignal
             }
@@ -188,6 +189,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         when (this) {
             is VLESSBean -> flow = DataStore.serverFlow
             is VMessBean -> {
+                alterId = DataStore.serverAlterId
                 experimentalAuthenticatedLength = DataStore.serverVMessExperimentalAuthenticatedLength
                 experimentalNoTerminationSignal = DataStore.serverVMessExperimentalNoTerminationSignal
             }
@@ -225,6 +227,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var quicSecurity: SimpleMenuPreference
     lateinit var security: SimpleMenuPreference
     lateinit var xtlsFlow: SimpleMenuPreference
+    lateinit var alterId: EditTextPreference
 
     lateinit var sni: EditTextPreference
     lateinit var alpn: EditTextPreference
@@ -282,6 +285,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         pinnedCertificateChain = findPreference(Key.SERVER_PINNED_CERTIFICATE_CHAIN)!!
         allowInsecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
         xtlsFlow = findPreference(Key.SERVER_FLOW)!!
+        alterId = findPreference(Key.SERVER_ALTER_ID)!!
         utlsFingerprint = findPreference(Key.SERVER_UTLS_FINGERPRINT)!!
 
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
@@ -338,7 +342,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                     encryption.value = "aes-256-gcm"
                 }
             }
-            else -> encryption.isVisible = false
+            else -> {
+                encryption.isVisible = false
+            }
         }
 
         passwordUUID = findPreference(Key.SERVER_USER_ID)!!
@@ -349,6 +355,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 dialogTitle = resources.getString(R.string.password)
             }
         }
+
+        alterId.isVisible = bean is VMessBean
+        alterId.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
 
         updateView(network.value)
         network.setOnPreferenceChangeListener { _, newValue ->

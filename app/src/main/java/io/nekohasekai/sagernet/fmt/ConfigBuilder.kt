@@ -472,6 +472,9 @@ fun buildV2RayConfig(
                                                     users = listOf(VMessOutboundConfigurationObject.ServerObject.UserObject()
                                                         .apply {
                                                             id = bean.uuidOrGenerate()
+                                                            if (bean.alterId > 0) {
+                                                                alterId = bean.alterId
+                                                            }
                                                             security = bean.encryption.takeIf { it.isNotBlank() }
                                                                 ?: "auto"
                                                             experiments = ""

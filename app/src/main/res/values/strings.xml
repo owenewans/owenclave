@@ -97,6 +97,7 @@
     <string name="obfs">Obfs</string>
     <string name="obfs_param">Obfs parameters</string>
     <string name="uuid">User ID</string>
+    <string name="alter_id">Alter ID</string>
     <string name="security">Transport layer security</string>
     <string name="network">Network</string>
     <string name="flow">Flow</string>

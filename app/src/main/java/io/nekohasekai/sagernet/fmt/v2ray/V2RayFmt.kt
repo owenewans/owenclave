@@ -45,7 +45,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
 
         var protocol = url.username
         bean.type = protocol
-//        bean.alterId = url.password.substringAfterLast('-').toInt()
+        bean.alterId = url.password.substringAfterLast('-').toInt()
         bean.uuid = url.password.substringBeforeLast('-')
 
         if (protocol.endsWith("+tls")) {
@@ -279,7 +279,7 @@ fun parseV2RayN(link: String): VMessBean {
     bean.serverPort = json.getInt("port") ?: 0
     bean.encryption = json.getStr("scy") ?: ""
     bean.uuid = json.getStr("id") ?: ""
-//    bean.alterId = json.getInt("aid") ?: 0
+    bean.alterId = json.getInt("aid") ?: 0
     bean.type = json.getStr("net") ?: ""
     if (bean.type == "h2") {
         bean.type = "http"
@@ -394,7 +394,7 @@ fun VMessBean.toV2rayN(): String {
         it["add"] = serverAddress
         it["port"] = serverPort
         it["id"] = this.uuidOrGenerate()
-        it["aid"] = 0
+        it["aid"] = alterId
         it["net"] = when (type) {
             "tcp", "kcp", "ws", "httpupgrade", "quic", "grpc" -> type
             "http" -> "h2"
@@ -435,7 +435,7 @@ fun VMessBean.toV2rayN(): String {
 }
 
 fun StandardV2RayBean.toUri(): String {
-//    if (this is VMessBean && alterId > 0) return toV2rayN()
+    if (this is VMessBean && alterId > 0) return toV2rayN()
 
     val builder = Libcore.newURL(
         if (this is VMessBean) "vmess" else if (this is VLESSBean) "vless" else "trojan"

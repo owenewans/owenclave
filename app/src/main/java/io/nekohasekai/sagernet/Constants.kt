@@ -122,6 +122,7 @@ object Key {
     const val SERVER_OBFS_PARAM = "serverObfsParam"
 
     const val SERVER_USER_ID = "serverUserId"
+    const val SERVER_ALTER_ID = "serverAlterId"
     const val SERVER_SECURITY = "serverSecurity"
     const val SERVER_NETWORK = "serverNetwork"
     const val SERVER_HEADER = "serverHeader"

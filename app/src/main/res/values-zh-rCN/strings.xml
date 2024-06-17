@@ -68,6 +68,7 @@
     <string name="obfs">混淆</string>
     <string name="obfs_param">混淆参数</string>
     <string name="uuid">用户 ID</string>
+    <string name="alter_id">Alter ID</string>
     <string name="security">传输层安全</string>
     <string name="network">传输协议</string>
     <string name="header_type">头类型</string>

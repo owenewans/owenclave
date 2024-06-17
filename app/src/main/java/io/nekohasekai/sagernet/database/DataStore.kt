@@ -234,6 +234,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverObfsParam by profileCacheStore.string(Key.SERVER_OBFS_PARAM)
 
     var serverUserId by profileCacheStore.string(Key.SERVER_USER_ID)
+    var serverAlterId by profileCacheStore.stringToInt(Key.SERVER_ALTER_ID)
     var serverSecurity by profileCacheStore.string(Key.SERVER_SECURITY)
     var serverNetwork by profileCacheStore.string(Key.SERVER_NETWORK)
     var serverHeader by profileCacheStore.string(Key.SERVER_HEADER)
