@@ -55,7 +55,7 @@ class StunLegacyActivity : ThemedActivity() {
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = Libcore.stunLegacyTest(binding.natStunServer.text.toString(), DataStore.socksPort)
+            val result = Libcore.stunLegacyTest(binding.natStunServer.text.toString(), DataStore.socksPort, DataStore.localDNSPort)
             onMainDispatcher {
                 if (result.error.length > 0) {
                     AlertDialog.Builder(this@StunLegacyActivity)
