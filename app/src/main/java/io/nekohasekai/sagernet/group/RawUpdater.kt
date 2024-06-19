@@ -27,15 +27,22 @@ import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
+import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
+import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean.*
 import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria
+import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.fixInvalidParams
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
+import io.nekohasekai.sagernet.fmt.ssh.SSHBean
+import io.nekohasekai.sagernet.fmt.ssh.SSHBean.*
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
+import io.nekohasekai.sagernet.fmt.tuic.TuicBean
+import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
@@ -222,9 +229,7 @@ object RawUpdater : GroupUpdater() {
         val proxies = mutableListOf<AbstractBean>()
 
         if (text.contains("proxies:")) {
-
             try {
-
                 // clash
                 for (proxy in (Yaml().apply {
                     addTypeDescription(TypeDescription(String::class.java, "str"))
@@ -232,7 +237,6 @@ object RawUpdater : GroupUpdater() {
                     app.getString(R.string.no_proxies_found_in_file)
                 ))) {
                     // Note: YAML numbers parsed as "Long"
-
                     when (proxy["type"] as String) {
                         "socks5" -> {
                             proxies.add(SOCKSBean().apply {
@@ -242,8 +246,11 @@ object RawUpdater : GroupUpdater() {
                                 password = proxy["password"]?.toString()
                                 if (proxy["tls"]?.toString() == "true") {
                                     security = "tls"
+                                    sni = proxy["sni"]?.toString()
+                                    if (proxy["skip-cert-verify"]?.toString() == "true") {
+                                        allowInsecure = true
+                                    }
                                 }
-                                sni = proxy["sni"]?.toString()
                                 name = proxy["name"]?.toString()
                             })
                         }
@@ -255,8 +262,11 @@ object RawUpdater : GroupUpdater() {
                                 password = proxy["password"]?.toString()
                                 if (proxy["tls"]?.toString() == "true") {
                                     security = "tls"
+                                    sni = proxy["sni"]?.toString()
+                                    if (proxy["skip-cert-verify"]?.toString() == "true") {
+                                        allowInsecure = true
+                                    }
                                 }
-                                sni = proxy["sni"]?.toString()
                                 name = proxy["name"]?.toString()
                             })
                         }
@@ -298,23 +308,50 @@ object RawUpdater : GroupUpdater() {
                                 method = clashCipher(proxy["cipher"] as String)
                                 plugin = pluginStr
                                 name = proxy["name"]?.toString()
-
                                 fixInvalidParams()
                             })
                         }
-                        "vmess" -> {
-                            val bean = VMessBean()
+                        "vmess", "vless", "trojan" -> {
+                            val bean = when (proxy["type"] as String) {
+                                "vmess" -> VMessBean()
+                                "vless" -> VLESSBean()
+                                "trojan" -> TrojanBean()
+                                else -> error("impossible")
+                            }
+                            if (bean is TrojanBean) {
+                                bean.security = "tls"
+                            }
                             for (opt in proxy) {
                                 when (opt.key) {
                                     "name" -> bean.name = opt.value?.toString()
                                     "server" -> bean.serverAddress = opt.value as String
                                     "port" -> bean.serverPort = opt.value.toString().toInt()
-                                    "uuid" -> bean.uuid = opt.value as String
-                                    "alterId" -> bean.alterId = opt.value.toString().toInt()
-                                    "cipher" -> bean.encryption = opt.value as String
-                                    "network" -> bean.type = opt.value as String
-                                    "tls" -> bean.security = if (opt.value?.toString() == "true") "tls" else ""
+                                    "password" -> if (bean is TrojanBean) bean.password = opt.value as String
+                                    "uuid" -> if (bean is VMessBean || bean is VLESSBean) bean.uuid = opt.value as String
+                                    "alterId" -> if (bean is VMessBean) bean.alterId = opt.value.toString().toInt()
+                                    "cipher" -> if (bean is VMessBean) bean.encryption = opt.value as String
+                                    "flow" -> if (bean is VLESSBean) bean.flow = opt.value as String
+                                    "packet-encoding" -> if (bean is VMessBean || bean is VLESSBean) {
+                                        if (opt.value as String == "packetaddr") {
+                                            bean.packetEncoding = "packet"
+                                        } else if (opt.value as String == "xudp") {
+                                            bean.packetEncoding = "xudp"
+                                        }
+                                    }
+                                    "tls" -> if (bean is VMessBean || bean is VLESSBean) {
+                                        bean.security = if (opt.value?.toString() == "true") "tls" else ""
+                                    }
+                                    "servername" -> if (bean is VMessBean || bean is VLESSBean) bean.sni = opt.value?.toString()
+                                    "sni" -> if (bean is TrojanBean) bean.sni = opt.value?.toString()
                                     "skip-cert-verify" -> bean.allowInsecure = opt.value?.toString() == "true"
+                                    "reality-opts" -> for (realityOpt in (opt.value as Map<String, Any>)) {
+                                        bean.security = "reality"
+                                        when (realityOpt.key.lowercase()) {
+                                            "public-key" -> bean.realityPublicKey = realityOpt.value.toString()
+                                            "short-id" -> bean.realityShortId = realityOpt.value.toString()
+                                        }
+                                    }
+                                    "network" -> bean.type = opt.value as String
                                     "ws-opts" -> for (wsOpt in (opt.value as Map<String, Any>)) {
                                         when (wsOpt.key.lowercase()) {
                                             "headers" -> for (wsHeader in (opt.value as Map<String, Any>)) {
@@ -331,9 +368,13 @@ object RawUpdater : GroupUpdater() {
                                             "early-data-header-name" -> {
                                                 bean.earlyDataHeaderName = wsOpt.value.toString()
                                             }
+                                            "v2ray-http-upgrade" -> {
+                                                if (wsOpt.value.toString() == "true") {
+                                                    bean.type = "httpupgrade"
+                                                }
+                                            }
                                         }
                                     }
-                                    "servername" -> bean.host = opt.value?.toString()
                                     "h2-opts" -> for (h2Opt in (opt.value as Map<String, Any>)) {
                                         when (h2Opt.key.lowercase()) {
                                             "host" -> bean.host = (h2Opt.value as List<String>).first()
@@ -354,21 +395,6 @@ object RawUpdater : GroupUpdater() {
                             }
                             proxies.add(bean)
                         }
-                        "trojan" -> {
-                            val bean = TrojanBean()
-                            for (opt in proxy) {
-                                when (opt.key) {
-                                    "name" -> bean.name = opt.value?.toString()
-                                    "server" -> bean.serverAddress = opt.value as String
-                                    "port" -> bean.serverPort = opt.value.toString().toInt()
-                                    "password" -> bean.password = opt.value?.toString()
-                                    "sni" -> bean.sni = opt.value?.toString()
-                                    "skip-cert-verify" -> bean.allowInsecure = opt.value?.toString() == "true"
-                                }
-                            }
-                            proxies.add(bean)
-                        }
-
                         "ssr" -> {
                             val entity = ShadowsocksRBean()
                             for (opt in proxy) {
@@ -385,6 +411,85 @@ object RawUpdater : GroupUpdater() {
                                 }
                             }
                             proxies.add(entity)
+                        }
+                        "ssh" -> {
+                            val bean = SSHBean()
+                            for (opt in proxy) {
+                                when (opt.key) {
+                                    "name" -> bean.name = opt.value?.toString()
+                                    "server" -> bean.serverAddress = opt.value as String
+                                    "port" -> bean.serverPort = opt.value.toString().toInt()
+                                    "username" -> bean.username = opt.value?.toString()
+                                    "password" -> {
+                                        bean.password = opt.value?.toString()
+                                        bean.authType = AUTH_TYPE_PASSWORD
+                                    }
+                                    "private-key" -> {
+                                        bean.privateKey = opt.value as String
+                                        bean.authType = AUTH_TYPE_PRIVATE_KEY
+                                    }
+                                    "private-key-passphrase" -> bean.privateKeyPassphrase = opt.value as String
+                                }
+                            }
+                            proxies.add(bean)
+                        }
+                        "hysteria" -> {
+                            proxies.add(HysteriaBean().apply {
+                                serverAddress = proxy["server"] as String
+                                serverPort = proxy["port"].toString().toInt()
+                                protocol = when (proxy["protocol"]?.toString()) {
+                                    "faketcp" -> PROTOCOL_FAKETCP
+                                    "wechat-video" -> PROTOCOL_WECHAT_VIDEO
+                                    else -> PROTOCOL_UDP
+                                }
+                                authPayloadType = TYPE_STRING
+                                authPayload = proxy["auth-str"]?.toString()
+                                uploadMbps = proxy["up"]?.toString()?.toIntOrNull()?: 10 // support int only
+                                downloadMbps = proxy["down"]?.toString()?.toIntOrNull()?: 50 // support int only
+                                sni = proxy["sni"]?.toString()
+                                allowInsecure = proxy["skip-cert-verify"]?.toString() == "true"
+                                obfuscation = proxy["obfs"]?.toString()
+                                name = proxy["name"]?.toString()
+                            })
+                        }
+                        "hysteria2" -> {
+                            proxies.add(Hysteria2Bean().apply {
+                                serverAddress = proxy["server"] as String
+                                serverPort = proxy["port"].toString().toInt()
+                                auth = proxy["password"]?.toString()
+                                uploadMbps = proxy["up"]?.toString()?.toIntOrNull()?: 0 // support int only
+                                downloadMbps = proxy["down"]?.toString()?.toIntOrNull()?: 0 // support int only
+                                sni = proxy["sni"]?.toString()
+                                allowInsecure = proxy["skip-cert-verify"]?.toString() == "true"
+                                obfs = if (proxy["obfs"]?.toString() == "salamander") proxy["obfs-password"]?.toString() else ""
+                                name = proxy["name"]?.toString()
+                            })
+                        }
+                        "tuic" -> {
+                            if (proxy["token"]?.toString() != "") {
+                                proxies.add(TuicBean().apply {
+                                    serverAddress = proxy["server"] as String
+                                    serverPort = proxy["port"].toString().toInt()
+                                    token = proxy["token"]?.toString()
+                                    udpRelayMode = proxy["udp-relay-mode"]?.toString()
+                                    disableSNI = proxy["disable-sni"]?.toString() == "true"
+                                    reduceRTT = proxy["reduce-rtt"]?.toString() == "true"
+                                    sni = proxy["sni"]?.toString()
+                                    name = proxy["name"]?.toString()
+                                })
+                            } else {
+                                proxies.add(Tuic5Bean().apply {
+                                    serverAddress = proxy["server"] as String
+                                    serverPort = proxy["port"].toString().toInt()
+                                    uuid = proxy["uuid"]?.toString()
+                                    password = proxy["password"]?.toString()
+                                    udpRelayMode = proxy["udp-relay-mode"]?.toString()
+                                    disableSNI = proxy["disable-sni"]?.toString() == "true"
+                                    zeroRTTHandshake = proxy["reduce-rtt"]?.toString() == "true"
+                                    sni = proxy["sni"]?.toString()
+                                    name = proxy["name"]?.toString()
+                                })
+                            }
                         }
                     }
                 }
