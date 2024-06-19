@@ -609,8 +609,8 @@ object RawUpdater : GroupUpdater() {
                         })
                     }
                 }
-                "vmess", "vless" -> {
-                    val v2rayBean = (if (protocol == "vmess") VMessBean() else VLESSBean()).applyDefaultValues()
+                "vmess", "vless", "trojan" -> {
+                    val v2rayBean = (if (protocol == "vmess") VMessBean() else if (protocol == "vless") VLESSBean() else TrojanBean()).applyDefaultValues()
                     streamSettings?.apply {
                         v2rayBean.security = security ?: v2rayBean.security
                         when (security) {
@@ -624,6 +624,19 @@ object RawUpdater : GroupUpdater() {
                                     }
                                     allowInsecure?.also {
                                         v2rayBean.allowInsecure = it
+                                    }
+                                }
+                            }
+                            "reality" -> {
+                                realitySettings?.apply {
+                                    serverName?.also {
+                                        v2rayBean.sni = it
+                                    }
+                                    publicKey?.also {
+                                        v2rayBean.realityPublicKey = it
+                                    }
+                                    shortId?.also {
+                                        v2rayBean.realityShortId = it
                                     }
                                 }
                             }
@@ -719,6 +732,31 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.grpcServiceName = it
                                 }
                             }
+                            "httpupgrade" -> {
+                                httpupgradeSettings?.apply {
+                                    host?.also {
+                                        v2rayBean.host = it
+                                    }
+                                    path?.also {
+                                        v2rayBean.path = it
+                                    }
+                                }
+                            }
+                            "splithttp" -> {
+                                splithttpSettings?.apply {
+                                    host?.also {
+                                        v2rayBean.host = it
+                                    }
+                                    path?.also {
+                                        v2rayBean.path = it
+                                    }
+                                }
+                            }
+                            "meek" -> {
+                                meekSettings?.url?.also {
+                                    v2rayBean.meekUrl = it
+                                }
+                            }
                         }
                     }
                     if (protocol == "vmess") {
@@ -737,7 +775,7 @@ object RawUpdater : GroupUpdater() {
                                 })
                             }
                         }
-                    } else {
+                    } else if (protocol == "vless") {
                         v2rayBean as VLESSBean
                         (settings.value as? V2RayConfig.VLESSOutboundConfigurationObject)?.vnext?.forEach {
                             val vlessBean = v2rayBean.clone().apply {
@@ -748,9 +786,20 @@ object RawUpdater : GroupUpdater() {
                                 proxies.add(vlessBean.clone().apply {
                                     uuid = user.id
                                     encryption = user.encryption
+                                    flow = user.flow
                                     name = tag ?: displayName() + " - ${user.id}"
                                 })
                             }
+                        }
+                    } else if (protocol == "trojan") {
+                        v2rayBean as TrojanBean
+                        (settings.value as? V2RayConfig.TrojanOutboundConfigurationObject)?.servers?.forEach {
+                            proxies.add(v2rayBean.clone().apply {
+                                name = tag
+                                serverAddress = it.address
+                                serverPort = it.port
+                                password = it.password
+                            })
                         }
                     }
                 }
@@ -763,37 +812,6 @@ object RawUpdater : GroupUpdater() {
                         password = it.password
                         plugin = ""
                     })
-                }
-                "trojan" -> {
-                    val trojanBean = TrojanBean().applyDefaultValues()
-
-                    streamSettings?.apply {
-                        trojanBean.security = security ?: trojanBean.security
-                        when (security) {
-                            "tls" -> {
-                                tlsSettings?.apply {
-                                    serverName?.also {
-                                        trojanBean.sni = it
-                                    }
-                                    alpn?.also {
-                                        trojanBean.alpn = it.joinToString(",")
-                                    }
-                                    allowInsecure?.also {
-                                        trojanBean.allowInsecure = it
-                                    }
-                                }
-                            }
-                        }
-
-                        (settings.value as? V2RayConfig.TrojanOutboundConfigurationObject)?.servers?.forEach {
-                            proxies.add(trojanBean.clone().apply {
-                                name = tag
-                                serverAddress = it.address
-                                serverPort = it.port
-                                password = it.password
-                            })
-                        }
-                    }
                 }
             }
             Unit
