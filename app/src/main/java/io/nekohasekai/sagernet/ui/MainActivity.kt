@@ -510,7 +510,7 @@ class MainActivity : ThemedActivity(),
                 binding.drawerLayout.open()
                 navigation.requestFocus()
             }
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+            KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_BACK -> {
                 if (binding.drawerLayout.isOpen) {
                     binding.drawerLayout.close()
                     return true
