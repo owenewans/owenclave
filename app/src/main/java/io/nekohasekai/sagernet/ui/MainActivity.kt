@@ -33,6 +33,7 @@ import android.view.KeyEvent
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.annotation.IdRes
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.preference.PreferenceDataStore
@@ -510,9 +511,26 @@ class MainActivity : ThemedActivity(),
                 binding.drawerLayout.open()
                 navigation.requestFocus()
             }
-            KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent.KEYCODE_BACK -> {
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
                 if (binding.drawerLayout.isOpen) {
                     binding.drawerLayout.close()
+                    return true
+                }
+            }
+            KeyEvent.KEYCODE_BACK -> {
+                if (binding.drawerLayout.isOpen) {
+                    binding.drawerLayout.close()
+                    return true
+                }
+                val configurationFragment = supportFragmentManager.findFragmentById(R.id.fragment_holder) as? ConfigurationFragment
+                if (configurationFragment == null) {
+                    displayFragment(ConfigurationFragment())
+                    return true
+                }
+                val toolbarFragment = supportFragmentManager.findFragmentById(R.id.fragment_holder) as? ToolbarFragment
+                val searchView = toolbarFragment?.toolbar?.findViewById<SearchView>(R.id.action_search)
+                if (searchView?.isIconified == false) {
+                    searchView.isIconified = true
                     return true
                 }
             }
