@@ -524,7 +524,7 @@ class MainActivity : ThemedActivity(),
                 }
                 val configurationFragment = supportFragmentManager.findFragmentById(R.id.fragment_holder) as? ConfigurationFragment
                 if (configurationFragment == null) {
-                    displayFragment(ConfigurationFragment())
+                    displayFragmentWithId(R.id.nav_configuration)
                     return true
                 }
                 val toolbarFragment = supportFragmentManager.findFragmentById(R.id.fragment_holder) as? ToolbarFragment
