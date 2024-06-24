@@ -76,6 +76,9 @@
             app:title="@string/show_direct_speed"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:key="showGroupName"
+            app:title="@string/show_group_name_in_notification" />
+        <SwitchPreference
             app:icon="@drawable/ic_baseline_center_focus_weak_24"
             app:key="alwaysShowAddress"
             app:summary="@string/always_show_address_sum"

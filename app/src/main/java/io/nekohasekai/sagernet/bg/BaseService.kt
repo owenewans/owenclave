@@ -486,7 +486,12 @@ class BaseService {
                 data.closeReceiverRegistered = true
             }
 
-            data.notification = createNotification(profile.displayName())
+            val group = SagerDatabase.groupDao.getById(profile.groupId)
+            data.notification = if (DataStore.showGroupName && group != null){
+                createNotification("[" + group.displayName() + "] " + profile.displayName())
+            } else {
+                createNotification(profile.displayName())
+            }
 
             data.changeState(State.Connecting)
             runOnMainDispatcher {

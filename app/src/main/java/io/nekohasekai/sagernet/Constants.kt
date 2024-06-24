@@ -87,6 +87,7 @@ object Key {
     const val ENABLE_LOG = "enableLog"
 
     const val ALWAYS_SHOW_ADDRESS = "alwaysShowAddress"
+    const val SHOW_GROUP_NAME = "showGroupName"
 
     const val SHADOWSOCKS_2022_IMPLEMENTATION = "shadowsocks2022Implementation"
     const val PROVIDER_HYSTERIA2 = "providerHysteria2"

@@ -494,5 +494,6 @@
     <string name="stun_legacy_test_summary">使用 STUN 确定客户端的 RFC 3489 中定义的 NAT 类型。</string>
     <string name="nat_external_address">外部地址</string>
     <string name="subscription_expire">过期：%s</string>
+    <string name="show_group_name_in_notification">在通知中显示分组名称</string>
 
 </resources>

@@ -204,6 +204,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
+        findPreference<SwitchPreference>(Key.SHOW_GROUP_NAME)!!.onPreferenceChangeListener = reloadListener
+
         serviceMode.setOnPreferenceChangeListener { _, _ ->
             if (SagerNet.started) {
                 SagerNet.stopService()
