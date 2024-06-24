@@ -61,12 +61,15 @@ public class SubscriptionBean extends Serializable {
     public Set<String> selectedOwners;
     public Set<String> selectedTags;
 
+    // https://github.com/crossutility/Quantumult/blob/master/extra-subscription-feature.md
+    public String subscriptionUserinfo;
+
     public SubscriptionBean() {
     }
 
     @Override
     public void serializeToBuffer(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
 
         output.writeInt(type);
 
@@ -83,6 +86,10 @@ public class SubscriptionBean extends Serializable {
         output.writeBoolean(autoUpdate);
         output.writeInt(autoUpdateDelay);
         output.writeInt(lastUpdated);
+
+        if (type == SubscriptionType.RAW) {
+            output.writeString(subscriptionUserinfo);
+        }
 
         if (type != SubscriptionType.RAW) {
             output.writeLong(bytesUsed);
@@ -101,7 +108,7 @@ public class SubscriptionBean extends Serializable {
     }
 
     public void serializeForShare(ByteBufferOutput output) {
-        output.writeInt(1);
+        output.writeInt(2);
 
         output.writeInt(type);
 
@@ -115,6 +122,10 @@ public class SubscriptionBean extends Serializable {
         output.writeBoolean(deduplication);
         output.writeBoolean(updateWhenConnectedOnly);
         output.writeString(customUserAgent);
+
+        if (type == SubscriptionType.RAW) {
+            output.writeString(subscriptionUserinfo);
+        }
 
         if (type != SubscriptionType.RAW) {
             output.writeLong(bytesUsed);
@@ -147,6 +158,10 @@ public class SubscriptionBean extends Serializable {
         autoUpdate = input.readBoolean();
         autoUpdateDelay = input.readInt();
         lastUpdated = input.readInt();
+
+        if (type == SubscriptionType.RAW && version >= 3) {
+            subscriptionUserinfo = input.readString();
+        }
 
         if (type != SubscriptionType.RAW) {
             bytesUsed = input.readLong();
@@ -182,6 +197,10 @@ public class SubscriptionBean extends Serializable {
         updateWhenConnectedOnly = input.readBoolean();
         customUserAgent = input.readString();
 
+        if (type == SubscriptionType.RAW && version >= 2) {
+            subscriptionUserinfo = input.readString();
+        }
+
         if (type != SubscriptionType.RAW) {
             bytesUsed = input.readLong();
             bytesRemaining = input.readLong();
@@ -203,6 +222,7 @@ public class SubscriptionBean extends Serializable {
         if (deduplication == null) deduplication = false;
         if (updateWhenConnectedOnly == null) updateWhenConnectedOnly = false;
         if (customUserAgent == null) customUserAgent = "";
+        if (subscriptionUserinfo == null) subscriptionUserinfo = "";
         if (autoUpdate == null) autoUpdate = false;
         if (autoUpdateDelay == null) autoUpdateDelay = 280;
         if (lastUpdated == null) lastUpdated = 0;

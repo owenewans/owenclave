@@ -19,6 +19,7 @@
 
 package io.nekohasekai.sagernet.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.Formatter
@@ -48,6 +49,7 @@ import io.nekohasekai.sagernet.widget.ListHolderListener
 import io.nekohasekai.sagernet.widget.QRCodeDialog
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
 import java.util.*
 
 class GroupFragment : ToolbarFragment(R.layout.layout_group),
@@ -168,7 +170,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
         val groupList = ArrayList<ProxyGroup>()
 
-        suspend fun reload() {
+        fun reload() {
             val groups = SagerDatabase.groupDao.allGroups().toMutableList()
             groups.find { it.ungrouped }?.let {
                 if (SagerDatabase.proxyDao.countByGroup(it.id) == 0L) {
@@ -346,7 +348,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
             fun export(link: String) {
                 val success = SagerNet.trySetPrimaryClip(link)
-                (activity as MainActivity).snackbar(if (success) R.string.action_export_msg else R.string.action_export_err)
+                (activity).snackbar(if (success) R.string.action_export_msg else R.string.action_export_err)
                     .show()
             }
 
@@ -387,6 +389,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
         }
 
 
+        @SuppressLint("SimpleDateFormat")
         fun bind(group: ProxyGroup) {
             proxyGroup = group
 
@@ -454,7 +457,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             }
 
             val subscription = proxyGroup.subscription
-            val textLayout = groupTraffic.parent as View
             if (subscription != null && subscription.bytesUsed > 0L) {
                 groupTraffic.isVisible = true
                 groupTraffic.text = if (subscription.bytesRemaining > 0L) {
@@ -473,6 +475,52 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     )
                 }
                 groupStatus.setPadding(0)
+            } else if (subscription != null && !subscription.subscriptionUserinfo.isNullOrBlank()) {
+                var text = ""
+                fun get(regex: String): String? {
+                    return regex.toRegex().findAll(subscription.subscriptionUserinfo).mapNotNull {
+                        if (it.groupValues.size > 1) it.groupValues[1] else null
+                    }.firstOrNull()
+                }
+                var used: Long = 0
+                var total: Long = 0
+                try {
+                    get("upload=([0-9]+)")?.apply {
+                        used += toLong()
+                    }
+                    get("download=([0-9]+)")?.apply {
+                        used += toLong()
+                    }
+                    total = get("total=([0-9]+)")?.toLong() ?: 0
+                    if (total > 0 || used > 0) {
+                        text += getString(
+                            R.string.subscription_traffic, Formatter.formatFileSize(
+                                context, used
+                            ), Formatter.formatFileSize(
+                                context, total - used
+                            )
+                        )
+                    }
+                    get("expire=([0-9]+)")?.apply {
+                        text += "\n"
+                        text += getString(
+                            R.string.subscription_expire,
+                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(this.toLong() * 1000))
+                        )
+                    }
+                } catch (_: Exception) {
+                }
+                if (text.isNotEmpty()) {
+                    groupTraffic.isVisible = true
+                    groupTraffic.text = text
+                    groupStatus.setPadding(0)
+                    if (proxyGroup.id !in GroupUpdater.updating) subscriptionUpdateProgress.apply {
+                        isVisible = true
+                        setProgressCompat(
+                            ((used.toDouble() / total.toDouble()) * 100).toInt(), true
+                        )
+                    }
+                }
             } else {
                 groupTraffic.isVisible = false
                 groupStatus.setPadding(0, 0, 0, dp2px(4))
