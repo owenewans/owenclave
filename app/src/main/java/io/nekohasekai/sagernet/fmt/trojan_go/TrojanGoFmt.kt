@@ -128,9 +128,6 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int, mux: Boolean): String {
             it["enabled"] = true
             it["concurrency"] = DataStore.muxConcurrency
         }
-        conf["tcp"] = JSONObject().also {
-            it["prefer_ipv4"] = DataStore.ipv6Mode <= IPv6Mode.ENABLE
-        }
 
         when (type) {
             "original" -> {

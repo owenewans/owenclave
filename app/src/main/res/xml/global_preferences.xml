@@ -138,11 +138,11 @@
             app:summary="@string/resolve_destination_summary"
             app:title="@string/resolve_destination" />
         <com.takisoft.preferencex.SimpleMenuPreference
-            app:defaultValue="1"
+            app:defaultValue="0"
             app:entries="@array/ipv6_mode"
             app:entryValues="@array/int_array_4"
             app:icon="@drawable/ic_image_looks_6"
-            app:key="ipv6Mode"
+            app:key="ipv6Mode0"
             app:title="@string/ipv6"
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
@@ -189,6 +189,13 @@
             app:key="remoteDns"
             app:title="@string/remote_dns"
             app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:defaultValue="UseIPv4"
+            app:entries="@array/dns_query_strategy"
+            app:entryValues="@array/dns_query_strategy"
+            app:key="remoteDnsQueryStrategy"
+            app:title="@string/remote_dns_query_strategy"
+            app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_home_24"
             app:key="useLocalDnsAsDirectDns"
@@ -197,6 +204,13 @@
             app:defaultValue="tcp://223.5.5.5"
             app:key="directDns"
             app:title="@string/direct_dns"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:defaultValue="UseIPv4"
+            app:entries="@array/dns_query_strategy"
+            app:entryValues="@array/dns_query_strategy"
+            app:key="directDnsQueryStrategy"
+            app:title="@string/direct_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_home_24"

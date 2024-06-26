@@ -975,4 +975,10 @@
         <item>new_reno</item>
     </string-array>
 
+    <string-array name="dns_query_strategy">
+        <item>UseIP</item>
+        <item>UseIPv4</item>
+        <item>UseIPv6</item>
+    </string-array>
+
 </resources>

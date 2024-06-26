@@ -45,8 +45,10 @@ object Key {
     const val ENABLE_FAKEDNS = "enableFakeDns"
     const val HIJACK_DNS = "hijackDns"
     const val DNS_HOSTS = "dnsHosts0"
+    const val REMOTE_DNS_QUERY_STRATEGY = "remoteDnsQueryStrategy"
+    const val DIRECT_DNS_QUERY_STRATEGY = "directDnsQueryStrategy"
 
-    const val IPV6_MODE = "ipv6Mode"
+    const val IPV6_MODE = "ipv6Mode0"
 
     const val PROXY_APPS = "proxyApps"
     const val BYPASS_MODE = "bypassMode"

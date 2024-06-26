@@ -82,20 +82,6 @@ fun ShadowsocksRBean.toUri(): String {
     )
 }
 
-fun ShadowsocksRBean.buildShadowsocksRConfig(): String {
-    return JSONObject().also {
-        it["server"] = finalAddress
-        it["server_port"] = finalPort
-        it["method"] = method
-        it["password"] = password
-        it["protocol"] = protocol
-        it["protocol_param"] = protocolParam
-        it["obfs"] = obfs
-        it["obfs_param"] = obfsParam
-        it["ipv6"] = DataStore.ipv6Mode >= IPv6Mode.ENABLE
-    }.toStringPretty()
-}
-
 fun JSONObject.parseShadowsocksR(): ShadowsocksRBean {
     return ShadowsocksRBean().applyDefaultValues().apply {
         serverAddress = getStr("server", serverAddress)

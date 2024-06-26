@@ -495,5 +495,7 @@
     <string name="nat_external_address">外部地址</string>
     <string name="subscription_expire">过期：%s</string>
     <string name="show_group_name_in_notification">在通知中显示分组名称</string>
+    <string name="remote_dns_query_strategy">远程 DNS 查询策略</string>
+    <string name="direct_dns_query_strategy">直连 DNS 查询策略</string>
 
 </resources>

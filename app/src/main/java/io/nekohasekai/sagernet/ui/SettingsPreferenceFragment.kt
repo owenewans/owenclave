@@ -137,6 +137,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val useLocalDnsAsDirectDns = findPreference<SwitchPreference>(Key.USE_LOCAL_DNS_AS_DIRECT_DNS)!!
         val bootstrapDns = findPreference<EditTextPreference>(Key.BOOTSTRAP_DNS)!!
         val useLocalDnsAsBootstrapDns = findPreference<SwitchPreference>(Key.USE_LOCAL_DNS_AS_BOOTSTRAP_DNS)!!
+        val remoteDnsQueryStrategy = findPreference<SimpleMenuPreference>(Key.REMOTE_DNS_QUERY_STRATEGY)!!
+        val directDnsQueryStrategy = findPreference<SimpleMenuPreference>(Key.DIRECT_DNS_QUERY_STRATEGY)!!
 
         directDns.isEnabled = !DataStore.useLocalDnsAsDirectDns
         useLocalDnsAsDirectDns.setOnPreferenceChangeListener { _, newValue ->
@@ -260,6 +262,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         hijackDns.onPreferenceChangeListener = reloadListener
         dnsHosts.onPreferenceChangeListener = reloadListener
         enableDnsRouting.onPreferenceChangeListener = reloadListener
+        remoteDnsQueryStrategy.onPreferenceChangeListener = reloadListener
+        directDnsQueryStrategy.onPreferenceChangeListener = reloadListener
 
         portLocalDns.onPreferenceChangeListener = reloadListener
         ipv6Mode.onPreferenceChangeListener = reloadListener

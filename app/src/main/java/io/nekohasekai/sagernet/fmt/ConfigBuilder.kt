@@ -173,6 +173,8 @@ fun buildV2RayConfig(
     val enableDnsRouting = DataStore.enableDnsRouting
     val useFakeDns = DataStore.enableFakeDns
     val hijackDns = DataStore.hijackDns
+    val remoteDnsQueryStrategy = DataStore.remoteDnsQueryStrategy
+    val directDnsQueryStrategy = DataStore.directDnsQueryStrategy
     val trafficSniffing = DataStore.trafficSniffing
     val indexMap = ArrayList<IndexEntity>()
     var requireWs = false
@@ -203,35 +205,7 @@ fun buildV2RayConfig(
                 .associate { it.substringBefore(" ") to it.substringAfter(" ") }
                 .toMutableMap()
             servers = mutableListOf()
-
             fallbackStrategy = "disabledIfAnyMatch"
-
-            if (useFakeDns) {
-                fakedns = mutableListOf()
-                fakedns.add(DnsObject.StringOrFakeDnsObject().apply {
-                    valueY = FakeDnsObject().apply {
-                        ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
-                        poolSize = 65535
-                    }
-                })
-                if (ipv6Mode != IPv6Mode.DISABLE) {
-                    fakedns.add(DnsObject.StringOrFakeDnsObject().apply {
-                        valueY = FakeDnsObject().apply {
-                            ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
-                            poolSize = 65535
-                        }
-                    })
-                }
-            }
-
-            when (ipv6Mode) {
-                IPv6Mode.DISABLE -> {
-                    queryStrategy = "UseIPv4"
-                }
-                IPv6Mode.ONLY -> {
-                    queryStrategy = "UseIPv6"
-                }
-            }
         }
 
         log = LogObject().apply {
@@ -1450,15 +1424,18 @@ fun buildV2RayConfig(
                     valueY = DnsObject.ServerObject().apply {
                         address = it
                         domains = proxyDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
+                        queryStrategy = remoteDnsQueryStrategy
                         if (useFakeDns) {
                             fakedns = mutableListOf()
-                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                valueY = FakeDnsObject().apply {
-                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
-                                    poolSize = 65535
-                                }
-                            })
-                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                            if (queryStrategy != "UseIPv6") {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                            if (queryStrategy != "UseIPv4") {
                                 fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
                                     valueY = FakeDnsObject().apply {
                                         ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
@@ -1476,6 +1453,7 @@ fun buildV2RayConfig(
                         valueY = DnsObject.ServerObject().apply {
                             address = it
                             domains = bootstrapDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
+                            queryStrategy = directDnsQueryStrategy
                             if (!it.contains("+local://") && it != "localhost") {
                                 tag = TAG_DNS_DIRECT
                                 hasDnsTagDirect = true
@@ -1490,19 +1468,22 @@ fun buildV2RayConfig(
                         address = it
                         //FIXME: This relies on the behavior of a bug.
                         domains = bypassDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
+                        queryStrategy = directDnsQueryStrategy
                         if (!it.contains("+local://") && it != "localhost") {
                             tag = TAG_DNS_DIRECT
                             hasDnsTagDirect = true
                         }
                         if (useFakeDns) {
                             fakedns = mutableListOf()
-                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                valueY = FakeDnsObject().apply {
-                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
-                                    poolSize = 65535
-                                }
-                            })
-                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                            if (queryStrategy != "UseIPv6") {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                            if (queryStrategy != "UseIPv4") {
                                 fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
                                     valueY = FakeDnsObject().apply {
                                         ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
@@ -1520,15 +1501,18 @@ fun buildV2RayConfig(
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
                         address = it
+                        queryStrategy = remoteDnsQueryStrategy
                         if (useFakeDns) {
                             fakedns = mutableListOf()
-                            fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                valueY = FakeDnsObject().apply {
-                                    ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
-                                    poolSize = 65535
-                                }
-                            })
-                            if (ipv6Mode != IPv6Mode.DISABLE) {
+                            if (queryStrategy != "UseIPv6") {
+                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                    valueY = FakeDnsObject().apply {
+                                        ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                        poolSize = 65535
+                                    }
+                                })
+                            }
+                            if (queryStrategy != "UseIPv4") {
                                 fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
                                     valueY = FakeDnsObject().apply {
                                         ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
