@@ -86,6 +86,8 @@ object Key {
     const val MUX_CONCURRENCY = "muxConcurrency"
     const val TCP_KEEP_ALIVE_INTERVAL = "tcpKeepAliveInterval"
     const val RULES_PROVIDER = "rulesProvider"
+    const val RULES_GEOSITE_URL = "rulesGeositeUrl"
+    const val RULES_GEOIP_URL = "rulesGeoipUrl"
     const val ENABLE_LOG = "enableLog"
 
     const val ALWAYS_SHOW_ADDRESS = "alwaysShowAddress"

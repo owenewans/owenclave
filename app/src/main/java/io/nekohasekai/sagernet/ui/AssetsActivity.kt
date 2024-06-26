@@ -274,15 +274,18 @@ class AssetsActivity : ThemedActivity() {
     suspend fun updateAsset(file: File, versionFile: File, localVersion: String) {
         val repo: String
         var fileName = file.name
-        if (DataStore.rulesProvider == 0) {
-            if (file.name == internalFiles[0]) {
-                repo = "v2fly/geoip"
-            } else {
-                repo = "v2fly/domain-list-community"
-                fileName = "dlc.dat.xz"
+        when (DataStore.rulesProvider) {
+            0 -> {
+                if (file.name == internalFiles[0]) {
+                    repo = "v2fly/geoip"
+                } else {
+                    repo = "v2fly/domain-list-community"
+                    fileName = "dlc.dat.xz"
+                }
             }
-        } else {
-            repo = "Loyalsoldier/v2ray-rules-dat"
+            1 -> repo = "Loyalsoldier/v2ray-rules-dat"
+            2 -> repo = "Chocolate4U/Iran-v2ray-rules"
+            else -> return updateCustomAsset(file, versionFile)
         }
 
         val client = Libcore.newHttpClient().apply {
@@ -336,6 +339,37 @@ class AssetsActivity : ThemedActivity() {
             }
         } finally {
             client.close()
+        }
+    }
+
+    suspend fun updateCustomAsset(file: File, versionFile: File) {
+        val url: String = if (file.name == internalFiles[0]) {
+            DataStore.rulesGeoipUrl
+        } else {
+            DataStore.rulesGeositeUrl
+        }
+        val client = Libcore.newHttpClient().apply {
+            modernTLS()
+            keepAlive()
+            trySocks5(DataStore.socksPort)
+        }
+        try {
+            val response = client.newRequest().apply {
+                setURL(url)
+            }.execute()
+            val cacheFile = File(file.parentFile, file.name + ".tmp")
+            cacheFile.parentFile?.mkdirs()
+            response.writeTo(cacheFile.canonicalPath)
+            cacheFile.renameTo(file)
+            adapter.reloadAssets()
+            onMainDispatcher {
+                snackbar(R.string.route_asset_updated).show()
+            }
+        } finally {
+            client.close()
+            if (versionFile.isFile) {
+                versionFile.delete()
+            }
         }
     }
 

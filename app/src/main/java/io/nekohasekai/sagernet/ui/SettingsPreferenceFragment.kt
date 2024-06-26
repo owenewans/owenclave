@@ -245,6 +245,18 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val mtu = findPreference<EditTextPreference>(Key.MTU)!!
         mtu.setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
 
+        val rulesProvider = findPreference<SimpleMenuPreference>(Key.RULES_PROVIDER)!!
+        val rulesGeositeUrl = findPreference<EditTextPreference>(Key.RULES_GEOSITE_URL)!!
+        val rulesGeoipUrl = findPreference<EditTextPreference>(Key.RULES_GEOIP_URL)!!
+        rulesGeositeUrl.isVisible = DataStore.rulesProvider > 2
+        rulesGeoipUrl.isVisible = DataStore.rulesProvider > 2
+        rulesProvider.setOnPreferenceChangeListener { _, newValue ->
+            val provider = (newValue as String).toInt()
+            rulesGeositeUrl.isVisible = provider > 2
+            rulesGeoipUrl.isVisible = provider > 2
+            true
+        }
+
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
         portHttp.onPreferenceChangeListener = reloadListener

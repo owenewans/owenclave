@@ -530,5 +530,8 @@
     <string name="show_group_name_in_notification">Show group name in notification</string>
     <string name="remote_dns_query_strategy">Remote DNS query strategy</string>
     <string name="direct_dns_query_strategy">Direct DNS query strategy</string>
+    <string name="route_rules_custom">Custom</string>
+    <string name="rules_geosite_url">geosite.dat URL</string>
+    <string name="rules_geoip_url">geoip.dat URL</string>
 
 </resources>

@@ -497,5 +497,8 @@
     <string name="show_group_name_in_notification">在通知中显示分组名称</string>
     <string name="remote_dns_query_strategy">远程 DNS 查询策略</string>
     <string name="direct_dns_query_strategy">直连 DNS 查询策略</string>
+    <string name="route_rules_custom">自定义</string>
+    <string name="rules_geosite_url">geosite.dat URL</string>
+    <string name="rules_geoip_url">geoip.dat URL</string>
 
 </resources>
