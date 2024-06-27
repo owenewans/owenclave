@@ -805,6 +805,7 @@
         <item>360</item>
         <item>qq</item>
         <item>random</item>
+        <item>randomized</item>
     </string-array>
 
     <string-array name="reality_fingerprint_value">
@@ -816,6 +817,7 @@
         <item>360</item>
         <item>qq</item>
         <item>random</item>
+        <item>randomized</item>
     </string-array>
 
     <string-array name="trojan_go_utls_entry">
