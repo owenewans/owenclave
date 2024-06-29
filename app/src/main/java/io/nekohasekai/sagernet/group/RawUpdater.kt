@@ -437,7 +437,7 @@ object RawUpdater : GroupUpdater() {
                         "hysteria" -> {
                             proxies.add(HysteriaBean().apply {
                                 serverAddress = proxy["server"] as String
-                                serverPort = proxy["port"].toString().toInt()
+                                serverPorts = proxy["port"].toString()
                                 protocol = when (proxy["protocol"]?.toString()) {
                                     "faketcp" -> PROTOCOL_FAKETCP
                                     "wechat-video" -> PROTOCOL_WECHAT_VIDEO
@@ -456,7 +456,7 @@ object RawUpdater : GroupUpdater() {
                         "hysteria2" -> {
                             proxies.add(Hysteria2Bean().apply {
                                 serverAddress = proxy["server"] as String
-                                serverPort = proxy["port"].toString().toInt()
+                                serverPorts = proxy["port"].toString()
                                 auth = proxy["password"]?.toString()
                                 uploadMbps = proxy["up"]?.toString()?.toIntOrNull()?: 0 // support int only
                                 downloadMbps = proxy["down"]?.toString()?.toIntOrNull()?: 0 // support int only
