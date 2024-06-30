@@ -298,7 +298,12 @@ class VpnService : BaseVpnService(),
         builder.addDnsServer(PRIVATE_VLAN4_GATEWAY)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && DataStore.appendHttpProxy && DataStore.requireHttp) {
-            builder.setHttpProxy(ProxyInfo.buildDirectProxy(LOCALHOST, DataStore.httpPort))
+            if (DataStore.httpProxyException.isNotBlank()) {
+                builder.setHttpProxy(ProxyInfo.buildDirectProxy(LOCALHOST, DataStore.httpPort,
+                    DataStore.httpProxyException.split("\n")))
+            } else {
+                builder.setHttpProxy(ProxyInfo.buildDirectProxy(LOCALHOST, DataStore.httpPort))
+            }
         }
 
         metered = DataStore.meteredNetwork

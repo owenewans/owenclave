@@ -28,6 +28,8 @@ import java.io.File
 
 fun parseHysteria2(rawURL: String): Hysteria2Bean {
     var url = rawURL
+
+    // fuck port hopping URL
     val hostPort = url.substringAfter("://").substringAfter("@")
         .substringBefore("?").substringBefore("/")
     var port = ""

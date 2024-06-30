@@ -200,6 +200,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var requireHttp by configurationStore.boolean(Key.REQUIRE_HTTP) { false }
     var appendHttpProxy by configurationStore.boolean(Key.APPEND_HTTP_PROXY) { true }
+    var httpProxyException by configurationStore.string(Key.HTTP_PROXY_EXCEPTION)
     var requireTransproxy by configurationStore.boolean(Key.REQUIRE_TRANSPROXY)
     var transproxyMode by configurationStore.stringToInt(Key.TRANSPROXY_MODE)
     var connectionTestURL by configurationStore.string(Key.CONNECTION_TEST_URL) { CONNECTION_TEST_URL }

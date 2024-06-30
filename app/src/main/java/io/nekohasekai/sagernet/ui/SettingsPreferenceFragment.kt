@@ -84,11 +84,13 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val allowAccess = findPreference<Preference>(Key.ALLOW_ACCESS)!!
         val requireHttp = findPreference<SwitchPreference>(Key.REQUIRE_HTTP)!!
         val appendHttpProxy = findPreference<SwitchPreference>(Key.APPEND_HTTP_PROXY)!!
+        val httpProxyException = findPreference<EditTextPreference>(Key.HTTP_PROXY_EXCEPTION)!!
         val portHttp = findPreference<EditTextPreference>(Key.HTTP_PORT)!!
 
         portHttp.isEnabled = requireHttp.isChecked
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             appendHttpProxy.remove()
+            httpProxyException.remove()
             requireHttp.setOnPreferenceChangeListener { _, newValue ->
                 portHttp.isEnabled = newValue as Boolean
                 needReload()
@@ -96,9 +98,19 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
         } else {
             appendHttpProxy.isEnabled = requireHttp.isChecked
+            httpProxyException.isVisible = appendHttpProxy.isChecked
+            httpProxyException.isEnabled = appendHttpProxy.isEnabled && appendHttpProxy.isChecked
             requireHttp.setOnPreferenceChangeListener { _, newValue ->
                 portHttp.isEnabled = newValue as Boolean
-                appendHttpProxy.isEnabled = newValue as Boolean
+                appendHttpProxy.isEnabled = newValue
+                httpProxyException.isVisible = appendHttpProxy.isChecked
+                httpProxyException.isEnabled = newValue && appendHttpProxy.isChecked
+                needReload()
+                true
+            }
+            appendHttpProxy.setOnPreferenceChangeListener { _, newValue ->
+                httpProxyException.isVisible = newValue as Boolean
+                httpProxyException.isEnabled = newValue
                 needReload()
                 true
             }
@@ -260,7 +272,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
         portHttp.onPreferenceChangeListener = reloadListener
-        appendHttpProxy.onPreferenceChangeListener = reloadListener
+        httpProxyException.onPreferenceChangeListener = reloadListener
         showDirectSpeed.onPreferenceChangeListener = reloadListener
         domainStrategy.onPreferenceChangeListener = reloadListener
         enableMuxForAll.onPreferenceChangeListener = reloadListener

@@ -500,5 +500,6 @@
     <string name="route_rules_custom">自定义</string>
     <string name="rules_geosite_url">geosite.dat URL</string>
     <string name="rules_geoip_url">geoip.dat URL</string>
+    <string name="http_proxy_exception_list">HTTP 代理例外列表</string>
 
 </resources>
