@@ -43,7 +43,7 @@ class ColorPickerPreference
             inited = true
 
             val colors = context.resources.getIntArray(R.array.material_colors)
-            var i = getPersistedInt(1)
+            var i = getPersistedInt(2)
             if (i > colors.size) {
                 i = colors.size
             }
