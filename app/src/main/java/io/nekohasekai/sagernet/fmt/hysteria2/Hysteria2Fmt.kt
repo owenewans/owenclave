@@ -19,7 +19,6 @@
 
 package io.nekohasekai.sagernet.fmt.hysteria2
 
-import cn.hutool.core.util.NumberUtil
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
@@ -27,17 +26,29 @@ import io.nekohasekai.sagernet.ktx.*
 import libcore.Libcore
 import java.io.File
 
-fun parseHysteria2(url: String): Hysteria2Bean {
-    val link = Libcore.parseURL(url)
+fun parseHysteria2(rawURL: String): Hysteria2Bean {
+    var url = rawURL
+    val hostPort = url.substringAfter("://").substringAfter("@")
+        .substringBefore("?").substringBefore("/")
+    var port = ""
+    if (!hostPort.endsWith("]") && hostPort.lastIndexOf(":") > 0) {
+        port = hostPort.substringAfterLast(":")
+    }
+    if (port.isNotEmpty() && port.contains(",") || port.contains("-")) {
+        url = url.replace(":$port", ":0")
+    }
 
+    val link = Libcore.parseURL(url)
     return Hysteria2Bean().apply {
         name = link.fragment
 
         serverAddress = link.host
-        if (link.port > 0) {
-            serverPorts = link.port.toString()
+        serverPorts = if (port.isNotEmpty() && port.contains(",") || port.contains("-")) {
+            port
+        } else if (link.port > 0) {
+            link.port.toString()
         } else {
-            serverPorts = "443"
+            "443"
         }
 
         if (link.username.isNotBlank()) {
@@ -57,7 +68,7 @@ fun parseHysteria2(url: String): Hysteria2Bean {
         link.queryParameter("pinSHA256")?.also {
             pinSHA256 = it
         }
-        link.queryParameter("obfs")?.also {
+        link.queryParameter("obfs")?.also { it ->
             if (it == "salamander") {
                 link.queryParameter("obfs-password")?.also {
                     obfs = it
@@ -99,37 +110,45 @@ fun Hysteria2Bean.toUri(): String {
     if (name.isNotBlank()) {
         builder.setRawFragment(name.urlSafe())
     }
-    return builder.string
+    builder.rawPath = "/"
+    val url = builder.string
+    if (serverPorts.contains(",") || serverPorts.contains("-")) {
+        // fuck port hopping URL
+        val port = url.substringAfter("://").substringAfter("@")
+            .substringBefore("?").substringBefore("/")
+            .substringAfterLast(":")
+        return url.replace(":$port/", ":$serverPorts/")
+    }
+    return url
 }
 
 fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): String {
-    var hostport: String
-    if (serverPorts.contains("-") || serverPorts.contains(",")) {
+    val hostPort = if (serverPorts.contains("-") || serverPorts.contains(",")) {
         if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
             error("Please switch to TUN gVisor stack for port hopping.")
             // system stack need some protector hacks.
         }
         // hopping is incompatible with chain
         if (serverAddress.isIpv6Address()) {
-            hostport = "[$serverAddress]:$serverPorts"
+            "[$serverAddress]:$serverPorts"
         } else {
-            hostport = "$serverAddress:$serverPorts"
+            "$serverAddress:$serverPorts"
         }
     } else {
-        hostport = wrapUri()
+        wrapUri()
     }
-    var conf = "server: \"" + hostport + "\"\n"
+    var conf = "server: \"$hostPort\"\n"
     if (auth.isNotBlank()) {
-        conf += "\nauth: \"" + auth + "\"\n"
+        conf += "\nauth: \"$auth\"\n"
     }
-    conf += "\ntls:\n  insecure: " + allowInsecure + "\n"
+    conf += "\ntls:\n  insecure: $allowInsecure\n"
     if (sni.isBlank() && !serverAddress.isIpAddress()) {
         if (!serverPorts.contains("-") && !serverPorts.contains(",")) {
             sni = serverAddress
         }
     }
     if (sni.isNotBlank()) {
-        conf += "  sni: \"" + sni + "\"\n"
+        conf += "  sni: \"$sni\"\n"
     }
     if (caText.isNotBlank() && cacheFile != null) {
         val caFile = cacheFile()
@@ -137,7 +156,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
         conf += "  ca: \"" + caFile.absolutePath + "\"\n"
     }
     /*if (pinSHA256.isNotBlank()) {
-        conf += "  pinSHA256: \"" + pinSHA256 + "\"\n"
+        conf += "  pinSHA256: \"$pinSHA256\"\n"
     }*/
     conf += "\ntransport:\n  type: udp\n"
     if (serverPorts.contains("-") || serverPorts.contains(",")) {
@@ -145,31 +164,31 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     conf += "\n"
     if (obfs.isNotBlank()) {
-        conf += "obfs:\n  type: salamander\n  salamander:\n    password: \"" + obfs + "\"\n\n"
+        conf += "obfs:\n  type: salamander\n  salamander:\n    password: \"$obfs\"\n\n"
     }
-    conf += "quic:\n  disablePathMTUDiscovery: " + disableMtuDiscovery + "\n"
+    conf += "quic:\n  disablePathMTUDiscovery: $disableMtuDiscovery\n"
     if (initStreamReceiveWindow > 0) {
-        conf += "  initStreamReceiveWindow: " + initStreamReceiveWindow + "\n"
+        conf += "  initStreamReceiveWindow: $initStreamReceiveWindow\n"
     }
     if (maxStreamReceiveWindow > 0) {
-        conf += "  maxStreamReceiveWindow: " + maxStreamReceiveWindow + "\n"
+        conf += "  maxStreamReceiveWindow: $maxStreamReceiveWindow\n"
     }
     if (initConnReceiveWindow > 0) {
-        conf += "  initConnReceiveWindow: " + initConnReceiveWindow + "\n"
+        conf += "  initConnReceiveWindow: $initConnReceiveWindow\n"
     }
     if (maxConnReceiveWindow > 0) {
-        conf += "  maxConnReceiveWindow: " + maxConnReceiveWindow + "\n"
+        conf += "  maxConnReceiveWindow: $maxConnReceiveWindow\n"
     }
     if (uploadMbps > 0 || downloadMbps > 0) {
         conf += "\nbandwidth:\n"
         if (uploadMbps > 0) {
-            conf += "  up: " + uploadMbps + " mbps\n"
+            conf += "  up: $uploadMbps mbps\n"
         }
         if (downloadMbps > 0) {
-            conf += "  down: " + downloadMbps + " mbps\n"
+            conf += "  down: $downloadMbps mbps\n"
         }
     }
-    conf += "\nsocks5:\n  listen: " + "\"$LOCALHOST:$port\"\n"
+    conf += "\nsocks5:\n  listen: \"$LOCALHOST:$port\"\n"
     conf += "\nlazy: true\n"
     return conf
 }
