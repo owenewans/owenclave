@@ -49,11 +49,6 @@ public class Hysteria2Bean extends AbstractBean {
     public Integer hopInterval;
 
     @Override
-    public boolean allowInsecure() {
-        return allowInsecure;
-    }
-
-    @Override
     public boolean canMapping() {
         return !serverPorts.contains("-") && !serverPorts.contains(",");
     }

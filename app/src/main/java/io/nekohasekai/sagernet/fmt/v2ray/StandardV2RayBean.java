@@ -173,11 +173,6 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String hy2ObfsPassword;
 
     @Override
-    public boolean allowInsecure() {
-        return allowInsecure;
-    }
-
-    @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
 
@@ -475,8 +470,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof StandardV2RayBean)) return;
-        StandardV2RayBean bean = ((StandardV2RayBean) other);
+        if (!(other instanceof StandardV2RayBean bean)) return;
         if (wsUseBrowserForwarder) {
             bean.wsUseBrowserForwarder = true;
         }

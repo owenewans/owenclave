@@ -28,7 +28,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.bg.AbstractInstance
 import io.nekohasekai.sagernet.bg.ExternalInstance
 import io.nekohasekai.sagernet.bg.GuardedProcessPool
@@ -37,7 +36,6 @@ import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult
 import io.nekohasekai.sagernet.fmt.brook.BrookBean
-import io.nekohasekai.sagernet.fmt.brook.internalUri
 import io.nekohasekai.sagernet.fmt.brook.toInternalUri
 import io.nekohasekai.sagernet.fmt.buildV2RayConfig
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
@@ -262,52 +260,20 @@ abstract class V2RayInstance(
                         when (bean.protocol) {
                             "ws" -> {
                                 commands.add("wsclient")
-                                commands.add("--wsserver")
                             }
                             "wss" -> {
                                 commands.add("wssclient")
-                                commands.add("--link") // WTF?
                             }
                             "quic" -> {
                                 commands.add("quicclient")
-                                commands.add("--quicserver")
                             }
                             else -> {
                                 commands.add("client")
-                                commands.add("--server")
                             }
                         }
 
-                        if (bean.protocol != "wss") {
-                            commands.add(bean.internalUri())
-                        } else {
-                            commands.add(bean.toInternalUri())
-                        }
-
-                        if (bean.protocol == "ws" || bean.protocol == "quic") {
-                            commands.add("--address")
-                            commands.add(bean.wrapUri())
-                            if (bean.withoutBrookProtocol) {
-                                commands.add("--withoutBrookProtocol")
-                            }
-                        }
-
-                        if (bean.protocol == "quic" && bean.insecure) {
-                            commands.add("--insecure")
-                        }
-
-                        if (bean.protocol != "wss" && bean.udpovertcp) {
-                            commands.add("--udpovertcp")
-                        }
-
-                        if (bean.protocol == "quic" && bean.udpoverstream) {
-                            commands.add("--udpoverstream")
-                        }
-
-                        if (bean.protocol != "wss" && bean.password.isNotBlank()) {
-                            commands.add("--password")
-                            commands.add(bean.password)
-                        }
+                        commands.add("--link")
+                        commands.add(bean.toInternalUri())
 
                         commands.add("--socks5")
                         commands.add("$LOCALHOST:$port")

@@ -41,11 +41,6 @@ public class BrookBean extends AbstractBean {
     public Boolean udpoverstream;
 
     @Override
-    public boolean allowInsecure() {
-        return insecure && withoutBrookProtocol;
-    }
-
-    @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
         if (protocol == null) protocol = "";

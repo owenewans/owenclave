@@ -117,7 +117,7 @@ fun parseBrook(text: String): AbstractBean {
             bean.protocol = "quic"
 
 
-            var quicserver = (link.queryParameter("quicserver")
+            val quicserver = (link.queryParameter("quicserver")
                 ?: error("Invalid brook quicserver url (Missing quicserver parameter): $text")).substringAfter(
                 "://"
             )
@@ -171,7 +171,7 @@ fun parseBrook(text: String): AbstractBean {
 fun BrookBean.toUri(): String {
     val builder = Libcore.newURL("brook")
     var serverString = wrapOriginUri()
-    var addressString = wrapOriginUri()
+    val addressString = wrapOriginUri()
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
@@ -181,7 +181,7 @@ fun BrookBean.toUri(): String {
                 }
                 serverString += wsPath.pathSafe()
             }
-            builder.addQueryParameter("wsserver", "ws://" + serverString)
+            builder.addQueryParameter("wsserver", "ws://$serverString")
             if (withoutBrookProtocol) {
                 builder.addQueryParameter("withoutBrookProtocol", "true")
             }
@@ -189,7 +189,7 @@ fun BrookBean.toUri(): String {
         "wss" -> {
             builder.host = "wssserver"
             if (sni.isNotBlank()) {
-                serverString = sni + ":$serverPort"
+                serverString = "$sni:$serverPort"
             }
             if (wsPath.isNotBlank()) {
                 if (!wsPath.startsWith("/")) {
@@ -197,7 +197,7 @@ fun BrookBean.toUri(): String {
                 }
                 serverString += wsPath.pathSafe()
             }
-            builder.addQueryParameter("wssserver", "wss://" + serverString)
+            builder.addQueryParameter("wssserver", "wss://$serverString")
             if (sni.isNotBlank()) {
                 builder.addQueryParameter("address", addressString)
             }
@@ -217,9 +217,9 @@ fun BrookBean.toUri(): String {
         "quic" -> {
             builder.host = "quicserver"
             if (sni.isNotBlank()) {
-                serverString = sni + ":$serverPort"
+                serverString = "$sni:$serverPort"
             }
-            builder.addQueryParameter("quicserver", "quic://" + serverString)
+            builder.addQueryParameter("quicserver", "quic://$serverString")
             if (sni.isNotBlank()) {
                 builder.addQueryParameter("address", addressString)
             }
@@ -258,7 +258,7 @@ fun BrookBean.toInternalUri(): String {
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
-            builder.addQueryParameter("wsserver", addressString)
+            builder.addQueryParameter("wsserver", "wss://$addressString")
             if (withoutBrookProtocol) {
                 builder.addQueryParameter("withoutBrookProtocol", "true")
             }
@@ -312,12 +312,12 @@ fun BrookBean.toInternalUri(): String {
 }
 
 fun BrookBean.wrapUriWithOriginHost0(): String {
-    if (sni.isNotBlank()) {
-        return sni + ":$finalPort"
+    return if (sni.isNotBlank()) {
+        "$sni:$finalPort"
     } else if (serverAddress.isIpv6Address()) {
-        return "[$serverAddress]:$finalPort"
+        "[$serverAddress]:$finalPort"
     } else {
-        return "$serverAddress:$finalPort"
+        "$serverAddress:$finalPort"
     }
 }
 

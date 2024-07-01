@@ -61,11 +61,6 @@ public class HysteriaBean extends AbstractBean {
     public Integer hopInterval;
 
     @Override
-    public boolean allowInsecure() {
-        return allowInsecure;
-    }
-
-    @Override
     public boolean canMapping() {
         return protocol != PROTOCOL_FAKETCP && !serverPorts.contains("-") && !serverPorts.contains(",");
     }
