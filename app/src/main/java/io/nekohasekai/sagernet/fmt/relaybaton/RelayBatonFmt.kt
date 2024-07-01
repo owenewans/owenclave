@@ -19,6 +19,7 @@
 
 package io.nekohasekai.sagernet.fmt.relaybaton
 
+import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
@@ -48,6 +49,10 @@ fun RelayBatonBean.toUri(): String {
 }
 
 fun RelayBatonBean.buildRelayBatonConfig(port: Int): String {
+    if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
+        error("Please switch to TUN gVisor stack for RelayBaton.")
+        // system stack need some protector hacks.
+    }
     return """
         [client]
         port = $port

@@ -28,6 +28,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.SagerNet
+import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.bg.AbstractInstance
 import io.nekohasekai.sagernet.bg.ExternalInstance
 import io.nekohasekai.sagernet.bg.GuardedProcessPool
@@ -274,6 +275,9 @@ abstract class V2RayInstance(
                     }
                     bean is PingTunnelBean -> {
                         if (needChain) error("PingTunnel is incompatible with chain")
+                        if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
+                            error("Please switch to TUN gVisor stack for PingTunnel.")
+                        }
 
                         val commands = mutableListOf(
                             "su",
