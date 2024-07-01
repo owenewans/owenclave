@@ -140,6 +140,10 @@
                 <data android:scheme="naive+https" />
                 <data android:scheme="naive+quic" />
                 <data android:scheme="brook" />
+                <data android:scheme="hysteria" />
+                <data android:scheme="hysteria2" />
+                <data android:scheme="hy2" />
+                <data android:scheme="juicity" />
 
             </intent-filter>
 
