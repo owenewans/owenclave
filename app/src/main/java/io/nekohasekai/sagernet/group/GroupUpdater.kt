@@ -30,6 +30,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.brook.BrookBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
+import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
@@ -82,9 +83,9 @@ abstract class GroupUpdater {
         }
 
         val dohHttpUrl = dohUrl ?: if (connected) {
-            "https://dns.google/dns-query"
+            "https://dns.google/dns-query" // TODO: do not hardcode this
         } else {
-            "https://doh.pub/dns-query"
+            "https://doh.pub/dns-query" // TODO: do not hardcode this
         }
 
         val client = Libcore.newHttpClient().apply {
@@ -106,12 +107,6 @@ abstract class GroupUpdater {
         val ipv6First = ipv6Mode >= IPv6Mode.PREFER
 
         for (profile in profiles) {
-            when (profile) {
-                // SNI rewrite unsupported
-                is BrookBean -> if (profile.protocol == "wss") continue
-                is NaiveBean -> continue
-            }
-
             if (profile.serverAddress.isIpAddress()) continue
 
             lookupJobs.add(GlobalScope.launch(lookupPool) {
@@ -168,6 +163,15 @@ abstract class GroupUpdater {
                     if (sni.isBlank()) sni = bean.serverAddress
                 }
                 is Hysteria2Bean -> {
+                    if (sni.isBlank()) sni = bean.serverAddress
+                }
+                is NaiveBean -> {
+                    if (sni.isBlank()) sni = bean.serverAddress
+                }
+                is BrookBean -> {
+                    if (sni.isBlank()) sni = bean.serverAddress
+                }
+                is JuicityBean -> {
                     if (sni.isBlank()) sni = bean.serverAddress
                 }
             }
