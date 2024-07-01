@@ -246,7 +246,7 @@ class VpnService : BaseVpnService(),
         val tunImplementation = DataStore.tunImplementation
         val needIncludeSelf = tunImplementation == TunImplementation.SYSTEM /*data.proxy!!.config.index.any { !it.isBalancer && it.chain.size > 1 }*/
         val needBypassRootUid = data.proxy!!.config.outboundTagsAll.values.any {
-            it.ptBean != null || it.hysteriaBean?.protocol == HysteriaBean.PROTOCOL_FAKETCP
+            it.hysteriaBean?.protocol == HysteriaBean.PROTOCOL_FAKETCP
         }
         if (proxyApps || needBypassRootUid) {
             var bypass = DataStore.bypass

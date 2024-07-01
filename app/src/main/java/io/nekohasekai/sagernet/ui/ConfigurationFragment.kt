@@ -332,12 +332,6 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_new_naive -> {
                 startActivity(Intent(requireActivity(), NaiveSettingsActivity::class.java))
             }
-            R.id.action_new_ping_tunnel -> {
-                startActivity(Intent(requireActivity(), PingTunnelSettingsActivity::class.java))
-            }
-            R.id.action_new_relay_baton -> {
-                startActivity(Intent(requireActivity(), RelayBatonSettingsActivity::class.java))
-            }
             R.id.action_new_brook -> {
                 startActivity(Intent(requireActivity(), BrookSettingsActivity::class.java))
             }
@@ -1677,11 +1671,12 @@ class ConfigurationFragment @JvmOverloads constructor(
                 }
 
                 editButton.setOnClickListener {
-                    it.context.startActivity(
-                        proxyEntity.settingIntent(
-                            it.context, proxyGroup.type == GroupType.SUBSCRIPTION
-                        )
+                    val intent = proxyEntity.settingIntent(
+                        it.context, proxyGroup.type == GroupType.SUBSCRIPTION
                     )
+                    if (intent != null) {
+                        it.context.startActivity(intent)
+                    }
                 }
 
                 deleteButton.setOnClickListener {
@@ -1735,7 +1730,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                             }
                         }
 
-                        if (proxyEntity.ptBean != null || proxyEntity.brookBean != null) {
+                        if (proxyEntity.brookBean != null) {
                             popup.menu.removeItem(R.id.action_group_configuration)
                         }
 

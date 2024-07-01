@@ -31,8 +31,6 @@ import io.nekohasekai.sagernet.fmt.hysteria2.parseHysteria2
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.naive.parseNaive
 import io.nekohasekai.sagernet.fmt.parseUniversal
-import io.nekohasekai.sagernet.fmt.pingtunnel.parsePingTunnel
-import io.nekohasekai.sagernet.fmt.relaybaton.parseRelayBaton
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
@@ -116,20 +114,6 @@ fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse naive link: $this")
             runCatching {
                 entities.add(parseNaive(this))
-            }.onFailure {
-                Logs.w(it)
-            }
-        } else if (startsWith("ping-tunnel://")) {
-            Logs.d("Try parse pt link: $this")
-            runCatching {
-                entities.add(parsePingTunnel(this))
-            }.onFailure {
-                Logs.w(it)
-            }
-        } else if (startsWith("relaybaton://")) {
-            Logs.d("Try parse rb link: $this")
-            runCatching {
-                entities.add(parseRelayBaton(this))
             }.onFailure {
                 Logs.w(it)
             }

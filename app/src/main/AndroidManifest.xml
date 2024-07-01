@@ -139,8 +139,6 @@
                 <data android:scheme="trojan-go" />
                 <data android:scheme="naive+https" />
                 <data android:scheme="naive+quic" />
-                <data android:scheme="pingtunnel" />
-                <data android:scheme="relaybaton" />
                 <data android:scheme="brook" />
 
             </intent-filter>
@@ -181,12 +179,6 @@
             android:name="io.nekohasekai.sagernet.ui.profile.NaiveSettingsActivity"
             android:configChanges="uiMode" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.PingTunnelSettingsActivity"
-            android:configChanges="uiMode" />
-        <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.RelayBatonSettingsActivity"
-            android:configChanges="uiMode" />
-        <activity
             android:name="io.nekohasekai.sagernet.ui.profile.BrookSettingsActivity"
             android:configChanges="uiMode" />
         <activity
@@ -203,9 +195,6 @@
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.MieruSettingsActivity"
-            android:configChanges="uiMode" />
-        <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.Mieru2SettingsActivity"
             android:configChanges="uiMode" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity"

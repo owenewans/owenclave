@@ -2,6 +2,7 @@
 
 package io.nekohasekai.sagernet.database
 
+import androidx.room.DeleteColumn
 import androidx.room.DeleteTable
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
@@ -91,3 +92,19 @@ object SagerDatabase_Migration_11_12 : Migration(11, 12) {
     tableName = "KeyValuePair"
 )
 class SagerDatabase_Migration_14_15 : AutoMigrationSpec
+
+@DeleteColumn.Entries(
+    DeleteColumn(
+        tableName = "proxy_entities",
+        columnName = "ptBean"
+    ),
+    DeleteColumn(
+        tableName = "proxy_entities",
+        columnName = "rbBean"
+    ),
+    DeleteColumn(
+        tableName = "proxy_entities",
+        columnName = "mieru2Bean"
+    )
+)
+class SagerDatabase_Migration_22_23 : AutoMigrationSpec

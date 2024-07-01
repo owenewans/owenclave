@@ -30,13 +30,10 @@ enum class PluginEntry(
     // sagernet plugins
     TrojanGo("trojan-go-plugin", R.string.action_trojan_go, "io.nekohasekai.sagernet.plugin.trojan_go"),
     NaiveProxy("naive-plugin", R.string.action_naive, "io.nekohasekai.sagernet.plugin.naive"),
-    PingTunnel("pingtunnel-plugin", R.string.action_ping_tunnel, "io.nekohasekai.sagernet.plugin.pingtunnel"),
-    RelayBaton("relaybaton-plugin", R.string.action_relay_baton, "io.nekohasekai.sagernet.plugin.relaybaton"),
     Brook("brook-plugin", R.string.action_brook, "com.github.dyhkwong.sagernet.plugin.brook"),
     Hysteria("hysteria-plugin", R.string.action_hysteria, "io.nekohasekai.sagernet.plugin.hysteria"),
     Hysteria2("hysteria2-plugin", R.string.action_hysteria2, "com.github.dyhkwong.sagernet.plugin.hysteria2"),
     Mieru("mieru-plugin", R.string.action_mieru, "com.github.dyhkwong.sagernet.sagernet.plugin.mieru"),
-    Mieru2("mieru2-plugin", R.string.action_mieru2, "io.nekohasekai.sagernet.plugin.mieru2"),
     TUIC("tuic-plugin", R.string.action_tuic, "io.nekohasekai.sagernet.plugin.tuic"),
     TUIC5("tuic5-plugin", R.string.action_tuic5, "io.nekohasekai.sagernet.plugin.tuic5"),
     ShadowTLS("shadowtls-plugin", R.string.action_shadowtls, "com.github.dyhkwong.sagernet.plugin.shadowtls"),

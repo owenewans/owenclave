@@ -25,7 +25,6 @@ import androidx.room.*
 import com.esotericsoftware.kryo.io.ByteBufferInput
 import com.esotericsoftware.kryo.io.ByteBufferOutput
 import io.nekohasekai.sagernet.R
-import io.nekohasekai.sagernet.TrojanProvider
 import io.nekohasekai.sagernet.Hysteria2Provider
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.fmt.AbstractBean
@@ -50,15 +49,9 @@ import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.juicity.toUri
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
-import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean
-import io.nekohasekai.sagernet.fmt.mieru2.buildMieru2Config
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
-import io.nekohasekai.sagernet.fmt.pingtunnel.PingTunnelBean
-import io.nekohasekai.sagernet.fmt.pingtunnel.toUri
-import io.nekohasekai.sagernet.fmt.relaybaton.RelayBatonBean
-import io.nekohasekai.sagernet.fmt.relaybaton.buildRelayBatonConfig
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
@@ -110,13 +103,10 @@ data class ProxyEntity(
     var trojanBean: TrojanBean? = null,
     var trojanGoBean: TrojanGoBean? = null,
     var naiveBean: NaiveBean? = null,
-    var ptBean: PingTunnelBean? = null,
-    var rbBean: RelayBatonBean? = null,
     var brookBean: BrookBean? = null,
     var hysteriaBean: HysteriaBean? = null,
     var hysteria2Bean: Hysteria2Bean? = null,
     var mieruBean: MieruBean? = null,
-    var mieru2Bean: Mieru2Bean? = null,
     var tuicBean: TuicBean? = null,
     var tuic5Bean: Tuic5Bean? = null,
     var shadowtlsBean: ShadowTLSBean? = null,
@@ -138,16 +128,12 @@ data class ProxyEntity(
         const val TYPE_TROJAN = 6
         const val TYPE_TROJAN_GO = 7
         const val TYPE_NAIVE = 9
-        const val TYPE_PING_TUNNEL = 10
-        const val TYPE_RELAY_BATON = 11
         const val TYPE_BROOK = 12
         const val TYPE_HYSTERIA = 15
         const val TYPE_HYSTERIA2 = 21
-        const val TYPE_SNELL = 16
         const val TYPE_SSH = 17
         const val TYPE_WG = 18
         const val TYPE_MIERU = 19
-        const val TYPE_MIERU2 = 22
         const val TYPE_TUIC = 20
         const val TYPE_TUIC5 = 23
         const val TYPE_SHADOWTLS = 24
@@ -238,15 +224,12 @@ data class ProxyEntity(
             TYPE_TROJAN -> trojanBean = KryoConverters.trojanDeserialize(byteArray)
             TYPE_TROJAN_GO -> trojanGoBean = KryoConverters.trojanGoDeserialize(byteArray)
             TYPE_NAIVE -> naiveBean = KryoConverters.naiveDeserialize(byteArray)
-            TYPE_PING_TUNNEL -> ptBean = KryoConverters.pingTunnelDeserialize(byteArray)
-            TYPE_RELAY_BATON -> rbBean = KryoConverters.relayBatonDeserialize(byteArray)
             TYPE_BROOK -> brookBean = KryoConverters.brookDeserialize(byteArray)
             TYPE_HYSTERIA -> hysteriaBean = KryoConverters.hysteriaDeserialize(byteArray)
             TYPE_HYSTERIA2 -> hysteria2Bean = KryoConverters.hysteria2Deserialize(byteArray)
             TYPE_SSH -> sshBean = KryoConverters.sshDeserialize(byteArray)
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
             TYPE_MIERU -> mieruBean = KryoConverters.mieruDeserialize(byteArray)
-            TYPE_MIERU2 -> mieru2Bean = KryoConverters.mieru2Deserialize(byteArray)
             TYPE_TUIC -> tuicBean = KryoConverters.tuicDeserialize(byteArray)
             TYPE_TUIC5 -> tuic5Bean = KryoConverters.tuic5Deserialize(byteArray)
             TYPE_SHADOWTLS -> shadowtlsBean = KryoConverters.shadowtlsDeserialize(byteArray)
@@ -268,16 +251,12 @@ data class ProxyEntity(
         TYPE_TROJAN -> "Trojan"
         TYPE_TROJAN_GO -> "Trojan-Go"
         TYPE_NAIVE -> "Naïve"
-        TYPE_PING_TUNNEL -> "PingTunnel"
-        TYPE_RELAY_BATON -> "relaybaton"
         TYPE_BROOK -> "Brook"
         TYPE_HYSTERIA -> "Hysteria"
         TYPE_HYSTERIA2 -> "Hysteria2"
-        TYPE_SNELL -> "Snell"
         TYPE_SSH -> "SSH"
         TYPE_WG -> "WireGuard"
         TYPE_MIERU -> "Mieru"
-        TYPE_MIERU2 -> "Mieru2"
         TYPE_TUIC -> "TUIC"
         TYPE_TUIC5 -> "TUIC v5"
         TYPE_SHADOWTLS -> "ShadowTLS"
@@ -303,15 +282,12 @@ data class ProxyEntity(
             TYPE_TROJAN -> trojanBean
             TYPE_TROJAN_GO -> trojanGoBean
             TYPE_NAIVE -> naiveBean
-            TYPE_PING_TUNNEL -> ptBean
-            TYPE_RELAY_BATON -> rbBean
             TYPE_BROOK -> brookBean
             TYPE_HYSTERIA -> hysteriaBean
             TYPE_HYSTERIA2 -> hysteria2Bean
             TYPE_SSH -> sshBean
             TYPE_WG -> wgBean
             TYPE_MIERU -> mieruBean
-            TYPE_MIERU2 -> mieru2Bean
             TYPE_TUIC -> tuicBean
             TYPE_TUIC5 -> tuic5Bean
             TYPE_SHADOWTLS -> shadowtlsBean
@@ -334,7 +310,7 @@ data class ProxyEntity(
 
     fun haveStandardLink(): Boolean {
         return haveLink() && when (type) {
-            TYPE_RELAY_BATON, TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_MIERU2, TYPE_TUIC, TYPE_TUIC5, TYPE_SHADOWTLS -> false
+            TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_TUIC, TYPE_TUIC5, TYPE_SHADOWTLS -> false
             TYPE_CONFIG -> false
             else -> true
         }
@@ -351,18 +327,15 @@ data class ProxyEntity(
             is TrojanBean -> toUri()
             is TrojanGoBean -> toUri()
             is NaiveBean -> toUri()
-            is PingTunnelBean -> toUri()
             is HysteriaBean -> toUri()
             is Hysteria2Bean -> toUri()
             is BrookBean -> toUri()
             is JuicityBean -> toUri()
 
-            is RelayBatonBean -> toUniversalLink()
             is ConfigBean -> toUniversalLink()
             is SSHBean -> toUniversalLink()
             is WireGuardBean -> toUniversalLink()
             is MieruBean -> toUniversalLink()
-            is Mieru2Bean -> toUniversalLink()
             is TuicBean -> toUniversalLink()
             is Tuic5Bean -> toUniversalLink()
             is ShadowTLSBean -> toUniversalLink()
@@ -400,12 +373,6 @@ data class ProxyEntity(
                                     Logs.d(it)
                                 })
                             }
-                            is RelayBatonBean -> {
-                                append("\n\n")
-                                append(bean.buildRelayBatonConfig(port).also {
-                                    Logs.d(it)
-                                })
-                            }
                             is HysteriaBean -> {
                                 append("\n\n")
                                 append(bean.buildHysteriaConfig(port, null).also {
@@ -421,12 +388,6 @@ data class ProxyEntity(
                             is MieruBean -> {
                                 append("\n\n")
                                 append(bean.buildMieruConfig(port).also {
-                                    Logs.d(it)
-                                })
-                            }
-                            is Mieru2Bean -> {
-                                append("\n\n")
-                                append(bean.buildMieru2Config(port).also {
                                     Logs.d(it)
                                 })
                             }
@@ -466,12 +427,9 @@ data class ProxyEntity(
         return when (type) {
             TYPE_TROJAN_GO -> true
             TYPE_NAIVE -> true
-            TYPE_PING_TUNNEL -> true
             TYPE_HYSTERIA -> true
-            TYPE_RELAY_BATON -> true
             TYPE_BROOK -> true
             TYPE_MIERU -> true
-            TYPE_MIERU2 -> true
             TYPE_TUIC -> true
             TYPE_TUIC5 -> true
             TYPE_SHADOWTLS -> true
@@ -508,15 +466,12 @@ data class ProxyEntity(
         trojanBean = null
         trojanGoBean = null
         naiveBean = null
-        ptBean = null
-        rbBean = null
         brookBean = null
         hysteriaBean = null
         hysteria2Bean = null
         sshBean = null
         wgBean = null
         mieruBean = null
-        mieru2Bean = null
         tuicBean = null
         tuic5Bean = null
         shadowtlsBean = null
@@ -563,14 +518,6 @@ data class ProxyEntity(
                 type = TYPE_NAIVE
                 naiveBean = bean
             }
-            is PingTunnelBean -> {
-                type = TYPE_PING_TUNNEL
-                ptBean = bean
-            }
-            is RelayBatonBean -> {
-                type = TYPE_RELAY_BATON
-                rbBean = bean
-            }
             is BrookBean -> {
                 type = TYPE_BROOK
                 brookBean = bean
@@ -594,10 +541,6 @@ data class ProxyEntity(
             is MieruBean -> {
                 type = TYPE_MIERU
                 mieruBean = bean
-            }
-            is Mieru2Bean -> {
-                type = TYPE_MIERU2
-                mieru2Bean = bean
             }
             is TuicBean -> {
                 type = TYPE_TUIC
@@ -633,37 +576,35 @@ data class ProxyEntity(
         return this
     }
 
-    fun settingIntent(ctx: Context, isSubscription: Boolean): Intent {
-        return Intent(
-            ctx, when (type) {
-                TYPE_SOCKS -> SocksSettingsActivity::class.java
-                TYPE_HTTP -> HttpSettingsActivity::class.java
-                TYPE_SS -> ShadowsocksSettingsActivity::class.java
-                TYPE_SSR -> ShadowsocksRSettingsActivity::class.java
-                TYPE_VMESS -> VMessSettingsActivity::class.java
-                TYPE_VLESS -> VLESSSettingsActivity::class.java
-                TYPE_TROJAN -> TrojanSettingsActivity::class.java
-                TYPE_TROJAN_GO -> TrojanGoSettingsActivity::class.java
-                TYPE_NAIVE -> NaiveSettingsActivity::class.java
-                TYPE_PING_TUNNEL -> PingTunnelSettingsActivity::class.java
-                TYPE_RELAY_BATON -> RelayBatonSettingsActivity::class.java
-                TYPE_BROOK -> BrookSettingsActivity::class.java
-                TYPE_HYSTERIA -> HysteriaSettingsActivity::class.java
-                TYPE_HYSTERIA2 -> Hysteria2SettingsActivity::class.java
-                TYPE_SSH -> SSHSettingsActivity::class.java
-                TYPE_WG -> WireGuardSettingsActivity::class.java
-                TYPE_MIERU -> MieruSettingsActivity::class.java
-                TYPE_MIERU2 -> Mieru2SettingsActivity::class.java
-                TYPE_TUIC -> TuicSettingsActivity::class.java
-                TYPE_TUIC5 -> Tuic5SettingsActivity::class.java
-                TYPE_SHADOWTLS -> ShadowTLSSettingsActivity::class.java
-                TYPE_JUICITY -> JuicitySettingsActivity::class.java
+    fun settingIntent(ctx: Context, isSubscription: Boolean): Intent? {
+        val cls = when (type) {
+            TYPE_SOCKS -> SocksSettingsActivity::class.java
+            TYPE_HTTP -> HttpSettingsActivity::class.java
+            TYPE_SS -> ShadowsocksSettingsActivity::class.java
+            TYPE_SSR -> ShadowsocksRSettingsActivity::class.java
+            TYPE_VMESS -> VMessSettingsActivity::class.java
+            TYPE_VLESS -> VLESSSettingsActivity::class.java
+            TYPE_TROJAN -> TrojanSettingsActivity::class.java
+            TYPE_TROJAN_GO -> TrojanGoSettingsActivity::class.java
+            TYPE_NAIVE -> NaiveSettingsActivity::class.java
+            TYPE_BROOK -> BrookSettingsActivity::class.java
+            TYPE_HYSTERIA -> HysteriaSettingsActivity::class.java
+            TYPE_HYSTERIA2 -> Hysteria2SettingsActivity::class.java
+            TYPE_SSH -> SSHSettingsActivity::class.java
+            TYPE_WG -> WireGuardSettingsActivity::class.java
+            TYPE_MIERU -> MieruSettingsActivity::class.java
+            TYPE_TUIC -> TuicSettingsActivity::class.java
+            TYPE_TUIC5 -> Tuic5SettingsActivity::class.java
+            TYPE_SHADOWTLS -> ShadowTLSSettingsActivity::class.java
+            TYPE_JUICITY -> JuicitySettingsActivity::class.java
 
-                TYPE_CONFIG -> ConfigSettingsActivity::class.java
-                TYPE_CHAIN -> ChainSettingsActivity::class.java
-                TYPE_BALANCER -> BalancerSettingsActivity::class.java
-                else -> throw IllegalArgumentException()
-            }
+            TYPE_CONFIG -> ConfigSettingsActivity::class.java
+            TYPE_CHAIN -> ChainSettingsActivity::class.java
+            TYPE_BALANCER -> BalancerSettingsActivity::class.java
+            else -> return null
+        }
+        return Intent(
+            ctx, cls
         ).apply {
             putExtra(ProfileSettingsActivity.EXTRA_PROFILE_ID, id)
             putExtra(ProfileSettingsActivity.EXTRA_IS_SUBSCRIPTION, isSubscription)

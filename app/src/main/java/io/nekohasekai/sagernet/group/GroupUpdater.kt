@@ -28,13 +28,9 @@ import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.brook.BrookBean
-import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
-import io.nekohasekai.sagernet.fmt.relaybaton.RelayBatonBean
-import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
-import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.ktx.*
@@ -113,7 +109,7 @@ abstract class GroupUpdater {
             when (profile) {
                 // SNI rewrite unsupported
                 is BrookBean -> if (profile.protocol == "wss") continue
-                is NaiveBean, is RelayBatonBean -> continue
+                is NaiveBean -> continue
             }
 
             if (profile.serverAddress.isIpAddress()) continue

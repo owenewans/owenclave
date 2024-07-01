@@ -21,8 +21,6 @@ package io.nekohasekai.sagernet.fmt.shadowsocksr
 
 import cn.hutool.core.codec.Base64
 import cn.hutool.json.JSONObject
-import io.nekohasekai.sagernet.IPv6Mode
-import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.decodeBase64UrlSafe
 import io.nekohasekai.sagernet.ktx.queryParameter

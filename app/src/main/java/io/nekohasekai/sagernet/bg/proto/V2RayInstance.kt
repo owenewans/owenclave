@@ -49,13 +49,8 @@ import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.juicity.buildJuicityConfig
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
-import io.nekohasekai.sagernet.fmt.mieru2.Mieru2Bean
-import io.nekohasekai.sagernet.fmt.mieru2.buildMieru2Config
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
-import io.nekohasekai.sagernet.fmt.pingtunnel.PingTunnelBean
-import io.nekohasekai.sagernet.fmt.relaybaton.RelayBatonBean
-import io.nekohasekai.sagernet.fmt.relaybaton.buildRelayBatonConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
 import io.nekohasekai.sagernet.fmt.trojan_go.buildCustomTrojanConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.buildTrojanGoConfig
@@ -121,14 +116,6 @@ abstract class V2RayInstance(
                         initPlugin("naive-plugin")
                         pluginConfigs[port] = profile.type to bean.buildNaiveConfig(port)
                     }
-                    is PingTunnelBean -> {
-                        if (needChain) error("PingTunnel is incompatible with chain")
-                        initPlugin("pingtunnel-plugin")
-                    }
-                    is RelayBatonBean -> {
-                        initPlugin("relaybaton-plugin")
-                        pluginConfigs[port] = profile.type to bean.buildRelayBatonConfig(port)
-                    }
                     is BrookBean -> {
                         initPlugin("brook-plugin")
                     }
@@ -159,10 +146,6 @@ abstract class V2RayInstance(
                     is MieruBean -> {
                         initPlugin("mieru-plugin")
                         pluginConfigs[port] = profile.type to bean.buildMieruConfig(port)
-                    }
-                    is Mieru2Bean -> {
-                        initPlugin("mieru2-plugin")
-                        pluginConfigs[port] = profile.type to bean.buildMieru2Config(port)
                     }
                     is TuicBean -> {
                         initPlugin("tuic-plugin")
@@ -269,52 +252,6 @@ abstract class V2RayInstance(
 
                         val commands = mutableListOf(
                             initPlugin("naive-plugin").path, configFile.absolutePath
-                        )
-
-                        processes.start(commands, env)
-                    }
-                    bean is PingTunnelBean -> {
-                        if (needChain) error("PingTunnel is incompatible with chain")
-                        if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
-                            error("Please switch to TUN gVisor stack for PingTunnel.")
-                        }
-
-                        val commands = mutableListOf(
-                            "su",
-                            "-c",
-                            initPlugin("pingtunnel-plugin").path,
-                            "-type",
-                            "client",
-                            "-sock5",
-                            "1",
-                            "-l",
-                            "$LOCALHOST:$port",
-                            "-s",
-                            bean.serverAddress
-                        )
-
-                        if (bean.key.isNotBlank() && bean.key != "1") {
-                            commands.add("-key")
-                            commands.add(bean.key)
-                        }
-
-                        processes.start(commands, env)
-                    }
-                    bean is RelayBatonBean -> {
-                        val configFile = File(
-                            context.noBackupFilesDir,
-                            "rb_" + SystemClock.elapsedRealtime() + ".toml"
-                        )
-
-                        configFile.parentFile?.mkdirs()
-                        configFile.writeText(config)
-                        cacheFiles.add(configFile)
-
-                        val commands = mutableListOf(
-                            initPlugin("relaybaton-plugin").path,
-                            "client",
-                            "--config",
-                            configFile.absolutePath
                         )
 
                         processes.start(commands, env)
@@ -439,24 +376,6 @@ abstract class V2RayInstance(
 
                         val commands = mutableListOf(
                             initPlugin("mieru-plugin").path, "run"
-                        )
-
-                        processes.start(commands, env)
-                    }
-                    bean is Mieru2Bean -> {
-                        val configFile = File(
-                            context.noBackupFilesDir,
-                            "mieru2_" + SystemClock.elapsedRealtime() + ".json"
-                        )
-
-                        configFile.parentFile?.mkdirs()
-                        configFile.writeText(config)
-                        cacheFiles.add(configFile)
-
-                        env["MIERU2_CONFIG_JSON_FILE"] = configFile.absolutePath
-
-                        val commands = mutableListOf(
-                            initPlugin("mieru2-plugin").path, "run"
                         )
 
                         processes.start(commands, env)
