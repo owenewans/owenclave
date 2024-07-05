@@ -257,13 +257,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
         }
 
         override suspend fun groupAdd(group: ProxyGroup) {
-            if (groupList.size == 1 && groupList[0].ungrouped) {
-                groupList.clear()
-                onMainDispatcher {
-                    notifyItemRemoved(0)
-                }
-            }
-
             groupList.add(group)
             delay(300L)
 
