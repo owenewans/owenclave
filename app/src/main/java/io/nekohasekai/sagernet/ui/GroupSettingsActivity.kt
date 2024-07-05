@@ -124,12 +124,8 @@ class GroupSettingsActivity(
         val subscriptionUserAgent = findPreference<UserAgentPreference>(Key.SUBSCRIPTION_USER_AGENT)!!
 
         fun updateSubscriptionType(subscriptionType: Int = DataStore.subscriptionType) {
-            val isRaw = subscriptionType == SubscriptionType.RAW
-            val isOOCv1 = subscriptionType == SubscriptionType.OOCv1
-
-            subscriptionLink.isVisible = !isOOCv1
-            subscriptionToken.isVisible = isOOCv1
-            subscriptionUserAgent.isOOCv1 = isOOCv1
+            subscriptionLink.isVisible = subscriptionType != SubscriptionType.OOCv1
+            subscriptionToken.isVisible = subscriptionType == SubscriptionType.OOCv1
             subscriptionUserAgent.notifyChanged()
         }
         updateSubscriptionType()

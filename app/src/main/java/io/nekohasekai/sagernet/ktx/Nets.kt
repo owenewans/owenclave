@@ -17,16 +17,12 @@
  *                                                                            *
  ******************************************************************************/
 
-@file:Suppress("SpellCheckingInspection")
-
 package io.nekohasekai.sagernet.ktx
 
 import cn.hutool.core.lang.Validator
 import io.nekohasekai.sagernet.BuildConfig
-import io.nekohasekai.sagernet.bg.VpnService
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import libcore.URL
-import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 
@@ -86,10 +82,6 @@ fun AbstractBean.wrapOriginUri(): String {
     }
 }
 
-fun parseAddress(addressArray: ByteArray) = InetAddress.getByAddress(addressArray)
-val INET_TUN = InetAddress.getByName(VpnService.PRIVATE_VLAN4_CLIENT)
-val INET6_TUN = InetAddress.getByName(VpnService.PRIVATE_VLAN6_CLIENT)
-
 fun mkPort(): Int {
     val socket = Socket()
     socket.reuseAddress = true
@@ -99,11 +91,5 @@ fun mkPort(): Int {
     return port
 }
 
-const val IPPROTO_ICMP = 1
-const val IPPROTO_ICMPv6 = 58
-
-const val IPPROTO_TCP = 6
-const val IPPROTO_UDP = 17
-
-const val USER_AGENT = "curl/7.74.0"
+const val USER_AGENT = "curl/8.8.0"
 const val USER_AGENT_ORIGIN = "SagerNet/${BuildConfig.VERSION_NAME}"

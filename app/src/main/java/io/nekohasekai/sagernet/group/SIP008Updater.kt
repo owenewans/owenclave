@@ -27,6 +27,7 @@ import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.ktx.Logs
+import io.nekohasekai.sagernet.ktx.USER_AGENT
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import libcore.Libcore
@@ -59,7 +60,7 @@ object SIP008Updater : GroupUpdater() {
                 if (subscription.customUserAgent.isNotBlank()) {
                     setUserAgent(subscription.customUserAgent)
                 } else {
-                    randomUserAgent()
+                    USER_AGENT
                 }
             }.execute()
 

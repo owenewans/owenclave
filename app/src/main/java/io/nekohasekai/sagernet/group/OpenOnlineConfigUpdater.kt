@@ -97,7 +97,7 @@ object OpenOnlineConfigUpdater : GroupUpdater() {
         }.newRequest().apply {
             setURL(baseLink.string)
             setUserAgent(subscription.customUserAgent.takeIf { it.isNotBlank() }
-                ?: USER_AGENT_ORIGIN)
+                ?: USER_AGENT)
         }.execute()
 
         val oocResponse = JSONObject(response.contentString)
