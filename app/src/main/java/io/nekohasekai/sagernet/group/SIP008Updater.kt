@@ -67,8 +67,8 @@ object SIP008Updater : GroupUpdater() {
             sip008Response = JSONObject(response.contentString)
         }
 
-        subscription.bytesUsed = sip008Response.getLong("bytesUsed", -1)
-        subscription.bytesRemaining = sip008Response.getLong("bytesRemaining", -1)
+        subscription.bytesUsed = sip008Response.getLong("bytes_used", -1)
+        subscription.bytesRemaining = sip008Response.getLong("bytes_remaining", -1)
         subscription.applyDefaultValues()
 
         val servers = sip008Response.getJSONArray("servers").filterIsInstance<JSONObject>()
