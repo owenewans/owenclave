@@ -183,7 +183,7 @@ object SIP008Updater : GroupUpdater() {
             Logs.e("Exist profiles: $existCount, new profiles: ${profileMap.size}")
         }
 
-        subscription.lastUpdated = (System.currentTimeMillis() / 1000).toInt()
+        subscription.lastUpdated = System.currentTimeMillis() / 1000
         SagerDatabase.groupDao.updateGroup(proxyGroup)
         finishUpdate(proxyGroup)
 

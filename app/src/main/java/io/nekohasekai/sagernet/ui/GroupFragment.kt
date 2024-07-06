@@ -450,9 +450,8 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             }
 
             val subscription = proxyGroup.subscription
-            if (subscription != null && subscription.bytesUsed > 0L) {
-                groupTraffic.isVisible = true
-                groupTraffic.text = if (subscription.bytesRemaining > 0L) {
+            if (subscription != null && (subscription.bytesUsed > 0L || subscription.bytesRemaining > 0L)) {
+                var text = if (subscription.bytesRemaining > 0L) {
                     getString(
                         R.string.subscription_traffic, Formatter.formatFileSize(
                             context, subscription.bytesUsed
@@ -467,51 +466,25 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                         )
                     )
                 }
-                groupStatus.setPadding(0)
-            } else if (subscription != null && !subscription.subscriptionUserinfo.isNullOrBlank()) {
-                var text = ""
-                fun get(regex: String): String? {
-                    return regex.toRegex().findAll(subscription.subscriptionUserinfo).mapNotNull {
-                        if (it.groupValues.size > 1) it.groupValues[1] else null
-                    }.firstOrNull()
-                }
-                var used: Long = 0
-                var total: Long = 0
-                try {
-                    get("upload=([0-9]+)")?.apply {
-                        used += toLong()
-                    }
-                    get("download=([0-9]+)")?.apply {
-                        used += toLong()
-                    }
-                    total = get("total=([0-9]+)")?.toLong() ?: 0
-                    if (total > 0 || used > 0) {
-                        text += getString(
-                            R.string.subscription_traffic, Formatter.formatFileSize(
-                                context, used
-                            ), Formatter.formatFileSize(
-                                context, total - used
-                            )
-                        )
-                    }
-                    get("expire=([0-9]+)")?.apply {
-                        text += "\n"
-                        text += getString(
-                            R.string.subscription_expire,
-                            SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(this.toLong() * 1000))
-                        )
-                    }
-                } catch (_: Exception) {
+                if (subscription.expiryDate > 0L) {
+                    text += "\n"
+                    text += getString(
+                        R.string.subscription_expire,
+                        SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date(subscription.expiryDate * 1000))
+                    )
                 }
                 if (text.isNotEmpty()) {
                     groupTraffic.isVisible = true
                     groupTraffic.text = text
                     groupStatus.setPadding(0)
-                    if (proxyGroup.id !in GroupUpdater.updating) subscriptionUpdateProgress.apply {
-                        isVisible = true
-                        setProgressCompat(
-                            ((used.toDouble() / total.toDouble()) * 100).toInt(), true
-                        )
+                    if (proxyGroup.id !in GroupUpdater.updating && subscription.bytesRemaining > 0L) {
+                        subscriptionUpdateProgress.apply {
+                            isVisible = true
+                            setProgressCompat(
+                                ((subscription.bytesUsed.toDouble() / (subscription.bytesUsed + subscription.bytesRemaining).toDouble()) * 100).toInt(),
+                                true
+                            )
+                        }
                     }
                 }
             } else {

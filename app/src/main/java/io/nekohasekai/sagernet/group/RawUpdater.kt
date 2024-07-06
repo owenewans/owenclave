@@ -90,7 +90,38 @@ object RawUpdater : GroupUpdater() {
             proxies = parseRaw(response.contentString)
                 ?: error(app.getString(R.string.no_proxies_found))
 
-            subscription.subscriptionUserinfo = response.getHeader("Subscription-Userinfo")
+            val subscriptionUserinfo = response.getHeader("Subscription-Userinfo")
+            if (subscriptionUserinfo.isNotEmpty()) {
+                fun get(regex: String): String? {
+                    return regex.toRegex().findAll(subscriptionUserinfo).mapNotNull {
+                        if (it.groupValues.size > 1) it.groupValues[1] else null
+                    }.firstOrNull()
+                }
+                var used = 0L
+                try {
+                    val upload = get("upload=([0-9]+)")?.toLong() ?: -1L
+                    if (upload > 0L) {
+                        used += upload
+                    }
+                    val download = get("download=([0-9]+)")?.toLong() ?: -1L
+                    if (download > 0L) {
+                        used += download
+                    }
+                    val total = get("total=([0-9]+)")?.toLong() ?: -1L
+                    subscription.apply {
+                        if (upload > 0L || download > 0L) {
+                            bytesUsed = used
+                            bytesRemaining = if (total > 0L) total - used else -1L
+                        } else {
+                            bytesUsed = -1L
+                            bytesRemaining = -1L
+                        }
+                        expiryDate = get("expire=([0-9]+)")?.toLong() ?: -1L
+                    }
+                } catch (_: Exception) {
+                }
+            }
+
         }
 
         val proxiesMap = LinkedHashMap<String, AbstractBean>()
@@ -215,7 +246,7 @@ object RawUpdater : GroupUpdater() {
             Logs.e("Exist profiles: $existCount, new profiles: ${proxies.size}")
         }
 
-        subscription.lastUpdated = (System.currentTimeMillis() / 1000).toInt()
+        subscription.lastUpdated = System.currentTimeMillis() / 1000
         SagerDatabase.groupDao.updateGroup(proxyGroup)
         finishUpdate(proxyGroup)
 

@@ -44,32 +44,25 @@ public class SubscriptionBean extends Serializable {
     public String customUserAgent;
     public Boolean autoUpdate;
     public Integer autoUpdateDelay;
-    public Integer lastUpdated;
-
-    // SIP008
-
+    public Long lastUpdated;
     public Long bytesUsed;
     public Long bytesRemaining;
+    public Long expiryDate;
 
     // Open Online Config
-
     public String username;
-    public Integer expiryDate;
     public List<String> protocols;
 
     public Set<String> selectedGroups;
     public Set<String> selectedOwners;
     public Set<String> selectedTags;
 
-    // https://github.com/crossutility/Quantumult/blob/master/extra-subscription-feature.md
-    public String subscriptionUserinfo;
-
     public SubscriptionBean() {
     }
 
     @Override
     public void serializeToBuffer(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
 
         output.writeInt(type);
 
@@ -85,20 +78,13 @@ public class SubscriptionBean extends Serializable {
         output.writeString(customUserAgent);
         output.writeBoolean(autoUpdate);
         output.writeInt(autoUpdateDelay);
-        output.writeInt(lastUpdated);
-
-        if (type == SubscriptionType.RAW) {
-            output.writeString(subscriptionUserinfo);
-        }
-
-        if (type != SubscriptionType.RAW) {
-            output.writeLong(bytesUsed);
-            output.writeLong(bytesRemaining);
-        }
+        output.writeLong(lastUpdated);
+        output.writeLong(bytesUsed);
+        output.writeLong(bytesRemaining);
+        output.writeLong(expiryDate);
 
         if (type == SubscriptionType.OOCv1) {
             output.writeString(username);
-            output.writeInt(expiryDate);
             KryosKt.writeStringList(output, protocols);
             KryosKt.writeStringList(output, selectedGroups);
             KryosKt.writeStringList(output, selectedOwners);
@@ -108,7 +94,7 @@ public class SubscriptionBean extends Serializable {
     }
 
     public void serializeForShare(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
 
         output.writeInt(type);
 
@@ -122,19 +108,12 @@ public class SubscriptionBean extends Serializable {
         output.writeBoolean(deduplication);
         output.writeBoolean(updateWhenConnectedOnly);
         output.writeString(customUserAgent);
-
-        if (type == SubscriptionType.RAW) {
-            output.writeString(subscriptionUserinfo);
-        }
-
-        if (type != SubscriptionType.RAW) {
-            output.writeLong(bytesUsed);
-            output.writeLong(bytesRemaining);
-        }
+        output.writeLong(bytesUsed);
+        output.writeLong(bytesRemaining);
+        output.writeLong(expiryDate);
 
         if (type == SubscriptionType.OOCv1) {
             output.writeString(username);
-            output.writeInt(expiryDate);
             KryosKt.writeStringList(output, protocols);
         }
 
@@ -157,20 +136,31 @@ public class SubscriptionBean extends Serializable {
         customUserAgent = input.readString();
         autoUpdate = input.readBoolean();
         autoUpdateDelay = input.readInt();
-        lastUpdated = input.readInt();
-
-        if (type == SubscriptionType.RAW && version >= 3) {
-            subscriptionUserinfo = input.readString();
+        if (version <= 3) {
+            lastUpdated = (long) input.readInt();
+        } else {
+            lastUpdated = input.readLong();
         }
 
-        if (type != SubscriptionType.RAW) {
+
+        if (type == SubscriptionType.RAW && version == 3) {
+            input.readString(); // subscriptionUserinfo, removed
+        }
+
+        if (type != SubscriptionType.RAW || version >= 4) {
             bytesUsed = input.readLong();
             bytesRemaining = input.readLong();
         }
 
+        if (version >= 4) {
+            expiryDate = input.readLong();
+        }
+
         if (type == SubscriptionType.OOCv1) {
             username = input.readString();
-            expiryDate = input.readInt();
+            if (version <= 3) {
+                expiryDate = (long) input.readInt();
+            }
             protocols = KryosKt.readStringList(input);
             if (input.canReadVarInt()) {
                 selectedGroups = KryosKt.readStringSet(input);
@@ -197,18 +187,24 @@ public class SubscriptionBean extends Serializable {
         updateWhenConnectedOnly = input.readBoolean();
         customUserAgent = input.readString();
 
-        if (type == SubscriptionType.RAW && version >= 2) {
-            subscriptionUserinfo = input.readString();
+        if (type == SubscriptionType.RAW && version == 2) {
+            input.readString(); // subscriptionUserinfo, removed
         }
 
-        if (type != SubscriptionType.RAW) {
+        if (type != SubscriptionType.RAW || version >= 3) {
             bytesUsed = input.readLong();
             bytesRemaining = input.readLong();
         }
 
+        if (version >= 3) {
+            expiryDate = input.readLong();
+        }
+
         if (type == SubscriptionType.OOCv1) {
             username = input.readString();
-            expiryDate = input.readInt();
+            if (version <= 2) {
+                expiryDate = (long) input.readInt();
+            }
             protocols = KryosKt.readStringList(input);
         }
     }
@@ -222,16 +218,15 @@ public class SubscriptionBean extends Serializable {
         if (deduplication == null) deduplication = false;
         if (updateWhenConnectedOnly == null) updateWhenConnectedOnly = false;
         if (customUserAgent == null) customUserAgent = "";
-        if (subscriptionUserinfo == null) subscriptionUserinfo = "";
         if (autoUpdate == null) autoUpdate = false;
         if (autoUpdateDelay == null) autoUpdateDelay = 280;
-        if (lastUpdated == null) lastUpdated = 0;
+        if (lastUpdated == null) lastUpdated = 0L;
 
         if (bytesUsed == null) bytesUsed = 0L;
         if (bytesRemaining == null) bytesRemaining = 0L;
 
         if (username == null) username = "";
-        if (expiryDate == null) expiryDate = 0;
+        if (expiryDate == null) expiryDate = 0L;
         if (protocols == null) protocols = new ArrayList<>();
         if (selectedGroups == null) selectedGroups = new LinkedHashSet<>();
         if (selectedOwners == null) selectedOwners = new LinkedHashSet<>();

@@ -104,7 +104,7 @@ object OpenOnlineConfigUpdater : GroupUpdater() {
         subscription.username = oocResponse.getStr("username")
         subscription.bytesUsed = oocResponse.getLong("bytesUsed", -1)
         subscription.bytesRemaining = oocResponse.getLong("bytesRemaining", -1)
-        subscription.expiryDate = oocResponse.getInt("expiryDate", -1)
+        subscription.expiryDate = oocResponse.getLong("expiryDate", -1)
         subscription.protocols = oocResponse.getJSONArray("protocols").filterIsInstance<String>()
         subscription.applyDefaultValues()
 
@@ -250,7 +250,7 @@ object OpenOnlineConfigUpdater : GroupUpdater() {
             Logs.e("Exist profiles: $existCount, new profiles: ${profileMap.size}")
         }
 
-        subscription.lastUpdated = (System.currentTimeMillis() / 1000).toInt()
+        subscription.lastUpdated = System.currentTimeMillis() / 1000
         SagerDatabase.groupDao.updateGroup(proxyGroup)
         finishUpdate(proxyGroup)
 
