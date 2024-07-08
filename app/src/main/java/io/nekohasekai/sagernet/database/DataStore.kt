@@ -189,9 +189,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var proxyApps by configurationStore.boolean(Key.PROXY_APPS)
     var bypass by configurationStore.boolean(Key.BYPASS_MODE) { true }
     var individual by configurationStore.string(Key.INDIVIDUAL)
-    var enableMux by configurationStore.boolean(Key.ENABLE_MUX)
-    var enableMuxForAll by configurationStore.boolean(Key.ENABLE_MUX_FOR_ALL)
-    var muxConcurrency by configurationStore.stringToInt(Key.MUX_CONCURRENCY) { 8 }
     var showDirectSpeed by configurationStore.boolean(Key.SHOW_DIRECT_SPEED)
 
     val persistAcrossReboot by configurationStore.boolean(Key.PERSIST_ACROSS_REBOOT) { true }
@@ -272,6 +269,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverVMessExperimentalAuthenticatedLength by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH)
     var serverVMessExperimentalNoTerminationSignal by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL)
 
+    var serverMux by profileCacheStore.boolean(Key.SERVER_MUX)
+    var serverMuxConcurrency by profileCacheStore.stringToInt(Key.SERVER_MUX_CONCURRENCY) { 8 }
+    var serverMuxPacketEncoding by profileCacheStore.string(Key.SERVER_MUX_PACKET_ENCODING)
+
     var serverAuthType by profileCacheStore.stringToInt(Key.SERVER_AUTH_TYPE)
     var serverUploadSpeed by profileCacheStore.stringToInt(Key.SERVER_UPLOAD_SPEED)
     var serverDownloadSpeed by profileCacheStore.stringToInt(Key.SERVER_DOWNLOAD_SPEED)
@@ -294,7 +295,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverBrookTlsFingerprint by profileCacheStore.string(Key.SERVER_BROOK_TLS_FINGERPRINT)
     var serverBrookFragment by profileCacheStore.string(Key.SERVER_BROOK_FRAGMENT)
     var serverBrookUdpOverStream by profileCacheStore.boolean(Key.SERVER_BROOK_UDP_OVER_STREAM)
-    var serverEncryptedProtocolExtension by profileCacheStore.boolean(Key.SERVER_ENCRYPTED_PROTOCOL_EXTENSION)
 
     var serverUDPRelayMode by profileCacheStore.string(Key.SERVER_UDP_RELAY_MODE)
     var serverCongestionController by profileCacheStore.string(Key.SERVER_CONGESTION_CONTROLLER)

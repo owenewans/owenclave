@@ -144,6 +144,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverPacketEncoding = packetEncoding
 
+        DataStore.serverMux = mux
+        DataStore.serverMuxConcurrency = muxConcurrency
+        DataStore.serverMuxPacketEncoding = muxPacketEncoding
     }
 
     override fun StandardV2RayBean.serialize() {
@@ -217,6 +220,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
         allowInsecure = DataStore.serverAllowInsecure
         packetEncoding = DataStore.serverPacketEncoding
+
+        mux = DataStore.serverMux
+        muxConcurrency = DataStore.serverMuxConcurrency
+        muxPacketEncoding = DataStore.serverMuxPacketEncoding
     }
 
     lateinit var encryption: SimpleMenuPreference
@@ -259,6 +266,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var pluginConfigure: EditTextPreference
     lateinit var pluginConfiguration: PluginConfiguration
     lateinit var receiver: BroadcastReceiver
+
+    lateinit var mux: SwitchPreference
+    lateinit var muxConcurrency: EditTextPreference
+    lateinit var muxPacketEncoding: SimpleMenuPreference
 
     override fun PreferenceFragmentCompat.createPreferences(
         savedInstanceState: Bundle?,
@@ -406,6 +417,22 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         }
 
         findPreference<EditTextPreference>(Key.SERVER_USERNAME)!!.isVisible = bean is SOCKSBean || bean is HttpBean
+
+        mux = findPreference(Key.SERVER_MUX)!!
+        muxConcurrency = findPreference(Key.SERVER_MUX_CONCURRENCY)!!
+        muxConcurrency.isVisible = mux.isChecked
+        muxConcurrency.setOnBindEditTextListener(EditTextPreferenceModifiers.Mux)
+        muxPacketEncoding = findPreference(Key.SERVER_MUX_PACKET_ENCODING)!!
+        muxPacketEncoding.isVisible = mux.isChecked
+        if (muxPacketEncoding.value !in pev) {
+            muxPacketEncoding.value = pev[0]
+        }
+        mux.setOnPreferenceChangeListener { _, newValue ->
+            newValue as Boolean
+            muxConcurrency.isVisible = newValue
+            muxPacketEncoding.isVisible = newValue
+            true
+        }
 
         plugin = findPreference(Key.SERVER_PLUGIN)!!
         pluginConfigure = findPreference(Key.SERVER_PLUGIN_CONFIGURE)!!

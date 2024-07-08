@@ -70,7 +70,6 @@ import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.buildTuic5Config
 import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
-import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.v2ray.toUri
@@ -355,15 +354,12 @@ data class ProxyEntity(
                     name = "${displayName()}.txt"
                 }
 
-                val enableMux = DataStore.enableMux
-                for ((isBalancer, chain) in config.index) {
-                    chain.entries.forEachIndexed { index, (port, profile) ->
-                        val needChain = !isBalancer && index != chain.size - 1
-                        val needMux = enableMux && (isBalancer || index == chain.size - 1)
+                for ((_, chain) in config.index) {
+                    chain.entries.forEachIndexed { _, (port, profile) ->
                         when (val bean = profile.requireBean()) {
                             is TrojanGoBean -> {
                                 append("\n\n")
-                                append(bean.buildTrojanGoConfig(port, needMux).also {
+                                append(bean.buildTrojanGoConfig(port).also {
                                     Logs.d(it)
                                 })
                             }
@@ -436,23 +432,6 @@ data class ProxyEntity(
             TYPE_JUICITY -> true
 
             else -> false
-        }
-    }
-
-    fun isV2RayNetworkTcp(): Boolean {
-        val bean = requireBean() as StandardV2RayBean
-        return when (bean.type) {
-            "tcp", "ws", "http", "grpc", "httpupgrade", "meek", "splithttp" -> true
-            else -> false
-        }
-    }
-
-    fun needCoreMux(): Boolean {
-        val enableMuxForAll by lazy { DataStore.enableMuxForAll }
-        return when (type) {
-            TYPE_VMESS, TYPE_VLESS -> isV2RayNetworkTcp()
-            TYPE_TROJAN_GO -> false
-            else -> enableMuxForAll
         }
     }
 

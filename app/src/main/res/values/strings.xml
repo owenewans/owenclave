@@ -531,5 +531,6 @@
     <string name="rules_geosite_url">geosite.dat URL</string>
     <string name="rules_geoip_url">geoip.dat URL</string>
     <string name="http_proxy_exception_list">HTTP proxy exception list</string>
+    <string name="mux_settings">Mux settings</string>
 
 </resources>

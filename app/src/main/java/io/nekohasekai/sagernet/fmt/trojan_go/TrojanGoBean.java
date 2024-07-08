@@ -109,6 +109,10 @@ public class TrojanGoBean extends AbstractBean {
 
     public String utlsFingerprint;
 
+    public Boolean mux;
+
+    public Integer muxConcurrency;
+
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -122,11 +126,13 @@ public class TrojanGoBean extends AbstractBean {
         if (plugin == null) plugin = "";
         if (allowInsecure == null) allowInsecure = false;
         if (utlsFingerprint == null) utlsFingerprint = "";
+        if (mux == null) mux = false;
+        if (muxConcurrency == null) muxConcurrency = 8;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
         super.serialize(output);
         output.writeString(password);
         output.writeString(sni);
@@ -143,6 +149,8 @@ public class TrojanGoBean extends AbstractBean {
         output.writeString(plugin);
         output.writeBoolean(allowInsecure);
         output.writeString(utlsFingerprint);
+        output.writeBoolean(mux);
+        output.writeInt(muxConcurrency);
     }
 
     @Override
@@ -173,6 +181,10 @@ public class TrojanGoBean extends AbstractBean {
         }
         if (version >= 2) {
             utlsFingerprint = input.readString();
+        }
+        if (version >= 4) {
+            mux = input.readBoolean();
+            muxConcurrency = input.readInt();
         }
     }
 

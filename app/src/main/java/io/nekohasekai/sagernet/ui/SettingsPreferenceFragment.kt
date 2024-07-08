@@ -119,18 +119,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val portLocalDns = findPreference<EditTextPreference>(Key.LOCAL_DNS_PORT)!!
         val ipv6Mode = findPreference<Preference>(Key.IPV6_MODE)!!
         val domainStrategy = findPreference<Preference>(Key.DOMAIN_STRATEGY)!!
-        val enableMux = findPreference<Preference>(Key.ENABLE_MUX)!!
-        val enableMuxForAll = findPreference<Preference>(Key.ENABLE_MUX_FOR_ALL)!!
-        enableMuxForAll.isEnabled = DataStore.enableMux
-        val muxConcurrency = findPreference<EditTextPreference>(Key.MUX_CONCURRENCY)!!
-        muxConcurrency.isEnabled = DataStore.enableMux
-
-        enableMux.setOnPreferenceChangeListener { _, newValue ->
-            enableMuxForAll.isEnabled = newValue as Boolean
-            muxConcurrency.isEnabled = newValue as Boolean
-            needReload()
-            true
-        }
 
         val tcpKeepAliveInterval = findPreference<EditTextPreference>(Key.TCP_KEEP_ALIVE_INTERVAL)!!
 
@@ -190,7 +178,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val dnsHosts = findPreference<EditTextPreference>(Key.DNS_HOSTS)!!
 
         portLocalDns.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
-        muxConcurrency.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         portSocks5.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         portHttp.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         dnsHosts.setOnBindEditTextListener(EditTextPreferenceModifiers.Hosts)
@@ -275,8 +262,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         httpProxyException.onPreferenceChangeListener = reloadListener
         showDirectSpeed.onPreferenceChangeListener = reloadListener
         domainStrategy.onPreferenceChangeListener = reloadListener
-        enableMuxForAll.onPreferenceChangeListener = reloadListener
-        muxConcurrency.onPreferenceChangeListener = reloadListener
         tcpKeepAliveInterval.onPreferenceChangeListener = reloadListener
         bypassLanInCoreOnly.onPreferenceChangeListener = reloadListener
 

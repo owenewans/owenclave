@@ -248,4 +248,28 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:key="serverMuxCategory"
+        app:title="@string/mux_settings">
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverMux"
+            app:summary="@string/mux_sum"
+            app:title="@string/enable_mux"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:defaultValue="8"
+            app:icon="@drawable/ic_baseline_low_priority_24"
+            app:key="serverMuxConcurrency"
+            app:title="@string/mux_concurrency"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/packet_encoding_entry"
+            app:entryValues="@array/packet_encoding_value"
+            app:icon="@drawable/baseline_widgets_24"
+            app:key="serverMuxPacketEncoding"
+            app:title="@string/packet_encoding"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

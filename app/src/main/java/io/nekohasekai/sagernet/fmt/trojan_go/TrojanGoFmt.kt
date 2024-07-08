@@ -113,7 +113,7 @@ fun TrojanGoBean.toUri(): String {
     return builder.string
 }
 
-fun TrojanGoBean.buildTrojanGoConfig(port: Int, mux: Boolean): String {
+fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
     return JSONObject().also { conf ->
         conf["run_type"] = "client"
         conf["local_addr"] = LOCALHOST
@@ -126,7 +126,7 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int, mux: Boolean): String {
         conf["log_level"] = if (DataStore.enableLog) 0 else 2
         if (mux) conf["mux"] = JSONObject().also {
             it["enabled"] = true
-            it["concurrency"] = DataStore.muxConcurrency
+            it["concurrency"] = muxConcurrency
         }
 
         when (type) {

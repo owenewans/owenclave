@@ -501,5 +501,6 @@
     <string name="rules_geosite_url">geosite.dat URL</string>
     <string name="rules_geoip_url">geoip.dat URL</string>
     <string name="http_proxy_exception_list">HTTP 代理例外列表</string>
+    <string name="mux_settings">Mux 设置</string>
 
 </resources>

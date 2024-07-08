@@ -97,18 +97,12 @@ abstract class V2RayInstance(
     open fun init() {
         v2rayPoint = V2RayInstance()
         buildConfig()
-        val enableMux = DataStore.enableMux
-        for ((isBalancer, chain) in config.index) {
-            chain.entries.forEachIndexed { index, (port, profile) ->
-                val needChain = !isBalancer && index != chain.size - 1
-                val needMux = enableMux && (isBalancer || index == chain.size - 1)
-
+        for ((_, chain) in config.index) {
+            chain.entries.forEachIndexed { _, (port, profile) ->
                 when (val bean = profile.requireBean()) {
                     is TrojanGoBean -> {
                         initPlugin("trojan-go-plugin")
-                        pluginConfigs[port] = profile.type to bean.buildTrojanGoConfig(
-                            port, needMux
-                        )
+                        pluginConfigs[port] = profile.type to bean.buildTrojanGoConfig(port)
                     }
                     is NaiveBean -> {
                         initPlugin("naive-plugin")
@@ -207,11 +201,10 @@ abstract class V2RayInstance(
         val useSystemCACerts = DataStore.providerRootCA == RootCAProvider.SYSTEM
         val rootCaPem by lazy { File(app.filesDir, "mozilla_included.pem").canonicalPath }
 
-        for ((isBalancer, chain) in config.index) {
-            chain.entries.forEachIndexed { index, (port, profile) ->
+        for ((_, chain) in config.index) {
+            chain.entries.forEachIndexed { _, (port, profile) ->
                 val bean = profile.requireBean()
-                val needChain = !isBalancer && index != chain.size - 1
-                val (profileType, config) = pluginConfigs[port] ?: 0 to ""
+                val (_, config) = pluginConfigs[port] ?: (0 to "")
                 val env = mutableMapOf<String, String>()
                 if (!useSystemCACerts) {
                     env["SSL_CERT_FILE"] = rootCaPem

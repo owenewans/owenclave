@@ -82,9 +82,6 @@ object Key {
     const val PROBE_URL = "probeUrl"
     const val PROBE_INTERVAL = "probeInterval"
 
-    const val ENABLE_MUX = "enableMux"
-    const val ENABLE_MUX_FOR_ALL = "enableMuxForAll"
-    const val MUX_CONCURRENCY = "muxConcurrency"
     const val TCP_KEEP_ALIVE_INTERVAL = "tcpKeepAliveInterval"
     const val RULES_PROVIDER = "rulesProvider"
     const val RULES_GEOSITE_URL = "rulesGeositeUrl"
@@ -175,6 +172,11 @@ object Key {
     const val SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH = "serverVMessExperimentalAuthenticatedLength"
     const val SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL = "serverVMessExperimentalNoTerminationSignal"
 
+    const val SERVER_MUX_CATEGORY = "serverMuxCategory"
+    const val SERVER_MUX = "serverMux"
+    const val SERVER_MUX_CONCURRENCY = "serverMuxConcurrency"
+    const val SERVER_MUX_PACKET_ENCODING = "serverMuxPacketEncoding"
+
     const val SERVER_PRIVATE_KEY = "serverPrivateKey"
     const val SERVER_LOCAL_ADDRESS = "serverLocalAddress"
     const val SERVER_INSECURE_CONCURRENCY = "serverInsecureConcurrency"
@@ -186,7 +188,6 @@ object Key {
     const val SERVER_BROOK_TLS_FINGERPRINT = "serverBrookTlsFingerprint"
     const val SERVER_BROOK_FRAGMENT = "serverBrookFragment"
     const val SERVER_BROOK_UDP_OVER_STREAM = "serverBrookUdpOverStream"
-    const val SERVER_ENCRYPTED_PROTOCOL_EXTENSION = "serverEncryptedProtocolExtension"
 
     const val SERVER_UDP_RELAY_MODE = "serverUDPRelayMode"
     const val SERVER_CONGESTION_CONTROLLER = "serverCongestionController"

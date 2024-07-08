@@ -172,6 +172,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String hy2Password;
     public String hy2ObfsPassword;
 
+    public Boolean mux;
+    public Integer muxConcurrency;
+    public String muxPacketEncoding;
+
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -196,11 +200,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(grpcServiceName)) grpcServiceName = "";
         if (wsMaxEarlyData == null) wsMaxEarlyData = 0;
         if (wsUseBrowserForwarder == null) wsUseBrowserForwarder = false;
-        if (certificates == null) certificates = "";
-        if (pinnedPeerCertificateChainSha256 == null) pinnedPeerCertificateChainSha256 = "";
-        if (earlyDataHeaderName == null) earlyDataHeaderName = "";
+        if (StrUtil.isBlank(certificates)) certificates = "";
+        if (StrUtil.isBlank(pinnedPeerCertificateChainSha256)) pinnedPeerCertificateChainSha256 = "";
+        if (StrUtil.isBlank(earlyDataHeaderName)) earlyDataHeaderName = "";
         if (allowInsecure == null) allowInsecure = false;
-        if (packetEncoding == null) packetEncoding = "";
+        if (StrUtil.isBlank(packetEncoding)) packetEncoding = "";
         if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
 
         if (StrUtil.isBlank(realityPublicKey)) realityPublicKey = "";
@@ -213,11 +217,15 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(hy2Password)) hy2Password = "";
         if (StrUtil.isBlank(hy2ObfsPassword)) hy2ObfsPassword = "";
 
+        if (mux == null) mux = false;
+        if (muxConcurrency == null) muxConcurrency = 8;
+        if (StrUtil.isBlank(muxPacketEncoding)) muxPacketEncoding = "";
+
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(18);
+        output.writeInt(19);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -304,6 +312,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
         }
 
         output.writeString(packetEncoding);
+
+        output.writeBoolean(mux);
+        output.writeInt(muxConcurrency);
+        output.writeString(muxPacketEncoding);
     }
 
     @Override
@@ -460,6 +472,11 @@ public abstract class StandardV2RayBean extends AbstractBean {
         }
         if (version >= 16) {
             packetEncoding = input.readString();
+        }
+        if (version >= 19) {
+            mux = input.readBoolean();
+            muxConcurrency = input.readInt();
+            muxPacketEncoding = input.readString();
         }
     }
 

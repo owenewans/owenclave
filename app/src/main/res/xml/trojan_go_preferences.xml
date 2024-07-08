@@ -106,5 +106,20 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:key="serverMuxCategory"
+        app:title="@string/mux_settings">
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverMux"
+            app:title="@string/enable_mux"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:defaultValue="8"
+            app:icon="@drawable/ic_baseline_low_priority_24"
+            app:key="serverMuxConcurrency"
+            app:title="@string/mux_concurrency"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

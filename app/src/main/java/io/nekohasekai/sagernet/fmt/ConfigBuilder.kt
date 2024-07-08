@@ -962,21 +962,19 @@ fun buildV2RayConfig(
                                     }
                                 }
                             }
-                            if ((isBalancer || index == 0) && proxyEntity.needCoreMux() && DataStore.enableMux) {
+                            if ((isBalancer || index == 0) && bean is StandardV2RayBean && bean.mux) {
                                 mux = OutboundObject.MuxObject().apply {
                                     enabled = true
-                                    concurrency = DataStore.muxConcurrency
-                                    if (bean is StandardV2RayBean) {
-                                        when (bean.packetEncoding) {
-                                            "packet" -> {
-                                                packetEncoding = "packet"
-                                                if (currentDomainStrategy == "AsIs") {
-                                                    currentDomainStrategy = "UseIP"
-                                                }
+                                    concurrency = bean.muxConcurrency
+                                    when (bean.muxPacketEncoding) {
+                                        "packet" -> {
+                                            packetEncoding = "packet"
+                                            if (currentDomainStrategy == "AsIs") {
+                                                currentDomainStrategy = "UseIP"
                                             }
-                                            "xudp" -> {
-                                                packetEncoding = "xudp"
-                                            }
+                                        }
+                                        "xudp" -> {
+                                            packetEncoding = "xudp"
                                         }
                                     }
                                 }

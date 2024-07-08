@@ -23,9 +23,11 @@ package io.nekohasekai.sagernet.database.preference
 
 import android.graphics.Typeface
 import android.text.InputFilter
+import android.text.InputType
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.preference.EditTextPreference
+
 
 object EditTextPreferenceModifiers {
     object Monospace : EditTextPreference.OnBindEditTextListener {
@@ -57,6 +59,15 @@ object EditTextPreferenceModifiers {
 
         override fun onBindEditText(editText: EditText) {
             editText.inputType = EditorInfo.TYPE_CLASS_NUMBER
+            editText.setSingleLine()
+            editText.setSelection(editText.text.length)
+        }
+    }
+
+    object Mux : EditTextPreference.OnBindEditTextListener {
+
+        override fun onBindEditText(editText: EditText) {
+            editText.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_SIGNED
             editText.setSingleLine()
             editText.setSelection(editText.text.length)
         }
