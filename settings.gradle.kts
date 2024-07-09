@@ -26,4 +26,4 @@ include(":app")
 include(":library:termux:terminal-emulator")
 include(":library:termux:terminal-view")
 
-rootProject.name = "SagerNet"
+rootProject.name = "Exclave"

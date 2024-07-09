@@ -47,7 +47,7 @@ fun Project.requireFlavor(): String {
 fun Project.requireMetadata(): Properties {
     if (!::metadata.isInitialized) {
         metadata = Properties().apply {
-            load(rootProject.file("sager.properties").inputStream())
+            load(rootProject.file("version.properties").inputStream())
         }
     }
     return metadata
@@ -339,7 +339,7 @@ fun Project.setupApp() {
         applicationVariants.all {
             outputs.all {
                 this as BaseVariantOutputImpl
-                outputFileName = outputFileName.replace(project.name, "SN-$versionName")
+                outputFileName = outputFileName.replace(project.name, "Exclave-$versionName")
                     .replace("-release", "")
                     .replace("-oss", "")
 

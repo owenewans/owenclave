@@ -93,7 +93,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .subText(versionName)
                         .setOnClickAction {
                             requireContext().launchCustomTab(
-                                "https://github.com/dyhkwong/SagerNet/releases"
+                                "https://github.com/dyhkwong/Exclave/releases"
                             )
                         }
                         .build())
@@ -169,7 +169,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .text(R.string.github)
                         .setOnClickAction {
                             requireContext().launchCustomTab(
-                                "https://github.com/dyhkwong/SagerNet"
+                                "https://github.com/dyhkwong/Exclave"
 
                             )
                         }
