@@ -80,10 +80,7 @@ const val TAG_DNS_OUT = "dns-out"
 
 const val TAG_DNS_DIRECT = "dns-direct"
 
-const val TAG_API_IN = "api-in"
-
 const val LOCALHOST = "127.0.0.1"
-const val IP6_LOCALHOST = "::1"
 
 class V2rayBuildResult(
     var config: String,
@@ -413,7 +410,7 @@ fun buildV2RayConfig(
                                 protocol = "freedom"
                                 settings = LazyOutboundConfigurationObject(this,
                                     FreedomOutboundConfigurationObject().apply {
-                                        redirect = LOCALHOST + ":" + localPort
+                                        redirect = "$LOCALHOST:$localPort"
                                     })
                             }
                         } else {
@@ -962,7 +959,7 @@ fun buildV2RayConfig(
                                     }
                                 }
                             }
-                            if ((isBalancer || index == 0) && bean is StandardV2RayBean && bean.mux) {
+                            if (bean is StandardV2RayBean && bean.mux) {
                                 mux = OutboundObject.MuxObject().apply {
                                     enabled = true
                                     concurrency = bean.muxConcurrency
@@ -1026,12 +1023,16 @@ fun buildV2RayConfig(
                             DokodemoDoorInboundConfigurationObject().apply {
                                 address = bean.serverAddress
                                 network = bean.network()
-                                if (bean is HysteriaBean) {
-                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
-                                } else if (bean is Hysteria2Bean) {
-                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
-                                } else {
-                                    port = bean.serverPort
+                                port = when (bean) {
+                                    is HysteriaBean -> {
+                                        bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                    }
+                                    is Hysteria2Bean -> {
+                                        bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                    }
+                                    else -> {
+                                        bean.serverPort
+                                    }
                                 }
                             })
 
@@ -1052,12 +1053,12 @@ fun buildV2RayConfig(
                                 address = bean.serverAddress
                                 network = bean.network()
                                 port = bean.serverPort
-                                if (bean is HysteriaBean) {
-                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                port = if (bean is HysteriaBean) {
+                                    bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
                                 } else if (bean is Hysteria2Bean && (DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || bean.canMapping())) {
-                                    port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                    bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
                                 } else {
-                                    port = bean.serverPort
+                                    bean.serverPort
                                 }
                             })
                         routing.rules.add(RoutingObject.RuleObject().apply {
@@ -1354,7 +1355,7 @@ fun buildV2RayConfig(
         val proxyDomain = HashSet<String>()
         val bootstrapDomain = HashSet<String>()
 
-        (proxies + extraProxies.values.flatten()).forEach {
+        (proxies + extraProxies.values.flatten()).forEach { it ->
             val bean = it.requireBean()
             bean.apply {
                 if (bean is ConfigBean) {
@@ -1641,7 +1642,7 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
     }
 
     val outbounds = try {
-        config.getJSONArray("outbounds")?.filterIsInstance<JSONObject>()?.map {
+        config.getJSONArray("outbounds")?.filterIsInstance<JSONObject>()?.map { it ->
             gson.fromJson(it.toString().takeIf { it.isNotBlank() } ?: "{}",
                 OutboundObject::class.java)
         }?.toMutableList()
