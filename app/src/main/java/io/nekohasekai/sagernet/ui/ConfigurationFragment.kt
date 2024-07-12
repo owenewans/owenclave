@@ -59,6 +59,7 @@ import io.nekohasekai.sagernet.databinding.LayoutProgressListBinding
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.toUniversalLink
 import io.nekohasekai.sagernet.fmt.v2ray.toV2rayN
+import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.group.Protocols
 import io.nekohasekai.sagernet.group.RawUpdater
 import io.nekohasekai.sagernet.ktx.*
@@ -631,6 +632,16 @@ class ConfigurationFragment @JvmOverloads constructor(
 
                     }
 
+                }
+            }
+            R.id.action_update_subscription -> {
+                val currentGroup = DataStore.currentGroup()
+                if (currentGroup.type == GroupType.SUBSCRIPTION) {
+                    runOnDefaultDispatcher {
+                        GroupUpdater.startUpdate(currentGroup, true)
+                    }
+                } else {
+                    snackbar(R.string.group_not_a_subscription).show()
                 }
             }
         }

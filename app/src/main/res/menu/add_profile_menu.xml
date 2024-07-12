@@ -121,6 +121,9 @@
         </menu>
     </item>
     <item
+        android:id="@+id/action_update_subscription"
+        android:title="@string/update_subscription" />
+    <item
         android:id="@+id/action_order"
         android:title="@string/group_order">
         <menu>
