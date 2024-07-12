@@ -48,6 +48,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import cn.hutool.core.lang.Validator.isUrl
 import io.nekohasekai.sagernet.*
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.bg.BaseService
@@ -281,6 +282,26 @@ class ConfigurationFragment @JvmOverloads constructor(
 
     }
 
+    suspend fun importGroup(text: String) {
+        if (isUrl(text)) {
+            val group = ProxyGroup(type = GroupType.SUBSCRIPTION)
+            val subscription = SubscriptionBean()
+            group.subscription = subscription
+            subscription.link = text
+            group.name = "Group"
+            MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.subscription_import)
+                .setMessage(getString(R.string.subscription_import_message, text))
+                .setPositiveButton(R.string.yes) { _, _ ->
+                    runOnDefaultDispatcher {
+                        GroupManager.createGroup(group)
+                        GroupUpdater.startUpdate(group, true)
+                    }
+                }
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
+        }
+    }
+
     override fun onMenuItemClick(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_scan_qr_code -> {
@@ -290,19 +311,28 @@ class ConfigurationFragment @JvmOverloads constructor(
                 val text = SagerNet.getClipboardText()
                 if (text.isBlank()) {
                     snackbar(getString(R.string.clipboard_empty)).show()
-                } else runOnDefaultDispatcher {
-                    try {
-                        val proxies = RawUpdater.parseRaw(text)
-                        if (proxies.isNullOrEmpty()) onMainDispatcher {
-                            snackbar(getString(R.string.no_proxies_found_in_clipboard)).show()
-                        } else import(proxies)
-                    } catch (e: SubscriptionFoundException) {
-                        (requireActivity() as MainActivity).importSubscription(Uri.parse(e.link))
-                    } catch (e: Exception) {
-                        Logs.w(e)
-
-                        onMainDispatcher {
-                            snackbar(e.readableMessage).show()
+                } else {
+                    runOnDefaultDispatcher {
+                        try {
+                            val proxies = RawUpdater.parseRaw(text)
+                            if (proxies.isNullOrEmpty()) {
+                                if (isUrl(text)) {
+                                    onMainDispatcher {
+                                        importGroup(text)
+                                    }
+                                } else onMainDispatcher {
+                                    snackbar(getString(R.string.no_proxies_found_in_clipboard)).show()
+                                }
+                            } else {
+                                import(proxies)
+                            }
+                        } catch (e: SubscriptionFoundException) {
+                            (requireActivity() as MainActivity).importSubscription(Uri.parse(e.link))
+                        } catch (e: Exception) {
+                            Logs.w(e)
+                            onMainDispatcher {
+                                snackbar(e.readableMessage).show()
+                            }
                         }
                     }
                 }
