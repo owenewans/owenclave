@@ -316,6 +316,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         hy2Password.apply {
             summaryProvider = PasswordSummaryProvider
             title = resources.getString(R.string.hysteria2_password)
+            dialogTitle = resources.getString(R.string.hysteria2_password)
         }
         hy2ObfsPassword = findPreference(Key.SERVER_OBFS)!!
         hy2ObfsPassword.apply {
@@ -507,13 +508,17 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 }
 
                 requestHost.setTitle(R.string.http_host)
+                requestHost.setDialogTitle(R.string.http_host)
                 path.setTitle(R.string.http_path)
+                path.setDialogTitle(R.string.http_path)
 
                 header.isVisible = true
             }
             "http", "httpupgrade", "splithttp" -> {
                 requestHost.setTitle(R.string.http_host)
+                requestHost.setDialogTitle(R.string.http_host)
                 path.setTitle(R.string.http_path)
+                path.setDialogTitle(R.string.http_path)
 
                 header.isVisible = false
                 requestHost.isVisible = true
@@ -521,7 +526,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             }
             "ws" -> {
                 requestHost.setTitle(R.string.ws_host)
+                requestHost.setDialogTitle(R.string.ws_host)
                 path.setTitle(R.string.ws_path)
+                path.setDialogTitle(R.string.ws_path)
 
                 header.isVisible = false
                 requestHost.isVisible = true
@@ -531,6 +538,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 header.setEntries(R.array.kcp_quic_headers_entry)
                 header.setEntryValues(R.array.kcp_quic_headers_value)
                 path.setTitle(R.string.kcp_seed)
+                path.setDialogTitle(R.string.kcp_seed)
 
                 if (DataStore.serverHeader !in kcpQuicHeadersValue) {
                     header.value = kcpQuicHeadersValue[0]
@@ -548,6 +556,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 header.setEntries(R.array.kcp_quic_headers_entry)
                 header.setEntryValues(R.array.kcp_quic_headers_value)
                 path.setTitle(R.string.quic_key)
+                path.setDialogTitle(R.string.quic_key)
 
                 if (DataStore.serverHeader !in kcpQuicHeadersValue) {
                     header.value = kcpQuicHeadersValue[0]
@@ -563,6 +572,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             }
             "grpc" -> {
                 path.setTitle(R.string.grpc_service_name)
+                path.setDialogTitle(R.string.grpc_service_name)
 
                 header.isVisible = false
                 requestHost.isVisible = false
@@ -570,6 +580,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             }
             "meek" -> {
                 path.setTitle(R.string.meek_url)
+                path.setDialogTitle(R.string.meek_url)
 
                 header.isVisible = false
                 requestHost.isVisible = false
