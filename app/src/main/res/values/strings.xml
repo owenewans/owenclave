@@ -534,5 +534,6 @@
     <string name="mux_settings">Mux settings</string>
     <string name="update_subscription">Update subscription</string>
     <string name="group_not_a_subscription">This group is not a subscription.</string>
+    <string name="action_import_from_url">Import from URL in clipboard</string>
 
 </resources>
