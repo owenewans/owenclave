@@ -156,30 +156,6 @@ fun Project.setupKotlinCommon() {
     setupCommon()
 }
 
-fun Project.setupNdk() {
-    android.ndkVersion = "26.3.11579264"
-}
-
-fun Project.setupNdkLibrary() {
-    setupCommon()
-    setupNdk()
-    android.apply {
-        defaultConfig {
-            externalNativeBuild.ndkBuild {
-                val targetAbi = requireTargetAbi()
-                if (targetAbi.isNotBlank()) {
-                    abiFilters(targetAbi)
-                } else {
-                    abiFilters("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-                }
-                arguments("-j${Runtime.getRuntime().availableProcessors()}")
-            }
-        }
-
-        externalNativeBuild.ndkBuild.path("src/main/jni/Android.mk")
-    }
-}
-
 fun Project.setupAppCommon() {
     setupKotlinCommon()
 
@@ -198,11 +174,7 @@ fun Project.setupAppCommon() {
                     keyPassword = pwd
                 }
             }
-        } else if (requireFlavor().contains("(Oss|Expert)Release".toRegex())) {
-            // OK just do not poweroff in case some random person runs this on real machine
-            // RuntimeUtil.exec("sudo", "poweroff").waitFor()
-            // RuntimeUtil.exec("systemctl", "poweroff").waitFor()
-            // exitProcess(0)
+        } else if (requireFlavor().contains("OssRelease")) {
             return
         }
         buildTypes {
@@ -362,7 +334,6 @@ fun Project.setupApp() {
         flavorDimensions.add("vendor")
         productFlavors {
             create("oss")
-            create("expert")
         }
 
         applicationVariants.all {

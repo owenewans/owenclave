@@ -29,10 +29,9 @@ fun Project.downloadAssets() {
         println("Downloading $sha256sum ...")
 
         val checksum = downloader.newCall(
-            Request.Builder().url(sha256sum).build()
-        )
-            .execute()
-            .let { it.body }
+        Request.Builder().url(sha256sum).build()
+    )
+        .execute().body
             .string()
             .trim()
             .substringBefore(" ")
@@ -45,10 +44,9 @@ fun Project.downloadAssets() {
             println("Downloading $geoipDat ...")
 
             downloader.newCall(
-                Request.Builder().url(geoipDat).build()
-            )
-                .execute()
-                .let { it.body }
+            Request.Builder().url(geoipDat).build()
+        )
+            .execute().body
                 .byteStream()
                 .use {
                     geoipFile.outputStream().use { out -> it.copyTo(out) }
@@ -95,10 +93,9 @@ fun Project.downloadAssets() {
         println("Downloading $sha256sum ...")
 
         val checksum = downloader.newCall(
-            Request.Builder().url(sha256sum).build()
-        )
-            .execute()
-            .let { it.body }
+        Request.Builder().url(sha256sum).build()
+    )
+        .execute().body
             .string()
             .trim()
             .substringBefore(" ")
@@ -112,10 +109,9 @@ fun Project.downloadAssets() {
             println("Downloading $geositeDat ...")
 
             downloader.newCall(
-                Request.Builder().url(geositeDat).build()
-            )
-                .execute()
-                .let { it.body }
+            Request.Builder().url(geositeDat).build()
+        )
+            .execute().body
                 .byteStream()
                 .use {
                     geositeFile.outputStream().use { out -> it.copyTo(out) }
@@ -141,35 +137,16 @@ fun Project.downloadAssets() {
         }
     }
 
-    val v2rayVersion = File(rootDir, "external/v2ray-core/core.go").readText()
-        .substringAfter("version")
-        .substringAfter("\"")
-        .substringBefore("\"")
-        .let { "v$it" }
-    val coreVersionFile = File(assets, "v2ray/core.version.txt")
-    val cacheFile = File(rootProject.buildDir, "v2ray-extra.zip")
-    cacheFile.parentFile.mkdirs()
-    cacheFile.deleteRecursively()
-
-    val extraDirectory = File(rootDir, "external/v2ray-core/release/extra")
-
-    if (!coreVersionFile.isFile || coreVersionFile.readText() != v2rayVersion) {
-        File(extraDirectory, "browserforwarder/index.js").inputStream().use { input ->
+    val indexJsFile = File(assets, "v2ray/index.js")
+    if (indexJsFile.isFile) {
+        indexJsFile.inputStream().use { input ->
             File(assets, "v2ray/index.js.xz").outputStream().use { out ->
                 XZOutputStream(out, LZMA2Options(9)).use {
                     input.copyTo(it)
                 }
             }
         }
-
-        File(extraDirectory, "browserforwarder/index.html").inputStream().use {
-            File(assets, "v2ray/index.html").outputStream().use { out ->
-                it.copyTo(out)
-            }
-        }
-
-        cacheFile.delete()
-        coreVersionFile.writeText(v2rayVersion)
+        indexJsFile.delete()
     }
 
 }
