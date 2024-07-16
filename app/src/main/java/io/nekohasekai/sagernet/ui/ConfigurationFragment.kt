@@ -48,7 +48,6 @@ import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import cn.hutool.core.lang.Validator.isUrl
 import io.nekohasekai.sagernet.*
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.bg.BaseService
@@ -310,28 +309,6 @@ class ConfigurationFragment @JvmOverloads constructor(
             }
             R.id.action_import_file -> {
                 startFilesForResult(importFile, "*/*")
-            }
-            R.id.action_import_from_url -> {
-                val text = SagerNet.getClipboardText()
-                if (text.isBlank()) {
-                    snackbar(getString(R.string.clipboard_empty)).show()
-                } else if (isUrl(text)) {
-                    val group = ProxyGroup(type = GroupType.SUBSCRIPTION)
-                    val subscription = SubscriptionBean()
-                    group.subscription = subscription
-                    subscription.link = text
-                    group.name = "Group"
-                    MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.subscription_import)
-                        .setMessage(getString(R.string.subscription_import_message, text))
-                        .setPositiveButton(R.string.yes) { _, _ ->
-                            runOnDefaultDispatcher {
-                                GroupManager.createGroup(group)
-                                GroupUpdater.startUpdate(group, true)
-                            }
-                        }
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .show()
-                }
             }
             R.id.action_new_socks -> {
                 startActivity(Intent(requireActivity(), SocksSettingsActivity::class.java))

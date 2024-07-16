@@ -21,9 +21,6 @@
             <item
                 android:id="@+id/action_import_file"
                 android:title="@string/action_import_file" />
-            <item
-                android:id="@+id/action_import_from_url"
-                android:title="@string/action_import_from_url" />
             <item android:title="@string/add_profile_methods_manual_settings">
                 <menu>
                     <item

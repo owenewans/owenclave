@@ -504,6 +504,5 @@
     <string name="mux_settings">Mux 设置</string>
     <string name="update_subscription">更新订阅</string>
     <string name="group_not_a_subscription">此分组不是订阅。</string>
-    <string name="action_import_from_url">从剪切板中的 URL 导入</string>
 
 </resources>
