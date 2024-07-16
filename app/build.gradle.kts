@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp") version "2.0.0-1.0.23"
     id("kotlin-parcelize")
     id("com.google.protobuf")
 }
@@ -15,8 +15,8 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }
-    kapt.arguments {
-        arg("room.incremental", true)
+    ksp {
+        arg("room.incremental", "true")
         arg("room.schemaLocation", "$projectDir/schemas")
     }
     bundle {
@@ -79,7 +79,7 @@ dependencies {
     }
 
     implementation("androidx.room:room-runtime:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
 
     implementation("com.blacksquircle.ui:editorkit:2.0.0")
