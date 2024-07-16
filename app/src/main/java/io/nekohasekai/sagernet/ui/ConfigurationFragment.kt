@@ -283,7 +283,7 @@ class ConfigurationFragment @JvmOverloads constructor(
     }
 
     suspend fun importGroup(text: String) {
-        if (isUrl(text)) {
+        if (isUrl(text)) { // this url check is not strict enough
             val group = ProxyGroup(type = GroupType.SUBSCRIPTION)
             val subscription = SubscriptionBean()
             group.subscription = subscription
@@ -316,7 +316,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         try {
                             val proxies = RawUpdater.parseRaw(text)
                             if (proxies.isNullOrEmpty()) {
-                                if (isUrl(text)) {
+                                if (isUrl(text)) { // this url check is not strict enough
                                     onMainDispatcher {
                                         importGroup(text)
                                     }
