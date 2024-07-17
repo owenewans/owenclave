@@ -394,7 +394,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         if (packetEncoding.value !in pev) {
             packetEncoding.value = pev[0]
         }
-        if (xtlsFlow.value != fv[0]) {
+        if (bean is VLESSBean && xtlsFlow.value != fv[0]) {
             packetEncoding.value = pev[2]
         }
         xtlsFlow.setOnPreferenceChangeListener { _, newValue ->
