@@ -383,15 +383,27 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         }
 
         findPreference<PreferenceCategory>(Key.SERVER_VMESS_EXPERIMENTS_CATEGORY)!!.isVisible = bean is VMessBean
-        xtlsFlow.isVisible = bean is VLESSBean
-        findPreference<SimpleMenuPreference>(Key.SERVER_PACKET_ENCODING)!!.isVisible = bean is VMessBean || bean is VLESSBean
         findPreference<PreferenceCategory>(Key.SERVER_PLUGIN_CATEGORY)!!.isVisible = bean is ShadowsocksBean
-        
+
+        xtlsFlow.isVisible = bean is VLESSBean
+        val fv = resources.getStringArray(R.array.xtls_flow_value)
         packetEncoding = findPreference(Key.SERVER_PACKET_ENCODING)!!
         packetEncoding.isVisible = bean is VMessBean || bean is VLESSBean
+        packetEncoding.isEnabled = bean is VMessBean || (bean is VLESSBean && xtlsFlow.value == fv[0])
         val pev = resources.getStringArray(R.array.packet_encoding_value)
         if (packetEncoding.value !in pev) {
             packetEncoding.value = pev[0]
+        }
+        if (xtlsFlow.value != fv[0]) {
+            packetEncoding.value = pev[2]
+        }
+        xtlsFlow.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            packetEncoding.isEnabled = newValue == fv[0]
+            if (newValue != fv[0]) {
+                packetEncoding.value = pev[2]
+            }
+            true
         }
 
         ssExperimentsCategory = findPreference(Key.SERVER_SS_EXPERIMENTS_CATEGORY)!!
