@@ -671,7 +671,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_update_subscription -> {
                 val currentGroup = DataStore.currentGroup()
                 if (currentGroup.type == GroupType.SUBSCRIPTION) {
-                    runOnDefaultDispatcher {
+                    if (currentGroup.id !in GroupUpdater.updating) {
                         GroupUpdater.startUpdate(currentGroup, true)
                     }
                 } else {
