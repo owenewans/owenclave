@@ -273,13 +273,10 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
 
         val profileName = binding.profileName
         val profileType = binding.profileType
-        val profileAddress = binding.profileAddress
         val trafficText: TextView = binding.trafficText
-        val selectedView = binding.selectedView
         val editButton = binding.edit
+        val deleteButton = binding.deleteIcon
         val shareLayout = binding.share
-        val shareLayer = binding.shareLayer
-        val shareButton = binding.shareIcon
 
         fun bind(proxyEntity: ProxyEntity) {
 
@@ -312,6 +309,16 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
                 ).apply {
                     putExtra(ProfileSelectActivity.EXTRA_SELECTED, proxyEntity)
                 })
+            }
+
+            deleteButton.setOnClickListener {
+                MaterialAlertDialogBuilder(this@ChainSettingsActivity)
+                    .setTitle(getString(R.string.delete_confirm_prompt))
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        configurationAdapter.remove(adapterPosition)
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
             }
 
             shareLayout.isVisible = false

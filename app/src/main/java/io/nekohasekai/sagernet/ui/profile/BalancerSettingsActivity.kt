@@ -337,13 +337,10 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
 
         val profileName = binding.profileName
         val profileType = binding.profileType
-        val profileAddress = binding.profileAddress
         val trafficText: TextView = binding.trafficText
-        val selectedView = binding.selectedView
         val editButton = binding.edit
+        val deleteButton = binding.deleteIcon
         val shareLayout = binding.share
-        val shareLayer = binding.shareLayer
-        val shareButton = binding.shareIcon
 
         fun bind(proxyEntity: ProxyEntity) {
 
@@ -378,6 +375,15 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
                 })
             }
 
+            deleteButton.setOnClickListener {
+                MaterialAlertDialogBuilder(this@BalancerSettingsActivity)
+                    .setTitle(getString(R.string.delete_confirm_prompt))
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        configurationAdapter.remove(adapterPosition)
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
+            }
             shareLayout.isVisible = false
 
         }
