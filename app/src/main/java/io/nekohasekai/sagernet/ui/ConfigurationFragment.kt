@@ -495,7 +495,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                     val profiles = SagerDatabase.proxyDao.getByGroup(DataStore.currentGroupId())
                     val toClear = mutableListOf<ProxyEntity>()
                     if (profiles.isNotEmpty()) for (profile in profiles) {
-                        if (profile.status != 0 && profile.status != 1) {
+                        if (profile.status != -1 && profile.status != 0 && profile.status != 1) {
                             toClear.add(profile)
                         }
                     }
