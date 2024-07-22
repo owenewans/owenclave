@@ -19,8 +19,10 @@
 
 package io.nekohasekai.sagernet.bg.test
 
+import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.bg.GuardedProcessPool
 import io.nekohasekai.sagernet.bg.proto.V2RayInstance
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.buildV2RayConfig
 import io.nekohasekai.sagernet.ktx.Logs
@@ -47,6 +49,7 @@ class V2RayTestInstance(profile: ProxyEntity, val link: String, val timeout: Int
                 try {
                     init()
                     launch()
+                    Libcore.updateSystemRoots(DataStore.providerRootCA == RootCAProvider.SYSTEM)
                     c.tryResume(Libcore.urlTest(v2rayPoint, "", link, timeout))
                 } catch (e: Exception) {
                     c.tryResumeWithException(e)
