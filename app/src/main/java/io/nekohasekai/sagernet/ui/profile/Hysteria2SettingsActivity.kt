@@ -42,7 +42,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.serverPassword = auth
         DataStore.serverSNI = sni
         DataStore.serverCertificates = caText
-        //DataStore.serverPinnedCertificateChain = pinSHA256
+        DataStore.serverPinnedCertificateChain = pinSHA256
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverUploadSpeed = uploadMbps
         DataStore.serverDownloadSpeed = downloadMbps
@@ -63,7 +63,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         auth = DataStore.serverPassword
         sni = DataStore.serverSNI
         caText = DataStore.serverCertificates
-        //pinSHA256 = DataStore.serverPinnedCertificateChain
+        pinSHA256 = DataStore.serverPinnedCertificateChain
         allowInsecure = DataStore.serverAllowInsecure
         uploadMbps = DataStore.serverUploadSpeed
         downloadMbps = DataStore.serverDownloadSpeed

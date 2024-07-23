@@ -504,5 +504,8 @@
     <string name="mux_settings">Mux 设置</string>
     <string name="update_subscription">更新订阅</string>
     <string name="group_not_a_subscription">此分组不是订阅。</string>
+    <string name="sha256_certificate_fingerprint">SHA256 证书指纹</string>
+    <string name="plugin_settings">插件设置</string>
+    <string name="hysteria2_plugin_settings_sum">这些选项仅对插件生效。</string>
 
 </resources>

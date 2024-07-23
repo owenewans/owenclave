@@ -157,9 +157,9 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
         caFile.writeText(caText)
         conf += "  ca: \"" + caFile.absolutePath + "\"\n"
     }
-    /*if (pinSHA256.isNotBlank()) {
+    if (pinSHA256.isNotBlank()) {
         conf += "  pinSHA256: \"$pinSHA256\"\n"
-    }*/
+    }
     conf += "\ntransport:\n  type: udp\n"
     if (serverPorts.contains("-") || serverPorts.contains(",")) {
         conf += "  udp:\n    hopInterval: " + hopInterval + "s\n"

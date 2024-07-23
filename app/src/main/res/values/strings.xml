@@ -534,5 +534,8 @@
     <string name="mux_settings">Mux settings</string>
     <string name="update_subscription">Update subscription</string>
     <string name="group_not_a_subscription">This group is not a subscription.</string>
+    <string name="sha256_certificate_fingerprint">SHA256 certificate fingerprint</string>
+    <string name="plugin_settings">Plugin settings</string>
+    <string name="hysteria2_plugin_settings_sum">These options only apply to plugins.</string>
 
 </resources>
