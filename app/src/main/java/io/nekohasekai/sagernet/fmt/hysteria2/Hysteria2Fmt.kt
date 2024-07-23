@@ -181,15 +181,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (maxConnReceiveWindow > 0) {
         conf += "  maxConnReceiveWindow: $maxConnReceiveWindow\n"
     }
-    if (uploadMbps > 0 || downloadMbps > 0) {
-        conf += "\nbandwidth:\n"
-        if (uploadMbps > 0) {
-            conf += "  up: $uploadMbps mbps\n"
-        }
-        if (downloadMbps > 0) {
-            conf += "  down: $downloadMbps mbps\n"
-        }
-    }
+    conf += "\nbandwidth:\n  up: $uploadMbps mbps\n  down: $downloadMbps mbps\n"
     conf += "\nsocks5:\n  listen: \"$LOCALHOST:$port\"\n"
     conf += "\nlazy: true\n"
     return conf

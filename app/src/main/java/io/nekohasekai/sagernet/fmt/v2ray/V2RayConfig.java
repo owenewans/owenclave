@@ -1151,7 +1151,6 @@ public class V2RayConfig {
         public OBFSObject obfs;
 
         public static class CongestionObject {
-            public String type;
             public Integer upMbps;
             public Integer downMbps;
         }

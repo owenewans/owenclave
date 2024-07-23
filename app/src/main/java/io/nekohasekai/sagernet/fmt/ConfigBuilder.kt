@@ -804,12 +804,9 @@ fun buildV2RayConfig(
                                                 if (bean.hy2Password.isNotBlank()) {
                                                     password = bean.hy2Password
                                                 }
-                                                if (bean.hy2UpMbps > 0 && bean.hy2DownMbps > 0) {
-                                                    congestion = Hysteria2Object.CongestionObject().apply {
-                                                        type = "brutal"
-                                                        downMbps = bean.hy2DownMbps
-                                                        upMbps = bean.hy2UpMbps
-                                                    }
+                                                congestion = Hysteria2Object.CongestionObject().apply {
+                                                    downMbps = bean.hy2DownMbps
+                                                    upMbps = bean.hy2UpMbps
                                                 }
                                                 if (bean.hy2ObfsPassword.isNotBlank()) {
                                                     obfs = Hysteria2Object.OBFSObject().apply {
@@ -935,12 +932,9 @@ fun buildV2RayConfig(
                                         if (bean.auth.isNotBlank()) {
                                             password = bean.auth
                                         }
-                                        if (bean.uploadMbps > 0 && bean.downloadMbps > 0) {
-                                            congestion = Hysteria2Object.CongestionObject().apply {
-                                                type = "brutal"
-                                                downMbps = bean.downloadMbps
-                                                upMbps = bean.uploadMbps
-                                            }
+                                        congestion = Hysteria2Object.CongestionObject().apply {
+                                            downMbps = bean.downloadMbps
+                                            upMbps = bean.uploadMbps
                                         }
                                         if (bean.obfs.isNotBlank()) {
                                             obfs = Hysteria2Object.OBFSObject().apply {
