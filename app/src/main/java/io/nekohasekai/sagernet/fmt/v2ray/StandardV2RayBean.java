@@ -82,13 +82,13 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (StrUtil.isBlank(host)) host = "";
         if (StrUtil.isBlank(path)) path = "";
-        if (StrUtil.isBlank(headerType)) headerType = "";
+        if (StrUtil.isBlank(headerType)) headerType = "none";
         if (StrUtil.isBlank(mKcpSeed)) mKcpSeed = "";
         if (StrUtil.isBlank(quicSecurity)) quicSecurity = "";
-        if (StrUtil.isBlank(quicKey)) quicKey = "";
+        if (StrUtil.isBlank(quicKey)) quicKey = "chacha20-poly1305";
         if (StrUtil.isBlank(meekUrl)) meekUrl = "";
 
-        if (StrUtil.isBlank(security)) security = "";
+        if (StrUtil.isBlank(security)) security = "none";
         if (StrUtil.isBlank(sni)) sni = "";
         if (StrUtil.isBlank(alpn)) alpn = "";
 
@@ -99,7 +99,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(pinnedPeerCertificateChainSha256)) pinnedPeerCertificateChainSha256 = "";
         if (StrUtil.isBlank(earlyDataHeaderName)) earlyDataHeaderName = "";
         if (allowInsecure == null) allowInsecure = false;
-        if (StrUtil.isBlank(packetEncoding)) packetEncoding = "";
+        if (StrUtil.isBlank(packetEncoding)) packetEncoding = "none";
         if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
 
         if (StrUtil.isBlank(realityPublicKey)) realityPublicKey = "";
@@ -114,7 +114,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (mux == null) mux = false;
         if (muxConcurrency == null) muxConcurrency = 8;
-        if (StrUtil.isBlank(muxPacketEncoding)) muxPacketEncoding = "";
+        if (StrUtil.isBlank(muxPacketEncoding)) muxPacketEncoding = "none";
 
     }
 

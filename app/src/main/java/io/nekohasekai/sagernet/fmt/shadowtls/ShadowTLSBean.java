@@ -63,6 +63,11 @@ public class ShadowTLSBean extends AbstractBean {
         v3 = input.readBoolean();
     }
 
+    @Override
+    public String network() {
+        return "tcp";
+    }
+
     @NonNull
     @Override
     public ShadowTLSBean clone() {

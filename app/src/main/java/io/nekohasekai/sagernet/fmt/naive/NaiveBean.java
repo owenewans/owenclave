@@ -91,6 +91,11 @@ public class NaiveBean extends AbstractBean {
     }
 
     @Override
+    public String network() {
+        return "tcp";
+    }
+
+    @Override
     public boolean canTCPing() {
         return !proto.equals("quic");
     }

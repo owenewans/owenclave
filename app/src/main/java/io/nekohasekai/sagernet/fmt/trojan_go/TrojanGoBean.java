@@ -52,7 +52,7 @@ public class TrojanGoBean extends AbstractBean {
 
         if (password == null) password = "";
         if (sni == null) sni = "";
-        if (StrUtil.isBlank(type)) type = "original";
+        if (StrUtil.isBlank(type)) type = "none";
         if (host == null) host = "";
         if (path == null) path = "";
         if (StrUtil.isBlank(encryption)) encryption = "none";
