@@ -71,15 +71,6 @@ public class TrojanBean extends StandardV2RayBean {
         }
     }
 
-    @Override
-    public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof TrojanBean)) return;
-        TrojanBean bean = ((TrojanBean) other);
-        if (allowInsecure) {
-            bean.allowInsecure = true;
-        }
-    }
-
     @NotNull
     @Override
     public TrojanBean clone() {

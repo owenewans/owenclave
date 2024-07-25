@@ -95,6 +95,12 @@ public class NaiveBean extends AbstractBean {
         return !proto.equals("quic");
     }
 
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof NaiveBean bean)) return;
+        bean.noPostQuantum = noPostQuantum;
+    }
+
     @NotNull
     @Override
     public NaiveBean clone() {

@@ -46,9 +46,11 @@ public class VLESSBean extends StandardV2RayBean {
 
     @Override
     public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof VLESSBean)) return;
-        VLESSBean bean = ((VLESSBean) other);
-        bean.flow = flow;
+        super.applyFeatureSettings(other);
+        if (!(other instanceof VLESSBean bean)) return;
+        if (flow.endsWith("-udp443") && !StrUtil.isBlank(bean.flow) && !bean.flow.endsWith("-udp443")) {
+            bean.flow = flow; // keep -udp443
+        }
     }
 
     @NotNull

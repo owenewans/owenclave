@@ -148,12 +148,17 @@ public class HysteriaBean extends AbstractBean {
 
     @Override
     public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof HysteriaBean)) return;
-        HysteriaBean bean = ((HysteriaBean) other);
+        if (!(other instanceof HysteriaBean bean)) return;
+        if (allowInsecure) {
+            bean.allowInsecure = true;
+        }
         bean.uploadMbps = uploadMbps;
         bean.downloadMbps = downloadMbps;
-        bean.allowInsecure = allowInsecure;
         bean.disableMtuDiscovery = disableMtuDiscovery;
+        bean.streamReceiveWindow = streamReceiveWindow;
+        bean.connectionReceiveWindow = connectionReceiveWindow;
+        bean.hopInterval = hopInterval;
+        bean.caText = caText;
     }
 
     @Override

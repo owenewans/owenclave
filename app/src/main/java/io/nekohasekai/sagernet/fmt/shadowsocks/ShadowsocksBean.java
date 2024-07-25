@@ -84,8 +84,8 @@ public class ShadowsocksBean extends StandardV2RayBean {
 
     @Override
     public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof ShadowsocksBean)) return;
-        ShadowsocksBean bean = ((ShadowsocksBean) other);
+        super.applyFeatureSettings(other);
+        if (!(other instanceof ShadowsocksBean bean)) return;
         bean.experimentReducedIvHeadEntropy = experimentReducedIvHeadEntropy;
     }
 

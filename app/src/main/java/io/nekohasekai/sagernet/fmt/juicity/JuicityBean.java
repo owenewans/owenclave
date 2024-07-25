@@ -61,6 +61,14 @@ public class JuicityBean extends AbstractBean {
         return false;
     }
 
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof JuicityBean bean)) return;
+        if (allowInsecure) {
+            bean.allowInsecure = true;
+        }
+    }
+
     @NotNull
     @Override
     public JuicityBean clone() {
