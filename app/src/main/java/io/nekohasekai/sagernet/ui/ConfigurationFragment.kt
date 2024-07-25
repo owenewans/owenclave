@@ -278,6 +278,9 @@ class ConfigurationFragment @JvmOverloads constructor(
                     R.plurals.added, proxies.size, proxies.size
                 )
             ).show()
+
+            val group = SagerDatabase.groupDao.getById(targetId)!!
+            GroupManager.updateGroup(group)
         }
 
     }
