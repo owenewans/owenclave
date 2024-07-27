@@ -39,6 +39,7 @@ import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.listenForPackageChanges
+import io.nekohasekai.sagernet.plugin.PluginContract.METADATA_KEY_ID
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -111,6 +112,18 @@ object PluginManager {
             providers = SagerNet.application.packageManager.queryIntentContentProviders(
             Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "fr.husi")), flags)
             .filter { it.providerInfo.exported }
+        }
+        if (providers.isEmpty()) {
+            providers = SagerNet.application.packageManager.queryIntentContentProviders(
+                Intent(PluginContract.ACTION_NATIVE_PLUGIN), PackageManager.GET_META_DATA
+            ).filter {
+                it.providerInfo.exported &&
+                it.providerInfo.metaData.containsKey(METADATA_KEY_ID) &&
+                it.providerInfo.metaData.getString(METADATA_KEY_ID) == pluginId
+            }
+            if (providers.size > 1) {
+                providers = listOf(providers[0]) // What if there is more than one?
+            }
         }
         if (providers.isEmpty()) return null
         if (providers.size > 1) {
