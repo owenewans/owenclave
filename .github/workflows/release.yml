@@ -1,12 +1,20 @@
 name: Release Build
 on:
+  push:
+    branches:
+      - dev*
+    paths:
+      - "app/**"
+      - "buildSrc/**"
+      - "library/**"
+      - ".github/workflows/release.yml"
   workflow_dispatch:
     inputs:
+      publish:
+        description: 'Release (y/n)'
+        required: false
       tag:
         description: 'Release Tag'
-        required: true
-      publish:
-        description: 'Publish: If want ignore'
         required: false
 jobs:
   libcore:
@@ -86,7 +94,7 @@ jobs:
           path: ${{ env.APK }}
   publish:
     name: Publish Release
-    if: github.event.inputs.publish != 'y'
+    if: github.event.inputs.publish == 'y' && github.event.inputs.tag != ''
     runs-on: ubuntu-latest
     needs: build
     steps:

@@ -2,11 +2,11 @@ name: Hysteria 2 Plugin Release Build
 on:
   workflow_dispatch:
     inputs:
+      publish:
+        description: 'Release (y/n)'
+        required: false
       tag:
         description: 'Release Tag'
-        required: true
-      publish:
-        description: 'Publish: If want ignore'
         required: false
 jobs:
   native:
@@ -84,7 +84,7 @@ jobs:
           path: ${{ env.APK }}
   publish:
     name: Publish Release
-    if: github.event.inputs.publish != 'y'
+    if: github.event.inputs.publish == 'y' && github.event.inputs.tag != ''
     runs-on: ubuntu-latest
     needs: build
     steps:
