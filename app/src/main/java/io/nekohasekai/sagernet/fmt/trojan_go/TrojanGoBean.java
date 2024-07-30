@@ -127,7 +127,7 @@ public class TrojanGoBean extends AbstractBean {
         if (allowInsecure) {
             bean.allowInsecure = true;
         }
-        bean.mux = true;
+        bean.mux = mux;
         bean.muxConcurrency = muxConcurrency;
         bean.utlsFingerprint = utlsFingerprint;
 
