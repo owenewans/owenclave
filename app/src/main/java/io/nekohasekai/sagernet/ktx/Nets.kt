@@ -25,6 +25,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import libcore.URL
 import java.net.InetSocketAddress
 import java.net.Socket
+import kotlin.random.Random
 
 fun URL.queryParameter(key: String) = queryParameterNotBlank(key).takeIf { it.isNotBlank() }
 var URL.pathSegments: List<String>
@@ -89,6 +90,106 @@ fun mkPort(): Int {
     val port = socket.localPort
     socket.close()
     return port
+}
+
+fun String.isValidHysteriaPort(): Boolean {
+    if (this.toIntOrNull() != null) {
+        return this.toInt() in 1..65535
+    }
+    val portRanges = this.split(",")
+    if (portRanges.isEmpty()) {
+        val parts = this.split("-")
+        if (parts.size != 2) {
+            return false
+        }
+        val from = parts[0].toIntOrNull()
+        val to = parts[1].toIntOrNull()
+        return from != null && from in 1..65535 && to != null && to in 1..65535 && from <= to
+    }
+    for (portRange in portRanges) {
+        if (portRange.toIntOrNull() != null) {
+            if (portRange.toInt() <= 0 || portRange.toInt() >= 65536) {
+                return false
+            }
+        } else if (portRange.contains("-")) {
+            val parts = portRange.split("-")
+            if (parts.size != 2) {
+                return false
+            }
+            val from = parts[0].toIntOrNull()
+            val to = parts[1].toIntOrNull()
+            if (from == null || to == null || from <= 0 || from >= 65536 || to <= 0 || to >= 65536 || from > to) {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    return true
+}
+
+fun String.isValidHysteriaMultiPort(): Boolean {
+    return this.toIntOrNull() == null && this.isValidHysteriaPort()
+}
+
+fun String.toHysteriaPort(): Int {
+    if (this.toIntOrNull() != null) {
+        if (this.toInt() in 1..65535) {
+            return this.toInt()
+        }
+        error("invalid port range")
+    }
+    val portRanges = this.split(",")
+    if (portRanges.isEmpty()) {
+        val parts = this.split("-")
+        if (parts.size == 2) {
+            val from = parts[0].toIntOrNull()
+            val to = parts[1].toIntOrNull()
+            if (from != null && from in 1..65535 && to != null && to in 1..65535 && from <= to) {
+                return Random.nextInt(from, to + 1)
+            }
+        }
+        error("invalid port range")
+    }
+    val fromList: MutableList<Int> = mutableListOf()
+    val toList: MutableList<Int> = mutableListOf()
+    var len = 0
+    for (portRange in portRanges) {
+        if (portRange.toIntOrNull() != null) {
+            if (portRange.toInt() <= 0 || portRange.toInt() >= 65536) {
+                error("invalid port range")
+            }
+            fromList.add(portRange.toInt())
+            toList.add(portRange.toInt())
+            len++
+        } else if (portRange.contains("-")) {
+            val parts = portRange.split("-")
+            if (parts.size != 2) {
+                error("invalid port range")
+            }
+            val from = parts[0].toIntOrNull()
+            val to = parts[1].toIntOrNull()
+            if (from == null || to == null || from <= 0 || from >= 65536 || to <= 0 || to >= 65536 || from > to) {
+                error("invalid port range")
+            }
+            fromList.add(from)
+            toList.add(to)
+            len += to - from + 1
+        } else {
+            error("invalid port range")
+        }
+    }
+    val portIndex = Random.nextInt(0, len)
+    var oldLen = 0
+    var newLen: Int
+    for (i in fromList.indices) {
+        newLen = oldLen + toList[i] - fromList[i] + 1
+        if (portIndex < newLen) {
+            return portIndex - oldLen + fromList[i]
+        }
+        oldLen = newLen
+    }
+    error("invalid port range")
 }
 
 const val USER_AGENT = "Exclave/${BuildConfig.VERSION_NAME}"

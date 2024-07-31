@@ -175,6 +175,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         val shadowsocks2022Implementation = findPreference<SimpleMenuPreference>(Key.SHADOWSOCKS_2022_IMPLEMENTATION)!!
         val providerHysteria2 = findPreference<SimpleMenuPreference>(Key.PROVIDER_HYSTERIA2)!!
+        val hysteriaEnablePortHopping = findPreference<SwitchPreference>(Key.HYSTERIA_ENABLE_PORT_HOPPING)!!
         val dnsHosts = findPreference<EditTextPreference>(Key.DNS_HOSTS)!!
 
         portLocalDns.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
@@ -285,6 +286,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         shadowsocks2022Implementation.onPreferenceChangeListener = reloadListener
         providerHysteria2.onPreferenceChangeListener = reloadListener
+        hysteriaEnablePortHopping.onPreferenceChangeListener = reloadListener
         appTrafficStatistics.onPreferenceChangeListener = reloadListener
         tunImplementation.onPreferenceChangeListener = reloadListener
         destinationOverride.onPreferenceChangeListener = reloadListener

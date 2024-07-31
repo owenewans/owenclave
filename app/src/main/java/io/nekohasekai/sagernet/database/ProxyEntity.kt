@@ -24,8 +24,8 @@ import android.content.Intent
 import androidx.room.*
 import com.esotericsoftware.kryo.io.ByteBufferInput
 import com.esotericsoftware.kryo.io.ByteBufferOutput
-import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.Hysteria2Provider
+import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.KryoConverters
@@ -44,8 +44,8 @@ import io.nekohasekai.sagernet.fmt.hysteria2.toUri
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
-import io.nekohasekai.sagernet.fmt.juicity.buildJuicityConfig
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
+import io.nekohasekai.sagernet.fmt.juicity.buildJuicityConfig
 import io.nekohasekai.sagernet.fmt.juicity.toUri
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
@@ -56,6 +56,7 @@ import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.toUri
+import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.socks.toUri
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
@@ -69,7 +70,6 @@ import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.buildTuic5Config
-import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.v2ray.toUri
@@ -77,6 +77,7 @@ import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
+import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ui.profile.*
 
 @Entity(
@@ -418,7 +419,7 @@ data class ProxyEntity(
             return bean.type != "v2ray_outbound"
         }
         if (bean is Hysteria2Bean) {
-            return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || !bean.canMapping()
+            return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || bean.serverPorts.isValidHysteriaMultiPort() && DataStore.hysteriaEnablePortHopping
         }
         return when (type) {
             TYPE_TROJAN_GO -> true

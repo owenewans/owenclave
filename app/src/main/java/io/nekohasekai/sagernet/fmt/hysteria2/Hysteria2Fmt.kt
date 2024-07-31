@@ -36,7 +36,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
     if (!hostPort.endsWith("]") && hostPort.lastIndexOf(":") > 0) {
         port = hostPort.substringAfterLast(":")
     }
-    if (port.isNotEmpty() && port.contains(",") || port.contains("-")) {
+    if (port.isNotEmpty() && port.isValidHysteriaMultiPort()) {
         url = url.replace(":$port", ":0")
     }
 
@@ -45,12 +45,16 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
         name = link.fragment
 
         serverAddress = link.host
-        serverPorts = if (port.isNotEmpty() && port.contains(",") || port.contains("-")) {
+        serverPorts = if (port.isNotEmpty() && port.isValidHysteriaMultiPort()) {
             port
         } else if (link.port > 0) {
             link.port.toString()
         } else {
             "443"
+        }
+
+        link.queryParameter("mport")?.also {
+            serverPorts = it
         }
 
         if (link.username.isNotBlank()) {
@@ -81,9 +85,16 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
 }
 
 fun Hysteria2Bean.toUri(): String {
+    if (!serverPorts.isValidHysteriaPort()) {
+        error("invalid port: $serverPorts")
+    }
     val builder = Libcore.newURL("hysteria2")
     builder.host = serverAddress
-    builder.port = serverPorts.substringBefore(",").substringBefore("-").toInt() // use the first port if hopping
+    builder.port = if (serverPorts.isValidHysteriaMultiPort()) {
+        0 // placeholder
+    } else {
+        serverPorts.toInt()
+    }
 
     if (auth.isNotBlank()) {
         val a = auth.split(":")
@@ -114,7 +125,7 @@ fun Hysteria2Bean.toUri(): String {
     }
     builder.rawPath = "/"
     val url = builder.string
-    if (serverPorts.contains(",") || serverPorts.contains("-")) {
+    if (serverPorts.isValidHysteriaMultiPort()) {
         // fuck port hopping URL
         val port = url.substringAfter("://").substringAfter("@")
             .substringBefore("?").substringBefore("/")
@@ -125,12 +136,16 @@ fun Hysteria2Bean.toUri(): String {
 }
 
 fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): String {
-    val hostPort = if (serverPorts.contains("-") || serverPorts.contains(",")) {
+    // TODO: Use a YAML library to generate configuration or just use JSON.
+    if (!serverPorts.isValidHysteriaPort()) {
+        error("invalid port: $serverPorts")
+    }
+    val hostPort = if (DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
         if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
-            error("Please switch to TUN gVisor stack for port hopping.")
-            // system stack need some protector hacks.
+            // system stack need some protector hacks
+            error("Please switch to TUN gVisor stack for Hysteria 2 port hopping.")
         }
-        // hopping is incompatible with chain
+        // Hysteria 2 port hopping is incompatible with chain proxy
         if (serverAddress.isIpv6Address()) {
             "[$serverAddress]:$serverPorts"
         } else {
@@ -145,7 +160,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     conf += "\ntls:\n  insecure: $allowInsecure\n"
     if (sni.isBlank() && !serverAddress.isIpAddress()) {
-        if (!serverPorts.contains("-") && !serverPorts.contains(",")) {
+        if (!serverPorts.isValidHysteriaMultiPort()) {
             sni = serverAddress
         }
     }
@@ -161,7 +176,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
         conf += "  pinSHA256: \"$pinSHA256\"\n"
     }
     conf += "\ntransport:\n  type: udp\n"
-    if (serverPorts.contains("-") || serverPorts.contains(",")) {
+    if (DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
         conf += "  udp:\n    hopInterval: " + hopInterval + "s\n"
     }
     conf += "\n"
@@ -184,5 +199,6 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     conf += "\nbandwidth:\n  up: $uploadMbps mbps\n  down: $downloadMbps mbps\n"
     conf += "\nsocks5:\n  listen: \"$LOCALHOST:$port\"\n"
     conf += "\nlazy: true\n"
+    conf += "\nfastOpen: true\n"
     return conf
 }

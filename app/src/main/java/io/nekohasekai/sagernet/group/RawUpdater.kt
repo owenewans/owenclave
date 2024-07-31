@@ -29,7 +29,6 @@ import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean.*
-import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.fixInvalidParams
@@ -605,12 +604,6 @@ object RawUpdater : GroupUpdater() {
 
         if (json is JSONObject) {
             when {
-                json.containsKey("up_mbps") -> {
-                    return listOf(json.parseHysteria())
-                }
-                json.containsKey("protocol_param") -> {
-                    return listOf(json.parseShadowsocksR())
-                }
                 json.containsKey("method") -> {
                     return listOf(json.parseShadowsocks())
                 }
@@ -666,9 +659,6 @@ object RawUpdater : GroupUpdater() {
                  }?.outbounds?.forEach {
                      proxies.addAll(parseOutbound(it))
                  }*/
-                }
-                json.containsKey("remote_addr") -> {
-                    return listOf(json.parseTrojanGo())
                 }
                 else -> json.forEach { _, it ->
                     if (it is JSON) {

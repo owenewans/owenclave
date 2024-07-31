@@ -537,5 +537,7 @@
     <string name="sha256_certificate_fingerprint">SHA256 certificate fingerprint</string>
     <string name="plugin_settings">Plugin settings</string>
     <string name="hysteria2_plugin_settings_sum">These options only apply to plugins.</string>
+    <string name="hysteria_enable_port_hopping_experimental">Enable Hysteria port hopping (Experimental)</string>
+    <string name="hysteria_enable_port_hopping_sum">This requires plugins and TUN gVisor stack and is incompatible with chain proxy. If disabled, a random port within the port hopping range will be used.</string>
 
 </resources>

@@ -182,6 +182,11 @@
             app:key="providerHysteria2"
             app:title="@string/hysteria2_provider"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="hysteriaEnablePortHopping"
+            app:summary="@string/hysteria_enable_port_hopping_sum"
+            app:title="@string/hysteria_enable_port_hopping_experimental"
+            app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/ic_baseline_push_pin_24"
             app:defaultValue="0"

@@ -32,13 +32,11 @@ import com.google.gson.JsonSyntaxException
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.Hysteria2Provider
 import io.nekohasekai.sagernet.Shadowsocks2022Implementation
 import io.nekohasekai.sagernet.bg.VpnService
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
-import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult.IndexEntity
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
@@ -46,6 +44,7 @@ import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
+import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
@@ -55,14 +54,56 @@ import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig
-import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.*
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.BrowserForwarderObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.DNSOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.DnsObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.DokodemoDoorInboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.FakeDnsObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.FreedomOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.GrpcObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.HTTPInboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.HTTPOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.HTTPUpgradeObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.HttpObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.Hysteria2Object
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.Hysteria2OutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.InboundObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.KcpObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LazyInboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LazyOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LogObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LoopbackOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MeekObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MultiObservatoryObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ObservatoryObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.OutboundObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.PolicyObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.QuicObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RealityObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ReverseObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject.BalancerObject.StrategyObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SSHOutbountConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ShadowsocksOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.Shadowsocks_2022OutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SocksInboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SocksOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SplitHTTPObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.StreamSettingsObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.TLSObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.TcpObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.TrojanOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.VLESSOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.VMessOutboundConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.WebSocketObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.WireGuardOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.mkPort
+import io.nekohasekai.sagernet.ktx.toHysteriaPort
 import io.nekohasekai.sagernet.ktx.wrapUri
 import io.nekohasekai.sagernet.utils.PackageCache
 
@@ -116,10 +157,7 @@ fun buildV2RayConfig(
             val beanList = ArrayList<ProxyEntity>()
             for (proxyId in bean.proxies) {
                 val item = beansMap[proxyId] ?: continue
-                when (item.type) {
-                    ProxyEntity.TYPE_BALANCER -> error("Balancer is incompatible with chain")
-                    ProxyEntity.TYPE_CONFIG -> error("Custom config is incompatible with chain")
-                }
+                if (!item.requireBean().canMapping()) error("Some configurations are incompatible with chain.")
                 beanList.addAll(item.resolveChain())
             }
             return beanList.asReversed()
@@ -909,13 +947,13 @@ fun buildV2RayConfig(
                                         }
                                     }
                                 }
-                            } else if (bean is Hysteria2Bean && DataStore.providerHysteria2 == Hysteria2Provider.V2RAY && bean.canMapping()) {
+                            } else if (bean is Hysteria2Bean) {
                                 protocol = "hysteria2"
                                 settings = LazyOutboundConfigurationObject(this,
                                     Hysteria2OutboundConfigurationObject().apply {
                                         servers = listOf(Hysteria2OutboundConfigurationObject.ServerObject().apply {
                                             address = bean.serverAddress
-                                            port = bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                            port = bean.serverPorts.toHysteriaPort()
                                         })
                                     }
                                 )
@@ -1019,10 +1057,10 @@ fun buildV2RayConfig(
                                 network = bean.network()
                                 port = when (bean) {
                                     is HysteriaBean -> {
-                                        bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                        bean.serverPorts.toHysteriaPort()
                                     }
                                     is Hysteria2Bean -> {
-                                        bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                        bean.serverPorts.toHysteriaPort()
                                     }
                                     else -> {
                                         bean.serverPort
@@ -1048,9 +1086,9 @@ fun buildV2RayConfig(
                                 network = bean.network()
                                 port = bean.serverPort
                                 port = if (bean is HysteriaBean) {
-                                    bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
-                                } else if (bean is Hysteria2Bean && (DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || bean.canMapping())) {
-                                    bean.serverPorts.substringBefore(",").substringBefore("-").toInt() // for single port only
+                                    bean.serverPorts.toHysteriaPort()
+                                } else if (bean is Hysteria2Bean) {
+                                    bean.serverPorts.toHysteriaPort()
                                 } else {
                                     bean.serverPort
                                 }

@@ -27,6 +27,7 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.nekohasekai.sagernet.database.DataStore;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
@@ -62,7 +63,18 @@ public class HysteriaBean extends AbstractBean {
 
     @Override
     public boolean canMapping() {
-        return protocol != PROTOCOL_FAKETCP && !serverPorts.contains("-") && !serverPorts.contains(",");
+        if (protocol == PROTOCOL_FAKETCP) {
+            return false;
+        }
+        if (!DataStore.INSTANCE.getHysteriaEnablePortHopping()) {
+            return true;
+        }
+        try {
+            Integer.parseInt(serverPorts);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     @Override

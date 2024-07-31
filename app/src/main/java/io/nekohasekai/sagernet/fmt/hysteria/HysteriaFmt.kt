@@ -19,7 +19,6 @@
 
 package io.nekohasekai.sagernet.fmt.hysteria
 
-import cn.hutool.core.util.NumberUtil
 import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
@@ -39,6 +38,9 @@ fun parseHysteria(url: String): HysteriaBean {
         serverPorts = link.port.toString()
         name = link.fragment
 
+        link.queryParameter("mport")?.also {
+            serverPorts = it
+        }
         link.queryParameter("peer")?.also {
             sni = it
         }
@@ -69,10 +71,16 @@ fun parseHysteria(url: String): HysteriaBean {
 }
 
 fun HysteriaBean.toUri(): String {
+    if (!serverPorts.isValidHysteriaPort()) {
+        error("invalid port: $serverPorts")
+    }
     val builder = Libcore.newURL("hysteria")
     builder.host = serverAddress
-    builder.port = serverPorts.substringBefore(",").substringBefore("-").toInt() // use the first port if hopping
+    builder.port = serverPorts.substringBefore(",").substringBefore("-").toInt() // use the first port if port hopping
 
+    if (serverPorts.isValidHysteriaMultiPort()) {
+        builder.addQueryParameter("mport", serverPorts)
+    }
     if (sni.isNotBlank()) {
         builder.addQueryParameter("peer", sni)
     }
@@ -109,57 +117,31 @@ fun HysteriaBean.toUri(): String {
     return builder.string
 }
 
-fun JSONObject.parseHysteria(): HysteriaBean {
-    return HysteriaBean().apply {
-        serverAddress = getStr("server").substringBeforeLast(":")
-        serverPorts = getStr("server").substringAfterLast(":")
-            .takeIf { NumberUtil.isInteger(it) }
-            ?.toString() ?: "443"
-        uploadMbps = getInt("up_mbps")
-        downloadMbps = getInt("down_mbps")
-        obfuscation = getStr("obfs")
-        getStr("auth")?.also {
-            authPayloadType = HysteriaBean.TYPE_BASE64
-            authPayload = it
-        }
-        getStr("auth_str")?.also {
-            authPayloadType = HysteriaBean.TYPE_STRING
-            authPayload = it
-        }
-        getStr("protocol")?.also {
-            when (it) {
-                "faketcp" -> {
-                    protocol = HysteriaBean.PROTOCOL_FAKETCP
-                }
-                "wechat-video" -> {
-                    protocol = HysteriaBean.PROTOCOL_WECHAT_VIDEO
-                }
-            }
-        }
-        sni = getStr("server_name")
-        alpn = getStr("alpn")
-        allowInsecure = getBool("insecure")
-
-        streamReceiveWindow = getInt("recv_window_conn")
-        connectionReceiveWindow = getInt("recv_window")
-        disableMtuDiscovery = getBool("disable_mtu_discovery")
-    }
-}
-
 fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): String {
+    if (!serverPorts.isValidHysteriaPort()) {
+        error("invalid port: $serverPorts")
+    }
     return JSONObject().also {
-        if (serverPorts.contains("-") || serverPorts.contains(",")) {
-            if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
-                error("Please switch to TUN gVisor stack for port hopping.")
-                // system stack need some protector hacks.
-            }
-            // hopping is incompatible with chain
-            if (serverAddress.isIpv6Address()) {
-                it["server"] = "[$serverAddress]:$serverPorts"
+        if (protocol == HysteriaBean.PROTOCOL_FAKETCP || DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
+            // Hysteria port hopping is incompatible with chain proxy
+            if (DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
+                if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
+                    // system stack need some protector hacks
+                    error("Please switch to TUN gVisor stack for Hysteria port hopping.")
+                }
+                it["server"] = if (serverAddress.isIpv6Address()) {
+                    "[$serverAddress]:$serverPorts"
+                } else {
+                    "$serverAddress:$serverPorts"
+                }
             } else {
-                it["server"] = "$serverAddress:$serverPorts"
+                it["server"] = if (serverAddress.isIpv6Address()) {
+                    "[" + serverAddress + "]:" + serverPorts.toHysteriaPort()
+                } else {
+                    serverAddress + ":" + serverPorts.toHysteriaPort()
+                }
+                it["hop_interval"] = hopInterval
             }
-            it["hop_interval"] = hopInterval
         } else {
             it["server"] = wrapUri()
         }
@@ -180,12 +162,14 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
             HysteriaBean.TYPE_STRING -> it["auth_str"] = authPayload
         }
         if (sni.isBlank() && !serverAddress.isIpAddress()) {
-            if (!serverPorts.contains("-") && !serverPorts.contains(",")) {
+            if (!serverPorts.isValidHysteriaMultiPort()) {
                 sni = serverAddress
             }
         }
         if (sni.isNotBlank()) {
-            it["server_name"] = sni
+            if (!serverPorts.isValidHysteriaMultiPort()) {
+                it["server_name"] = sni
+            }
         }
         if (alpn.isNotBlank()) it["alpn"] = alpn
         if (caText.isNotBlank() && cacheFile != null) {
@@ -199,7 +183,8 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         if (connectionReceiveWindow > 0) it["recv_window"] = connectionReceiveWindow
         if (disableMtuDiscovery) it["disable_mtu_discovery"] = true
 
-        it["resolver"] = "udp://127.0.0.1:" + DataStore.localDNSPort
+        it["resolver"] = "udp://$LOCALHOST:" + DataStore.localDNSPort
         it["lazy_start"] = true
+        it["fast_open"] = true
     }.toStringPretty()
 }

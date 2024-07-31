@@ -507,5 +507,7 @@
     <string name="sha256_certificate_fingerprint">SHA256 证书指纹</string>
     <string name="plugin_settings">插件设置</string>
     <string name="hysteria2_plugin_settings_sum">这些选项仅对插件生效。</string>
+    <string name="hysteria_enable_port_hopping_experimental">启用 Hysteria 端口跳跃（实验性）</string>
+    <string name="hysteria_enable_port_hopping_sum">这需要插件以及 TUN gVisor 栈，并且与链式代理不兼容。如果禁用，端口跳跃范围内的一个随机端口将会被使用。</string>
 
 </resources>
