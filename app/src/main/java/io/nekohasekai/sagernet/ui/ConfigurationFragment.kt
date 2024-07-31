@@ -757,6 +757,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             init {
                 binding.edit.isGone = true
                 binding.share.isGone = true
+                binding.deleteIcon.isGone = true
             }
 
             fun bind(profile: ProxyEntity) {
