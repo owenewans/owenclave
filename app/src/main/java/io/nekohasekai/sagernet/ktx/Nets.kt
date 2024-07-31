@@ -91,5 +91,4 @@ fun mkPort(): Int {
     return port
 }
 
-const val USER_AGENT = "curl/8.8.0"
-const val USER_AGENT_ORIGIN = "SagerNet/${BuildConfig.VERSION_NAME}"
+const val USER_AGENT = "Exclave/${BuildConfig.VERSION_NAME}"
