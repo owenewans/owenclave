@@ -22,9 +22,18 @@ package io.nekohasekai.sagernet.fmt.hysteria2
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
-import io.nekohasekai.sagernet.ktx.*
+import io.nekohasekai.sagernet.ktx.isIpAddress
+import io.nekohasekai.sagernet.ktx.isIpv6Address
+import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
+import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
+import io.nekohasekai.sagernet.ktx.queryParameter
+import io.nekohasekai.sagernet.ktx.urlSafe
+import io.nekohasekai.sagernet.ktx.wrapUri
 import libcore.Libcore
+import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.Yaml
 import java.io.File
+
 
 fun parseHysteria2(rawURL: String): Hysteria2Bean {
     var url = rawURL
@@ -136,7 +145,6 @@ fun Hysteria2Bean.toUri(): String {
 }
 
 fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): String {
-    // TODO: Use a YAML library to generate configuration or just use JSON.
     if (!serverPorts.isValidHysteriaPort()) {
         error("invalid port: $serverPorts")
     }
@@ -154,51 +162,96 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     } else {
         wrapUri()
     }
-    var conf = "server: \"$hostPort\"\n"
+
+    val confObject: MutableMap<String, Any> = HashMap()
+    confObject["server"] = hostPort
     if (auth.isNotBlank()) {
-        conf += "\nauth: \"$auth\"\n"
+        confObject["auth"] = auth
     }
-    conf += "\ntls:\n  insecure: $allowInsecure\n"
+
+    val tlsObject: MutableMap<String, Any> = HashMap()
+    if (allowInsecure) {
+        tlsObject["insecure"] = true
+    }
     if (sni.isBlank() && !serverAddress.isIpAddress()) {
         if (!serverPorts.isValidHysteriaMultiPort()) {
             sni = serverAddress
         }
     }
     if (sni.isNotBlank()) {
-        conf += "  sni: \"$sni\"\n"
+        tlsObject["sni"] = sni
     }
     if (caText.isNotBlank() && cacheFile != null) {
         val caFile = cacheFile()
         caFile.writeText(caText)
-        conf += "  ca: \"" + caFile.absolutePath + "\"\n"
+        tlsObject["ca"] = caFile.absolutePath
     }
     if (pinSHA256.isNotBlank()) {
-        conf += "  pinSHA256: \"$pinSHA256\"\n"
+        tlsObject["pinSHA256"] = pinSHA256
     }
-    conf += "\ntransport:\n  type: udp\n"
+    if (tlsObject.isNotEmpty()) {
+        confObject["tls"] = tlsObject
+    }
+
+    val transportObject: MutableMap<String, Any> = HashMap()
+    transportObject["type"] = "udp"
     if (DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
-        conf += "  udp:\n    hopInterval: " + hopInterval + "s\n"
+        val udpObject: MutableMap<String, Any> = HashMap()
+        udpObject["hopInterval"] = "$hopInterval" + "s"
+        transportObject["udp"] = udpObject
     }
-    conf += "\n"
+    confObject["transport"] = transportObject
+
     if (obfs.isNotBlank()) {
-        conf += "obfs:\n  type: salamander\n  salamander:\n    password: \"$obfs\"\n\n"
+        val obfsObject: MutableMap<String, Any> = HashMap()
+        obfsObject["type"] = "salamander"
+        val salamanderObject: MutableMap<String, Any> = HashMap()
+        salamanderObject["password"] = obfs
+        obfsObject["salamander"] = salamanderObject
+        confObject["obfs"] = obfsObject
     }
-    conf += "quic:\n  disablePathMTUDiscovery: $disableMtuDiscovery\n"
+
+    val quicObject: MutableMap<String, Any> = HashMap()
+    if (disableMtuDiscovery) {
+        quicObject["disableMtuDiscovery"] = true
+    }
     if (initStreamReceiveWindow > 0) {
-        conf += "  initStreamReceiveWindow: $initStreamReceiveWindow\n"
+        quicObject["initStreamReceiveWindow"] = initStreamReceiveWindow
     }
     if (maxStreamReceiveWindow > 0) {
-        conf += "  maxStreamReceiveWindow: $maxStreamReceiveWindow\n"
+        quicObject["maxStreamReceiveWindow"] = maxStreamReceiveWindow
     }
     if (initConnReceiveWindow > 0) {
-        conf += "  initConnReceiveWindow: $initConnReceiveWindow\n"
+        quicObject["initConnReceiveWindow"] = initConnReceiveWindow
     }
     if (maxConnReceiveWindow > 0) {
-        conf += "  maxConnReceiveWindow: $maxConnReceiveWindow\n"
+        quicObject["maxConnReceiveWindow"] = maxConnReceiveWindow
     }
-    conf += "\nbandwidth:\n  up: $uploadMbps mbps\n  down: $downloadMbps mbps\n"
-    conf += "\nsocks5:\n  listen: \"$LOCALHOST:$port\"\n"
-    conf += "\nlazy: true\n"
-    conf += "\nfastOpen: true\n"
-    return conf
+    if (quicObject.isNotEmpty()) {
+        confObject["quic"] = quicObject
+    }
+
+    val bandwidthObject: MutableMap<String, Any> = HashMap()
+    if (uploadMbps > 0) {
+        bandwidthObject["up"] = "$uploadMbps mbps"
+    }
+    if (downloadMbps > 0) {
+        bandwidthObject["down"] = "$downloadMbps mbps"
+    }
+    if (bandwidthObject.isNotEmpty()) {
+        confObject["bandwidth"] = bandwidthObject
+    }
+
+    val socks5Object: MutableMap<String, Any> = HashMap()
+    socks5Object["listen"] = "$LOCALHOST:$port"
+    confObject["socks5"] = socks5Object
+
+    confObject["lazy"] = true
+    confObject["fastOpen"] = true
+
+    val options = DumperOptions()
+    options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    options.isPrettyFlow = true;
+    val yaml = Yaml(options)
+    return yaml.dump(confObject)
 }
