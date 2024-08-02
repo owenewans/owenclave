@@ -148,11 +148,13 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (!serverPorts.isValidHysteriaPort()) {
         error("invalid port: $serverPorts")
     }
-    val hostPort = if (DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
-        if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
-            // system stack need some protector hacks
-            error("Please switch to TUN gVisor stack for Hysteria 2 port hopping.")
-        }
+    val usePortHopping = DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()
+    if (usePortHopping && DataStore.tunImplementation == TunImplementation.SYSTEM) {
+        // NOT a TODO: system stack need VpnService protect to work
+        error("Please switch to TUN gVisor stack for Hysteria 2 port hopping.")
+    }
+
+    val hostPort = if (usePortHopping) {
         // Hysteria 2 port hopping is incompatible with chain proxy
         if (serverAddress.isIpv6Address()) {
             "[$serverAddress]:$serverPorts"
@@ -173,8 +175,8 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (allowInsecure) {
         tlsObject["insecure"] = true
     }
-    if (sni.isBlank() && !serverAddress.isIpAddress()) {
-        if (!serverPorts.isValidHysteriaMultiPort()) {
+    if (!usePortHopping) {
+        if (sni.isBlank() && !serverAddress.isIpAddress()) {
             sni = serverAddress
         }
     }

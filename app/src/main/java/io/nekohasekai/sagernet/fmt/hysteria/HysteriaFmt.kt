@@ -121,14 +121,16 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
     if (!serverPorts.isValidHysteriaPort()) {
         error("invalid port: $serverPorts")
     }
+    val usePortHopping = DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()
+    if (usePortHopping && DataStore.tunImplementation == TunImplementation.SYSTEM) {
+        // NOT a TODO: system stack need VpnService protect to work
+        error("Please switch to TUN gVisor stack for Hysteria port hopping.")
+    }
+
     return JSONObject().also {
-        if (protocol == HysteriaBean.PROTOCOL_FAKETCP || DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
+        if (protocol == HysteriaBean.PROTOCOL_FAKETCP || usePortHopping) {
             // Hysteria port hopping is incompatible with chain proxy
-            if (DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()) {
-                if (DataStore.tunImplementation == TunImplementation.SYSTEM) {
-                    // system stack need some protector hacks
-                    error("Please switch to TUN gVisor stack for Hysteria port hopping.")
-                }
+            if (usePortHopping) {
                 it["server"] = if (serverAddress.isIpv6Address()) {
                     "[$serverAddress]:$serverPorts"
                 } else {
@@ -161,15 +163,13 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
             HysteriaBean.TYPE_BASE64 -> it["auth"] = authPayload
             HysteriaBean.TYPE_STRING -> it["auth_str"] = authPayload
         }
-        if (sni.isBlank() && !serverAddress.isIpAddress()) {
-            if (!serverPorts.isValidHysteriaMultiPort()) {
+        if (!usePortHopping && protocol != HysteriaBean.PROTOCOL_FAKETCP) {
+            if (sni.isBlank() && !serverAddress.isIpAddress()) {
                 sni = serverAddress
             }
         }
         if (sni.isNotBlank()) {
-            if (!serverPorts.isValidHysteriaMultiPort()) {
-                it["server_name"] = sni
-            }
+            it["server_name"] = sni
         }
         if (alpn.isNotBlank()) it["alpn"] = alpn
         if (caText.isNotBlank() && cacheFile != null) {
