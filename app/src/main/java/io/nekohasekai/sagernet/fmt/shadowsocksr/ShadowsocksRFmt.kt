@@ -20,8 +20,6 @@
 package io.nekohasekai.sagernet.fmt.shadowsocksr
 
 import cn.hutool.core.codec.Base64
-import cn.hutool.json.JSONObject
-import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.decodeBase64UrlSafe
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libcore.Libcore
@@ -78,18 +76,4 @@ fun ShadowsocksRBean.toUri(): String {
             )
         )
     )
-}
-
-fun JSONObject.parseShadowsocksR(): ShadowsocksRBean {
-    return ShadowsocksRBean().applyDefaultValues().apply {
-        serverAddress = getStr("server", serverAddress)
-        serverPort = getInt("server_port", serverPort)
-        method = getStr("method", method)
-        password = getStr("password", password)
-        protocol = getStr("protocol", protocol)
-        protocolParam = getStr("protocol_param", protocolParam)
-        obfs = getStr("obfs", obfs)
-        obfsParam = getStr("obfs_param", obfsParam)
-        name = getStr("remarks", name)
-    }
 }

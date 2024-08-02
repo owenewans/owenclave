@@ -19,13 +19,7 @@
 
 package io.nekohasekai.sagernet.fmt.trojan
 
-import cn.hutool.json.JSONArray
-import cn.hutool.json.JSONObject
-import io.nekohasekai.sagernet.IPv6Mode
-import io.nekohasekai.sagernet.database.DataStore
-import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.v2ray.toUri
-import io.nekohasekai.sagernet.ktx.isIpAddress
 
 fun TrojanBean.toUri(): String {
     return toUri()

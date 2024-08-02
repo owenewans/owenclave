@@ -23,12 +23,8 @@ import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
 import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginManager
-import com.github.shadowsocks.plugin.PluginOptions
-import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
-import io.nekohasekai.sagernet.fmt.shadowsocks.fixInvalidParams
-import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.urlSafe
@@ -177,62 +173,4 @@ fun buildCustomTrojanConfig(config: String, port: Int): String {
     val conf = JSONObject(config)
     conf["local_port"] = port
     return conf.toStringPretty()
-}
-
-fun JSONObject.parseTrojanGo(): TrojanGoBean {
-    return TrojanGoBean().applyDefaultValues().apply {
-        serverAddress = getStr("remote_addr", serverAddress)
-        serverPort = getInt("remote_port", serverPort)
-        when (val pass = get("password")) {
-            is String -> {
-                password = pass
-            }
-            is List<*> -> {
-                password = pass[0] as String
-            }
-        }
-        getJSONObject("ssl")?.apply {
-            sni = getStr("sni", sni)
-            allowInsecure = getBool("verify", true)
-        }
-        getJSONObject("websocket")?.apply {
-            if (getBool("enabled", false)) {
-                type = "ws"
-                host = getStr("host", host)
-                path = getStr("path", path)
-            }
-        }
-        getJSONObject("shadowsocks")?.apply {
-            if (getBool("enabled", false)) {
-                encryption = "ss;${getStr("method", "")}:${getStr("password", "")}"
-            }
-        }
-        getJSONObject("transport_plugin")?.apply {
-            if (getBool("enabled", false)) {
-                when (type) {
-                    "shadowsocks" -> {
-                        val pl = PluginConfiguration()
-                        pl.selected = getStr("command")
-                        getJSONArray("arg")?.also {
-                            pl.pluginsOptions[pl.selected] = PluginOptions().also { opts ->
-                                var key = ""
-                                it.forEachIndexed { index, param ->
-                                    if (index % 2 != 0) {
-                                        key = param.toString()
-                                    } else {
-                                        opts[key] = param.toString()
-                                    }
-                                }
-                            }
-                        }
-                        getStr("option")?.also {
-                            pl.pluginsOptions[pl.selected] = PluginOptions(it)
-                        }
-                        pl.fixInvalidParams()
-                        plugin = pl.toString()
-                    }
-                }
-            }
-        }
-    }
 }
