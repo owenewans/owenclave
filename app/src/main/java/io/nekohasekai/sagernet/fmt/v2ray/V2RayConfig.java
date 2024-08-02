@@ -1167,8 +1167,7 @@ public class V2RayConfig {
         public String host;
         public String path;
         public Map<String, String> headers;
-        public String maxConcurrentUploads;
-        public String maxUploadSize;
+        public Boolean noSSEHeader;
 
     }
 
