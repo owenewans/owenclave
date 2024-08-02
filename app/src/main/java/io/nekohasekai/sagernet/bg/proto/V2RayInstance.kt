@@ -50,7 +50,6 @@ import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
-import io.nekohasekai.sagernet.fmt.trojan_go.buildCustomTrojanConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.buildTrojanGoConfig
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
@@ -172,12 +171,6 @@ abstract class V2RayInstance(
                     }
                     is ConfigBean -> {
                         when (bean.type) {
-                            "trojan-go" -> {
-                                initPlugin("trojan-go-plugin")
-                                pluginConfigs[port] = profile.type to buildCustomTrojanConfig(
-                                    bean.content, port
-                                )
-                            }
                             "v2ray_outbound" -> {
                             }
                             else -> {
@@ -216,7 +209,7 @@ abstract class V2RayInstance(
                     externalInstances.containsKey(port) -> {
                         externalInstances[port]!!.launch()
                     }
-                    bean is TrojanGoBean || bean is ConfigBean && bean.type == "trojan-go" -> {
+                    bean is TrojanGoBean -> {
                         val configFile = File(
                             context.noBackupFilesDir,
                             "trojan_go_" + SystemClock.elapsedRealtime() + ".json"

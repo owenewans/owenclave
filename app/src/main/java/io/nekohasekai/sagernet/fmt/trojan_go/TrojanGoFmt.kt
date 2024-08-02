@@ -168,9 +168,3 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
         }
     }.toStringPretty()
 }
-
-fun buildCustomTrojanConfig(config: String, port: Int): String {
-    val conf = JSONObject(config)
-    conf["local_port"] = port
-    return conf.toStringPretty()
-}

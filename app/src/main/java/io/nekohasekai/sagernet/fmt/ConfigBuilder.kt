@@ -1390,7 +1390,7 @@ fun buildV2RayConfig(
         (proxies + extraProxies.values.flatten()).forEach { it ->
             val bean = it.requireBean()
             bean.apply {
-                if (bean is ConfigBean) {
+                if (bean is ConfigBean && bean.type == "v2ray_outbound") {
                     // too dirty to read server addresses from a custom outbound config
                     // let users provide them manually
                     bean.serverAddresses.split("\n").forEach {
