@@ -160,7 +160,7 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                 val context = requireContext()
 
                 runOnDefaultDispatcher {
-                    val logFile = File.createTempFile("SagerNet ",
+                    val logFile = File.createTempFile("Exclave ",
                         ".log",
                         File(app.cacheDir, "log").also { it.mkdirs() })
 

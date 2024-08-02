@@ -122,7 +122,7 @@ class MainActivity : ThemedActivity(),
         val uri = intent.data ?: return
 
         runOnDefaultDispatcher {
-            if (uri.scheme == "sn" && uri.host == "subscription" || uri.scheme == "clash") {
+            if (uri.scheme == "exclave" && uri.host == "subscription" || uri.scheme == "clash") {
                 importSubscription(uri)
             } else {
                 importProfile(uri)
