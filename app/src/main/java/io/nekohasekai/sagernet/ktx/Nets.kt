@@ -21,7 +21,6 @@ package io.nekohasekai.sagernet.ktx
 
 import cn.hutool.core.lang.Validator
 import io.nekohasekai.sagernet.BuildConfig
-import io.nekohasekai.sagernet.fmt.AbstractBean
 import libcore.URL
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -52,35 +51,18 @@ fun String.isIpv6Address(): Boolean {
     return Validator.isIpv6(this)
 }
 
+fun joinHostPort(host: String, port: Int): String {
+    if (Validator.isIpv6(host)) {
+        return "[$host]:$port"
+    }
+    return "$host:$port"
+}
+
 fun String.unwrapHost(): String {
     if (startsWith("[") && endsWith("]")) {
         return substring(1, length - 1).unwrapHost()
     }
     return this
-}
-
-fun AbstractBean.wrapUri(): String {
-    return if (Validator.isIpv6(finalAddress)) {
-        "[$finalAddress]:$finalPort"
-    } else {
-        "$finalAddress:$finalPort"
-    }
-}
-
-fun AbstractBean.wrapUriWithOriginHost(): String {
-    return if (Validator.isIpv6(serverAddress)) {
-        "[$serverAddress]:$finalPort"
-    } else {
-        "$serverAddress:$finalPort"
-    }
-}
-
-fun AbstractBean.wrapOriginUri(): String {
-    return if (Validator.isIpv6(serverAddress)) {
-        "[$serverAddress]:$serverPort"
-    } else {
-        "$serverAddress:$serverPort"
-    }
 }
 
 fun mkPort(): Int {

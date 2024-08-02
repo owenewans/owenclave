@@ -102,9 +102,9 @@ import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.isIpAddress
+import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.ktx.toHysteriaPort
-import io.nekohasekai.sagernet.ktx.wrapUri
 import io.nekohasekai.sagernet.utils.PackageCache
 
 const val TAG_SOCKS = "socks"
@@ -448,7 +448,7 @@ fun buildV2RayConfig(
                                 protocol = "freedom"
                                 settings = LazyOutboundConfigurationObject(this,
                                     FreedomOutboundConfigurationObject().apply {
-                                        redirect = "$LOCALHOST:$localPort"
+                                        redirect = joinHostPort(LOCALHOST, localPort)
                                     })
                             }
                         } else {
@@ -909,7 +909,7 @@ fun buildV2RayConfig(
                                         peers = listOf(WireGuardOutboundConfigurationObject.WireGuardPeerObject().apply {
                                             publicKey = bean.peerPublicKey
                                             preSharedKey = bean.peerPreSharedKey
-                                            endpoint = bean.wrapUri()
+                                            endpoint = joinHostPort(bean.finalAddress, bean.finalPort)
                                         })
                                     })
                                 streamSettings = StreamSettingsObject().apply {

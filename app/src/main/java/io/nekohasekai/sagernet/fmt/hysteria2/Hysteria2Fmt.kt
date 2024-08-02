@@ -26,9 +26,9 @@ import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.isIpv6Address
 import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
+import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.urlSafe
-import io.nekohasekai.sagernet.ktx.wrapUri
 import libcore.Libcore
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
@@ -162,7 +162,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
             "$serverAddress:$serverPorts"
         }
     } else {
-        wrapUri()
+        joinHostPort(finalAddress, finalPort)
     }
 
     val confObject: MutableMap<String, Any> = HashMap()
@@ -245,7 +245,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
 
     val socks5Object: MutableMap<String, Any> = HashMap()
-    socks5Object["listen"] = "$LOCALHOST:$port"
+    socks5Object["listen"] = joinHostPort(LOCALHOST, port)
     confObject["socks5"] = socks5Object
 
     confObject["lazy"] = true

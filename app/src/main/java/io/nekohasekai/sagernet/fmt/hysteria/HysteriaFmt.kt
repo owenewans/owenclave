@@ -145,7 +145,7 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
                 it["hop_interval"] = hopInterval
             }
         } else {
-            it["server"] = wrapUri()
+            it["server"] = joinHostPort(finalAddress, finalPort)
         }
         when (protocol) {
             HysteriaBean.PROTOCOL_FAKETCP -> {
@@ -157,7 +157,7 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         }
         it["up_mbps"] = uploadMbps
         it["down_mbps"] = downloadMbps
-        it["socks5"] = JSONObject(mapOf("listen" to "$LOCALHOST:$port"))
+        it["socks5"] = JSONObject(mapOf("listen" to joinHostPort(LOCALHOST, port)))
         it["obfs"] = obfuscation
         when (authPayloadType) {
             HysteriaBean.TYPE_BASE64 -> it["auth"] = authPayload
@@ -183,7 +183,7 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         if (connectionReceiveWindow > 0) it["recv_window"] = connectionReceiveWindow
         if (disableMtuDiscovery) it["disable_mtu_discovery"] = true
 
-        it["resolver"] = "udp://$LOCALHOST:" + DataStore.localDNSPort
+        it["resolver"] = "udp://" + joinHostPort(LOCALHOST, DataStore.localDNSPort)
         it["lazy_start"] = true
         it["fast_open"] = true
     }.toStringPretty()

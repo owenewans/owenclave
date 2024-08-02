@@ -24,25 +24,19 @@ import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
-import io.nekohasekai.sagernet.ktx.isIpv6Address
-import io.nekohasekai.sagernet.ktx.wrapUri
-import io.nekohasekai.sagernet.ktx.wrapUriWithOriginHost
+import io.nekohasekai.sagernet.ktx.joinHostPort
 import java.io.File
 
 fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {
         it["relay"] = JSONObject().also {
             if (sni.isNotBlank()) {
-                if (sni.isIpv6Address()) {
-                    it["server"] = "[$sni]:$finalPort"
-                } else {
-                    it["server"] = "$sni:$finalPort"
-                }
+                it["server"] = joinHostPort(sni, finalPort)
                 it["ip"] = finalAddress
             } else if (serverAddress.isIpAddress()) {
-                it["server"] = wrapUri()
+                it["server"] = joinHostPort(finalAddress, finalPort)
             } else {
-                it["server"] = wrapUriWithOriginHost()
+                it["server"] = joinHostPort(serverAddress, finalPort)
                 it["ip"] = finalAddress
             }
             it["uuid"] = uuid
@@ -71,7 +65,7 @@ fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
             it["zero_rtt_handshake"] = zeroRTTHandshake
         }
         it["local"] = JSONObject().also {
-            it["server"] = "$LOCALHOST:$port"
+            it["server"] = joinHostPort(LOCALHOST, port)
             it["max_packet_size"] = mtu
         }
         it["log_level"] = if (DataStore.enableLog) "debug" else "info"

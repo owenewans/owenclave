@@ -56,8 +56,8 @@ fun JuicityBean.toUri(): String {
 
 fun JuicityBean.buildJuicityConfig(port: Int): String {
     return JSONObject().also {
-        it["listen"] = "$LOCALHOST:$port"
-        it["server"] = wrapUri()
+        it["listen"] = joinHostPort(LOCALHOST, port)
+        it["server"] = joinHostPort(finalAddress, finalPort)
         it["uuid"] = uuid
         it["password"] = password
         it["congestion_control"] = congestionControl

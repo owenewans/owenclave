@@ -23,6 +23,7 @@ import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
+import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.unUrlSafe
 import io.nekohasekai.sagernet.ktx.urlSafe
@@ -82,7 +83,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
 
 fun NaiveBean.buildNaiveConfig(port: Int): String {
     return JSONObject().also {
-        it["listen"] = "socks://$LOCALHOST:$port"
+        it["listen"] = "socks://" + joinHostPort(LOCALHOST, port)
         it["proxy"] = toUri(true)
         if (extraHeaders.isNotBlank()) {
             it["extra-headers"] = extraHeaders.split("\n").joinToString("\r\n")

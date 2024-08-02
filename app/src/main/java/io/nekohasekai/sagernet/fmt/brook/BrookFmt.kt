@@ -170,8 +170,8 @@ fun parseBrook(text: String): AbstractBean {
 
 fun BrookBean.toUri(): String {
     val builder = Libcore.newURL("brook")
-    var serverString = wrapOriginUri()
-    val addressString = wrapOriginUri()
+    var serverString = joinHostPort(serverAddress, serverPort)
+    val addressString = joinHostPort(serverAddress, serverPort)
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
@@ -253,8 +253,8 @@ fun BrookBean.toUri(): String {
 
 fun BrookBean.toInternalUri(): String {
     val builder = Libcore.newURL("brook")
-    val serverString = internalUri()
-    val addressString = wrapUri()
+    val serverString = toServerLink()
+    val addressString = joinHostPort(finalAddress, finalPort)
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
@@ -311,22 +311,20 @@ fun BrookBean.toInternalUri(): String {
     return builder.string
 }
 
-fun BrookBean.wrapUriWithOriginHost0(): String {
-    return if (sni.isNotBlank()) {
-        "$sni:$finalPort"
-    } else if (serverAddress.isIpv6Address()) {
-        "[$serverAddress]:$finalPort"
-    } else {
-        "$serverAddress:$finalPort"
-    }
-}
-
-fun BrookBean.internalUri(): String {
+fun BrookBean.toServerLink(): String {
     var server = when (protocol) {
-        "ws" -> "ws://" + wrapUriWithOriginHost()
-        "wss" -> "wss://" + wrapUriWithOriginHost0()
-        "quic" -> "quic://" + wrapUriWithOriginHost0()
-        else -> return wrapUri()
+        "ws" -> "ws://" + joinHostPort(serverAddress, finalPort)
+        "wss" -> "wss://" + if (sni.isNotBlank()) {
+            joinHostPort(sni, finalPort)
+        } else {
+            joinHostPort(serverAddress, finalPort)
+        }
+        "quic" -> "quic://" + if (sni.isNotBlank()) {
+            joinHostPort(sni, finalPort)
+        } else {
+            joinHostPort(serverAddress, finalPort)
+        }
+        else -> return joinHostPort(finalAddress, finalPort)
     }
     if (protocol.startsWith("ws") && wsPath.isNotBlank()) {
         if (!wsPath.startsWith("/")) {

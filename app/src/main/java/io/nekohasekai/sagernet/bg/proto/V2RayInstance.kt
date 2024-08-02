@@ -262,7 +262,7 @@ abstract class V2RayInstance(
                         commands.add(bean.toInternalUri())
 
                         commands.add("--socks5")
-                        commands.add("$LOCALHOST:$port")
+                        commands.add(joinHostPort(LOCALHOST, port))
 
                         processes.start(commands, env)
                     }
@@ -375,9 +375,9 @@ abstract class V2RayInstance(
                         }
                         commands.add("client")
                         commands.add("--listen")
-                        commands.add("$LOCALHOST:$port")
+                        commands.add(joinHostPort(LOCALHOST, port))
                         commands.add("--server")
-                        commands.add(bean.wrapUri())
+                        commands.add(joinHostPort(bean.finalAddress, bean.finalPort))
                         if (bean.sni.isNotBlank()) {
                             commands.add("--sni")
                             commands.add(bean.sni)
@@ -416,7 +416,7 @@ abstract class V2RayInstance(
         v2rayPoint.start()
 
         if (config.requireWs) {
-            val url = "http://$LOCALHOST:" + (config.wsPort) + "/"
+            val url = "http://" + joinHostPort(LOCALHOST, config.wsPort) + "/"
 
             runOnMainDispatcher {
                 wsForwarder = WebView(context)
