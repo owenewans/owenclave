@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 
 public class TrojanGoBean extends AbstractBean {
 
@@ -45,6 +46,11 @@ public class TrojanGoBean extends AbstractBean {
 
     public Boolean mux;
     public Integer muxConcurrency;
+
+    @Override
+    public boolean canMapping() {
+        return !NetsKt.isIpAddress(serverAddress) || !sni.isBlank();
+    }
 
     @Override
     public void initializeDefaultValues() {

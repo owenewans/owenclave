@@ -21,7 +21,6 @@ package io.nekohasekai.sagernet.fmt.hysteria;
 
 import androidx.annotation.NonNull;
 
-import cn.hutool.core.lang.Validator;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
@@ -30,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import io.nekohasekai.sagernet.database.DataStore;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 
 public class HysteriaBean extends AbstractBean {
 
@@ -66,15 +66,13 @@ public class HysteriaBean extends AbstractBean {
         if (protocol == PROTOCOL_FAKETCP) {
             return false;
         }
+        if (NetsKt.isIpAddress(serverAddress) && sni.isBlank()) {
+            return false;
+        }
         if (!DataStore.INSTANCE.getHysteriaEnablePortHopping()) {
             return true;
         }
-        try {
-            Integer.parseInt(serverPorts);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        return NetsKt.isValidHysteriaMultiPort(serverPorts);
     }
 
     @Override
@@ -175,7 +173,7 @@ public class HysteriaBean extends AbstractBean {
 
     @Override
     public String displayAddress() {
-        if (Validator.isIpv6(serverAddress)) {
+        if (NetsKt.isIpv6Address(serverAddress)) {
             return "[" + serverAddress + "]:" + serverPorts;
         } else {
             return serverAddress + ":" + serverPorts;
