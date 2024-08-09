@@ -39,9 +39,9 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
     @Suppress("UNNECESSARY_SAFE_CALL")
     override fun uncaughtException(thread: Thread, throwable: Throwable) {
 
-        Log.e("SagerNet", "uncaughtException", throwable)
+        Log.e("Exclave", "uncaughtException", throwable)
 
-        val logFile = File.createTempFile("SagerNet Crash Report ",
+        val logFile = File.createTempFile("Exclave Crash Report ",
             ".log",
             File(app.cacheDir, "log").also { it.mkdirs() }
         )
@@ -104,7 +104,7 @@ object CrashHandler : Thread.UncaughtExceptionHandler {
 
     fun buildReportHeader(): String {
         var report = ""
-        report += "SagerNet ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) ${BuildConfig.FLAVOR.uppercase()}\n"
+        report += "Exclave ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE}) ${BuildConfig.FLAVOR.uppercase()}\n"
         report += "Date: ${getCurrentMilliSecondUTCTimeStamp()}\n\n"
         report += "OS_VERSION: ${getSystemPropertyWithAndroidAPI("os.version")}\n"
         report += "SDK_INT: ${Build.VERSION.SDK_INT}\n"
