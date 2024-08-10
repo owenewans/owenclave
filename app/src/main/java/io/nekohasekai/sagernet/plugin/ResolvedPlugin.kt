@@ -35,8 +35,8 @@ abstract class ResolvedPlugin(protected val resolveInfo: ResolveInfo) : Plugin()
     override val version by lazy {
         SagerNet.application.getPackageInfo(componentInfo.packageName).versionCode
     }
-    override val versionName by lazy {
-        SagerNet.application.getPackageInfo(componentInfo.packageName).versionName
+    override val versionName: String by lazy {
+        SagerNet.application.getPackageInfo(componentInfo.packageName).versionName!!
     }
     override val label: CharSequence get() = resolveInfo.loadLabel(SagerNet.application.packageManager)
     override val icon: Drawable get() = resolveInfo.loadIcon(SagerNet.application.packageManager)

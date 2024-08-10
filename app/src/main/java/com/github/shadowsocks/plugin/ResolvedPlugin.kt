@@ -52,7 +52,7 @@ abstract class ResolvedPlugin(protected val resolveInfo: ResolveInfo) : Plugin()
     override val defaultConfig by lazy { componentInfo.loadString(PluginContract.METADATA_KEY_DEFAULT_CONFIG) }
     override val packageName: String get() = componentInfo.packageName
     override val trusted by lazy {
-        SagerNet.application.getPackageInfo(packageName).signaturesCompat.any(PluginManager.trustedSignatures::contains)
+        SagerNet.application.getPackageInfo(packageName).signaturesCompat?.any(PluginManager.trustedSignatures::contains) == true
     }
     override val directBootAware get() = Build.VERSION.SDK_INT < 24 || componentInfo.directBootAware
 }

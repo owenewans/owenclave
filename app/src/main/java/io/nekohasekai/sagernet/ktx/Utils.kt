@@ -27,6 +27,7 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.*
 import android.content.pm.PackageInfo
+import android.content.pm.Signature
 import android.content.res.Resources
 import android.net.NetworkUtils
 import android.os.Build
@@ -146,8 +147,8 @@ fun Context.listenForPackageChanges(onetime: Boolean = true, callback: () -> Uni
         }
     }
 
-val PackageInfo.signaturesCompat
-    get() = if (Build.VERSION.SDK_INT >= 28) signingInfo.apkContentsSigners else @Suppress("DEPRECATION") signatures
+val PackageInfo.signaturesCompat: Array<Signature>?
+    get() = if (Build.VERSION.SDK_INT >= 28) signingInfo?.apkContentsSigners else @Suppress("DEPRECATION") signatures
 
 /**
  * Based on: https://stackoverflow.com/a/26348729/2245107
