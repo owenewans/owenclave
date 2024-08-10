@@ -12,7 +12,7 @@ dependencies {
     protobuf(project(":library:proto"))
 
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    api("com.google.protobuf:protobuf-java:4.27.2")
+    api("com.google.protobuf:protobuf-java:4.27.3")
 }
 android {
     namespace = "com.v2ray.core"
