@@ -314,6 +314,27 @@
             app:key="tcpKeepAliveInterval"
             app:title="@string/tcp_keep_alive_interval"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="enableFragment"
+            app:summary="@string/enable_fragment_sum"
+            app:title="@string/enable_fragment" />
+        <EditTextPreference
+            app:defaultValue="tlshello"
+            app:key="fragmentPackets"
+            app:title="@string/fragment_packets"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="fragmentLength"
+            app:title="@string/fragment_length"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="fragmentInterval"
+            app:title="@string/fragment_interval"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="enableFragmentForDirect"
+            app:summary="@string/enable_fragment_for_direct_sum"
+            app:title="@string/enable_fragment_for_direct" />
     </PreferenceCategory>
 
 

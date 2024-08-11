@@ -539,5 +539,12 @@
     <string name="hysteria2_plugin_settings_sum">These options only apply to plugins.</string>
     <string name="hysteria_enable_port_hopping_experimental">Enable Hysteria port hopping (Experimental)</string>
     <string name="hysteria_enable_port_hopping_sum">This requires plugins and TUN gVisor stack and is incompatible with chain proxy. If disabled, a random port within the port hopping range will be used.</string>
+    <string name="enable_fragment">Enable fragment</string>
+    <string name="enable_fragment_sum">May help circumvent some firewall policies</string>
+    <string name="fragment_packets">Fragment packets</string>
+    <string name="fragment_length">Fragment length</string>
+    <string name="fragment_interval">Fragment interval</string>
+    <string name="enable_fragment_for_direct">Fragment for direct</string>
+    <string name="enable_fragment_for_direct_sum">Also Enable fragment for direct</string>
 
 </resources>

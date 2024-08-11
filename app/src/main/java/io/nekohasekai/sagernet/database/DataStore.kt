@@ -130,6 +130,12 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var enableLog by configurationStore.boolean(Key.ENABLE_LOG) { BuildConfig.DEBUG }
     var enablePcap by configurationStore.boolean(Key.ENABLE_PCAP)
 
+    var enableFragment by configurationStore.boolean(Key.ENABLE_FRAGMENT)
+    var enableFragmentForDirect by configurationStore.boolean(Key.ENABLE_FRAGMENT_FOR_DIRECT)
+    var fragmentPackets by configurationStore.string(Key.FRAGMENT_PACKETS) { "tlshello" }
+    var fragmentLength by configurationStore.string(Key.FRAGMENT_LENGTH)
+    var fragmentInterval by configurationStore.string(Key.FRAGMENT_INTERVAL)
+
     // hopefully hashCode = mHandle doesn't change, currently this is true from KitKat to Nougat
     private val userIndex by lazy { Binder.getCallingUserHandle().hashCode() }
     var socksPort: Int

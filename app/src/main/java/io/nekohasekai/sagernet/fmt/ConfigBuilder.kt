@@ -856,12 +856,20 @@ fun buildV2RayConfig(
                                         }
                                     }
 
-                                    if (needKeepAliveInterval) {
+                                    if (needKeepAliveInterval || DataStore.enableFragment) {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            tcpKeepAliveInterval = keepAliveInterval
+                                            if (needKeepAliveInterval) {
+                                                tcpKeepAliveInterval = keepAliveInterval
+                                            }
+                                            if (DataStore.enableFragment) {
+                                                fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                    packets = DataStore.fragmentPackets
+                                                    length = DataStore.fragmentLength
+                                                    interval = DataStore.fragmentInterval
+                                                }
+                                            }
                                         }
                                     }
-
                                 }
                             } else if (bean is ShadowsocksRBean) {
                                 protocol = "shadowsocks"
@@ -874,10 +882,19 @@ fun buildV2RayConfig(
                                                 password = bean.password
                                             }
                                         )
-                                        if (needKeepAliveInterval) {
+                                        if (needKeepAliveInterval || DataStore.enableFragment) {
                                             streamSettings = StreamSettingsObject().apply {
                                                 sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                    tcpKeepAliveInterval = keepAliveInterval
+                                                    if (needKeepAliveInterval) {
+                                                        tcpKeepAliveInterval = keepAliveInterval
+                                                    }
+                                                    if (DataStore.enableFragment) {
+                                                        fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                            packets = DataStore.fragmentPackets
+                                                            length = DataStore.fragmentLength
+                                                            interval = DataStore.fragmentInterval
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -940,10 +957,19 @@ fun buildV2RayConfig(
                                         }
                                         publicKey = bean.publicKey
                                     })
-                                streamSettings = StreamSettingsObject().apply {
-                                    if (needKeepAliveInterval) {
+                                if (needKeepAliveInterval || DataStore.enableFragment) {
+                                    streamSettings = StreamSettingsObject().apply {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            tcpKeepAliveInterval = keepAliveInterval
+                                            if (needKeepAliveInterval) {
+                                                tcpKeepAliveInterval = keepAliveInterval
+                                            }
+                                            if (DataStore.enableFragment) {
+                                                fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                    packets = DataStore.fragmentPackets
+                                                    length = DataStore.fragmentLength
+                                                    interval = DataStore.fragmentInterval
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -1323,9 +1349,24 @@ fun buildV2RayConfig(
             }
         }
 
-        for (freedom in arrayOf(TAG_DIRECT, TAG_BYPASS)) outbounds.add(OutboundObject().apply {
-            tag = freedom
+        outbounds.add(OutboundObject().apply {
+            tag = TAG_DIRECT
             protocol = "freedom"
+        })
+        outbounds.add(OutboundObject().apply {
+            tag = TAG_BYPASS
+            protocol = "freedom"
+            if (DataStore.enableFragment && DataStore.enableFragmentForDirect) {
+                streamSettings = StreamSettingsObject().apply {
+                    sockopt = StreamSettingsObject.SockoptObject().apply {
+                        fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                            packets = DataStore.fragmentPackets
+                            length = DataStore.fragmentLength
+                            interval = DataStore.fragmentInterval
+                        }
+                    }
+                }
+            }
         })
 
         outbounds.add(OutboundObject().apply {

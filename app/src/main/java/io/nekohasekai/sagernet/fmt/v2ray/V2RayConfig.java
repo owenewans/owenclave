@@ -957,6 +957,15 @@ public class V2RayConfig {
             public Integer rxBufSize;
             public Integer txBufSize;
             public Boolean forceBufSize;
+            public FragmentObject fragment;
+
+            public static class FragmentObject {
+
+                public String packets;
+                public String length;
+                public String interval;
+
+            }
 
         }
 
