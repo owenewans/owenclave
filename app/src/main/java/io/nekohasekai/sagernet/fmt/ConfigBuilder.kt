@@ -1382,7 +1382,7 @@ fun buildV2RayConfig(
             }
         })
 
-        val bypassIP = HashSet<String>()
+        //val bypassIP = HashSet<String>()
         val bypassDomain = HashSet<String>()
         val proxyDomain = HashSet<String>()
         val bootstrapDomain = HashSet<String>()
@@ -1396,26 +1396,26 @@ fun buildV2RayConfig(
                     bean.serverAddresses.split("\n").forEach {
                         if (!it.isIpAddress()) {
                             bypassDomain.add("full:$it")
-                        } else {
+                        }/* else {
                             bypassIP.add(it)
-                        }
+                        }*/
                     }
                 }
                 if (!serverAddress.isIpAddress()) {
                     bypassDomain.add("full:$serverAddress")
-                } else {
+                }/* else {
                     bypassIP.add(serverAddress)
-                }
+                }*/
             }
         }
 
-        if (bypassIP.isNotEmpty()) {
+        /*if (bypassIP.isNotEmpty()) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
                 ip = bypassIP.toList() //TODO: How to deal with IPOnDemand?
                 outboundTag = TAG_DIRECT
             })
-        }
+        }*/
 
         if (enableDnsRouting) {
             for (bypassRule in extraRules.filter { it.isBypassRule() }) {

@@ -28,7 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
-import io.nekohasekai.sagernet.ktx.NetsKt;
 
 public class NaiveBean extends AbstractBean {
 
@@ -42,11 +41,6 @@ public class NaiveBean extends AbstractBean {
     public Integer insecureConcurrency;
     public Boolean noPostQuantum;
     public String sni;
-
-    @Override
-    public boolean canMapping() {
-        return !NetsKt.isIpAddress(serverAddress) || !sni.isBlank();
-    }
 
     @Override
     public void initializeDefaultValues() {
