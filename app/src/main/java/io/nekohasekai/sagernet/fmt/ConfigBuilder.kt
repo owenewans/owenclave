@@ -1394,18 +1394,24 @@ fun buildV2RayConfig(
                     // too dirty to read server addresses from a custom outbound config
                     // let users provide them manually
                     bean.serverAddresses.split("\n").forEach {
-                        if (!it.isIpAddress()) {
-                            bypassDomain.add("full:$it")
-                        }/* else {
-                            bypassIP.add(it)
-                        }*/
+                        when {
+                            it.isBlank() -> {}
+                            it.isIpAddress() -> {
+                                /*bypassIP.add(it)*/
+                            }
+                            else -> {
+                                bypassDomain.add("full:$it")
+                            }
+                        }
                     }
+                } else {
+                    if (!serverAddress.isIpAddress()) {
+                        bypassDomain.add("full:$serverAddress")
+                    }/* else {
+                        bypassIP.add(serverAddress)
+                    }*/
                 }
-                if (!serverAddress.isIpAddress()) {
-                    bypassDomain.add("full:$serverAddress")
-                }/* else {
-                    bypassIP.add(serverAddress)
-                }*/
+
             }
         }
 
