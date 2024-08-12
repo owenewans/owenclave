@@ -34,4 +34,3 @@
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn com.android.org.conscrypt.SSLParametersImpl
 -dontwarn android.app.ActivityThread
--dontwarn com.wireguard.crypto.Key
