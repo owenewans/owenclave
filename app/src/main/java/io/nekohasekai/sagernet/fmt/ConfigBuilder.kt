@@ -502,11 +502,10 @@ fun buildV2RayConfig(
                                             when (bean.packetEncoding) {
                                                 "packet" -> {
                                                     packetEncoding = "packet"
-                                                    if (currentDomainStrategy == "AsIs") {
-                                                        currentDomainStrategy = "UseIP"
-                                                    }
                                                 }
-                                                "xudp" -> packetEncoding = "xudp"
+                                                "xudp" -> {
+                                                    packetEncoding = "xudp"
+                                                }
                                             }
                                         })
                                 } else if (bean is VLESSBean) {
@@ -529,11 +528,10 @@ fun buildV2RayConfig(
                                             when (bean.packetEncoding) {
                                                 "packet" -> {
                                                     packetEncoding = "packet"
-                                                    if (currentDomainStrategy == "AsIs") {
-                                                        currentDomainStrategy = "UseIP"
-                                                    }
                                                 }
-                                                "xudp" -> packetEncoding = "xudp"
+                                                "xudp" -> {
+                                                    packetEncoding = "xudp"
+                                                }
                                             }
                                         })
                                 } else if (bean is TrojanBean) {
@@ -1024,9 +1022,6 @@ fun buildV2RayConfig(
                                     when (bean.muxPacketEncoding) {
                                         "packet" -> {
                                             packetEncoding = "packet"
-                                            if (currentDomainStrategy == "AsIs") {
-                                                currentDomainStrategy = "UseIP"
-                                            }
                                         }
                                         "xudp" -> {
                                             packetEncoding = "xudp"
