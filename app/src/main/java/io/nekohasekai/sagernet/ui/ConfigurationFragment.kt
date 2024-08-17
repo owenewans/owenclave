@@ -1291,9 +1291,8 @@ class ConfigurationFragment @JvmOverloads constructor(
             configurationListView.adapter = adapter
             configurationListView.setItemViewCacheSize(20)
 
+            undoManager = UndoSnackbarManager(activity as MainActivity, adapter)
             if (!parent.select && proxyGroup.type == GroupType.BASIC) {
-
-                undoManager = UndoSnackbarManager(activity as MainActivity, adapter)
 
                 ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
                     ItemTouchHelper.UP or ItemTouchHelper.DOWN, ItemTouchHelper.START
