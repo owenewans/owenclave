@@ -308,12 +308,6 @@
             app:key="connectionTestURL"
             app:title="@string/connection_test_url"
             app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:defaultValue="15"
-            app:icon="@drawable/ic_baseline_flip_camera_android_24"
-            app:key="tcpKeepAliveInterval"
-            app:title="@string/tcp_keep_alive_interval"
-            app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:key="enableFragment"
             app:summary="@string/enable_fragment_sum"

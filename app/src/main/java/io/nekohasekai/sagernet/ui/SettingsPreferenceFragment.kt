@@ -120,8 +120,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val ipv6Mode = findPreference<Preference>(Key.IPV6_MODE)!!
         val domainStrategy = findPreference<Preference>(Key.DOMAIN_STRATEGY)!!
 
-        val tcpKeepAliveInterval = findPreference<EditTextPreference>(Key.TCP_KEEP_ALIVE_INTERVAL)!!
-
         val bypassLan = findPreference<SwitchPreference>(Key.BYPASS_LAN)!!
         val bypassLanInCoreOnly = findPreference<SwitchPreference>(Key.BYPASS_LAN_IN_CORE_ONLY)!!
 
@@ -287,7 +285,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         httpProxyException.onPreferenceChangeListener = reloadListener
         showDirectSpeed.onPreferenceChangeListener = reloadListener
         domainStrategy.onPreferenceChangeListener = reloadListener
-        tcpKeepAliveInterval.onPreferenceChangeListener = reloadListener
         bypassLanInCoreOnly.onPreferenceChangeListener = reloadListener
 
         remoteDns.onPreferenceChangeListener = reloadListener

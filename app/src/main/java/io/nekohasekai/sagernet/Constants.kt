@@ -82,7 +82,6 @@ object Key {
     const val PROBE_URL = "probeUrl"
     const val PROBE_INTERVAL = "probeInterval"
 
-    const val TCP_KEEP_ALIVE_INTERVAL = "tcpKeepAliveInterval"
     const val RULES_PROVIDER = "rulesProvider"
     const val RULES_GEOSITE_URL = "rulesGeositeUrl"
     const val RULES_GEOIP_URL = "rulesGeoipUrl"

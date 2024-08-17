@@ -466,9 +466,6 @@ fun buildV2RayConfig(
                         }
                     } else {
                         currentOutbound.apply {
-                            val keepAliveInterval = DataStore.tcpKeepAliveInterval
-                            val needKeepAliveInterval = keepAliveInterval !in intArrayOf(0, 15)
-
                             if (bean is StandardV2RayBean) {
                                 if (bean is VMessBean) {
                                     protocol = "vmess"
@@ -854,17 +851,12 @@ fun buildV2RayConfig(
                                         }
                                     }
 
-                                    if (needKeepAliveInterval || DataStore.enableFragment) {
+                                    if (DataStore.enableFragment) {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            if (needKeepAliveInterval) {
-                                                tcpKeepAliveInterval = keepAliveInterval
-                                            }
-                                            if (DataStore.enableFragment) {
-                                                fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                                                    packets = DataStore.fragmentPackets
-                                                    length = DataStore.fragmentLength
-                                                    interval = DataStore.fragmentInterval
-                                                }
+                                            fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                packets = DataStore.fragmentPackets
+                                                length = DataStore.fragmentLength
+                                                interval = DataStore.fragmentInterval
                                             }
                                         }
                                     }
@@ -880,18 +872,13 @@ fun buildV2RayConfig(
                                                 password = bean.password
                                             }
                                         )
-                                        if (needKeepAliveInterval || DataStore.enableFragment) {
+                                        if (DataStore.enableFragment) {
                                             streamSettings = StreamSettingsObject().apply {
                                                 sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                    if (needKeepAliveInterval) {
-                                                        tcpKeepAliveInterval = keepAliveInterval
-                                                    }
-                                                    if (DataStore.enableFragment) {
-                                                        fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                                                            packets = DataStore.fragmentPackets
-                                                            length = DataStore.fragmentLength
-                                                            interval = DataStore.fragmentInterval
-                                                        }
+                                                    fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                        packets = DataStore.fragmentPackets
+                                                        length = DataStore.fragmentLength
+                                                        interval = DataStore.fragmentInterval
                                                     }
                                                 }
                                             }
@@ -927,13 +914,6 @@ fun buildV2RayConfig(
                                             endpoint = joinHostPort(bean.finalAddress, bean.finalPort)
                                         })
                                     })
-                                streamSettings = StreamSettingsObject().apply {
-                                    if (needKeepAliveInterval) {
-                                        sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            tcpKeepAliveInterval = keepAliveInterval
-                                        }
-                                    }
-                                }
                                 if (currentDomainStrategy == "AsIs") {
                                     currentDomainStrategy = "UseIP"
                                 }
@@ -955,18 +935,13 @@ fun buildV2RayConfig(
                                         }
                                         publicKey = bean.publicKey
                                     })
-                                if (needKeepAliveInterval || DataStore.enableFragment) {
+                                if (DataStore.enableFragment) {
                                     streamSettings = StreamSettingsObject().apply {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            if (needKeepAliveInterval) {
-                                                tcpKeepAliveInterval = keepAliveInterval
-                                            }
-                                            if (DataStore.enableFragment) {
-                                                fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                                                    packets = DataStore.fragmentPackets
-                                                    length = DataStore.fragmentLength
-                                                    interval = DataStore.fragmentInterval
-                                                }
+                                            fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                packets = DataStore.fragmentPackets
+                                                length = DataStore.fragmentLength
+                                                interval = DataStore.fragmentInterval
                                             }
                                         }
                                     }
@@ -982,11 +957,6 @@ fun buildV2RayConfig(
                                     }
                                 )
                                 streamSettings = StreamSettingsObject().apply {
-                                    if (needKeepAliveInterval) {
-                                        sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            tcpKeepAliveInterval = keepAliveInterval
-                                        }
-                                    }
                                     network = "hysteria2"
                                     security = "tls"
                                     hysteria2Settings = Hysteria2Object().apply {
