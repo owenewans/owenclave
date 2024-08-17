@@ -1729,19 +1729,13 @@ class ConfigurationFragment @JvmOverloads constructor(
                 }
 
                 deleteButton.setOnClickListener {
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(getString(R.string.delete_confirm_prompt))
-                        .setPositiveButton(R.string.yes) { _, _ ->
-                            val index = adapter.configurationIdList.indexOf(proxyEntity.id)
-                            if (index >= 0) {
-                                adapter.remove(index)
-                                runOnDefaultDispatcher {
-                                    ProfileManager.deleteProfile(proxyEntity.groupId, proxyEntity.id)
-                                }
-                            }
+                    adapter.let {
+                        val index = it.configurationIdList.indexOf(proxyEntity.id)
+                        if (index >= 0) {
+                            it.remove(index)
                         }
-                        .setNegativeButton(R.string.no, null)
-                        .show()
+                        undoManager.remove(index to proxyEntity)
+                    }
                 }
 
                 editButton.isGone = parent.select
