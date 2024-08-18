@@ -93,6 +93,14 @@ public class Tuic5Bean extends AbstractBean {
         return false;
     }
 
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof Tuic5Bean bean)) return;
+        bean.caText = caText;
+        bean.zeroRTTHandshake = zeroRTTHandshake;
+        bean.mtu = mtu;
+    }
+
     @NotNull
     @Override
     public Tuic5Bean clone() {

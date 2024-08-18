@@ -33,6 +33,8 @@ import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
+import io.nekohasekai.sagernet.fmt.tuic.TuicBean
+import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.ktx.*
 import kotlinx.coroutines.*
@@ -172,6 +174,12 @@ abstract class GroupUpdater {
                     if (sni.isBlank()) sni = bean.serverAddress
                 }
                 is JuicityBean -> {
+                    if (sni.isBlank()) sni = bean.serverAddress
+                }
+                is TuicBean -> {
+                    if (sni.isBlank()) sni = bean.serverAddress
+                }
+                is Tuic5Bean -> {
                     if (sni.isBlank()) sni = bean.serverAddress
                 }
             }

@@ -35,6 +35,7 @@ import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
+import io.nekohasekai.sagernet.fmt.tuic5.parseTuic
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
 
 fun formatObject(obj: Any): String {
@@ -144,6 +145,14 @@ fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse juicity link: $this")
             runCatching {
                 entities.add(parseJuicity(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        }
+        else if (startsWith("tuic://")) {
+            Logs.d("Try parse tuic link: $this")
+            runCatching {
+                entities.add(parseTuic(this))
             }.onFailure {
                 Logs.w(it)
             }

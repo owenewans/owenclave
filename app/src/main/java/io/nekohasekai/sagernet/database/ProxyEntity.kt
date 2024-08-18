@@ -68,8 +68,10 @@ import io.nekohasekai.sagernet.fmt.trojan_go.buildTrojanGoConfig
 import io.nekohasekai.sagernet.fmt.trojan_go.toUri
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic.buildTuicConfig
+import io.nekohasekai.sagernet.fmt.tuic.toUri
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.buildTuic5Config
+import io.nekohasekai.sagernet.fmt.tuic5.toUri
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.v2ray.toUri
@@ -310,7 +312,7 @@ data class ProxyEntity(
 
     fun haveStandardLink(): Boolean {
         return haveLink() && when (type) {
-            TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_TUIC, TYPE_TUIC5, TYPE_SHADOWTLS -> false
+            TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_SHADOWTLS -> false
             TYPE_CONFIG -> false
             else -> true
         }
@@ -331,13 +333,13 @@ data class ProxyEntity(
             is Hysteria2Bean -> toUri()
             is BrookBean -> toUri()
             is JuicityBean -> toUri()
+            is TuicBean -> toUri()
+            is Tuic5Bean -> toUri()
 
             is ConfigBean -> toUniversalLink()
             is SSHBean -> toUniversalLink()
             is WireGuardBean -> toUniversalLink()
             is MieruBean -> toUniversalLink()
-            is TuicBean -> toUniversalLink()
-            is Tuic5Bean -> toUniversalLink()
             is ShadowTLSBean -> toUniversalLink()
             else -> null
         }

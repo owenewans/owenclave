@@ -22,10 +22,120 @@ import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.LOCALHOST
+import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.joinHostPort
+import io.nekohasekai.sagernet.ktx.queryParameter
+import io.nekohasekai.sagernet.ktx.urlSafe
 import java.io.File
+import libcore.Libcore
+
+fun parseTuic(server: String): AbstractBean {
+    val link = Libcore.parseURL(server)
+    link.queryParameter("version")?.let {
+        if (it == "4") {
+            return TuicBean().apply {
+                serverAddress = link.host
+                serverPort = link.port
+                if (link.port == 0) {
+                    serverPort = 443
+                }
+                token = link.username
+                link.queryParameter("sni")?.let {
+                    sni = it
+                }
+                link.queryParameterNotBlank("congestion_controller").let {
+                    congestionController = it
+                }
+                link.queryParameterNotBlank("congestion_control").let {
+                    congestionController = it
+                }
+                link.queryParameterNotBlank("udp_relay-mode").let {
+                    udpRelayMode = it
+                }
+                link.queryParameterNotBlank("udp_relay_mode").let {
+                    udpRelayMode = it
+                }
+                link.queryParameterNotBlank("alpn").let {
+                    alpn = it.split(",").joinToString("\n")
+                }
+                link.queryParameterNotBlank("disable_sni").let {
+                    if (it == "1" || it == "true") {
+                        disableSNI = true
+                    }
+                }
+                link.fragment.takeIf { !it.isNullOrBlank() }?.let {
+                    name = it
+                }
+            }
+        }
+    }
+    return Tuic5Bean().apply {
+        serverAddress = link.host
+        serverPort = link.port
+        if (link.port == 0) {
+            serverPort = 443
+        }
+        uuid = link.username
+        password = link.password
+        link.queryParameter("sni")?.let {
+            sni = it
+        }
+        link.queryParameterNotBlank("congestion_controller").let {
+            congestionControl = it
+        }
+        link.queryParameterNotBlank("congestion_control").let {
+            congestionControl = it
+        }
+        link.queryParameterNotBlank("udp_relay-mode").let {
+            udpRelayMode = it
+        }
+        link.queryParameterNotBlank("udp_relay_mode").let {
+            udpRelayMode = it
+        }
+        link.queryParameterNotBlank("alpn").let {
+            alpn = it.split(",").joinToString("\n")
+        }
+        link.queryParameterNotBlank("disable_sni").let {
+            if (it == "1" || it == "true") {
+                disableSNI = true
+            }
+        }
+        link.fragment.takeIf { !it.isNullOrBlank() }?.let {
+            name = it
+        }
+    }
+}
+
+fun Tuic5Bean.toUri(): String {
+    val builder = Libcore.newURL("tuic")
+    builder.host = serverAddress
+    builder.port = serverPort
+    builder.username = uuid
+    builder.password = password
+    builder.addQueryParameter("version", "5")
+    builder.addQueryParameter("udp_relay_mode", udpRelayMode)
+
+    builder.addQueryParameter("congestion_control", congestionControl)
+
+    if (sni.isNotBlank()) {
+        builder.addQueryParameter("sni", sni)
+    }
+    if (alpn.isNotBlank()) {
+        builder.addQueryParameter("alpn", alpn.split("\n").joinToString(","))
+    }
+    if (disableSNI) {
+        builder.addQueryParameter("disable_sni", "1")
+    }
+    if (name.isNotBlank()) {
+        builder.setRawFragment(name.urlSafe())
+    }
+    builder.addQueryParameter("udp_relay-mode", udpRelayMode)
+    builder.addQueryParameter("congestion_controller", congestionControl)
+    return builder.string
+}
 
 fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {

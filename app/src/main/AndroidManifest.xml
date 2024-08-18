@@ -144,6 +144,7 @@
                 <data android:scheme="hysteria2" />
                 <data android:scheme="hy2" />
                 <data android:scheme="juicity" />
+                <data android:scheme="tuic" />
 
             </intent-filter>
 

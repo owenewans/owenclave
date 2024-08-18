@@ -92,6 +92,14 @@ public class TuicBean extends AbstractBean {
         return false;
     }
 
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof TuicBean bean)) return;
+        bean.caText = caText;
+        bean.reduceRTT = reduceRTT;
+        bean.mtu = mtu;
+    }
+
     @NotNull
     @Override
     public TuicBean clone() {

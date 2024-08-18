@@ -24,7 +24,34 @@ import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
+import io.nekohasekai.sagernet.ktx.urlSafe
+import libcore.Libcore
 import java.io.File
+
+fun TuicBean.toUri(): String {
+    val builder = Libcore.newURL("tuic")
+    builder.host = serverAddress
+    builder.port = serverPort
+    builder.username = token
+    builder.addQueryParameter("version", "4")
+    builder.addQueryParameter("udp_relay_mode", udpRelayMode)
+    builder.addQueryParameter("congestion_control", congestionController)
+    if (sni.isNotBlank()) {
+        builder.addQueryParameter("sni", sni)
+    }
+    if (alpn.isNotBlank()) {
+        builder.addQueryParameter("alpn", alpn.split("\n").joinToString(","))
+    }
+    if (disableSNI) {
+        builder.addQueryParameter("disable_sni", "1")
+    }
+    if (name.isNotBlank()) {
+        builder.setRawFragment(name.urlSafe())
+    }
+    builder.addQueryParameter("udp_relay-mode", udpRelayMode)
+    builder.addQueryParameter("congestion_controller", congestionController)
+    return builder.string
+}
 
 fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {
