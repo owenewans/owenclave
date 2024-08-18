@@ -57,7 +57,8 @@ fun parseProxies(text: String): List<AbstractBean> {
     val entitiesByLine = ArrayList<AbstractBean>()
 
     fun String.parseLink(entities: ArrayList<AbstractBean>) {
-        if (startsWith("clash://install-config?") || startsWith("exclave://subscription?")) {
+        if (startsWith("clash://install-config?") || startsWith("exclave://subscription?") ||
+            startsWith("sn://subscription?")) {
             throw SubscriptionFoundException(this)
         }
 
