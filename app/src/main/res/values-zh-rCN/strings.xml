@@ -105,7 +105,7 @@
     <!-- alert category -->
     <string name="profile_empty">请选择一个服务器配置</string>
     <string name="connect">连接</string>
-    <string name="clipboard_empty">剪切板没有内容</string>
+    <string name="clipboard_empty">剪贴板没有内容</string>
     <!-- menu category -->
     <string name="settings">设置</string>
     <string name="edit">编辑</string>
@@ -113,8 +113,8 @@
     <string name="add_profile">添加服务器配置</string>
     <string name="action_from_link">添加订阅</string>
     <string name="action_export_file">导出到文件</string>
-    <string name="action_export_clipboard">导出到剪切板</string>
-    <string name="action_import">从剪切板导入</string>
+    <string name="action_export_clipboard">导出到剪贴板</string>
+    <string name="action_import">从剪贴板导入</string>
     <string name="action_import_file">从文件导入</string>
     <string name="action_export_msg">导出成功！</string>
     <string name="action_export_err">导出失败。</string>
@@ -206,7 +206,7 @@
     <string name="route_bypass_domain">%s 域名规则</string>
     <string name="route_bypass_ip">%s IP 规则</string>
     <string name="no_proxies_found_in_file">未在此文件内找到服务器配置</string>
-    <string name="no_proxies_found_in_clipboard">未在剪切板内找到服务器配置</string>
+    <string name="no_proxies_found_in_clipboard">未在剪贴板内找到服务器配置</string>
     <string name="route_reset">重置</string>
     <string name="clear_profiles">清空</string>
     <string name="file_manager_missing">您的设备缺少 Android 标准文件选择器，请安装一个，如质感文件。</string>
@@ -516,5 +516,10 @@
     <string name="fragment_interval">分片间隔</string>
     <string name="enable_fragment_for_direct">直连分片</string>
     <string name="enable_fragment_for_direct_sum">为直连也启用分片</string>
+    <string name="probe_cert">证书探测器</string>
+    <string name="probe_cert_summary">探测服务器的 TLS 证书。</string>
+    <string name="probe_cert_target_server">目标服务器</string>
+    <string name="probe_cert_success">探测成功！证书已复制到剪贴板。</string>
+
 
 </resources>

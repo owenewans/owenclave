@@ -545,6 +545,10 @@
     <string name="fragment_length">Fragment length</string>
     <string name="fragment_interval">Fragment interval</string>
     <string name="enable_fragment_for_direct">Fragment for direct</string>
-    <string name="enable_fragment_for_direct_sum">Also Enable fragment for direct</string>
+    <string name="enable_fragment_for_direct_sum">Also enable fragment for direct</string>
+    <string name="probe_cert">Certificate prober</string>
+    <string name="probe_cert_summary">Probe the TLS certificate of a server.</string>
+    <string name="probe_cert_target_server">Target server</string>
+    <string name="probe_cert_success">Probed successfully! Certificate has been copied to clipboard.</string>
 
 </resources>

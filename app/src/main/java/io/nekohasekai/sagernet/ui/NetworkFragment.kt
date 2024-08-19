@@ -39,6 +39,9 @@ class NetworkFragment : NamedFragment(R.layout.layout_network) {
         binding.stunLegacyTest.setOnClickListener {
             startActivity(Intent(requireContext(), StunLegacyActivity::class.java))
         }
+        binding.probeCertificate.setOnClickListener {
+            startActivity(Intent(requireContext(), ProbeCertActivity::class.java))
+        }
 
     }
 

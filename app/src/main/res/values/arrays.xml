@@ -983,4 +983,9 @@
         <item>UseIPv6</item>
     </string-array>
 
+    <string-array name="probe_cert_protocol">
+        <item>TLS</item>
+        <item>QUIC</item>
+    </string-array>
+
 </resources>
