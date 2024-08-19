@@ -321,21 +321,6 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
     }
 
     override fun onScroll(offset: Int) {
-        val activity = requireActivity() as MainActivity
-        val topRow = binding.terminalView.topRow
-        if (offset < 0) {
-            activity.binding.stats.apply {
-                if (isShown) performHide()
-            }
-        }
-
-        val screen = binding.terminalView.mEmulator!!.screen
-
-        if (topRow == 0 && screen.activeTranscriptRows > 0) activity.binding.fab.apply {
-            if (isShown) hide()
-        } else activity.binding.fab.apply {
-            if (!isShown) show()
-        }
     }
 
     override fun logError(tag: String?, message: String?) {
