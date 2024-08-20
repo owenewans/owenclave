@@ -22,7 +22,7 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
   - [TUIC v4 plugin](https://github.com/dyhkwong/Exclave/releases/tag/tuic-plugin-0.8.5-1)
 
-  - [Hysteria 1 Plugin](https://github.com/dyhkwong/Exclave/releases/tag/hysteria-plugin-1.3.5-1)
+  - [Hysteria 1 Plugin](https://github.com/dyhkwong/Exclave/releases/tag/hysteria-plugin-1.3.5-2)
 
   - [Mieru Plugin, version 2](https://github.com/dyhkwong/Exclave/releases/tag/mieru-plugin-2.7.0-1)
 
