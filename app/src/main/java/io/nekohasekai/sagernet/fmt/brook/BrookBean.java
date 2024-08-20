@@ -26,6 +26,7 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 
 public class BrookBean extends AbstractBean {
 
@@ -39,6 +40,14 @@ public class BrookBean extends AbstractBean {
     public String fragment;
     public String sni;
     public Boolean udpoverstream;
+
+    @Override
+    public boolean canMapping() {
+        if (protocol.isEmpty() || protocol.equals("ws")) {
+            return true;
+        }
+        return !NetsKt.isIpAddress(serverAddress) || !sni.isBlank();
+    }
 
     @Override
     public void initializeDefaultValues() {

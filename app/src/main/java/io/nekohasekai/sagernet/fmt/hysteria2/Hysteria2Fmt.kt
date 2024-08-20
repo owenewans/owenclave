@@ -19,6 +19,7 @@
 
 package io.nekohasekai.sagernet.fmt.hysteria2
 
+import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
@@ -224,7 +225,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (maxConnReceiveWindow > 0) {
         quicObject["maxConnReceiveWindow"] = maxConnReceiveWindow
     }
-    if (usePortHopping) {
+    if (!canMapping() && DataStore.tunImplementation == TunImplementation.SYSTEM) {
         val sockoptsObject: MutableMap<String, Any> = HashMap()
         sockoptsObject["fdControlUnixSocket"] = "protect_path"
         quicObject["sockopts"] = sockoptsObject

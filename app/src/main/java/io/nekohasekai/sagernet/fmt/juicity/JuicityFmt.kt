@@ -1,6 +1,7 @@
 package io.nekohasekai.sagernet.fmt.juicity
 
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.*
@@ -76,6 +77,9 @@ fun JuicityBean.buildJuicityConfig(port: Int): String {
             it["log_level"] = "debug"
         } else {
             it["log_level"] = "error"
+        }
+        if (!canMapping() && DataStore.tunImplementation == TunImplementation.SYSTEM) {
+            it["protect_path"] = "protect_path"
         }
 
     }.toStringPretty()

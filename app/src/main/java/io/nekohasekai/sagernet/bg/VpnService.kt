@@ -295,8 +295,9 @@ class VpnService : BaseVpnService(),
             protector = this@VpnService
             localResolver = this@VpnService
         }
-        val needProtectServer = DataStore.hysteriaEnablePortHopping && data.proxy!!.config.outboundTagsAll.values.any {
-            it.hysteria2Bean?.serverPorts?.isValidHysteriaMultiPort() == true || it.hysteriaBean?.serverPorts?.isValidHysteriaMultiPort() == true
+
+        val needProtectServer = tunImplementation == TunImplementation.SYSTEM && data.proxy!!.config.outboundTagsAll.values.any {
+            it.hysteria2Bean?.canMapping() == false || it.hysteriaBean?.canMapping() == false || it.juicityBean?.canMapping() == false
         }
         if (needProtectServer) {
             config.protectPath = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/protect_path" // FIXME: incorrect working dir

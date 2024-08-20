@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 
 public class TuicBean extends AbstractBean {
 
@@ -39,6 +40,11 @@ public class TuicBean extends AbstractBean {
     public Boolean reduceRTT;
     public Integer mtu;
     public String sni;
+
+    @Override
+    public boolean canMapping() {
+        return !NetsKt.isIpAddress(serverAddress) || !sni.isBlank();
+    }
 
     @Override
     public void initializeDefaultValues() {
