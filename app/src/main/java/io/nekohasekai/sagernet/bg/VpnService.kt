@@ -39,6 +39,7 @@ import io.nekohasekai.sagernet.database.StatsEntity
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.ktx.Logs
+import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ui.VpnRequestActivity
 import io.nekohasekai.sagernet.utils.DefaultNetworkListener
 import io.nekohasekai.sagernet.utils.PackageCache
@@ -293,6 +294,12 @@ class VpnService : BaseVpnService(),
             }
             protector = this@VpnService
             localResolver = this@VpnService
+        }
+        val needProtectServer = DataStore.hysteriaEnablePortHopping && data.proxy!!.config.outboundTagsAll.values.any {
+            it.hysteria2Bean?.serverPorts?.isValidHysteriaMultiPort() == true || it.hysteriaBean?.serverPorts?.isValidHysteriaMultiPort() == true
+        }
+        if (needProtectServer) {
+            config.protectPath = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/protect_path" // FIXME: incorrect working dir
         }
 
         tun = Libcore.newTun2ray(config)

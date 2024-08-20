@@ -19,7 +19,6 @@
 
 package io.nekohasekai.sagernet.fmt.hysteria2
 
-import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
@@ -149,10 +148,6 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
         error("invalid port: $serverPorts")
     }
     val usePortHopping = DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()
-    if (usePortHopping && DataStore.tunImplementation == TunImplementation.SYSTEM) {
-        // NOT a TODO: system stack need VpnService protect to work
-        error("Please switch to TUN gVisor stack for Hysteria 2 port hopping.")
-    }
 
     val hostPort = if (usePortHopping) {
         // Hysteria 2 port hopping is incompatible with chain proxy
@@ -228,6 +223,11 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     if (maxConnReceiveWindow > 0) {
         quicObject["maxConnReceiveWindow"] = maxConnReceiveWindow
+    }
+    if (usePortHopping) {
+        val sockoptsObject: MutableMap<String, Any> = HashMap()
+        sockoptsObject["fdControlUnixSocket"] = "protect_path"
+        quicObject["sockopts"] = sockoptsObject
     }
     if (quicObject.isNotEmpty()) {
         confObject["quic"] = quicObject

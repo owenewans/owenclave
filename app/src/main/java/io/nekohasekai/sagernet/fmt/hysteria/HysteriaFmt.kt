@@ -20,7 +20,6 @@
 package io.nekohasekai.sagernet.fmt.hysteria
 
 import cn.hutool.json.JSONObject
-import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.*
@@ -122,10 +121,6 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         error("invalid port: $serverPorts")
     }
     val usePortHopping = DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()
-    if (usePortHopping && DataStore.tunImplementation == TunImplementation.SYSTEM) {
-        // NOT a TODO: system stack need VpnService protect to work
-        error("Please switch to TUN gVisor stack for Hysteria port hopping.")
-    }
 
     return JSONObject().also {
         if (protocol == HysteriaBean.PROTOCOL_FAKETCP || usePortHopping) {
