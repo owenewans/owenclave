@@ -321,7 +321,7 @@ fun Project.setupPlugin(projectName: String) {
     val verName = requireMetadata().getProperty("${propPrefix}_VERSION_NAME").trim()
     val verCode = requireMetadata().getProperty("${propPrefix}_VERSION").trim().toInt() * 5
     androidApp.defaultConfig {
-        applicationId = "io.nekohasekai.sagernet.plugin.$projName"
+        applicationId = "com.github.dyhkwong.sagernet.plugin.$projName"
 
         versionName = verName
         versionCode = verCode

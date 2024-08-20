@@ -21,7 +21,7 @@
 	url = https://github.com/SagerNet/preferencex-android
 [submodule "plugin/hysteria/src/main/go/hysteria"]
 	path = plugin/hysteria/src/main/go/hysteria
-	url = https://github.com/apernet/hysteria
+	url = https://github.com/MatsuriDayo/hysteria
 [submodule "plugin/hysteria2/src/main/go/hysteria2"]
 	path = plugin/hysteria2/src/main/go/hysteria2
 	url = https://github.com/apernet/hysteria
