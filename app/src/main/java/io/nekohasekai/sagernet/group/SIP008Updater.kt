@@ -23,6 +23,7 @@ import android.net.Uri
 import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.ExtraType
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
@@ -54,7 +55,9 @@ object SIP008Updater : GroupUpdater() {
 
             val response = Libcore.newHttpClient().apply {
                 modernTLS()
-                trySocks5(DataStore.socksPort)
+                if (SagerNet.started && DataStore.startedProfile > 0) {
+                    useSocks5(DataStore.socksPort)
+                }
             }.newRequest().apply {
                 setURL(subscription.link)
                 if (subscription.customUserAgent.isNotBlank()) {

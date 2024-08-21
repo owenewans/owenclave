@@ -22,10 +22,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.databinding.LayoutStunLegacyBinding
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
-import io.nekohasekai.sagernet.ktx.readableMessage
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.noties.markwon.Markwon
 import libcore.Libcore
@@ -55,9 +55,12 @@ class StunLegacyActivity : ThemedActivity() {
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = Libcore.stunLegacyTest(binding.natStunServer.text.toString(), DataStore.socksPort, DataStore.localDNSPort)
+            val result = Libcore.stunLegacyTest(binding.natStunServer.text.toString(),
+                SagerNet.started && DataStore.startedProfile > 0,
+                DataStore.socksPort, DataStore.localDNSPort
+            )
             onMainDispatcher {
-                if (result.error.length > 0) {
+                if (result.error.isNotEmpty()) {
                     AlertDialog.Builder(this@StunLegacyActivity)
                         .setTitle(R.string.error_title)
                         .setMessage(result.error)

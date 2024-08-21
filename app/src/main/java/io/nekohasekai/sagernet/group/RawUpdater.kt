@@ -23,6 +23,7 @@ import android.net.Uri
 import cn.hutool.json.*
 import com.github.shadowsocks.plugin.PluginOptions
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.gson.gson
@@ -76,7 +77,9 @@ object RawUpdater : GroupUpdater() {
         } else {
 
             val response = Libcore.newHttpClient().apply {
-                trySocks5(DataStore.socksPort)
+                if (SagerNet.started && DataStore.startedProfile > 0) {
+                    useSocks5(DataStore.socksPort)
+                }
             }.newRequest().apply {
                 setURL(subscription.link)
                 if (subscription.customUserAgent.isNotBlank()) {

@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.hutool.json.JSONObject
 import com.google.android.material.snackbar.Snackbar
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.databinding.LayoutAssetItemBinding
 import io.nekohasekai.sagernet.databinding.LayoutAssetsBinding
@@ -291,7 +292,9 @@ class AssetsActivity : ThemedActivity() {
         val client = Libcore.newHttpClient().apply {
             modernTLS()
             keepAlive()
-            trySocks5(DataStore.socksPort)
+            if (SagerNet.started && DataStore.startedProfile > 0) {
+                useSocks5(DataStore.socksPort)
+            }
         }
 
         try {
@@ -351,7 +354,9 @@ class AssetsActivity : ThemedActivity() {
         val client = Libcore.newHttpClient().apply {
             modernTLS()
             keepAlive()
-            trySocks5(DataStore.socksPort)
+            if (SagerNet.started && DataStore.startedProfile > 0) {
+                useSocks5(DataStore.socksPort)
+            }
         }
         try {
             val response = client.newRequest().apply {

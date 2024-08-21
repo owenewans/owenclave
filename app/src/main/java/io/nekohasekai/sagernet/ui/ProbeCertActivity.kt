@@ -50,7 +50,9 @@ class ProbeCertActivity : ThemedActivity() {
 
         runOnDefaultDispatcher {
             try {
-                val certificate = Libcore.probeCert(server, serverName, protocol, DataStore.socksPort)
+                val certificate = Libcore.probeCert(server, serverName, protocol,
+                    SagerNet.started && DataStore.startedProfile > 0, DataStore.socksPort
+                )
                 Logs.i(certificate)
 
                 val clipData = ClipData.newPlainText("Certificate", certificate)

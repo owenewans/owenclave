@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.group
 
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.GroupManager
@@ -93,7 +94,9 @@ abstract class GroupUpdater {
         val client = Libcore.newHttpClient().apply {
             modernTLS()
             keepAlive()
-            trySocks5(DataStore.socksPort)
+            if (SagerNet.started && DataStore.startedProfile > 0) {
+                useSocks5(DataStore.socksPort)
+            }
         }
 
         Logs.d("Using doh url $dohHttpUrl")
