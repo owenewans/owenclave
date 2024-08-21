@@ -25,6 +25,7 @@ import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginOptions
 import io.nekohasekai.sagernet.ExtraType
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
@@ -94,6 +95,9 @@ object OpenOnlineConfigUpdater : GroupUpdater() {
         val response = Libcore.newHttpClient().apply {
             restrictedTLS()
             if (certSha256 != null) pinnedSHA256(certSha256)
+            if (SagerNet.started && DataStore.startedProfile > 0) {
+                useSocks5(DataStore.socksPort)
+            }
         }.newRequest().apply {
             setURL(baseLink.string)
             setUserAgent(subscription.customUserAgent.takeIf { it.isNotBlank() }
