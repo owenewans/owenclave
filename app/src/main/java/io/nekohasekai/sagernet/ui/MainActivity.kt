@@ -268,13 +268,14 @@ class MainActivity : ThemedActivity(),
 
 
     fun displayFragment(fragment: ToolbarFragment) {
-        if (fragment is ConfigurationFragment) {
-            binding.stats.allowShow = true
-            binding.fab.show()
-        } else {
+        if (fragment is ToolsFragment || fragment is AboutFragment) {
+            // FIXME: statsBar and fab on ToolsFragment/AboutFragment
             binding.stats.allowShow = false
             binding.stats.performHide()
             binding.fab.hide()
+        } else {
+            binding.stats.allowShow = true
+            binding.fab.show()
         }
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_holder, fragment)
