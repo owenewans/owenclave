@@ -1397,6 +1397,7 @@ fun buildV2RayConfig(
 
         //val bypassIP = HashSet<String>()
         val bypassDomain = HashSet<String>()
+        val bypassDomainSkipFakeDns = HashSet<String>()
         val proxyDomain = HashSet<String>()
         val bootstrapDomain = HashSet<String>()
 
@@ -1413,13 +1414,13 @@ fun buildV2RayConfig(
                                 /*bypassIP.add(it)*/
                             }
                             else -> {
-                                bypassDomain.add("full:$it")
+                                bypassDomainSkipFakeDns.add("full:$it")
                             }
                         }
                     }
                 } else {
                     if (!serverAddress.isIpAddress()) {
-                        bypassDomain.add("full:$serverAddress")
+                        bypassDomainSkipFakeDns.add("full:$serverAddress")
                     }/* else {
                         bypassIP.add(serverAddress)
                     }*/
@@ -1451,10 +1452,10 @@ fun buildV2RayConfig(
 
         remoteDns.forEach { dns ->
             Uri.parse(dns).host?.takeIf { !it.isIpAddress() }?.also {
-                bypassDomain.add("full:$it")
+                bypassDomainSkipFakeDns.add("full:$it")
             }
             if (!dns.contains("://") && !dns.isIpAddress() && dns != "localhost") {
-                bypassDomain.add("full:$dns")
+                bypassDomainSkipFakeDns.add("full:$dns")
             }
         }
 
@@ -1512,40 +1513,59 @@ fun buildV2RayConfig(
                     }
                 })
             }
-            dns.servers.addAll(directDNS.map {
-                DnsObject.StringOrServerObject().apply {
-                    valueY = DnsObject.ServerObject().apply {
-                        address = it
-                        //FIXME: This relies on the behavior of a bug.
-                        domains = bypassDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
-                        queryStrategy = directDnsQueryStrategy
-                        if (!it.contains("+local://") && it != "localhost") {
-                            tag = TAG_DNS_DIRECT
-                            hasDnsTagDirect = true
-                        }
-                        if (useFakeDns) {
-                            fakedns = mutableListOf()
-                            if (queryStrategy != "UseIPv6") {
-                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                    valueY = FakeDnsObject().apply {
-                                        ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
-                                        poolSize = 65535
-                                    }
-                                })
+            if (bypassDomainSkipFakeDns.isNotEmpty()) {
+                dns.servers.addAll(directDNS.map {
+                    DnsObject.StringOrServerObject().apply {
+                        valueY = DnsObject.ServerObject().apply {
+                            address = it
+                            // skip fake DNS for server addresses and DNS server addresses
+                            domains = bypassDomainSkipFakeDns.toList()
+                            queryStrategy = directDnsQueryStrategy
+                            if (!it.contains("+local://") && it != "localhost") {
+                                tag = TAG_DNS_DIRECT
+                                hasDnsTagDirect = true
                             }
-                            if (queryStrategy != "UseIPv4") {
-                                fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
-                                    valueY = FakeDnsObject().apply {
-                                        ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
-                                        poolSize = 65535
-                                    }
-                                })
-                            }
+                            fallbackStrategy = "disabled"
                         }
-                        fallbackStrategy = "disabled"
                     }
-                }
-            })
+                })
+            }
+            if (bypassDomain.isNotEmpty()) {
+                dns.servers.addAll(directDNS.map {
+                    DnsObject.StringOrServerObject().apply {
+                        valueY = DnsObject.ServerObject().apply {
+                            address = it
+                            //FIXME: This relies on the behavior of a bug.
+                            domains = bypassDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
+                            queryStrategy = directDnsQueryStrategy
+                            if (!it.contains("+local://") && it != "localhost") {
+                                tag = TAG_DNS_DIRECT
+                                hasDnsTagDirect = true
+                            }
+                            if (useFakeDns) {
+                                fakedns = mutableListOf()
+                                if (queryStrategy != "UseIPv6") {
+                                    fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                        valueY = FakeDnsObject().apply {
+                                            ipPool = "${VpnService.FAKEDNS_VLAN4_CLIENT}/15"
+                                            poolSize = 65535
+                                        }
+                                    })
+                                }
+                                if (queryStrategy != "UseIPv4") {
+                                    fakedns.add(DnsObject.ServerObject.StringOrFakeDnsObject().apply {
+                                        valueY = FakeDnsObject().apply {
+                                            ipPool = "${VpnService.FAKEDNS_VLAN6_CLIENT}/18"
+                                            poolSize = 65535
+                                        }
+                                    })
+                                }
+                            }
+                            fallbackStrategy = "disabled"
+                        }
+                    }
+                })
+            }
         } else {
             dns.servers.addAll(remoteDns.map {
                 DnsObject.StringOrServerObject().apply {
