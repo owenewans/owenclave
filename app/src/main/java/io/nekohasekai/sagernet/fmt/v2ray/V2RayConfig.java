@@ -679,7 +679,7 @@ public class V2RayConfig {
         public String timeout;
         public String redirect;
         public Integer userLevel;
-
+        public String protocolReplacement;
 
     }
 
@@ -921,6 +921,8 @@ public class V2RayConfig {
         public HTTPUpgradeObject httpupgradeSettings;
         public Hysteria2Object hysteria2Settings;
         public SplitHTTPObject splithttpSettings;
+        public DTLSObject dtlsSettings;
+        public RequestObject requestSettings;
 
     }
 
@@ -942,6 +944,8 @@ public class V2RayConfig {
         public HTTPUpgradeObject httpupgradeSettings;
         public Hysteria2Object hysteria2Settings;
         public SplitHTTPObject splithttpSettings;
+        public DTLSObject dtlsSettings;
+        public RequestObject requestSettings;
         public SockoptObject sockopt;
 
         public static class SockoptObject {
@@ -1177,6 +1181,78 @@ public class V2RayConfig {
         public String path;
         public Map<String, String> headers;
         public Boolean noSSEHeader;
+
+    }
+
+    public static class DTLSObject {
+
+        public String mode;
+        public String psk;
+        public Integer mtu;
+        public Integer replayProtectionWindow;
+
+    }
+
+    public static class RequestObject {
+
+        public AssemblerObject assembler;
+        public RoundTripperObject roundTripper;
+
+        public static class AssemblerObject {
+            public String type;
+            public SimpleClientObject simpleClientSettings;
+            public SimpleServerObject simpleServerSettings;
+            public PacketConnClientObject packetconnClientSettings;
+            public PacketConnServerObject packetconnServerSettings;
+            public static class SimpleClientObject {
+                public Integer maxWriteSize;
+                public Integer waitSubsequentWriteMs;
+                public Integer initialPollingIntervalMs;
+                public Integer maxPollingIntervalMs;
+                public Integer minPollingIntervalMs;
+                public Float backoffFactor;
+                public Integer failedRetryIntervalMs;
+            }
+            public static class SimpleServerObject {
+                public Integer maxWriteSize;
+            }
+            public static class PacketConnClientObject {
+                public String underlyingNetwork;
+                public KcpObject kcpSettings;
+                public DTLSObject dtlsSettings;
+                public Integer maxWriteDelay;
+                public Integer maxRequestSize;
+                public Integer pollingIntervalInitial;
+            }
+            public static class PacketConnServerObject {
+                public String underlyingNetwork;
+                public KcpObject kcpSettings;
+                public DTLSObject dtlsSettings;
+                public Integer maxWriteSize;
+                public Integer maxWriteDurationMs;
+                public Integer maxSimultaneousWriteConnection;
+                public Integer packetWritingBuffer;
+            }
+        }
+
+        public static class RoundTripperObject {
+            public String type;
+            public HttprtClientObject httprtClientSettings;
+            public HttprtServerObject httprtServerSettings;
+            public static class HttprtClientObject {
+                public HttprtHTTPObject http;
+                public Boolean allowHTTP;
+                public Integer h2PoolSize;
+            }
+            public static class HttprtServerObject {
+                public HttprtHTTPObject http;
+                public String noDecodingSessionTag;
+            }
+            public static class HttprtHTTPObject {
+                public String path;
+                public String urlPrefix;
+            }
+        }
 
     }
 
