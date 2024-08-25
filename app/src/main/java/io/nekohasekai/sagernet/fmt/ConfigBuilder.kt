@@ -375,13 +375,19 @@ fun buildV2RayConfig(
                         outboundTag = TAG_DIRECT
                         when {
                             bean.host.isIpAddress() -> {
-                                ip = listOf(bean.host) //TODO: How to deal with IPOnDemand?
+                                ip = listOf(bean.host)
+                                if (DataStore.domainStrategy != "AsIs") {
+                                    skipDomain = true
+                                }
                             }
                             bean.host.isNotBlank() -> {
                                 domain = listOf(bean.host)
                             }
                             bean.serverAddress.isIpAddress() -> {
-                                ip = listOf(bean.serverAddress) //TODO: How to deal with IPOnDemand?
+                                ip = listOf(bean.serverAddress)
+                                if (DataStore.domainStrategy != "AsIs") {
+                                    skipDomain = true
+                                }
                             }
                             else -> domain = listOf(bean.serverAddress)
                         }
@@ -1407,7 +1413,7 @@ fun buildV2RayConfig(
             }
         })
 
-        //val bypassIP = HashSet<String>()
+        val bypassIP = HashSet<String>()
         val bypassDomain = HashSet<String>()
         val bypassDomainSkipFakeDns = HashSet<String>()
         val proxyDomain = HashSet<String>()
@@ -1423,7 +1429,7 @@ fun buildV2RayConfig(
                         when {
                             it.isBlank() -> {}
                             it.isIpAddress() -> {
-                                /*bypassIP.add(it)*/
+                                bypassIP.add(it)
                             }
                             else -> {
                                 bypassDomainSkipFakeDns.add("full:$it")
@@ -1433,21 +1439,24 @@ fun buildV2RayConfig(
                 } else {
                     if (!serverAddress.isIpAddress()) {
                         bypassDomainSkipFakeDns.add("full:$serverAddress")
-                    }/* else {
+                    } else {
                         bypassIP.add(serverAddress)
-                    }*/
+                    }
                 }
 
             }
         }
 
-        /*if (bypassIP.isNotEmpty()) {
+        if (bypassIP.isNotEmpty()) {
             routing.rules.add(0, RoutingObject.RuleObject().apply {
                 type = "field"
-                ip = bypassIP.toList() //TODO: How to deal with IPOnDemand?
+                ip = bypassIP.toList()
+                if (DataStore.domainStrategy != "AsIs") {
+                    skipDomain = true
+                }
                 outboundTag = TAG_DIRECT
             })
-        }*/
+        }
 
         if (enableDnsRouting) {
             for (bypassRule in extraRules.filter { it.isBypassRule() }) {
