@@ -19,12 +19,17 @@
 
 package io.nekohasekai.sagernet.ui
 
+import android.app.Activity
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.component1
+import androidx.activity.result.component2
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
@@ -54,6 +59,9 @@ class GroupSettingsActivity(
 ) : ThemedActivity(resId),
     OnPreferenceDataStoreChangeListener {
 
+    private lateinit var frontProxyPreference: SimpleMenuPreference
+    private lateinit var landingProxyPreference: SimpleMenuPreference
+
     fun ProxyGroup.init() {
         DataStore.groupName = name ?: ""
         DataStore.groupType = type
@@ -68,13 +76,20 @@ class GroupSettingsActivity(
         DataStore.subscriptionUserAgent = subscription.customUserAgent
         DataStore.subscriptionAutoUpdate = subscription.autoUpdate
         DataStore.subscriptionAutoUpdateDelay = subscription.autoUpdateDelay
+        DataStore.frontProxyOutbound = frontProxy
+        DataStore.landingProxyOutbound = landingProxy
+        DataStore.frontProxy = if (frontProxy >= 0) 1 else 0
+        DataStore.landingProxy = if (landingProxy >= 0) 1 else 0
     }
 
     fun ProxyGroup.serialize() {
         name = DataStore.groupName.takeIf { it.isNotBlank() }
-            ?: "My group " + System.currentTimeMillis() / 1000
+            ?: ("My group " + System.currentTimeMillis() / 1000)
         type = DataStore.groupType
         order = DataStore.groupOrder
+
+        frontProxy = if (DataStore.frontProxy == 1) DataStore.frontProxyOutbound else -1
+        landingProxy = if (DataStore.landingProxy == 1) DataStore.landingProxyOutbound else -1
 
         val isSubscription = type == GroupType.SUBSCRIPTION
         if (isSubscription) {
@@ -102,6 +117,49 @@ class GroupSettingsActivity(
         rootKey: String?,
     ) {
         addPreferencesFromResource(R.xml.group_preferences)
+
+        frontProxyPreference = findPreference(Key.GROUP_FRONT_PROXY)!!
+        if (DataStore.frontProxy == 1) {
+            frontProxyPreference.setSummary(ProfileManager.getProfile(DataStore.frontProxyOutbound)?.displayName())
+        } else {
+            frontProxyPreference.setSummary(resources.getString(R.string.disable))
+        }
+        frontProxyPreference.apply {
+            setEntries(R.array.front_landing_proxy_entry)
+            setEntryValues(R.array.front_landing_proxy_value)
+            setOnPreferenceChangeListener { _, newValue ->
+                if (newValue.toString() == "1") {
+                    selectProfileForAddFront.launch(
+                        Intent(this@GroupSettingsActivity, ProfileSelectActivity::class.java)
+                    )
+                    false
+                } else {
+                    setSummary(resources.getString(R.string.disable))
+                    true
+                }
+            }
+        }
+        landingProxyPreference = findPreference(Key.GROUP_LANDING_PROXY)!!
+        if (DataStore.landingProxy == 1) {
+            landingProxyPreference.setSummary(ProfileManager.getProfile(DataStore.landingProxyOutbound)?.displayName())
+        } else {
+            landingProxyPreference.setSummary(resources.getString(R.string.disable))
+        }
+        landingProxyPreference.apply {
+            setEntries(R.array.front_landing_proxy_entry)
+            setEntryValues(R.array.front_landing_proxy_value)
+            setOnPreferenceChangeListener { _, newValue ->
+                if (newValue.toString() == "1") {
+                    selectProfileForAddLanding.launch(
+                        Intent(this@GroupSettingsActivity, ProfileSelectActivity::class.java)
+                    )
+                    false
+                } else {
+                    setSummary(resources.getString(R.string.disable))
+                    true
+                }
+            }
+        }
 
         val groupType = findPreference<SimpleMenuPreference>(Key.GROUP_TYPE)!!
         val groupSubscription = findPreference<PreferenceCategory>(Key.GROUP_SUBSCRIPTION)!!
@@ -341,6 +399,36 @@ class GroupSettingsActivity(
             }
         }
 
+    }
+
+    val selectProfileForAddFront = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { (resultCode, data) ->
+        if (resultCode == Activity.RESULT_OK) runOnDefaultDispatcher {
+            val profile = ProfileManager.getProfile(
+                data!!.getLongExtra(ProfileSelectActivity.EXTRA_PROFILE_ID, 0)
+            ) ?: return@runOnDefaultDispatcher
+            DataStore.frontProxyOutbound = profile.id
+            onMainDispatcher {
+                frontProxyPreference.value = "1"
+                frontProxyPreference.setSummary(profile.displayName())
+            }
+        }
+    }
+
+    val selectProfileForAddLanding = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { (resultCode, data) ->
+        if (resultCode == Activity.RESULT_OK) runOnDefaultDispatcher {
+            val profile = ProfileManager.getProfile(
+                data!!.getLongExtra(ProfileSelectActivity.EXTRA_PROFILE_ID, 0)
+            ) ?: return@runOnDefaultDispatcher
+            DataStore.landingProxyOutbound = profile.id
+            onMainDispatcher {
+                landingProxyPreference.value = "1"
+                landingProxyPreference.setSummary(profile.displayName())
+            }
+        }
     }
 
 }

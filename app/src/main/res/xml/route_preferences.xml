@@ -67,11 +67,10 @@
             app:key="routeAttrs"
             app:title="attrs"
             app:useSimpleSummaryProvider="true" />
-        <io.nekohasekai.sagernet.widget.OutboundPreference
+        <com.takisoft.preferencex.SimpleMenuPreference
             app:icon="@drawable/ic_hardware_router"
             app:key="routeOutbound"
-            app:title="outbound"
-            app:useSimpleSummaryProvider="true" />
+            app:title="outbound" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_domain_24"
             app:key="routeReverse"

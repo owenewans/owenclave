@@ -57,7 +57,6 @@ import io.nekohasekai.sagernet.utils.DirectBoot
 import io.nekohasekai.sagernet.utils.PackageCache
 import io.nekohasekai.sagernet.widget.AppListPreference
 import io.nekohasekai.sagernet.widget.ListListener
-import io.nekohasekai.sagernet.widget.OutboundPreference
 import kotlinx.parcelize.Parcelize
 
 @Suppress("UNCHECKED_CAST")
@@ -153,6 +152,7 @@ class RouteSettingsActivity(
             DataStore.routeOutboundRule = profile.id
             onMainDispatcher {
                 outbound.value = "3"
+                outbound.setSummary(profile.displayName())
             }
         }
     }
@@ -163,7 +163,7 @@ class RouteSettingsActivity(
         apps.postUpdate()
     }
 
-    lateinit var outbound: OutboundPreference
+    lateinit var outbound: SimpleMenuPreference
     lateinit var reverse: SwitchPreference
     lateinit var redirect: EditTextPreference
     lateinit var apps: AppListPreference
@@ -191,18 +191,27 @@ class RouteSettingsActivity(
             true
         }
 
-        outbound.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue.toString() == "3") {
-                updateReverse(true)
-                selectProfileForAdd.launch(
-                    Intent(
-                        this@RouteSettingsActivity, ProfileSelectActivity::class.java
+        val outboundEntries = resources.getStringArray(R.array.outbound_entry)
+        if (DataStore.routeOutbound == 3) {
+            outbound.setSummary(ProfileManager.getProfile(DataStore.routeOutboundRule)?.displayName())
+        } else {
+            outbound.setSummary(outboundEntries[DataStore.routeOutbound.toString().toInt()])
+        }
+        outbound.apply {
+            setEntries(R.array.outbound_entry)
+            setEntryValues(R.array.outbound_value)
+            setOnPreferenceChangeListener { _, newValue ->
+                if (newValue.toString() == "3") {
+                    updateReverse(true)
+                    selectProfileForAdd.launch(
+                        Intent(this@RouteSettingsActivity, ProfileSelectActivity::class.java)
                     )
-                )
-                false
-            } else {
-                updateReverse(false)
-                true
+                    false
+                } else {
+                    updateReverse(false)
+                    setSummary(outboundEntries[newValue.toString().toInt()])
+                    true
+                }
             }
         }
 

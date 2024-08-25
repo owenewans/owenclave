@@ -336,6 +336,11 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var routeNetworkType by profileCacheStore.string(Key.ROUTE_NETWORK_TYPE)
     var routeSSID by profileCacheStore.string(Key.ROUTE_SSID)
 
+    var frontProxyOutbound by profileCacheStore.long(Key.GROUP_FRONT_PROXY_OUTBOUND)
+    var landingProxyOutbound by profileCacheStore.long(Key.GROUP_LANDING_PROXY_OUTBOUND)
+    var frontProxy by profileCacheStore.stringToInt(Key.GROUP_FRONT_PROXY)
+    var landingProxy by profileCacheStore.stringToInt(Key.GROUP_LANDING_PROXY)
+
     var serverConfig by profileCacheStore.string(Key.SERVER_CONFIG)
 
     var groupName by profileCacheStore.string(Key.GROUP_NAME)

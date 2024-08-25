@@ -988,4 +988,14 @@
         <item>QUIC</item>
     </string-array>
 
+    <string-array name="front_landing_proxy_entry">
+        <item>@string/disable</item>
+        <item>@string/route_profile</item>
+    </string-array>
+
+    <string-array name="front_landing_proxy_value">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
 </resources>

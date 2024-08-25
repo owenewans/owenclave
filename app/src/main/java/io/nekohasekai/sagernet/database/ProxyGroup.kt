@@ -38,6 +38,8 @@ data class ProxyGroup(
     var type: Int = GroupType.BASIC,
     var subscription: SubscriptionBean? = null,
     var order: Int = GroupOrder.ORIGIN,
+    @ColumnInfo(defaultValue = (-1L).toString()) var frontProxy: Long = -1L,
+    @ColumnInfo(defaultValue = (-1L).toString()) var landingProxy: Long = -1L
 ) : Serializable() {
 
     @Transient

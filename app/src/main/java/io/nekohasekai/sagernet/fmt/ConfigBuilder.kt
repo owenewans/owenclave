@@ -181,7 +181,19 @@ fun buildV2RayConfig(
             }
             return beanList
         }
-        return mutableListOf(this)
+
+        val list = mutableListOf(this)
+
+        val groupId = SagerDatabase.groupDao.getById(groupId)
+        val frontProxy = groupId?.frontProxy?.let { SagerDatabase.proxyDao.getById(it) }
+        val landingProxy = groupId?.landingProxy?.let { SagerDatabase.proxyDao.getById(it) }
+        if (frontProxy != null) {
+            list.add(frontProxy)
+        }
+        if (landingProxy != null) {
+            list.add(0, landingProxy)
+        }
+        return list
     }
 
     val proxies = proxy.resolveChain()
