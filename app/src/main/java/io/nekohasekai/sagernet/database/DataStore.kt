@@ -102,6 +102,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var trafficSniffing by configurationStore.boolean(Key.TRAFFIC_SNIFFING) { true }
     var destinationOverride by configurationStore.boolean(Key.DESTINATION_OVERRIDE)
     var resolveDestination by configurationStore.boolean(Key.RESOLVE_DESTINATION)
+    var resolveDestinationForDirect by configurationStore.boolean(Key.RESOLVE_DESTINATION_FOR_DIRECT)
 
     var bypassLan by configurationStore.boolean(Key.BYPASS_LAN)
     var bypassLanInCoreOnly by configurationStore.boolean(Key.BYPASS_LAN_IN_CORE_ONLY)

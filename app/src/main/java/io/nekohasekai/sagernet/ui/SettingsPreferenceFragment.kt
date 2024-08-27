@@ -228,6 +228,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
         val resolveDestination = findPreference<SwitchPreference>(Key.RESOLVE_DESTINATION)!!
+        val resolveDestinationForDirect = findPreference<SwitchPreference>(Key.RESOLVE_DESTINATION_FOR_DIRECT)!!
         val enablePcap = findPreference<SwitchPreference>(Key.ENABLE_PCAP)!!
         enablePcap.isEnabled = tunImplementation.value == "${TunImplementation.GVISOR}"
         val providerRootCA = findPreference<SimpleMenuPreference>(Key.PROVIDER_ROOT_CA)!!
@@ -312,6 +313,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         tunImplementation.onPreferenceChangeListener = reloadListener
         destinationOverride.onPreferenceChangeListener = reloadListener
         resolveDestination.onPreferenceChangeListener = reloadListener
+        resolveDestinationForDirect.onPreferenceChangeListener = reloadListener
         mtu.onPreferenceChangeListener = reloadListener
 
         tunImplementation.setOnPreferenceChangeListener { _, newValue ->

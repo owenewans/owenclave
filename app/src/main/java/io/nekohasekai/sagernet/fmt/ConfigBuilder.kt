@@ -1344,7 +1344,7 @@ fun buildV2RayConfig(
                     }
                 }
             }
-            if (DataStore.resolveDestination) {
+            if (DataStore.resolveDestinationForDirect) {
                 settings = LazyOutboundConfigurationObject(this,
                     FreedomOutboundConfigurationObject().apply {
                         domainStrategy = outboundDomainStrategy

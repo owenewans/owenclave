@@ -59,6 +59,7 @@ object Key {
     const val TRAFFIC_SNIFFING = "trafficSniffing"
     const val DESTINATION_OVERRIDE = "destinationOverride"
     const val RESOLVE_DESTINATION = "resolveDestination"
+    const val RESOLVE_DESTINATION_FOR_DIRECT = "resolveDestinationForDirect"
 
     const val BYPASS_LAN = "bypassLan"
     const val BYPASS_LAN_IN_CORE_ONLY = "bypassLanInCoreOnly"

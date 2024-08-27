@@ -137,6 +137,9 @@
             app:key="resolveDestination"
             app:summary="@string/resolve_destination_summary"
             app:title="@string/resolve_destination" />
+        <SwitchPreference
+            app:key="resolveDestinationForDirect"
+            app:title="@string/resolve_destination_for_direct" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:defaultValue="0"
             app:entries="@array/ipv6_mode"

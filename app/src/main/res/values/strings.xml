@@ -552,5 +552,6 @@
     <string name="probe_cert_success">Probed successfully! Certificate has been copied to clipboard.</string>
     <string name="front_proxy">Front proxy</string>
     <string name="landing_proxy">Landing proxy</string>
+    <string name="resolve_destination_for_direct">Resolve destination (direct)</string>
 
 </resources>
