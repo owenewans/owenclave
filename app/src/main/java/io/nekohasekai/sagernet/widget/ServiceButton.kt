@@ -32,6 +32,7 @@ import androidx.appcompat.widget.TooltipCompat
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.withStarted
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -42,6 +43,7 @@ import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.ktx.getColorAttr
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 class ServiceButton @JvmOverloads constructor(
@@ -92,10 +94,12 @@ class ServiceButton @JvmOverloads constructor(
     private val iconConnecting by lazy {
         AnimatedState(R.drawable.ic_service_connecting) {
             hideProgress()
-            delayedAnimation = (context as LifecycleOwner).lifecycleScope.launchWhenStarted {
+            delayedAnimation = (context as LifecycleOwner).lifecycleScope.launch {
                 delay(context.resources.getInteger(android.R.integer.config_mediumAnimTime) + 100L)
-                isIndeterminate = true
-                show()
+                context.lifecycle.withStarted {
+                    isIndeterminate = true
+                    show()
+                }
             }
         }
     }

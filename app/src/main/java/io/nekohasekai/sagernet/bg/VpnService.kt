@@ -129,19 +129,8 @@ class VpnService : BaseVpnService(),
     override fun createNotification(profileName: String) =
         ServiceNotification(this, profileName, "service-vpn", true)
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (DataStore.serviceMode == Key.MODE_VPN) {
-            if (prepare(this) != null) {
-                startActivity(
-                    Intent(
-                        this, VpnRequestActivity::class.java
-                    ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
-            } else return super<BaseService.Interface>.onStartCommand(intent, flags, startId)
-        }
-        stopRunner()
-        return Service.START_NOT_STICKY
-    }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int =
+        super<BaseService.Interface>.onStartCommand(intent, flags, startId)
 
     override suspend fun preInit() {
         DefaultNetworkListener.start(this) {

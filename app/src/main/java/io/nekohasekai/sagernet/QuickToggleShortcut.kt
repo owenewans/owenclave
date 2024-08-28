@@ -61,7 +61,7 @@ class QuickToggleShortcut : Activity(), SagerConnection.Callback {
     }
 
     override fun onServiceConnected(service: ISagerNetService) {
-        val state = BaseService.State.values()[service.state]
+        val state = BaseService.State.entries[service.state]
         when {
             state.canStop -> SagerNet.stopService()
             state == BaseService.State.Stopped -> SagerNet.startService()

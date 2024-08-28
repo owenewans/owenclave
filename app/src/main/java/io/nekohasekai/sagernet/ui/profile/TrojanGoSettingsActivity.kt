@@ -113,9 +113,8 @@ class TrojanGoSettingsActivity : ProfileSettingsActivity<TrojanGoBean>(),
         super.onAttachedToWindow()
 
         receiver = listenForPackageChanges(false) {
-            lifecycleScope.launch(Dispatchers.Main) {   // wait until changes were flushed
-                whenCreated { initPlugins() }
-            }
+            // wait until changes were flushed
+            lifecycleScope.launch { initPlugins() }
         }
     }
 

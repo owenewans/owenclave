@@ -182,7 +182,7 @@ class MainActivity : ThemedActivity(),
         if (name.isNullOrBlank()) return
 
         group.name = group.name.takeIf { !it.isNullOrBlank() }
-            ?: "Subscription #" + System.currentTimeMillis()
+            ?: ("Subscription #" + System.currentTimeMillis())
 
         onMainDispatcher {
 
@@ -445,7 +445,7 @@ class MainActivity : ThemedActivity(),
 
     val connection = SagerConnection(true)
     override fun onServiceConnected(service: ISagerNetService) = changeState(try {
-        BaseService.State.values()[service.state].also {
+        BaseService.State.entries[service.state].also {
             SagerNet.started = it.canStop
         }
     } catch (_: RemoteException) {
