@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.devtools.ksp") version "2.0.10-1.0.24"
+    id("com.google.devtools.ksp") version "2.0.20-1.0.24"
     id("kotlin-parcelize")
     id("com.google.protobuf")
 }
@@ -88,6 +88,6 @@ dependencies {
 
     implementation(project(":library:proto-stub"))
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.1")
 }
 
