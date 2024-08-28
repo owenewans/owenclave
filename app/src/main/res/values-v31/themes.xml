@@ -1,0 +1,19 @@
+<resources>
+
+    <style name="Theme.SagerNet.Dynamic">
+        <item name="colorPrimary">@android:color/system_accent1_600</item>
+        <item name="colorPrimaryDark">@android:color/system_accent1_700</item>
+        <item name="colorAccent">@android:color/system_accent1_400</item>
+        <item name="colorMaterial100">@android:color/system_accent1_300</item>
+        <item name="colorMaterial300">@android:color/system_accent1_500</item>
+    </style>
+
+    <style name="Theme.SagerNet.Dialog.Dynamic">
+        <item name="colorPrimary">@android:color/system_accent1_600</item>
+        <item name="colorPrimaryDark">@android:color/system_accent1_700</item>
+        <item name="colorAccent">@android:color/system_accent1_400</item>
+        <item name="colorMaterial100">@android:color/system_accent1_300</item>
+        <item name="colorMaterial300">@android:color/system_accent1_500</item>
+    </style>
+
+</resources>
