@@ -47,6 +47,7 @@ object Key {
     const val DNS_HOSTS = "dnsHosts0"
     const val REMOTE_DNS_QUERY_STRATEGY = "remoteDnsQueryStrategy"
     const val DIRECT_DNS_QUERY_STRATEGY = "directDnsQueryStrategy"
+    const val EDNS_CLIENT_IP = "ednsClientIp"
 
     const val IPV6_MODE = "ipv6Mode0"
 

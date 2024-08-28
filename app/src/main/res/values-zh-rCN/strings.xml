@@ -523,5 +523,6 @@
     <string name="front_proxy">前置代理</string>
     <string name="landing_proxy">落地代理</string>
     <string name="resolve_destination_for_direct">解析目标地址（直连）</string>
+    <string name="edns_client_ip">EDNS 客户端 IP</string>
 
 </resources>

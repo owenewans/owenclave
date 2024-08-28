@@ -1488,6 +1488,9 @@ fun buildV2RayConfig(
                         address = it
                         domains = proxyDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
                         queryStrategy = remoteDnsQueryStrategy
+                        if (DataStore.ednsClientIp.isNotBlank()) {
+                            clientIp = DataStore.ednsClientIp
+                        }
                         if (useFakeDns) {
                             fakedns = mutableListOf()
                             if (queryStrategy != "UseIPv6") {
@@ -1584,6 +1587,9 @@ fun buildV2RayConfig(
                     valueY = DnsObject.ServerObject().apply {
                         address = it
                         queryStrategy = remoteDnsQueryStrategy
+                        if (DataStore.ednsClientIp.isNotBlank()) {
+                            clientIp = DataStore.ednsClientIp
+                        }
                         if (useFakeDns) {
                             fakedns = mutableListOf()
                             if (queryStrategy != "UseIPv6") {

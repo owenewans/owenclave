@@ -214,6 +214,11 @@
             app:key="remoteDnsQueryStrategy"
             app:title="@string/remote_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+                app:icon="@drawable/ic_baseline_push_pin_24"
+                app:key="ednsClientIp"
+                app:title="@string/edns_client_ip"
+                app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_home_24"
             app:key="useLocalDnsAsDirectDns"
