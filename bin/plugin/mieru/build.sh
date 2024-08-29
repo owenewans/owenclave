@@ -4,6 +4,7 @@ source "bin/init/env.sh"
 
 export CGO_ENABLED=1
 export GOOS=android
+export CGO_LDFLAGS="-Wl,-z,max-page-size=16384"
 
 CURR="plugin/mieru"
 CURR_PATH="$PROJECT/$CURR"
