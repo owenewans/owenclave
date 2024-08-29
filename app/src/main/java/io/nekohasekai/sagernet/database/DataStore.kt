@@ -134,6 +134,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var fragmentPackets by configurationStore.string(Key.FRAGMENT_PACKETS) { "tlshello" }
     var fragmentLength by configurationStore.string(Key.FRAGMENT_LENGTH)
     var fragmentInterval by configurationStore.string(Key.FRAGMENT_INTERVAL)
+    var enableNoise by configurationStore.boolean(Key.ENABLE_NOISE)
+    var enableNoiseForDirect by configurationStore.boolean(Key.ENABLE_NOISE_FOR_DIRECT)
+    var noisePacket by configurationStore.string(Key.NOISE_PACKET)
+    var noiseDelay by configurationStore.string(Key.NOISE_DELAY)
 
     // hopefully hashCode = mHandle doesn't change, currently this is true from KitKat to Nougat
     private val userIndex by lazy { Binder.getCallingUserHandle().hashCode() }

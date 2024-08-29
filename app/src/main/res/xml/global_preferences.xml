@@ -337,6 +337,22 @@
             app:key="enableFragmentForDirect"
             app:summary="@string/enable_fragment_for_direct_sum"
             app:title="@string/enable_fragment_for_direct" />
+        <SwitchPreference
+            app:key="enableNoise"
+            app:summary="@string/enable_fragment_sum"
+            app:title="@string/enable_noise" />
+        <EditTextPreference
+            app:key="noisePacket"
+            app:title="@string/noise_packet"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="noiseDelay"
+            app:title="@string/noise_delay"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="enableNoiseForDirect"
+            app:summary="@string/enable_noise_for_direct_sum"
+            app:title="@string/enable_noise_for_direct" />
     </PreferenceCategory>
 
 

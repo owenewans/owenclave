@@ -524,5 +524,10 @@
     <string name="landing_proxy">落地代理</string>
     <string name="resolve_destination_for_direct">解析目标地址（直连）</string>
     <string name="edns_client_ip">EDNS 客户端 IP</string>
+    <string name="enable_noise">启用 UDP 噪声</string>
+    <string name="noise_packet">噪声方式</string>
+    <string name="noise_delay">噪声延时</string>
+    <string name="enable_noise_for_direct">直连 UDP 噪声</string>
+    <string name="enable_noise_for_direct_sum">为直连也启用 UDP 噪声</string>
 
 </resources>

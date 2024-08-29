@@ -106,6 +106,10 @@ object Key {
     const val FRAGMENT_PACKETS = "fragmentPackets"
     const val FRAGMENT_LENGTH = "fragmentLength"
     const val FRAGMENT_INTERVAL = "fragmentInterval"
+    const val ENABLE_NOISE = "enableNoise"
+    const val ENABLE_NOISE_FOR_DIRECT = "enableNoiseForDirect"
+    const val NOISE_PACKET = "noisePacket"
+    const val NOISE_DELAY = "noiseDelay"
 
     const val APP_TRAFFIC_STATISTICS = "appTrafficStatistics"
     const val PROFILE_TRAFFIC_STATISTICS = "profileTrafficStatistics"

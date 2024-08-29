@@ -964,12 +964,20 @@ public class V2RayConfig {
             public Integer txBufSize;
             public Boolean forceBufSize;
             public FragmentObject fragment;
+            public NoiseObject noise;
 
             public static class FragmentObject {
 
                 public String packets;
                 public String length;
                 public String interval;
+
+            }
+
+            public static class NoiseObject {
+
+                public String packet;
+                public String delay;
 
             }
 

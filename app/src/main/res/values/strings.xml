@@ -554,5 +554,10 @@
     <string name="landing_proxy">Landing proxy</string>
     <string name="resolve_destination_for_direct">Resolve destination (direct)</string>
     <string name="edns_client_ip">EDNS client IP</string>
+    <string name="enable_noise">Enable UDP noise</string>
+    <string name="noise_packet">Noise packet</string>
+    <string name="noise_delay">Noise delay</string>
+    <string name="enable_noise_for_direct">UDP noise for direct</string>
+    <string name="enable_noise_for_direct_sum">Also enable UDP noise for direct</string>
 
 </resources>

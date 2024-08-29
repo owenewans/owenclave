@@ -280,6 +280,24 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         fragmentLength.onPreferenceChangeListener = reloadListener
         fragmentInterval.onPreferenceChangeListener = reloadListener
 
+        val enableNoise = findPreference<SwitchPreference>(Key.ENABLE_NOISE)!!
+        val enableNoiseForDirect = findPreference<SwitchPreference>(Key.ENABLE_NOISE_FOR_DIRECT)!!
+        val noisePacket = findPreference<EditTextPreference>(Key.NOISE_PACKET)!!
+        val noiseDelay = findPreference<EditTextPreference>(Key.NOISE_DELAY)!!
+        enableNoiseForDirect.isVisible = DataStore.enableNoise
+        noisePacket.isVisible = DataStore.enableNoise
+        noiseDelay.isVisible = DataStore.enableNoise
+        enableNoise.setOnPreferenceChangeListener { _, newValue ->
+            newValue as Boolean
+            enableNoiseForDirect.isVisible = newValue
+            noisePacket.isVisible = newValue
+            noiseDelay.isVisible = newValue
+            needReload()
+            true
+        }
+        enableNoiseForDirect.onPreferenceChangeListener = reloadListener
+        noisePacket.onPreferenceChangeListener = reloadListener
+        noiseDelay.onPreferenceChangeListener = reloadListener
 
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
