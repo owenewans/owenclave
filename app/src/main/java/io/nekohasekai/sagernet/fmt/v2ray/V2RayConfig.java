@@ -571,6 +571,7 @@ public class V2RayConfig {
         public ProxySettingsObject proxySettings;
         public MuxObject mux;
         public String domainStrategy;
+        public String dialDomainStrategy;
 
         public void init() {
             if (settings != null) {
