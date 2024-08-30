@@ -13,11 +13,6 @@ when {
         include(":plugin:hysteria2")
         include(":plugin:mieru")
         include(":plugin:juicity")
-        include(":plugin:hysteria")
-        include(":plugin:tuic")
-        include(":plugin:tuic5")
-        include(":plugin:shadowtls")
-        include(":plugin:trojan-go")
     }
     buildPlugin == "none" -> {
     }
