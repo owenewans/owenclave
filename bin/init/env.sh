@@ -5,19 +5,6 @@
 [ -d "$ANDROID_HOME" ] || ANDROID_HOME="$HOME/.local/lib/android/sdk"
 [ -d "$ANDROID_HOME" ] || ANDROID_HOME="$HOME/Library/Android/sdk"
 
-_NDK="$ANDROID_HOME/ndk/26.3.11579264"
-[ -f "$_NDK/source.properties" ] || _NDK="$NDK"
-[ -f "$_NDK/source.properties" ] || _NDK="$ANDROID_NDK_HOME"
-
-if [ ! -f "$_NDK/source.properties" ]; then
-  echo "Error: NDK not found."
-  exit 1
-fi
-
-export ANDROID_HOME
-export ANDROID_NDK_HOME=$_NDK
-export NDK=$_NDK
-
 if [[ "$OSTYPE" =~ ^darwin ]]; then
   export PROJECT=$PWD
 else
