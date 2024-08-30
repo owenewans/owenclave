@@ -16,3 +16,18 @@
 [submodule "plugin/juicity/src/main/go/juicity"]
 	path = plugin/juicity/src/main/go/juicity
 	url = https://github.com/juicity/juicity
+[submodule "plugin/hysteria/src/main/go/hysteria"]
+	path = plugin/hysteria/src/main/go/hysteria
+	url = https://github.com/MatsuriDayo/hysteria
+[submodule "plugin/tuic/src/main/rust/tuic"]
+	path = plugin/tuic/src/main/rust/tuic
+	url = https://github.com/EAimTY/tuic
+[submodule "plugin/tuic5/src/main/rust/tuic5"]
+	path = plugin/tuic5/src/main/rust/tuic5
+	url = https://github.com/EAimTY/tuic
+[submodule "plugin/shadowtls/src/main/rust/shadowtls"]
+	path = plugin/shadowtls/src/main/rust/shadowtls
+	url = https://github.com/ihciah/shadow-tls
+[submodule "plugin/trojan-go/src/main/go/trojan-go"]
+	path = plugin/trojan-go/src/main/go/trojan-go
+	url = https://github.com/p4gefau1t/trojan-go
