@@ -4,7 +4,7 @@ plugins {
     id("kotlin-parcelize")
 }
 
-setupKotlinCommon()
+setupCommon()
 android {
     namespace = "io.nekohasekai.sagernet.plugin"
     buildTypes {

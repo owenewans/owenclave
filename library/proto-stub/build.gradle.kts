@@ -6,7 +6,7 @@ plugins {
     id("com.google.protobuf")
 }
 
-setupKotlinCommon()
+setupCommon()
 
 dependencies {
     protobuf(project(":library:proto"))

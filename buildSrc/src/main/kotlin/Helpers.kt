@@ -85,11 +85,15 @@ fun Project.requireTargetAbi(): String {
 }
 
 fun Project.setupCommon() {
+    setupCommon("")
+}
+
+fun Project.setupCommon(projectName: String) {
     android.apply {
         buildToolsVersion = "35.0.0"
         compileSdk = 35
         defaultConfig {
-            minSdk = 21
+            minSdk = if (projectName.lowercase(Locale.ROOT) == "naive") 24 else 21
         }
         buildTypes {
             getByName("release") {
@@ -152,12 +156,12 @@ fun Project.setupCommon() {
     }
 }
 
-fun Project.setupKotlinCommon() {
-    setupCommon()
+fun Project.setupAppCommon() {
+    setupAppCommon("")
 }
 
-fun Project.setupAppCommon() {
-    setupKotlinCommon()
+fun Project.setupAppCommon(projectName: String) {
+    setupCommon(projectName)
 
     val lp = requireLocalProperties()
     val keystorePwd = lp.getProperty("KEYSTORE_PASS") ?: System.getenv("KEYSTORE_PASS")
@@ -201,7 +205,7 @@ fun Project.setupPlugin(projectName: String) {
 
     apply(plugin = "kotlin-android")
 
-    setupAppCommon()
+    setupAppCommon(projectName)
 
     val targetAbi = requireTargetAbi()
 
@@ -299,7 +303,6 @@ fun Project.setupApp() {
             applicationId = pkgName
             versionCode = verCode
             versionName = verName
-            testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
     }
     setupAppCommon()
