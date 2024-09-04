@@ -39,7 +39,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.takisoft.preferencex.EditTextPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import com.takisoft.preferencex.SimpleMenuPreference
-import io.nekohasekai.sagernet.BalancerStrategy
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -82,7 +81,6 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
 
     lateinit var balancerType: SimpleMenuPreference
     lateinit var balancerGroup: GroupPreference
-    lateinit var probeUrl: EditTextPreference
     lateinit var probeInterval: EditTextPreference
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -93,15 +91,8 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
 
         balancerType = findPreference(Key.BALANCER_TYPE)!!
         balancerGroup = findPreference(Key.BALANCER_GROUP)!!
-        val balancerStrategy = findPreference<SimpleMenuPreference>(Key.BALANCER_STRATEGY)!!
-        probeUrl = findPreference(Key.PROBE_URL)!!
         probeInterval = findPreference(Key.PROBE_INTERVAL)!!
         probeInterval.onBindEditTextListener = EditTextPreferenceModifiers.Number
-
-        balancerStrategy.setOnPreferenceChangeListener { _, newValue ->
-            updateStrategy(newValue as String)
-            true
-        }
 
         itemView = findViewById(R.id.list_cell)
 
@@ -124,12 +115,6 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
                 itemView.isVisible = false
             }
         };
-    }
-
-    fun updateStrategy(strategy: String = DataStore.balancerStrategy) {
-        val isLatestPing = strategy == BalancerStrategy.LATEST_PING
-        probeUrl.isVisible = isLatestPing
-        probeInterval.isVisible = isLatestPing
     }
 
     lateinit var itemView: LinearLayout
@@ -199,7 +184,6 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
         }
 
         updateType()
-        updateStrategy()
     }
 
     inner class ProxiesAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
