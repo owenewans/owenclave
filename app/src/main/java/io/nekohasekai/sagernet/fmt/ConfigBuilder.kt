@@ -1187,9 +1187,17 @@ fun buildV2RayConfig(
                     }
                     strategy = StrategyObject().apply {
                         type = balancerBean.strategy.takeIf { it.isNotBlank() } ?: "random"
-                        if (type != "random") {
-                            settings = StrategyObject.StrategyLeastPingConfig().apply {
-                                observerTag = "observer-$tagOutbound"
+                        when (type) {
+                            "leastPing", "leastLoad" -> {
+                                settings = StrategyObject.strategyConfig().apply {
+                                    observerTag = "observer-$tagOutbound"
+                                }
+                            }
+                            else -> {
+                                settings = StrategyObject.strategyConfig().apply {
+                                    observerTag = "observer-$tagOutbound"
+                                    aliveOnly = true
+                                }
                             }
                         }
                     }

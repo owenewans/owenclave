@@ -158,11 +158,12 @@ public class V2RayConfig {
             public static class StrategyObject {
 
                 public String type;
-                public StrategyLeastPingConfig settings;
+                public strategyConfig settings;
 
-                public static class StrategyLeastPingConfig {
+                public static class strategyConfig {
 
                     public String observerTag;
+                    public Boolean aliveOnly;
 
                 }
 

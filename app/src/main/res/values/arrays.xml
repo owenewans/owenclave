@@ -646,11 +646,13 @@
 
     <string-array name="balancer_strategy_entry">
         <item>@string/random</item>
-        <item>@string/leastPing</item>
+        <item>leastPing</item>
+        <item>leastLoad</item>
     </string-array>
     <string-array name="balancer_strategy_value">
         <item />
         <item>leastPing</item>
+        <item>leastLoad</item>
     </string-array>
 
     <string-array name="int_array_3">

@@ -326,10 +326,6 @@ object GroupOrder {
     const val BY_DELAY = 2
 }
 
-object BalancerStrategy {
-    const val LATEST_PING = "leastPing"
-}
-
 object Action {
     const val SERVICE = "io.nekohasekai.sagernet.SERVICE"
     const val CLOSE = "io.nekohasekai.sagernet.CLOSE"
