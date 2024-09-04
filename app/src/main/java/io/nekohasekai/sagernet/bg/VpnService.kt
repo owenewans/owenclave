@@ -95,8 +95,8 @@ class VpnService : BaseVpnService(),
             }
 
     override suspend fun startProcesses() {
-        super.startProcesses()
         startVpn()
+        super.startProcesses()
     }
 
     @Suppress("EXPERIMENTAL_API_USAGE")
