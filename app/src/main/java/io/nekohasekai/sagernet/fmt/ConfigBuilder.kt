@@ -1198,6 +1198,7 @@ fun buildV2RayConfig(
                     if (observatoryItem.settings.probeUrl == DataStore.connectionTestURL) {
                         rootObserver = observatoryItem
                     }
+                    // if all outbounds of a balancer are dead, the first (default) outbound will be used
                     rootBalancer = RoutingObject.RuleObject().apply {
                         type = "field"
                         network = "tcp,udp"
@@ -1311,11 +1312,14 @@ fun buildV2RayConfig(
                     balancerMap.containsKey(rule.outbound) -> {
                         balancerTag = balancerMap[rule.outbound]
                     }
-                    else -> outboundTag = when (val outId = rule.outbound) {
-                        0L -> tagProxy
-                        -1L -> TAG_BYPASS
-                        -2L -> TAG_BLOCK
-                        else -> if (outId == proxy.id) tagProxy else tagMap[outId]
+                    mainIsBalancer && rule.outbound == 0L -> balancerTag = "balancer-$TAG_AGENT"
+                    else -> {
+                        outboundTag = when (val outId = rule.outbound) {
+                            0L -> tagProxy
+                            -1L -> TAG_BYPASS
+                            -2L -> TAG_BLOCK
+                            else -> if (outId == proxy.id) tagProxy else tagMap[outId]
+                        }
                     }
                 }
             })
@@ -1430,7 +1434,7 @@ fun buildV2RayConfig(
                     }
                 })
             proxySettings = OutboundObject.ProxySettingsObject().apply {
-                tag = tagProxy
+                tag = tagProxy // won't fix: v2ray does not support using a balancer tag here
                 transportLayer = true
             }
         })
