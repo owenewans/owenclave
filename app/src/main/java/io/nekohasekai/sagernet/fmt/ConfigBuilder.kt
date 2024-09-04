@@ -72,7 +72,6 @@ import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.KcpObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LazyInboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LazyOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LogObject
-import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LoopbackOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MeekObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MultiObservatoryObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ObservatoryObject
@@ -1201,22 +1200,9 @@ fun buildV2RayConfig(
                     }
                     rootBalancer = RoutingObject.RuleObject().apply {
                         type = "field"
-                        inboundTag = mutableListOf()
-
-                        if (!forTest) {
-                            inboundTag.add(TAG_SOCKS)
-                        }
-                        if (requireHttp) inboundTag.add(TAG_HTTP)
-                        if (requireTransproxy) inboundTag.add(TAG_TRANS)
+                        network = "tcp,udp"
                         balancerTag = "balancer-$tagOutbound"
                     }
-                    outbounds.add(0, OutboundObject().apply {
-                        protocol = "loopback"
-                        settings = LazyOutboundConfigurationObject(this,
-                            LoopbackOutboundConfigurationObject().apply {
-                                inboundTag = TAG_SOCKS
-                            })
-                    })
                 }
             }
 
