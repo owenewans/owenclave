@@ -22,10 +22,8 @@
 package io.nekohasekai.sagernet.bg
 
 import android.Manifest
-import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.IpPrefix
 import android.net.Network
 import android.net.ProxyInfo
 import android.os.Build
@@ -39,8 +37,6 @@ import io.nekohasekai.sagernet.database.StatsEntity
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.ktx.Logs
-import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
-import io.nekohasekai.sagernet.ui.VpnRequestActivity
 import io.nekohasekai.sagernet.utils.DefaultNetworkListener
 import io.nekohasekai.sagernet.utils.PackageCache
 import io.nekohasekai.sagernet.utils.Subnet
@@ -49,7 +45,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import libcore.*
 import java.io.FileDescriptor
-import java.net.InetAddress
 import android.net.VpnService as BaseVpnService
 
 class VpnService : BaseVpnService(),
@@ -151,20 +146,11 @@ class VpnService : BaseVpnService(),
             .setSession(getString(R.string.app_name))
             .setMtu(DataStore.mtu)
 
-        val useFakeDns = DataStore.enableFakeDns
         val ipv6Mode = DataStore.ipv6Mode
 
         builder.addAddress(PRIVATE_VLAN4_CLIENT, 30)
-        if (useFakeDns) {
-            builder.addAddress(FAKEDNS_VLAN4_CLIENT, 15)
-        }
-
         if (ipv6Mode != IPv6Mode.DISABLE) {
             builder.addAddress(PRIVATE_VLAN6_CLIENT, 126)
-
-            if (useFakeDns) {
-                builder.addAddress(FAKEDNS_VLAN6_CLIENT, 18)
-            }
         }
 
         if (DataStore.bypassLan && !DataStore.bypassLanInCoreOnly) {
@@ -177,6 +163,12 @@ class VpnService : BaseVpnService(),
             if (ipv6Mode != IPv6Mode.DISABLE) {
                 builder.addRoute("2000::", 3)
                 builder.addRoute(PRIVATE_VLAN6_GATEWAY, 128)
+            }
+            if (DataStore.enableFakeDns) {
+                builder.addRoute(FAKEDNS_VLAN4_CLIENT, 15)
+                if (ipv6Mode != IPv6Mode.DISABLE) {
+                    builder.addRoute(FAKEDNS_VLAN6_CLIENT, 18)
+                }
             }
         } else {
             builder.addRoute("0.0.0.0", 0)
