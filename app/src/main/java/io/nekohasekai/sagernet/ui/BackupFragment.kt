@@ -89,7 +89,7 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
                 )
                 onMainDispatcher {
                     startFilesForResult(
-                        exportSettings, "sagernet_backup_${Date().toLocaleString()}.json"
+                        exportSettings, "exclave_backup_${Date().toLocaleString()}.json"
                     )
                 }
             }
@@ -104,7 +104,7 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
                 )
                 app.cacheDir.mkdirs()
                 val cacheFile = File(
-                    app.cacheDir, "sagernet_backup_${Date().toLocaleString()}.json"
+                    app.cacheDir, "exclave_backup_${Date().toLocaleString()}.json"
                 )
                 cacheFile.writeText(content)
                 onMainDispatcher {
