@@ -911,8 +911,6 @@ public class V2RayConfig {
 
     public static class TransportObject {
 
-        public TLSObject tlsSettings;
-        public RealityObject realitySettings;
         public TcpObject tcpSettings;
         public KcpObject kcpSettings;
         public WebSocketObject wsSettings;
@@ -920,12 +918,7 @@ public class V2RayConfig {
         public QuicObject quicSettings;
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
-        public MeekObject meekSettings;
-        public HTTPUpgradeObject httpupgradeSettings;
-        public Hysteria2Object hysteria2Settings;
-        public SplitHTTPObject splithttpSettings;
-        public DTLSObject dtlsSettings;
-        public RequestObject requestSettings;
+        public GrpcObject gunSettings;
 
     }
 
@@ -943,6 +936,7 @@ public class V2RayConfig {
         public QuicObject quicSettings;
         public DomainSocketObject dsSettings;
         public GrpcObject grpcSettings;
+        public GrpcObject gunSettings;
         public MeekObject meekSettings;
         public HTTPUpgradeObject httpupgradeSettings;
         public Hysteria2Object hysteria2Settings;
