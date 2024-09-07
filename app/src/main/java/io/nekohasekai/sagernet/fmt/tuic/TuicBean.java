@@ -94,6 +94,11 @@ public class TuicBean extends AbstractBean {
     }
 
     @Override
+    public String network() {
+        return "udp";
+    }
+
+    @Override
     public boolean canTCPing() {
         return false;
     }

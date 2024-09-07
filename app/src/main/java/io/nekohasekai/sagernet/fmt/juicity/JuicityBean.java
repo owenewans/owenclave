@@ -63,6 +63,11 @@ public class JuicityBean extends AbstractBean {
     }
 
     @Override
+    public String network() {
+        return "udp";
+    }
+
+    @Override
     public boolean canTCPing() {
         return false;
     }

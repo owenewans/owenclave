@@ -95,11 +95,6 @@ public class SSHBean extends AbstractBean {
         publicKey = input.readString();
     }
 
-    @Override
-    public String network() {
-        return "tcp";
-    }
-
     @NotNull
     @Override
     public SSHBean clone() {

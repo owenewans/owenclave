@@ -181,6 +181,11 @@ public class HysteriaBean extends AbstractBean {
     }
 
     @Override
+    public String network() {
+        return "udp"; // "faketcp" does not use this
+    }
+
+    @Override
     public boolean canTCPing() {
         return false; // Is "faketcp" real TCP?
     }

@@ -150,6 +150,14 @@ public class BrookBean extends AbstractBean {
     }
 
     @Override
+    public String network() {
+        if (protocol.equals("quic")) {
+            return "udp";
+        }
+        return "tcp";
+    }
+
+    @Override
     public boolean canTCPing() {
         return !protocol.equals("quic");
     }

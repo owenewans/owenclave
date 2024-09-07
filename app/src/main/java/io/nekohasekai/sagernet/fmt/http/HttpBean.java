@@ -35,11 +35,6 @@ public class HttpBean extends StandardV2RayBean {
     public String password;
 
     @Override
-    public String network() {
-        return "tcp";
-    }
-
-    @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
         if (username == null) username = "";

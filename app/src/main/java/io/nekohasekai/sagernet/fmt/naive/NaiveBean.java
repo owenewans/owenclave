@@ -98,6 +98,9 @@ public class NaiveBean extends AbstractBean {
 
     @Override
     public String network() {
+        if (proto.equals("quic")) {
+            return "udp";
+        }
         return "tcp";
     }
 

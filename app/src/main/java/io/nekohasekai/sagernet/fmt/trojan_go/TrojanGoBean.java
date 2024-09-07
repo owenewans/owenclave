@@ -139,6 +139,11 @@ public class TrojanGoBean extends AbstractBean {
 
     }
 
+    @Override
+    public String network() {
+        return "tcp";
+    }
+
     @NotNull
     @Override
     public TrojanGoBean clone() {

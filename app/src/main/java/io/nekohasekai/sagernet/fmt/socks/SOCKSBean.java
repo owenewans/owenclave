@@ -73,12 +73,6 @@ public class SOCKSBean extends StandardV2RayBean {
     public static final int PROTOCOL_SOCKS5 = 2;
 
     @Override
-    public String network() {
-        if (protocol < PROTOCOL_SOCKS5) return "tcp";
-        return super.network();
-    }
-
-    @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
 
