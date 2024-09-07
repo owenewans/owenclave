@@ -6,31 +6,17 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
 - [Exclave](https://github.com/dyhkwong/Exclave/releases/latest)
 
-- [NaïveProxy Plugin](https://github.com/dyhkwong/Exclave/releases?q=naive-plugin) or [use upstream version directly](https://github.com/klzgrad/naiveproxy/releases)
+- [NaïveProxy plugin](https://github.com/dyhkwong/Exclave/releases?q=naive-plugin) or [use upstream version directly](https://github.com/klzgrad/naiveproxy/releases)
 
-- [Hysteria 2 Plugin](https://github.com/dyhkwong/Exclave/releases?q=hysteria-plugin-2)
+- [Hysteria 2 plugin](https://github.com/dyhkwong/Exclave/releases?q=hysteria-plugin-2)
 
-- [Mieru Plugin](https://github.com/dyhkwong/Exclave/releases?q=mieru-plugin-3) or [use upstream version directly](https://github.com/enfein/NekoBoxPlugins/releases)
+- [Mieru plugin](https://github.com/dyhkwong/Exclave/releases?q=mieru-plugin-3) or [use upstream version directly](https://github.com/enfein/NekoBoxPlugins/releases)
 
 - [Brook plugin](https://github.com/dyhkwong/Exclave/releases?q=brook-plugin)
 
 - [Juicity plugin](https://github.com/dyhkwong/Exclave/releases?q=juicity-plugin)
 
-<details>
-
-  - [TUIC v5 plugin](https://github.com/dyhkwong/Exclave/releases/tag/tuic-plugin-1.0.0-1)
-
-  - [TUIC v4 plugin](https://github.com/dyhkwong/Exclave/releases/tag/tuic-plugin-0.8.5-1)
-
-  - [Hysteria 1 Plugin](https://github.com/dyhkwong/Exclave/releases/tag/hysteria-plugin-1.3.5-2)
-
-  - [Mieru Plugin, version 2](https://github.com/dyhkwong/Exclave/releases/tag/mieru-plugin-2.7.0-1)
-
-  - [Mieru Plugin, version 1](https://github.com/dyhkwong/Exclave/releases/tag/mieru-plugin-1.15.1-1)
-
-  - [Trojan-Go Plugin](https://github.com/dyhkwong/Exclave/releases/tag/trojan-go-plugin-0.10.6-1)
-
-  - [ShadowTLS plugin](https://github.com/dyhkwong/Exclave/releases/tag/shadowtls-plugin-0.2.25-1) (must be used with chain proxy)
+- [Other plugins](https://github.com/dyhkwong/Exclave/releases/tag/0.12.0-0-legacy-plugins)
 
 </details>
 
