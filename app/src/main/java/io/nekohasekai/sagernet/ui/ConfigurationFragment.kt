@@ -1128,10 +1128,9 @@ class ConfigurationFragment @JvmOverloads constructor(
         }
 
         override suspend fun groupRemoved(groupId: Long) {
-            val index = groupList.indexOfFirst { it.id == groupId }
-            if (index == -1) return
-
             tabLayout.post {
+                val index = groupList.indexOfFirst { it.id == groupId }
+                if (index == -1) return@post
                 groupList.removeAt(index)
                 notifyItemRemoved(index)
             }
