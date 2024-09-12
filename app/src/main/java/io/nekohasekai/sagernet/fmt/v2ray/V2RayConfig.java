@@ -548,16 +548,7 @@ public class V2RayConfig {
     }
 
     public static class Hysteria2InboundConfigurationObject implements InboundConfigurationObject {
-
-        public List<ClientObject> clients;
-
-        public static class ClientObject {
-
-            public String email;
-            public Integer level;
-
-        }
-
+        public String packetEncoding;
     }
 
     public List<OutboundObject> outbounds;
@@ -939,7 +930,7 @@ public class V2RayConfig {
         public GrpcObject gunSettings;
         public MeekObject meekSettings;
         public HTTPUpgradeObject httpupgradeSettings;
-        public Hysteria2Object hysteria2Settings;
+        public Hysteria2Object hy2Settings;
         public SplitHTTPObject splithttpSettings;
         public DTLSObject dtlsSettings;
         public RequestObject requestSettings;
@@ -1164,13 +1155,14 @@ public class V2RayConfig {
 
         public String password;
         public CongestionObject congestion;
-        public Boolean ignoreClientBandwidth;
-        public Boolean useUDPExtension;
+        public Boolean ignore_client_bandwidth;
+        public Boolean use_udp_extension;
         public OBFSObject obfs;
 
         public static class CongestionObject {
-            public Integer upMbps;
-            public Integer downMbps;
+            public String type; // invalid option
+            public Integer up_mbps;
+            public Integer down_mbps;
         }
 
         public static class OBFSObject {
