@@ -2,12 +2,16 @@ name: NaïveProxy Plugin Release Build
 on:
   workflow_dispatch:
     inputs:
-      publish:
-        description: 'Release (y/n)'
-        required: false
-      tag:
-        description: 'Release Tag'
-        required: false
+      COMMIT_HASH:
+        required: true
+      VERSION_NAME:
+        required: true
+#      publish:
+#        description: 'Release (y/n)'
+#        required: false
+#      tag:
+#        description: 'Release Tag'
+#        required: false
 jobs:
   native:
     runs-on: ubuntu-latest
@@ -19,21 +23,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Fetch Status
-        run: git submodule status 'plugin/naive/*' > naive_status
       - name: Naive Cache
         id: cache
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/${{ matrix.arch }}
-          key: naive-${{ matrix.arch }}-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          key: naive-${{ matrix.arch }}-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./run init action naive
+          git clone https://github.com/klzgrad/naiveproxy.git --depth=1 -b master plugin/naive/src/main/jni/naiveproxy
+          pushd plugin/naive/src/main/jni/naiveproxy
+          git fetch origin ${{ github.event.inputs.COMMIT_HASH }}
+          git checkout ${{ github.event.inputs.COMMIT_HASH }}
+          popd
           ./run plugin naive init
           ./run plugin naive ${{ matrix.arch }}
+      - name: Calculate SHA256
+        run: |
+          openssl sha256 plugin/naive/src/main/jniLibs/${{ matrix.arch }}/libnaive.so > sha256sum.txt
+          echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "NAIVE-SHA256-${{ matrix.arch }}-${{ github.event.inputs.COMMIT_HASH }} ${{ env.SHA256SUM }}"
+          path: sha256sum.txt
   build:
     name: Gradle Build (NaïveProxy)
     runs-on: ubuntu-latest
@@ -42,8 +57,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Fetch Status
-        run: git submodule status 'plugin/naive/*' > naive_status
       - name: Setup Java
         uses: actions/setup-java@v4
         if: steps.cache.outputs.cache-hit != 'true'
@@ -55,25 +68,25 @@ jobs:
         with:
           path: |
             plugin/naive/src/main/jniLibs/armeabi-v7a
-          key: naive-armeabi-v7a-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          key: naive-armeabi-v7a-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
       - name: Naive Cache (arm64-v8a)
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/arm64-v8a
-          key: naive-arm64-v8a-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          key: naive-arm64-v8a-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
       - name: Naive Cache (x86)
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/x86
-          key: naive-x86-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          key: naive-x86-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
       - name: Naive Cache (x86_64)
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/x86_64
-          key: naive-x86_64-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          key: naive-x86_64-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
       - name: Gradle cache
         uses: actions/cache@v4
         with:
@@ -86,7 +99,9 @@ jobs:
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
+          sed -i 's/NAIVE_VERSION_NAME=local/NAIVE_VERSION_NAME=${{ github.event.inputs.VERSION_NAME }}/' version.properties
           ./gradlew :plugin:naive:assembleOssRelease
+          git restore version.properties
           APK=$(find plugin/naive/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname "$APK")
           echo "APK=$APK" >> $GITHUB_ENV
@@ -94,24 +109,24 @@ jobs:
         with:
           name: APKs
           path: ${{ env.APK }}
-  publish:
-    name: Publish Release
-    if: github.event.inputs.publish == 'y' && github.event.inputs.tag != ''
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Donwload Artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: APKs
-          path: artifacts
-      - name: Release
-        run: |
-          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.16.2/ghr_v0.16.2_linux_amd64.tar.gz
-          tar -xvf ghr.tar.gz
-          mv ghr*linux_amd64/ghr .
-          mkdir apks
-          find artifacts -name "*.apk" -exec cp {} apks \;
-          ./ghr -replace -prerelease -t "${{ github.token }}" -n "${{ github.event.inputs.tag }}" "${{ github.event.inputs.tag }}" apks
+#  publish:
+#    name: Publish Release
+#    if: github.event.inputs.publish == 'y' && github.event.inputs.tag != ''
+#    runs-on: ubuntu-latest
+#    needs: build
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#      - name: Donwload Artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: APKs
+#          path: artifacts
+#      - name: Release
+#        run: |
+#          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.16.2/ghr_v0.16.2_linux_amd64.tar.gz
+#          tar -xvf ghr.tar.gz
+#          mv ghr*linux_amd64/ghr .
+#          mkdir apks
+#          find artifacts -name "*.apk" -exec cp {} apks \;
+#          ./ghr -replace -prerelease -t "${{ github.token }}" -n "${{ github.event.inputs.tag }}" "${{ github.event.inputs.tag }}" apks
