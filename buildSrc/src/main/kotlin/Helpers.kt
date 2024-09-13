@@ -197,7 +197,7 @@ fun Project.setupPlugin(projectName: String) {
     val propPrefix = projectName.uppercase(Locale.ROOT)
     val projName = projectName.lowercase(Locale.ROOT)
     val verName = requireMetadata().getProperty("${propPrefix}_VERSION_NAME").trim()
-    val verCode = requireMetadata().getProperty("${propPrefix}_VERSION").trim().toInt() * 5
+    val verCode = requireMetadata().getProperty("${propPrefix}_VERSION").trim().toInt()
     androidApp.defaultConfig {
         versionName = verName
         versionCode = verCode
@@ -297,7 +297,7 @@ fun Project.setupPlugin(projectName: String) {
 fun Project.setupApp() {
     val pkgName = requireMetadata().getProperty("PACKAGE_NAME").trim()
     val verName = requireMetadata().getProperty("VERSION_NAME").trim()
-    val verCode = 153 * 5 + (requireMetadata().getProperty("VERSION_CODE").trim().toInt() - 153) * 2
+    val verCode = requireMetadata().getProperty("VERSION_CODE").trim().toInt()
     androidApp.apply {
         defaultConfig {
             applicationId = pkgName
