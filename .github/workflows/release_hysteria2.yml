@@ -29,11 +29,6 @@ jobs:
           path: |
             plugin/hysteria2/src/main/jniLibs
           key: ${{ hashFiles('.github/workflows/*', 'bin/lib/hysteria2/*', 'hysteria2_status') }}
-      - name: Gradle cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle
-          key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |

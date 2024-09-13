@@ -29,11 +29,6 @@ jobs:
           path: |
             plugin/brook/src/main/jniLibs
           key: ${{ hashFiles('.github/workflows/*', 'bin/lib/brook/*', 'brook_status') }}
-      - name: Gradle cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.gradle
-          key: gradle-${{ hashFiles('**/*.gradle.kts') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
