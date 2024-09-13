@@ -92,7 +92,6 @@ jobs:
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
-          ./run init action library
           ./gradlew :plugin:naive:assembleOssRelease
           APK=$(find plugin/naive/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname "$APK")
