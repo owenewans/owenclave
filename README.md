@@ -6,11 +6,11 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
 - [Exclave](https://github.com/dyhkwong/Exclave/releases/latest)
 
-- [NaïveProxy plugin](https://github.com/dyhkwong/Exclave/releases?q=naive-plugin) or [use upstream version directly](https://github.com/klzgrad/naiveproxy/releases)
+- [NaïveProxy plugin (use upstream releases directly)](https://github.com/klzgrad/naiveproxy/releases)
 
 - [Hysteria 2 plugin](https://github.com/dyhkwong/Exclave/releases?q=hysteria-plugin-2)
 
-- [Mieru plugin](https://github.com/dyhkwong/Exclave/releases?q=mieru-plugin-3) or [use upstream version directly](https://github.com/enfein/NekoBoxPlugins/releases)
+- [Mieru plugin](https://github.com/dyhkwong/Exclave/releases?q=mieru-plugin-3) or [use upstream releases directly](https://github.com/enfein/NekoBoxPlugins/releases)
 
 - [Brook plugin](https://github.com/dyhkwong/Exclave/releases?q=brook-plugin)
 
