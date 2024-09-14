@@ -179,7 +179,7 @@
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/baseline_flight_takeoff_24"
-            app:defaultValue="0"
+            app:defaultValue="1"
             app:entries="@array/hysteria2_provider"
             app:entryValues="@array/hysteria2_provider_value"
             app:key="providerHysteria2"
