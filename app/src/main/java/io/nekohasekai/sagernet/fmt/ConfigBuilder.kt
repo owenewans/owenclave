@@ -1387,7 +1387,12 @@ fun buildV2RayConfig(
             if (DataStore.resolveDestinationForDirect) {
                 settings = LazyOutboundConfigurationObject(this,
                     FreedomOutboundConfigurationObject().apply {
-                        domainStrategy = outboundDomainStrategy
+                        domainStrategy = when (ipv6Mode) {
+                            IPv6Mode.DISABLE -> "UseIPv4"
+                            IPv6Mode.PREFER -> "PreferIPv6"
+                            IPv6Mode.ONLY -> "UseIPv6"
+                            else -> "PreferIPv4"
+                        }
                     }
                 )
             }
