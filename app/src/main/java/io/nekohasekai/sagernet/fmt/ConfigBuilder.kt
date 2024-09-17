@@ -867,23 +867,6 @@ fun buildV2RayConfig(
                                             }
                                         }
                                     }
-                                    if ((bean !is ShadowsocksBean || bean.plugin.isBlank()) && DataStore.enableFragment || DataStore.enableNoise) {
-                                        sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            if (DataStore.enableFragment) {
-                                                fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                                                    packets = DataStore.fragmentPackets
-                                                    length = DataStore.fragmentLength
-                                                    interval = DataStore.fragmentInterval
-                                                }
-                                            }
-                                            if (DataStore.enableNoise) {
-                                                noise = StreamSettingsObject.SockoptObject.NoiseObject().apply {
-                                                    packet = DataStore.noisePacket
-                                                    delay = DataStore.noiseDelay
-                                                }
-                                            }
-                                        }
-                                    }
                                 }
                             } else if (bean is ShadowsocksRBean) {
                                 protocol = "shadowsocks"
@@ -896,25 +879,6 @@ fun buildV2RayConfig(
                                                 password = bean.password
                                             }
                                         )
-                                        if (DataStore.enableFragment || DataStore.enableNoise) {
-                                            streamSettings = StreamSettingsObject().apply {
-                                                sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                    if (DataStore.enableFragment) {
-                                                        fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                                                            packets = DataStore.fragmentPackets
-                                                            length = DataStore.fragmentLength
-                                                            interval = DataStore.fragmentInterval
-                                                        }
-                                                    }
-                                                    if (DataStore.enableNoise) {
-                                                        noise = StreamSettingsObject.SockoptObject.NoiseObject().apply {
-                                                            packet = DataStore.noisePacket
-                                                            delay = DataStore.noiseDelay
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
                                         plugin = "shadowsocksr"
                                         pluginArgs = listOf(
                                             "--obfs=${bean.obfs}",
@@ -949,17 +913,6 @@ fun buildV2RayConfig(
                                 if (currentDomainStrategy == "AsIs") {
                                     currentDomainStrategy = "UseIP"
                                 }
-                                if (DataStore.enableNoise) {
-                                    // Can WireGuard use streamSettings? I don't know.
-                                    streamSettings = StreamSettingsObject().apply {
-                                        sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            noise = StreamSettingsObject.SockoptObject.NoiseObject().apply {
-                                                packet = DataStore.noisePacket
-                                                delay = DataStore.noiseDelay
-                                            }
-                                        }
-                                    }
-                                }
                             } else if (bean is SSHBean) {
                                 protocol = "ssh"
                                 settings = LazyOutboundConfigurationObject(this,
@@ -978,17 +931,6 @@ fun buildV2RayConfig(
                                         }
                                         publicKey = bean.publicKey
                                     })
-                                if (DataStore.enableFragment) {
-                                    streamSettings = StreamSettingsObject().apply {
-                                        sockopt = StreamSettingsObject.SockoptObject().apply {
-                                            fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                                                packets = DataStore.fragmentPackets
-                                                length = DataStore.fragmentLength
-                                                interval = DataStore.fragmentInterval
-                                            }
-                                        }
-                                    }
-                                }
                             } else if (bean is Hysteria2Bean) {
                                 protocol = "hysteria2"
                                 settings = LazyOutboundConfigurationObject(this,
@@ -1024,16 +966,6 @@ fun buildV2RayConfig(
                                         }
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
-                                        }
-                                    }
-                                    if (DataStore.enableNoise) {
-                                        streamSettings = StreamSettingsObject().apply {
-                                            sockopt = StreamSettingsObject.SockoptObject().apply {
-                                                noise = StreamSettingsObject.SockoptObject.NoiseObject().apply {
-                                                    packet = DataStore.noisePacket
-                                                    delay = DataStore.noiseDelay
-                                                }
-                                            }
                                         }
                                     }
                                 }
@@ -1373,17 +1305,6 @@ fun buildV2RayConfig(
         outbounds.add(OutboundObject().apply {
             tag = TAG_BYPASS
             protocol = "freedom"
-            if (DataStore.enableFragment && DataStore.enableFragmentForDirect) {
-                streamSettings = StreamSettingsObject().apply {
-                    sockopt = StreamSettingsObject.SockoptObject().apply {
-                        fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
-                            packets = DataStore.fragmentPackets
-                            length = DataStore.fragmentLength
-                            interval = DataStore.fragmentInterval
-                        }
-                    }
-                }
-            }
             if (DataStore.resolveDestinationForDirect) {
                 settings = LazyOutboundConfigurationObject(this,
                     FreedomOutboundConfigurationObject().apply {

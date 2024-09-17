@@ -101,16 +101,6 @@ object Key {
     const val ENABLE_PCAP = "enablePcap"
     const val MTU = "mtu"
 
-    const val ENABLE_FRAGMENT = "enableFragment"
-    const val ENABLE_FRAGMENT_FOR_DIRECT = "enableFragmentForDirect"
-    const val FRAGMENT_PACKETS = "fragmentPackets"
-    const val FRAGMENT_LENGTH = "fragmentLength"
-    const val FRAGMENT_INTERVAL = "fragmentInterval"
-    const val ENABLE_NOISE = "enableNoise"
-    const val ENABLE_NOISE_FOR_DIRECT = "enableNoiseForDirect"
-    const val NOISE_PACKET = "noisePacket"
-    const val NOISE_DELAY = "noiseDelay"
-
     const val APP_TRAFFIC_STATISTICS = "appTrafficStatistics"
     const val PROFILE_TRAFFIC_STATISTICS = "profileTrafficStatistics"
 

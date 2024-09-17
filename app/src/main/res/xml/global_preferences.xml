@@ -316,43 +316,6 @@
             app:key="connectionTestURL"
             app:title="@string/connection_test_url"
             app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
-            app:key="enableFragment"
-            app:summary="@string/enable_fragment_sum"
-            app:title="@string/enable_fragment" />
-        <EditTextPreference
-            app:defaultValue="tlshello"
-            app:key="fragmentPackets"
-            app:title="@string/fragment_packets"
-            app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:key="fragmentLength"
-            app:title="@string/fragment_length"
-            app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:key="fragmentInterval"
-            app:title="@string/fragment_interval"
-            app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
-            app:key="enableFragmentForDirect"
-            app:summary="@string/enable_fragment_for_direct_sum"
-            app:title="@string/enable_fragment_for_direct" />
-        <SwitchPreference
-            app:key="enableNoise"
-            app:summary="@string/enable_fragment_sum"
-            app:title="@string/enable_noise" />
-        <EditTextPreference
-            app:key="noisePacket"
-            app:title="@string/noise_packet"
-            app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:key="noiseDelay"
-            app:title="@string/noise_delay"
-            app:useSimpleSummaryProvider="true" />
-        <SwitchPreference
-            app:key="enableNoiseForDirect"
-            app:summary="@string/enable_noise_for_direct_sum"
-            app:title="@string/enable_noise_for_direct" />
     </PreferenceCategory>
 
 

@@ -257,48 +257,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-        val enableFragment = findPreference<SwitchPreference>(Key.ENABLE_FRAGMENT)!!
-        val enableFragmentForDirect = findPreference<SwitchPreference>(Key.ENABLE_FRAGMENT_FOR_DIRECT)!!
-        val fragmentPackets = findPreference<EditTextPreference>(Key.FRAGMENT_PACKETS)!!
-        val fragmentLength = findPreference<EditTextPreference>(Key.FRAGMENT_LENGTH)!!
-        val fragmentInterval = findPreference<EditTextPreference>(Key.FRAGMENT_INTERVAL)!!
-        enableFragmentForDirect.isVisible = DataStore.enableFragment
-        fragmentPackets.isVisible = DataStore.enableFragment
-        fragmentLength.isVisible = DataStore.enableFragment
-        fragmentInterval.isVisible = DataStore.enableFragment
-        enableFragment.setOnPreferenceChangeListener { _, newValue ->
-            newValue as Boolean
-            enableFragmentForDirect.isVisible = newValue
-            fragmentPackets.isVisible = newValue
-            fragmentLength.isVisible = newValue
-            fragmentInterval.isVisible = newValue
-            needReload()
-            true
-        }
-        enableFragmentForDirect.onPreferenceChangeListener = reloadListener
-        fragmentPackets.onPreferenceChangeListener = reloadListener
-        fragmentLength.onPreferenceChangeListener = reloadListener
-        fragmentInterval.onPreferenceChangeListener = reloadListener
-
-        val enableNoise = findPreference<SwitchPreference>(Key.ENABLE_NOISE)!!
-        val enableNoiseForDirect = findPreference<SwitchPreference>(Key.ENABLE_NOISE_FOR_DIRECT)!!
-        val noisePacket = findPreference<EditTextPreference>(Key.NOISE_PACKET)!!
-        val noiseDelay = findPreference<EditTextPreference>(Key.NOISE_DELAY)!!
-        enableNoiseForDirect.isVisible = DataStore.enableNoise
-        noisePacket.isVisible = DataStore.enableNoise
-        noiseDelay.isVisible = DataStore.enableNoise
-        enableNoise.setOnPreferenceChangeListener { _, newValue ->
-            newValue as Boolean
-            enableNoiseForDirect.isVisible = newValue
-            noisePacket.isVisible = newValue
-            noiseDelay.isVisible = newValue
-            needReload()
-            true
-        }
-        enableNoiseForDirect.onPreferenceChangeListener = reloadListener
-        noisePacket.onPreferenceChangeListener = reloadListener
-        noiseDelay.onPreferenceChangeListener = reloadListener
-
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
         portHttp.onPreferenceChangeListener = reloadListener
