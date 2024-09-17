@@ -11,8 +11,8 @@ setupCommon()
 dependencies {
     protobuf(project(":library:proto"))
 
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    api("com.google.protobuf:protobuf-java:4.28.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    api("com.google.protobuf:protobuf-java:4.28.1")
 }
 android {
     namespace = "com.v2ray.core"
@@ -25,7 +25,7 @@ android {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.28.0"
+        artifact = "com.google.protobuf:protoc:4.28.1"
     }
     generateProtoTasks {
         all().forEach {
