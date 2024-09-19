@@ -29,18 +29,14 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
-import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean.*
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.fixInvalidParams
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
-import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
-import io.nekohasekai.sagernet.fmt.ssh.SSHBean.*
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
-import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig
@@ -456,11 +452,11 @@ object RawUpdater : GroupUpdater() {
                                     "username" -> bean.username = opt.value?.toString()
                                     "password" -> {
                                         bean.password = opt.value?.toString()
-                                        bean.authType = AUTH_TYPE_PASSWORD
+                                        bean.authType = SSHBean.AUTH_TYPE_PASSWORD
                                     }
                                     "private-key" -> {
                                         bean.privateKey = opt.value as String
-                                        bean.authType = AUTH_TYPE_PRIVATE_KEY
+                                        bean.authType = SSHBean.AUTH_TYPE_PRIVATE_KEY
                                     }
                                     "private-key-passphrase" -> bean.privateKeyPassphrase = opt.value as String
                                 }
@@ -472,11 +468,11 @@ object RawUpdater : GroupUpdater() {
                                 serverAddress = proxy["server"] as String
                                 serverPorts = proxy["port"].toString()
                                 protocol = when (proxy["protocol"]?.toString()) {
-                                    "faketcp" -> PROTOCOL_FAKETCP
-                                    "wechat-video" -> PROTOCOL_WECHAT_VIDEO
-                                    else -> PROTOCOL_UDP
+                                    "faketcp" -> HysteriaBean.PROTOCOL_FAKETCP
+                                    "wechat-video" -> HysteriaBean.PROTOCOL_WECHAT_VIDEO
+                                    else -> HysteriaBean.PROTOCOL_UDP
                                 }
-                                authPayloadType = TYPE_STRING
+                                authPayloadType = HysteriaBean.TYPE_STRING
                                 authPayload = proxy["auth-str"]?.toString()
                                 uploadMbps = proxy["up"]?.toString()?.toIntOrNull()?: 10 // support int only
                                 downloadMbps = proxy["down"]?.toString()?.toIntOrNull()?: 50 // support int only
@@ -686,61 +682,17 @@ object RawUpdater : GroupUpdater() {
         val proxies = ArrayList<AbstractBean>()
 
         with(outboundObject) {
+            // v2ray JSONv4 config or Xray config only
             when (protocol) {
-                "http" -> {
-                    val httpBean = HttpBean().applyDefaultValues()
-                    streamSettings?.apply {
-                        when (security) {
-                            "tls" -> {
-                                httpBean.security = "tls"
-                                tlsSettings?.serverName?.also {
-                                    httpBean.sni = it
-                                }
-                            }
-                        }
-                    }
-                    (settings.value as? V2RayConfig.HTTPOutboundConfigurationObject)?.servers?.forEach {
-                        val httpBeanNext = httpBean.clone().apply {
-                            serverAddress = it.address
-                            serverPort = it.port
-                        }
-                        if (it.users.isNullOrEmpty()) {
-                            proxies.add(httpBeanNext)
-                        } else for (user in it.users) proxies.add(httpBeanNext.clone().apply {
-                            username = user.user
-                            password = user.pass
-                            name = tag ?: displayName() + " - $username"
-                        })
-                    }
-                }
-                "socks" -> {
-                    val socksBean = SOCKSBean().applyDefaultValues()
-                    streamSettings?.apply {
-                        when (security) {
-                            "tls" -> {
-                                socksBean.security = "tls"
-                                tlsSettings?.serverName?.also {
-                                    socksBean.sni = it
-                                }
-                            }
-                        }
-                    }
-                    (settings.value as? V2RayConfig.SocksOutboundConfigurationObject)?.servers?.forEach {
-                        val socksBeanNext = socksBean.clone().apply {
-                            serverAddress = it.address
-                            serverPort = it.port
-                        }
-                        if (it.users.isNullOrEmpty()) {
-                            proxies.add(socksBeanNext)
-                        } else for (user in it.users) proxies.add(socksBeanNext.clone().apply {
-                            username = user.user
-                            password = user.pass
-                            name = tag ?: displayName() + " - $username"
-                        })
-                    }
-                }
-                "vmess", "vless", "trojan" -> {
-                    val v2rayBean = (if (protocol == "vmess") VMessBean() else if (protocol == "vless") VLESSBean() else TrojanBean()).applyDefaultValues()
+                "vmess", "vless", "trojan", "shadowsocks", "socks", "http" -> {
+                    val v2rayBean = when (protocol) {
+                        "vmess" -> VMessBean()
+                        "vless" -> VLESSBean()
+                        "trojan" -> TrojanBean()
+                        "shadowsocks" -> ShadowsocksBean()
+                        "socks" -> SOCKSBean()
+                        else -> HttpBean()
+                    }.applyDefaultValues()
                     streamSettings?.apply {
                         v2rayBean.security = security ?: v2rayBean.security
                         when (security) {
@@ -803,7 +755,8 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                             }
-                            "kcp" -> {
+                            "kcp", "mkcp" -> {
+                                v2rayBean.type = "kcp"
                                 kcpSettings?.apply {
                                     header?.type?.also {
                                         v2rayBean.headerType = it
@@ -813,7 +766,8 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                             }
-                            "ws" -> {
+                            "ws", "websocket" -> {
+                                v2rayBean.type = "ws"
                                 wsSettings?.apply {
                                     headers?.forEach { (key, value) ->
                                         when (key.lowercase()) {
@@ -822,11 +776,9 @@ object RawUpdater : GroupUpdater() {
                                             }
                                         }
                                     }
-
                                     path?.also {
                                         v2rayBean.path = it
                                     }
-
                                     maxEarlyData?.also {
                                         v2rayBean.wsMaxEarlyData = it
                                     }
@@ -834,7 +786,6 @@ object RawUpdater : GroupUpdater() {
                             }
                             "http", "h2" -> {
                                 v2rayBean.type = "http"
-
                                 httpSettings?.apply {
                                     host?.also {
                                         v2rayBean.host = it.joinToString(",")
@@ -857,7 +808,11 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                             }
-                            "grpc" -> {
+                            "grpc", "gun" -> {
+                                v2rayBean.type = "grpc"
+                                gunSettings?.serviceName?.also {
+                                    v2rayBean.grpcServiceName = it
+                                }
                                 grpcSettings?.serviceName?.also {
                                     v2rayBean.grpcServiceName = it
                                 }
@@ -882,66 +837,171 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                             }
-                            "meek" -> {
-                                meekSettings?.url?.also {
-                                    v2rayBean.meekUrl = it
+                            "hysteria2", "hy2" -> {
+                                v2rayBean.type = "hysteria2"
+                                hy2Settings?.apply {
+                                    password?.also {
+                                        v2rayBean.hy2Password = it
+                                    }
+                                    congestion?.apply {
+                                        up_mbps?.also {
+                                            v2rayBean.hy2UpMbps = it
+                                        }
+                                        down_mbps?.also {
+                                            v2rayBean.hy2DownMbps = it
+                                        }
+                                    }
+                                    obfs?.apply {
+                                        type?.also {
+                                            if (type == "salamander") v2rayBean.hy2ObfsPassword = it
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
-                    if (protocol == "vmess") {
-                        v2rayBean as VMessBean
-                        (settings.value as? V2RayConfig.VMessOutboundConfigurationObject)?.vnext?.forEach {
-                            val vmessBean = v2rayBean.clone().apply {
-                                serverAddress = it.address
-                                serverPort = it.port
+                    when (protocol) {
+                        "vmess" -> {
+                            v2rayBean as VMessBean
+                            (settings.value as? V2RayConfig.VMessOutboundConfigurationObject)?.vnext?.forEach {
+                                val vmessBean = v2rayBean.clone().apply {
+                                    serverAddress = it.address
+                                    serverPort = it.port
+                                }
+                                for (user in it.users) {
+                                    proxies.add(vmessBean.clone().apply {
+                                        uuid = user.id
+                                        encryption = user.security
+                                        alterId = user.alterId
+                                        name = tag ?: (displayName() + " - ${user.security} - ${user.id}")
+                                    })
+                                }
                             }
-                            for (user in it.users) {
-                                proxies.add(vmessBean.clone().apply {
-                                    uuid = user.id
-                                    encryption = user.security
-                                    alterId = user.alterId
-                                    name = tag ?: displayName() + " - ${user.security} - ${user.id}"
+                        }
+                        "vless" -> {
+                            v2rayBean as VLESSBean
+                            (settings.value as? V2RayConfig.VLESSOutboundConfigurationObject)?.vnext?.forEach {
+                                val vlessBean = v2rayBean.clone().apply {
+                                    serverAddress = it.address
+                                    serverPort = it.port
+                                }
+                                for (user in it.users) {
+                                    proxies.add(vlessBean.clone().apply {
+                                        uuid = user.id
+                                        encryption = user.encryption
+                                        flow = user.flow
+                                        name = tag ?: (displayName() + " - ${user.id}")
+                                    })
+                                }
+                            }
+                        }
+                        "shadowsocks" -> {
+                            v2rayBean as ShadowsocksBean
+                            (settings.value as? V2RayConfig.ShadowsocksOutboundConfigurationObject)?.servers?.forEach {
+                                proxies.add(v2rayBean.clone().apply {
+                                    name = tag
+                                    serverAddress = it.address
+                                    serverPort = it.port
+                                    method = it.method
+                                    password = it.password
                                 })
                             }
                         }
-                    } else if (protocol == "vless") {
-                        v2rayBean as VLESSBean
-                        (settings.value as? V2RayConfig.VLESSOutboundConfigurationObject)?.vnext?.forEach {
-                            val vlessBean = v2rayBean.clone().apply {
-                                serverAddress = it.address
-                                serverPort = it.port
-                            }
-                            for (user in it.users) {
-                                proxies.add(vlessBean.clone().apply {
-                                    uuid = user.id
-                                    encryption = user.encryption
-                                    flow = user.flow
-                                    name = tag ?: displayName() + " - ${user.id}"
+                        "trojan" -> {
+                            v2rayBean as TrojanBean
+                            (settings.value as? V2RayConfig.TrojanOutboundConfigurationObject)?.servers?.forEach {
+                                proxies.add(v2rayBean.clone().apply {
+                                    name = tag
+                                    serverAddress = it.address
+                                    serverPort = it.port
+                                    password = it.password
                                 })
                             }
                         }
-                    } else if (protocol == "trojan") {
-                        v2rayBean as TrojanBean
-                        (settings.value as? V2RayConfig.TrojanOutboundConfigurationObject)?.servers?.forEach {
-                            proxies.add(v2rayBean.clone().apply {
-                                name = tag
-                                serverAddress = it.address
-                                serverPort = it.port
-                                password = it.password
-                            })
+                        "socks" -> {
+                            v2rayBean as SOCKSBean
+                            (settings.value as? V2RayConfig.SocksOutboundConfigurationObject)?.version?.also {
+                                v2rayBean.protocol = when (it) {
+                                    "4" -> SOCKSBean.PROTOCOL_SOCKS4
+                                    "4a" -> SOCKSBean.PROTOCOL_SOCKS4A
+                                    else -> SOCKSBean.PROTOCOL_SOCKS5
+                                }
+                            }
+                            (settings.value as? V2RayConfig.SocksOutboundConfigurationObject)?.servers?.forEach {
+                                val socksBean = v2rayBean.clone().apply {
+                                    serverAddress = it.address
+                                    serverPort = it.port
+                                }
+                                if (it.users.isNullOrEmpty()) {
+                                    proxies.add(socksBean)
+                                } else for (user in it.users) proxies.add(socksBean.clone().apply {
+                                    username = user.user
+                                    password = user.pass
+                                    name = tag ?: (displayName() + " - $username")
+                                })
+                            }
+                        }
+                        "http" -> {
+                            v2rayBean as HttpBean
+                            (settings.value as? V2RayConfig.HTTPOutboundConfigurationObject)?.servers?.forEach {
+                                val httpBean = v2rayBean.clone().apply {
+                                    serverAddress = it.address
+                                    serverPort = it.port
+                                }
+                                if (it.users.isNullOrEmpty()) {
+                                    proxies.add(httpBean)
+                                } else for (user in it.users) proxies.add(httpBean.clone().apply {
+                                    username = user.user
+                                    password = user.pass
+                                    name = tag ?: (displayName() + " - $username")
+                                })
+                            }
                         }
                     }
                 }
-                "shadowsocks" -> (settings.value as? V2RayConfig.ShadowsocksOutboundConfigurationObject)?.servers?.forEach {
-                    proxies.add(ShadowsocksBean().applyDefaultValues().apply {
-                        name = tag
-                        serverAddress = it.address
-                        serverPort = it.port
-                        method = it.method
-                        password = it.password
-                        plugin = ""
-                    })
+                "hysteria2" -> {
+                    val hysteria2Bean = Hysteria2Bean().applyDefaultValues()
+                    streamSettings?.apply {
+                        when (network) {
+                            "hysteria2", "hy2" -> {
+                                hy2Settings?.apply {
+                                    password?.also {
+                                        hysteria2Bean.auth = it
+                                    }
+                                    congestion?.apply {
+                                        up_mbps?.also {
+                                            hysteria2Bean.uploadMbps = it
+                                        }
+                                        down_mbps?.also {
+                                            hysteria2Bean.downloadMbps = it
+                                        }
+                                    }
+                                    obfs?.apply {
+                                        type?.also {
+                                            if (type == "salamander") hysteria2Bean.obfs = it
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        when (security) {
+                            "tls" -> {
+                                tlsSettings?.apply {
+                                    serverName?.also {
+                                        hysteria2Bean.sni = it
+                                    }
+                                    allowInsecure?.also {
+                                        hysteria2Bean.allowInsecure = it
+                                    }
+                                }
+                            }
+                        }
+                        (settings.value as? V2RayConfig.Hysteria2OutboundConfigurationObject)?.servers?.forEach {
+                            hysteria2Bean.serverAddress = it.address
+                            hysteria2Bean.serverPorts = it.port.toString()
+                        }
+                        proxies.add(hysteria2Bean)
+                    }
                 }
             }
             Unit
