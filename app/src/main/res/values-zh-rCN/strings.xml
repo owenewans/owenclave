@@ -509,13 +509,11 @@
     <string name="hysteria2_plugin_settings_sum">这些选项仅对插件生效。</string>
     <string name="hysteria_enable_port_hopping_experimental">启用 Hysteria 端口跳跃（实验性）</string>
     <string name="hysteria_enable_port_hopping_sum">这需要插件并且与链式代理不兼容。如果禁用，端口跳跃范围内的一个随机端口将会被使用。</string>
-    <string name="enable_fragment">启用分片</string>
-    <string name="enable_fragment_sum">可能有助于规避一些防火墙策略</string>
-    <string name="fragment_packets">分片方式</string>
+    <string name="enable_fragment">启用 TLS Client Hello 分片</string>
+    <string name="enable_fragment_sum">可能有助于规避 SNI 审查。该选项可能在未来被移除。</string>
     <string name="fragment_length">分片长度</string>
     <string name="fragment_interval">分片间隔</string>
-    <string name="enable_fragment_for_direct">直连分片</string>
-    <string name="enable_fragment_for_direct_sum">为直连也启用分片</string>
+    <string name="enable_fragment_for_direct">为直连也启用分片</string>
     <string name="probe_cert">证书探测器</string>
     <string name="probe_cert_summary">探测服务器的 TLS 证书。</string>
     <string name="probe_cert_target_server">目标服务器</string>
@@ -524,10 +522,5 @@
     <string name="landing_proxy">落地代理</string>
     <string name="resolve_destination_for_direct">解析目标地址（直连）</string>
     <string name="edns_client_ip">EDNS 客户端 IP</string>
-    <string name="enable_noise">启用 UDP 噪声</string>
-    <string name="noise_packet">噪声方式</string>
-    <string name="noise_delay">噪声延时</string>
-    <string name="enable_noise_for_direct">直连 UDP 噪声</string>
-    <string name="enable_noise_for_direct_sum">为直连也启用 UDP 噪声</string>
 
 </resources>

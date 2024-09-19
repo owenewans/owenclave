@@ -257,6 +257,25 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
+        val enableFragment = findPreference<SwitchPreference>(Key.ENABLE_FRAGMENT)!!
+        val enableFragmentForDirect = findPreference<SwitchPreference>(Key.ENABLE_FRAGMENT_FOR_DIRECT)!!
+        val fragmentLength = findPreference<EditTextPreference>(Key.FRAGMENT_LENGTH)!!
+        val fragmentInterval = findPreference<EditTextPreference>(Key.FRAGMENT_INTERVAL)!!
+        enableFragmentForDirect.isVisible = DataStore.enableFragment
+        fragmentLength.isVisible = DataStore.enableFragment
+        fragmentInterval.isVisible = DataStore.enableFragment
+        enableFragment.setOnPreferenceChangeListener { _, newValue ->
+            newValue as Boolean
+            enableFragmentForDirect.isVisible = newValue
+            fragmentLength.isVisible = newValue
+            fragmentInterval.isVisible = newValue
+            needReload()
+            true
+        }
+        enableFragmentForDirect.onPreferenceChangeListener = reloadListener
+        fragmentLength.onPreferenceChangeListener = reloadListener
+        fragmentInterval.onPreferenceChangeListener = reloadListener
+
         speedInterval.onPreferenceChangeListener = reloadListener
         portSocks5.onPreferenceChangeListener = reloadListener
         portHttp.onPreferenceChangeListener = reloadListener

@@ -867,6 +867,21 @@ fun buildV2RayConfig(
                                             }
                                         }
                                     }
+                                    if (DataStore.enableFragment && bean.canTCPing()
+                                        && (security == "tls" || security == "reality")
+                                        && !(bean is ShadowsocksBean && bean.plugin.isNotEmpty()
+                                        && !(network == "ws" && bean.wsUseBrowserForwarder))
+                                    ) {
+                                        sockopt = StreamSettingsObject.SockoptObject().apply {
+                                            if (DataStore.enableFragment) {
+                                                fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                                                    packets = "tlshello"
+                                                    length = DataStore.fragmentLength
+                                                    interval = DataStore.fragmentInterval
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             } else if (bean is ShadowsocksRBean) {
                                 protocol = "shadowsocks"
@@ -1305,6 +1320,17 @@ fun buildV2RayConfig(
         outbounds.add(OutboundObject().apply {
             tag = TAG_BYPASS
             protocol = "freedom"
+            if (DataStore.enableFragment && DataStore.enableFragmentForDirect) {
+                streamSettings = StreamSettingsObject().apply {
+                    sockopt = StreamSettingsObject.SockoptObject().apply {
+                        fragment = StreamSettingsObject.SockoptObject.FragmentObject().apply {
+                            packets = "tlshello"
+                            length = DataStore.fragmentLength
+                            interval = DataStore.fragmentInterval
+                        }
+                    }
+                }
+            }
             if (DataStore.resolveDestinationForDirect) {
                 settings = LazyOutboundConfigurationObject(this,
                     FreedomOutboundConfigurationObject().apply {

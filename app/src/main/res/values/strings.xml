@@ -538,13 +538,11 @@
     <string name="hysteria2_plugin_settings_sum">These options only apply to plugins.</string>
     <string name="hysteria_enable_port_hopping_experimental">Enable Hysteria port hopping (Experimental)</string>
     <string name="hysteria_enable_port_hopping_sum">This requires plugins and is incompatible with chain proxy. If disabled, a random port within the port hopping range will be used.</string>
-    <string name="enable_fragment">Enable fragment</string>
-    <string name="enable_fragment_sum">May help circumvent some firewall policies</string>
-    <string name="fragment_packets">Fragment packets</string>
-    <string name="fragment_length">Fragment length</string>
-    <string name="fragment_interval">Fragment interval</string>
-    <string name="enable_fragment_for_direct">Fragment for direct</string>
-    <string name="enable_fragment_for_direct_sum">Also enable fragment for direct</string>
+    <string name="enable_fragment">Enable TLS Client Hello fragmentation</string>
+    <string name="enable_fragment_sum">May help circumvent SNI censorship. This option may get removed in the future.</string>
+    <string name="fragment_length">Fragmentation length</string>
+    <string name="fragment_interval">Fragmentation interval</string>
+    <string name="enable_fragment_for_direct">Also enable fragmentation for direct</string>
     <string name="probe_cert">Certificate prober</string>
     <string name="probe_cert_summary">Probe the TLS certificate of a server.</string>
     <string name="probe_cert_target_server">Target server</string>
@@ -553,10 +551,5 @@
     <string name="landing_proxy">Landing proxy</string>
     <string name="resolve_destination_for_direct">Resolve destination (direct)</string>
     <string name="edns_client_ip">EDNS client IP</string>
-    <string name="enable_noise">Enable UDP noise</string>
-    <string name="noise_packet">Noise packet</string>
-    <string name="noise_delay">Noise delay</string>
-    <string name="enable_noise_for_direct">UDP noise for direct</string>
-    <string name="enable_noise_for_direct_sum">Also enable UDP noise for direct</string>
 
 </resources>

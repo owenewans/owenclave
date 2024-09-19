@@ -316,6 +316,21 @@
             app:key="connectionTestURL"
             app:title="@string/connection_test_url"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="enableFragment"
+            app:summary="@string/enable_fragment_sum"
+            app:title="@string/enable_fragment" />
+        <EditTextPreference
+            app:key="fragmentLength"
+            app:title="@string/fragment_length"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:key="fragmentInterval"
+            app:title="@string/fragment_interval"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:key="enableFragmentForDirect"
+            app:title="@string/enable_fragment_for_direct" />
     </PreferenceCategory>
 
 

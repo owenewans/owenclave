@@ -101,6 +101,11 @@ object Key {
     const val ENABLE_PCAP = "enablePcap"
     const val MTU = "mtu"
 
+    const val ENABLE_FRAGMENT = "enableFragment"
+    const val ENABLE_FRAGMENT_FOR_DIRECT = "enableFragmentForDirect"
+    const val FRAGMENT_LENGTH = "fragmentLength"
+    const val FRAGMENT_INTERVAL = "fragmentInterval"
+
     const val APP_TRAFFIC_STATISTICS = "appTrafficStatistics"
     const val PROFILE_TRAFFIC_STATISTICS = "profileTrafficStatistics"
 
