@@ -84,8 +84,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(path)) path = "";
         if (StrUtil.isBlank(headerType)) headerType = "none";
         if (StrUtil.isBlank(mKcpSeed)) mKcpSeed = "";
-        if (StrUtil.isBlank(quicSecurity)) quicSecurity = "";
-        if (StrUtil.isBlank(quicKey)) quicKey = "chacha20-poly1305";
+        if (StrUtil.isBlank(quicSecurity)) quicSecurity = "none";
+        if (StrUtil.isBlank(quicKey)) quicKey = "";
         if (StrUtil.isBlank(meekUrl)) meekUrl = "";
 
         if (StrUtil.isBlank(security)) security = "none";
