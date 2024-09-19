@@ -612,52 +612,13 @@ object RawUpdater : GroupUpdater() {
                     ).apply { init() }
                     return parseOutbound(v2rayConfig)
                 }
-                json.containsKey("outbound") -> {
-                    val v2rayConfig = gson.fromJson(
-                        json.getJSONObject("outbound").toString(),
-                        V2RayConfig.OutboundObject::class.java
-                    ).apply { init() }
-                    return parseOutbound(v2rayConfig)
-                }
-                json.containsKey("outbounds") -> {/*   val fakedns = json["fakedns"]
-                       if (fakedns is JSONObject) {
-                           json["fakedns"] = JSONArray().apply {
-                               add(fakedns)
-                           }
-                       }
-
-                       val routing = json["routing"]
-                       if (routing is JSONObject) {
-                           val rules = routing["rules"]
-                           if (rules is JSONArray) {
-                               rules.filterIsInstance<JSONObject>().forEach {
-                                   val inboundTag = it["inboundTag"]
-                                   if (inboundTag is String) {
-                                       it["inboundTag"] = JSONArray().apply {
-                                           add(inboundTag)
-                                       }
-                                   }
-                               }
-                           }
-                       }
-
-                       try {
-                           gson.fromJson(
-                               json.toString(),
-                               V2RayConfig::class.java
-                           ).apply { init() }
-                       } catch (e: Exception) {
-                           Logs.w(e)*/
+                json.containsKey("outbounds") -> {
                     json.getJSONArray("outbounds").filterIsInstance<JSONObject>().forEach {
                         val v2rayConfig = gson.fromJson(
                             it.toString(), V2RayConfig.OutboundObject::class.java
                         ).apply { init() }
-
                         proxies.addAll(parseOutbound(v2rayConfig))
-                    }/* null
-                 }?.outbounds?.forEach {
-                     proxies.addAll(parseOutbound(it))
-                 }*/
+                    }
                 }
                 else -> json.forEach { _, it ->
                     if (it is JSON) {
