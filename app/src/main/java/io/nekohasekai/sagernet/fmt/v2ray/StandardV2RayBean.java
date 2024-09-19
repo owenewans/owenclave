@@ -320,10 +320,12 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 break;
             }
             case "xtls": { // removed, for compatibility
-                security = "tls";
-                sni = input.readString();
-                alpn = input.readString();
-                input.readString(); // flow, removed
+                if (version <= 8) {
+                    security = "tls";
+                    sni = input.readString();
+                    alpn = input.readString();
+                    input.readString(); // flow, removed
+                }
                 if (version >= 16) {
                     break;
                 }
