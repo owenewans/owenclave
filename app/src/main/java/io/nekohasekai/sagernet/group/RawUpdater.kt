@@ -1007,7 +1007,8 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.type = "ws"
                                     v2rayBean.path = transport["path"]?.toString()
                                     val headers = transport["headers"] as? JSONObject
-                                    v2rayBean.host = headers?.get("Host")?.toString()
+                                    val host = headers?.get("Host") as? (List<String>)
+                                    v2rayBean.host = host?.get(0)
                                 }
                                 "http" -> {
                                     // TODO?
