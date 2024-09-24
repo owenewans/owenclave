@@ -1101,9 +1101,6 @@ object RawUpdater : GroupUpdater() {
                         when (outbound["packet_encoding"]) {
                             "packet", "xudp" -> v2rayBean.packetEncoding = outbound["packet_encoding"]?.toString()
                         }
-                        if (v2rayBean.flow.isNotBlank()) {
-                            v2rayBean.packetEncoding = "xudp"
-                        }
                     }
                 }
                 proxies.add(v2rayBean)
