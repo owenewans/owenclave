@@ -606,18 +606,28 @@ object RawUpdater : GroupUpdater() {
                 json.containsKey("method") -> {
                     return listOf(json.parseShadowsocks())
                 }
+                // v2ray outbound
                 json.containsKey("protocol") -> {
                     val v2rayConfig = gson.fromJson(
                         json.toString(), V2RayConfig.OutboundObject::class.java
                     ).apply { init() }
                     return parseOutbound(v2rayConfig)
                 }
+                // sing-box outbound
+                json.containsKey("type") -> {
+                    return parseSingBoxOutbound(json)
+                }
                 json.containsKey("outbounds") -> {
+                    // v2ray outbounds
                     json.getJSONArray("outbounds").filterIsInstance<JSONObject>().forEach {
                         val v2rayConfig = gson.fromJson(
                             it.toString(), V2RayConfig.OutboundObject::class.java
                         ).apply { init() }
                         proxies.addAll(parseOutbound(v2rayConfig))
+                    }
+                    // sing-box outbounds
+                    json.getJSONArray("outbounds").filterIsInstance<JSONObject>().forEach { outbound ->
+                        proxies.addAll(parseSingBoxOutbound(outbound))
                     }
                 }
                 else -> json.forEach { _, it ->
@@ -968,6 +978,209 @@ object RawUpdater : GroupUpdater() {
             Unit
         }
 
+        return proxies
+    }
+
+    fun parseSingBoxOutbound(outbound: JSONObject): List<AbstractBean> {
+        val proxies = ArrayList<AbstractBean>()
+        val type = outbound["type"]
+        when (type) {
+            "shadowsocks", "trojan", "vmess", "vless", "socks", "http" -> {
+                val v2rayBean = when (type) {
+                    "shadowsocks" -> ShadowsocksBean()
+                    "trojan" -> TrojanBean()
+                    "vmess" -> VMessBean()
+                    "vless" -> VLESSBean()
+                    "socks" -> SOCKSBean()
+                    else -> HttpBean()
+                }.applyDefaultValues().apply {
+                    name = outbound["tag"]?.toString()
+                    serverAddress = outbound["server"]?.toString()
+                    serverPort = outbound["server_port"]?.toString()?.toInt()
+                }
+                when (type) {
+                    "trojan", "vmess", "vless" -> {
+                        val transport = outbound["transport"] as? JSONObject
+                        if (transport != null) {
+                            when (transport["type"]) {
+                                "ws" -> {
+                                    v2rayBean.type = "ws"
+                                    v2rayBean.path = transport["path"]?.toString()
+                                    val headers = transport["headers"] as? JSONObject
+                                    v2rayBean.host = headers?.get("Host")?.toString()
+                                }
+                                "http" -> {
+                                    // TODO?
+                                    // TLS is not enforced. If TLS is not configured, plain HTTP 1.1 is used.
+                                    // No TCP transport, plain HTTP is merged into the HTTP transport.
+                                    v2rayBean.type = "http"
+                                    v2rayBean.path = transport["path"]?.toString()
+                                    val host = transport["host"] as? (List<String>)
+                                    v2rayBean.host = host?.get(0)
+                                }
+                                "quic" -> {
+                                    v2rayBean.type = "quic"
+                                }
+                                "grpc" -> {
+                                    v2rayBean.type = "grpc"
+                                    v2rayBean.grpcServiceName = transport["service_name"]?.toString()
+                                }
+                                "httpupgrade" -> {
+                                    v2rayBean.type = "httpupgrade"
+                                    v2rayBean.host = transport["host"]?.toString()
+                                    v2rayBean.path = transport["path"]?.toString()
+                                }
+                            }
+                        }
+                    }
+                }
+                when (type) {
+                    "trojan", "vmess", "vless", "http" -> {
+                        val tls = outbound["tls"] as? JSONObject
+                        if (tls?.get("enabled")?.toString().toBoolean()) {
+                            v2rayBean.security = "tls"
+                            v2rayBean.sni = tls?.get("server_name")?.toString()
+                            v2rayBean.allowInsecure = tls?.get("insecure")?.toString().toBoolean()
+                            val alpn = tls?.get("alpn") as? (List<String>)
+                            v2rayBean.alpn = alpn?.joinToString("\n")
+                            val reality = tls?.get("reality") as? JSONObject
+                            if (reality?.get("enabled")?.toString().toBoolean()) {
+                                v2rayBean.security = "reality"
+                                v2rayBean.realityPublicKey = reality?.get("public_key")?.toString()
+                                v2rayBean.realityShortId = reality?.get("short_id")?.toString()
+                            }
+                        }
+                    }
+                }
+                when (type) {
+                    "socks" -> {
+                        v2rayBean as SOCKSBean
+                        v2rayBean.protocol = when (outbound["version"]) {
+                            "4" -> SOCKSBean.PROTOCOL_SOCKS4
+                            "4a" -> SOCKSBean.PROTOCOL_SOCKS4A
+                            else -> SOCKSBean.PROTOCOL_SOCKS5
+                        }
+                        v2rayBean.username = outbound["username"]?.toString()
+                        v2rayBean.password = outbound["password"]?.toString()
+                    }
+                    "http" -> {
+                        v2rayBean as HttpBean
+                        v2rayBean.username = outbound["username"]?.toString()
+                        v2rayBean.password = outbound["password"]?.toString()
+                    }
+                    "shadowsocks" -> {
+                        v2rayBean as ShadowsocksBean
+                        v2rayBean.method = outbound["username"]?.toString()
+                        v2rayBean.password = outbound["password"]?.toString()
+                        val plugin = outbound["plugin"]?.toString()
+                        val pluginOpts = outbound["plugin_opts"]?.toString()
+                        if (plugin != null && pluginOpts == null) {
+                            v2rayBean.plugin = plugin
+                        }
+                        if (plugin != null && pluginOpts != null) {
+                            v2rayBean.plugin = "$plugin;$pluginOpts"
+                        }
+                    }
+                    "trojan" -> {
+                        v2rayBean as TrojanBean
+                        v2rayBean.password = outbound["password"]?.toString()
+                    }
+                    "vmess" -> {
+                        v2rayBean as VMessBean
+                        v2rayBean.uuid = outbound["uuid"]?.toString()
+                        v2rayBean.security = outbound["security"]?.toString()
+                        v2rayBean.alterId = outbound["alter_id"]?.toString()?.toInt()
+                        when (outbound["packet_encoding"]) {
+                            "packet", "xudp" -> v2rayBean.packetEncoding = outbound["packet_encoding"]?.toString()
+                        }
+                    }
+                    "vless" -> {
+                        v2rayBean as VLESSBean
+                        v2rayBean.uuid = outbound["uuid"]?.toString()
+                        v2rayBean.flow = outbound["flow"]?.toString()
+                        when (outbound["packet_encoding"]) {
+                            "packet", "xudp" -> v2rayBean.packetEncoding = outbound["packet_encoding"]?.toString()
+                        }
+                        if (v2rayBean.flow.isNotBlank()) {
+                            v2rayBean.packetEncoding = "xudp"
+                        }
+                    }
+                }
+                proxies.add(v2rayBean)
+            }
+            "hysteria2" -> {
+                val hysteria2Bean = Hysteria2Bean().applyDefaultValues().apply {
+                    name = outbound["tag"]?.toString()
+                    serverAddress = outbound["server"]?.toString()
+                    serverPorts = outbound["server_port"]?.toString()
+                    auth = outbound["password"]?.toString()
+                    val tls = outbound["tls"] as? JSONObject
+                    if (tls != null) {
+                        if (tls["enabled"]?.toString().toBoolean()) {
+                            sni = tls["server_name"]?.toString()
+                            allowInsecure = tls["insecure"]?.toString().toBoolean()
+                        }
+                    }
+                    val obfuscation = outbound["obfs"] as? JSONObject
+                    if (obfuscation?.get("type")?.toString() == "salamander") {
+                        obfs = obfuscation["password"]?.toString()
+                    }
+                }
+                proxies.add(hysteria2Bean)
+            }
+            "hysteria" -> {
+                val hysteriaBean = HysteriaBean().applyDefaultValues().apply {
+                    name = outbound["tag"]?.toString()
+                    serverAddress = outbound["server"]?.toString()
+                    serverPorts = outbound["server_port"]?.toString()
+                    if (outbound["auth"]?.toString()?.isNotBlank() == true) {
+                        authPayloadType = HysteriaBean.TYPE_BASE64
+                        authPayload = outbound["auth"]?.toString()
+                    }
+                    if (outbound["auth_str"]?.toString()?.isNotBlank() == true) {
+                        authPayloadType = HysteriaBean.TYPE_STRING
+                        authPayload = outbound["auth_str"]?.toString()
+                    }
+                    obfuscation = outbound["obfs"]?.toString()
+                    val tls = outbound["tls"] as? JSONObject
+                    if (tls?.get("enabled")?.toString().toBoolean()) {
+                        sni = tls?.get("server_name")?.toString()
+                        allowInsecure = tls?.get("insecure")?.toString().toBoolean()
+                    }
+                    uploadMbps = outbound["up_mbps"]?.toString()?.toIntOrNull() ?: 10
+                    downloadMbps = outbound["down_mbps"]?.toString()?.toIntOrNull() ?: 50
+                }
+                proxies.add(hysteriaBean)
+            }
+            "tuic" -> {
+                val tuic5Bean = Tuic5Bean().applyDefaultValues().apply {
+                    name = outbound["tag"]?.toString()
+                    serverAddress = outbound["server"]?.toString()
+                    serverPort = outbound["server_port"]?.toString()?.toInt()
+                    uuid = outbound["uuid"]?.toString()
+                    password = outbound["password"]?.toString()
+                    congestionControl = outbound["congestion_control"]?.toString()
+                    udpRelayMode = outbound["udp_relay_mode"]?.toString()
+                    val tls = outbound["tls"] as? JSONObject
+                    if (tls?.get("enabled")?.toString().toBoolean()) {
+                        sni = tls?.get("server_name")?.toString()
+                    }
+                }
+                proxies.add(tuic5Bean)
+            }
+            "ssh" -> {
+                val sshBean = SSHBean().applyDefaultValues().apply {
+                    name = outbound["tag"]?.toString()
+                    serverAddress = outbound["server"]?.toString()
+                    serverPort = outbound["server_port"]?.toString()?.toInt()
+                    username = outbound["user"]?.toString()
+                    password = outbound["password"]?.toString()
+                    privateKey = outbound["private_key"]?.toString()
+                    privateKeyPassphrase = outbound["private_key_passphrase"]?.toString()
+                }
+                proxies.add(sshBean)
+            }
+        }
         return proxies
     }
 
