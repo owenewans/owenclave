@@ -128,6 +128,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var rulesGeoipUrl by configurationStore.string(Key.RULES_GEOIP_URL) { "https://github.com/v2fly/geoip/releases/latest/download/geoip.dat" }
     var enableLog by configurationStore.boolean(Key.ENABLE_LOG) { BuildConfig.DEBUG }
     var enablePcap by configurationStore.boolean(Key.ENABLE_PCAP)
+    var allowAppsBypassVpn by configurationStore.boolean(Key.ALLOW_APPS_BYPASS_VPN)
 
     var enableFragment by configurationStore.boolean(Key.ENABLE_FRAGMENT)
     var enableFragmentForDirect by configurationStore.boolean(Key.ENABLE_FRAGMENT_FOR_DIRECT)

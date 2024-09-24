@@ -331,6 +331,10 @@
         <SwitchPreference
             app:key="enableFragmentForDirect"
             app:title="@string/enable_fragment_for_direct" />
+        <SwitchPreference
+            app:key="allowAppsBypassVpn"
+            app:summary="@string/allow_apps_bypass_vpn_sum"
+            app:title="@string/allow_apps_bypass_vpn" />
     </PreferenceCategory>
 
 

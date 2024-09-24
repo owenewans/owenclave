@@ -551,5 +551,7 @@
     <string name="landing_proxy">Landing proxy</string>
     <string name="resolve_destination_for_direct">Resolve destination (direct)</string>
     <string name="edns_client_ip">EDNS client IP</string>
+    <string name="allow_apps_bypass_vpn">Allow apps to bypass VPN</string>
+    <string name="allow_apps_bypass_vpn_sum">Allow to use methods such as bindProcessToNetwork to bypass VPN.</string>
 
 </resources>

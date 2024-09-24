@@ -250,6 +250,10 @@ class VpnService : BaseVpnService(),
         metered = DataStore.meteredNetwork
         if (Build.VERSION.SDK_INT >= 29) builder.setMetered(metered)
 
+        if (DataStore.allowAppsBypassVpn) {
+            builder.allowBypass()
+        }
+
         conn = builder.establish() ?: throw NullConnectionException()
         active = true   // possible race condition here?
 
