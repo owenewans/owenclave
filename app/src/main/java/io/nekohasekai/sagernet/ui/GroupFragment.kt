@@ -133,6 +133,19 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             R.id.action_new_group -> {
                 startActivity(Intent(context, GroupSettingsActivity::class.java))
             }
+            R.id.action_update_all_subscriptions -> {
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(R.string.update_all_subscriptions)
+                    .setPositiveButton(R.string.yes) { _, _ ->
+                        SagerDatabase.groupDao.allGroups()
+                            .filter { it.type == GroupType.SUBSCRIPTION }
+                            .forEach {
+                                GroupUpdater.startUpdate(it, true)
+                            }
+                    }
+                    .setNegativeButton(R.string.no, null)
+                    .show()
+            }
         }
         return true
     }
