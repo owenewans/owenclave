@@ -1017,7 +1017,7 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.type = "http"
                                     v2rayBean.path = transport["path"]?.toString()
                                     val host = transport["host"] as? (List<String>)
-                                    v2rayBean.host = host?.get(0)
+                                    v2rayBean.host = host?.joinToString(",")
                                 }
                                 "quic" -> {
                                     v2rayBean.type = "quic"
