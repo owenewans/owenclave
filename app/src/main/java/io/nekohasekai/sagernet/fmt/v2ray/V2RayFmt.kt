@@ -409,7 +409,7 @@ fun VMessBean.toV2rayN(): String {
             else -> ""
         }
         it["sni"] = sni
-        it["alpn"] = alpn.split("\n").joinToString(",")
+        it["alpn"] = alpn.listByLineOrComma().joinToString(",")
         it["scy"] = encryption
         it["fp"] = when (security) {
             "reality" -> realityFingerprint
@@ -502,7 +502,7 @@ fun StandardV2RayBean.toUri(): String {
                     builder.addQueryParameter("sni", sni)
                 }
                 if (alpn.isNotBlank()) {
-                    builder.addQueryParameter("alpn", alpn.split("\n").joinToString(","))
+                    builder.addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
                 }
                 if (allowInsecure) {
                     // bad format from where?

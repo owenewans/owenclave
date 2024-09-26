@@ -24,6 +24,7 @@ import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
+import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
 import java.io.File
@@ -40,7 +41,7 @@ fun TuicBean.toUri(): String {
         builder.addQueryParameter("sni", sni)
     }
     if (alpn.isNotBlank()) {
-        builder.addQueryParameter("alpn", alpn.split("\n").joinToString(","))
+        builder.addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
     }
     if (disableSNI) {
         builder.addQueryParameter("disable_sni", "1")
@@ -83,7 +84,7 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
 
             it["udp_relay_mode"] = udpRelayMode
             if (alpn.isNotBlank()) {
-                it["alpn"] = JSONArray(alpn.split("\n"))
+                it["alpn"] = JSONArray(alpn.listByLineOrComma())
             }
             it["congestion_controller"] = congestionController
             it["disable_sni"] = disableSNI

@@ -22,11 +22,13 @@ package io.nekohasekai.sagernet.fmt.v2ray;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
+import java.util.List;
 import java.util.Objects;
 
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 import io.nekohasekai.sagernet.ktx.UUIDsKt;
 
 public abstract class StandardV2RayBean extends AbstractBean {
@@ -379,9 +381,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public boolean canTCPing() {
-        String[] alpns = alpn.split("\n");
+        List<String> alpns = NetsKt.listByLineOrComma(alpn);
         return !type.equals("kcp") && !type.equals("quic") && !type.equals("hysteria2")
-                && !(type.equals("splithttp") && alpns.length == 1 && Objects.equals(alpns[0], "h3"));
+                && !(type.equals("splithttp") && alpns.size() == 1 && Objects.equals(alpns.get(0), "h3"));
     }
 
     @Override

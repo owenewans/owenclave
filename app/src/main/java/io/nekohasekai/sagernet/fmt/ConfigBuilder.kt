@@ -102,6 +102,7 @@ import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.joinHostPort
+import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.ktx.toHysteriaPort
 import io.nekohasekai.sagernet.utils.PackageCache
@@ -208,12 +209,9 @@ fun buildV2RayConfig(
     val allowAccess = DataStore.allowAccess
     val bind = if (!forTest && allowAccess) "0.0.0.0" else LOCALHOST
 
-    val remoteDns = DataStore.remoteDns.split("\n")
-        .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
-    var directDNS = DataStore.directDns.split("\n")
-        .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
-    var bootstrapDNS = DataStore.bootstrapDns.split("\n")
-        .mapNotNull { dns -> dns.trim().takeIf { it.isNotBlank() && !it.startsWith("#") } }
+    val remoteDns = DataStore.remoteDns.listByLineOrComma().filter { !it.startsWith("#") }
+    var directDNS = DataStore.directDns.listByLineOrComma().filter { !it.startsWith("#") }
+    var bootstrapDNS = DataStore.bootstrapDns.listByLineOrComma().filter { !it.startsWith("#") }
     if (DataStore.useLocalDnsAsDirectDns) directDNS = listOf("localhost")
     if (DataStore.useLocalDnsAsBootstrapDns) bootstrapDNS = listOf("localhost")
     val enableDnsRouting = DataStore.enableDnsRouting
@@ -678,7 +676,7 @@ fun buildV2RayConfig(
                                                 }
 
                                                 if (bean.alpn.isNotBlank()) {
-                                                    alpn = bean.alpn.split("\n")
+                                                    alpn = bean.alpn.listByLineOrComma()
                                                 }
 
                                                 if (bean.certificates.isNotBlank()) {
@@ -693,9 +691,7 @@ fun buildV2RayConfig(
                                                 }
 
                                                 if (bean.pinnedPeerCertificateChainSha256.isNotBlank()) {
-                                                    pinnedPeerCertificateChainSha256 = bean.pinnedPeerCertificateChainSha256.split(
-                                                        "\n"
-                                                    ).filter { it.isNotBlank() }
+                                                    pinnedPeerCertificateChainSha256 = bean.pinnedPeerCertificateChainSha256.listByLineOrComma()
                                                 }
 
                                                 if (bean.allowInsecure) {
@@ -740,13 +736,11 @@ fun buildV2RayConfig(
                                                                     if (bean.host.isNotBlank()) {
                                                                         headers["Host"] = TcpObject.HeaderObject.StringOrListObject()
                                                                             .apply {
-                                                                                valueY = bean.host.split(
-                                                                                    ","
-                                                                                ).map { it.trim() }
+                                                                                valueY = bean.host.listByLineOrComma()
                                                                             }
                                                                     }
                                                                     if (bean.path.isNotBlank()) {
-                                                                        path = bean.path.split(",")
+                                                                        path = bean.path.listByLineOrComma()
                                                                     }
                                                                 }
                                                         }
@@ -800,7 +794,7 @@ fun buildV2RayConfig(
 
                                             httpSettings = HttpObject().apply {
                                                 if (bean.host.isNotBlank()) {
-                                                    host = bean.host.split(",")
+                                                    host = bean.host.listByLineOrComma()
                                                 }
 
                                                 path = bean.path.takeIf { it.isNotBlank() } ?: "/"
@@ -907,14 +901,14 @@ fun buildV2RayConfig(
                                 protocol = "wireguard"
                                 settings = LazyOutboundConfigurationObject(this,
                                     WireGuardOutboundConfigurationObject().apply {
-                                        address = bean.localAddress.split("\n")
+                                        address = bean.localAddress.listByLineOrComma()
                                         secretKey = bean.privateKey
                                         mtu = bean.mtu
-                                        val values = bean.reserved.trim().split(",")
+                                        val values = bean.reserved.listByLineOrComma()
                                         if (values.size == 3) {
-                                            val reserved0 = values[0].trim().toIntOrNull()
-                                            val reserved1 = values[1].trim().toIntOrNull()
-                                            val reserved2 = values[2].trim().toIntOrNull()
+                                            val reserved0 = values[0].toIntOrNull()
+                                            val reserved1 = values[1].toIntOrNull()
+                                            val reserved2 = values[2].toIntOrNull()
                                             if (reserved0 != null && reserved1 != null && reserved2 != null) {
                                                 reserved = listOf(reserved0, reserved1, reserved2)
                                             }
@@ -1233,10 +1227,10 @@ fun buildV2RayConfig(
                 }
 
                 if (rule.domains.isNotBlank()) {
-                    domain = rule.domains.split("\n")
+                    domain = rule.domains.listByLineOrComma()
                 }
                 if (rule.ip.isNotBlank()) {
-                    ip = rule.ip.split("\n")
+                    ip = rule.ip.listByLineOrComma()
                 }
                 if (rule.port.isNotBlank()) {
                     port = rule.port
@@ -1248,16 +1242,16 @@ fun buildV2RayConfig(
                     network = rule.network
                 }
                 if (rule.source.isNotBlank()) {
-                    source = rule.source.split("\n")
+                    source = rule.source.listByLineOrComma()
                 }
                 if (rule.protocol.isNotBlank()) {
-                    protocol = rule.protocol.split("\n")
+                    protocol = rule.protocol.listByLineOrComma()
                 }
                 if (rule.attrs.isNotBlank()) {
                     attrs = rule.attrs
                 }
                 if (rule.ssid.isNotBlank()) {
-                    ssidList = rule.ssid.split("\n")
+                    ssidList = rule.ssid.listByLineOrComma()
                 }
                 if (rule.networkType.isNotBlank()) {
                     networkType = rule.networkType
@@ -1411,7 +1405,7 @@ fun buildV2RayConfig(
                 if (bean is ConfigBean && bean.type == "v2ray_outbound") {
                     // too dirty to read server addresses from a custom outbound config
                     // let users provide them manually
-                    bean.serverAddresses.split("\n").forEach {
+                    bean.serverAddresses.listByLineOrComma().forEach {
                         when {
                             it.isBlank() -> {}
                             it.isIpAddress() -> {
@@ -1447,12 +1441,12 @@ fun buildV2RayConfig(
         if (enableDnsRouting) {
             for (bypassRule in extraRules.filter { it.isBypassRule() }) {
                 if (bypassRule.domains.isNotBlank()) {
-                    bypassDomain.addAll(bypassRule.domains.split("\n"))
+                    bypassDomain.addAll(bypassRule.domains.listByLineOrComma())
                 }
             }
             for (proxyRule in extraRules.filter { it.isProxyRule() }) {
                 if (proxyRule.domains.isNotBlank()) {
-                    proxyDomain.addAll(proxyRule.domains.split("\n"))
+                    proxyDomain.addAll(proxyRule.domains.listByLineOrComma())
                 }
             }
         }

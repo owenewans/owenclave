@@ -74,6 +74,10 @@ fun mkPort(): Int {
     return port
 }
 
+fun String.listByLineOrComma(): List<String> {
+    return this.split(",", "\n").map { it.trim() }.filter { it.isNotEmpty() }
+}
+
 fun String.isValidHysteriaPort(): Boolean {
     if (this.toIntOrNull() != null) {
         return this.toInt() in 1..65535
