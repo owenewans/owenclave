@@ -673,7 +673,7 @@ object RawUpdater : GroupUpdater() {
                                         v2rayBean.sni = it
                                     }
                                     alpn?.also {
-                                        v2rayBean.alpn = it.joinToString(",")
+                                        v2rayBean.alpn = it.joinToString("\n")
                                     }
                                     allowInsecure?.also {
                                         v2rayBean.allowInsecure = it
