@@ -220,7 +220,15 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.host = it
                 }
                 url.queryParameter("path")?.let {
-                    bean.path = it
+                    // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/2743fcb3f2208f2189d86eb2a9d4655000bcf8fb/app/src/main/java/io/nekohasekai/sagernet/fmt/v2ray/V2RayFmt.kt#L545-L549
+                    // RPRX's smart-assed invention. This of course will break under some conditions. Do not report issue about this.
+                    if (it.contains("?ed=")) {
+                        bean.path = it.substringBefore("?ed=")
+                        bean.wsMaxEarlyData = it.substringAfter("?ed=").toIntOrNull() ?: 2048
+                        bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
+                    } else {
+                        bean.path = it
+                    }
                 }
             }
             "quic" -> {
@@ -273,7 +281,17 @@ fun parseV2RayN(link: String): VMessBean {
     }
     bean.headerType = json.getStr("type") ?: ""
     bean.host = json.getStr("host") ?: ""
-    bean.path = json.getStr("path") ?: ""
+    val path = json.getStr("path") ?: ""
+
+    if (bean.type == "ws" && path.contains("?ed=")) {
+        // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/2743fcb3f2208f2189d86eb2a9d4655000bcf8fb/app/src/main/java/io/nekohasekai/sagernet/fmt/v2ray/V2RayFmt.kt#L545-L549
+        // RPRX's smart-assed invention. This of course will break under some conditions. Do not report issue about this.
+        bean.path = path.substringBefore("?ed=")
+        bean.wsMaxEarlyData = path.substringAfter("?ed=").toIntOrNull() ?: 2048
+        bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
+    } else {
+        bean.path = path
+    }
 
     when (bean.type) {
         "quic" -> {

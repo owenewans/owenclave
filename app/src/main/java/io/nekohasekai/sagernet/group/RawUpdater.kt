@@ -748,7 +748,15 @@ object RawUpdater : GroupUpdater() {
                                         }
                                     }
                                     path?.also {
-                                        v2rayBean.path = it
+                                        if (it.contains("?ed=")) {
+                                            // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/2743fcb3f2208f2189d86eb2a9d4655000bcf8fb/app/src/main/java/io/nekohasekai/sagernet/fmt/v2ray/V2RayFmt.kt#L545-L549
+                                            // RPRX's smart-assed invention. This of course will break under some conditions. Do not report issue about this.
+                                            v2rayBean.path = it.substringBefore("?ed=")
+                                            v2rayBean.wsMaxEarlyData = it.substringAfter("?ed=").toIntOrNull() ?: 2048
+                                            v2rayBean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
+                                        } else {
+                                            v2rayBean.path = it
+                                        }
                                     }
                                     maxEarlyData?.also {
                                         v2rayBean.wsMaxEarlyData = it
