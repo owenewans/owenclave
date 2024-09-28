@@ -431,7 +431,7 @@
     </string-array>
 
     <string-array name="tcp_headers_entry">
-        <item>NONE</item>
+        <item/>
         <item>HTTP</item>
     </string-array>
 
@@ -463,7 +463,7 @@
     </string-array>
 
     <string-array name="kcp_quic_headers_entry">
-        <item>NONE</item>
+        <item/>
         <item>SRTP</item>
         <item>UTP</item>
         <item>WECHAT-VIDEO</item>
@@ -517,7 +517,7 @@
     </string-array>
 
     <string-array name="transport_layer_encryption_entry">
-        <item>NONE</item>
+        <item/>
         <item>TLS</item>
         <item>REALITY</item>
     </string-array>
@@ -526,14 +526,6 @@
         <item>none</item>
         <item>tls</item>
         <item>reality</item>
-    </string-array>
-
-    <string-array name="trojan_transport_layer_encryption_entry" translatable="false">
-        <item>TLS</item>
-    </string-array>
-
-    <string-array name="trojan_transport_layer_encryption_value">
-        <item>tls</item>
     </string-array>
 
     <string-array name="xtls_flow_entry" translatable="false">
@@ -972,7 +964,7 @@
     </string-array>
 
     <string-array name="packet_encoding_entry">
-        <item>None</item>
+        <item/>
         <item>Packet</item>
         <item>XUDP</item>
     </string-array>
@@ -981,16 +973,6 @@
         <item>none</item>
         <item>packet</item>
         <item>xudp</item>
-    </string-array>
-
-    <string-array name="grpc_mode_entry">
-        <item>Gun</item>
-        <item>Multi</item>
-    </string-array>
-
-    <string-array name="grpc_mode_value">
-        <item />
-        <item>multi</item>
     </string-array>
 
     <string-array name="mieru_protocol">
