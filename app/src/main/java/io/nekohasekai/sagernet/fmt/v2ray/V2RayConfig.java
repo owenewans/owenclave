@@ -922,6 +922,7 @@ public class V2RayConfig {
         public TLSObject tlsSettings;
         public UTLSObject utlsSettings;
         public RealityObject realitySettings;
+        public TcpObject rawSettings;
         public TcpObject tcpSettings;
         public KcpObject kcpSettings;
         public WebSocketObject wsSettings;

@@ -696,8 +696,10 @@ object RawUpdater : GroupUpdater() {
                         }
                         v2rayBean.type = network ?: v2rayBean.type
                         when (network) {
-                            "tcp" -> {
-                                tcpSettings?.header?.apply {
+                            "", "tcp", "raw" -> {
+                                v2rayBean.type = "tcp"
+                                val settings = tcpSettings ?: rawSettings
+                                settings?.header?.apply {
                                     when (type) {
                                         "http" -> {
                                             v2rayBean.headerType = "http"

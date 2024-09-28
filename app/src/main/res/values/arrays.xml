@@ -395,7 +395,7 @@
     </string-array>
 
     <string-array name="networks_entry">
-        <item>TCP</item>
+        <item/>
         <item>KCP</item>
         <item>WS</item>
         <item>H2</item>
