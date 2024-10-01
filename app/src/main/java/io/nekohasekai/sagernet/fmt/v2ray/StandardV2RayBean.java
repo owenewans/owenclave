@@ -56,6 +56,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String utlsFingerprint;
 
     public Boolean wsUseBrowserForwarder;
+    public Boolean shUseBrowserForwarder;
     public Boolean allowInsecure;
     public String packetEncoding;
 
@@ -97,6 +98,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(grpcServiceName)) grpcServiceName = "";
         if (wsMaxEarlyData == null) wsMaxEarlyData = 0;
         if (wsUseBrowserForwarder == null) wsUseBrowserForwarder = false;
+        if (shUseBrowserForwarder == null) shUseBrowserForwarder = false;
         if (StrUtil.isBlank(certificates)) certificates = "";
         if (StrUtil.isBlank(pinnedPeerCertificateChainSha256)) pinnedPeerCertificateChainSha256 = "";
         if (StrUtil.isBlank(earlyDataHeaderName)) earlyDataHeaderName = "";
@@ -122,7 +124,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(19);
+        output.writeInt(20);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -149,9 +151,15 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(earlyDataHeaderName);
                 break;
             }
-            case "http", "httpupgrade", "splithttp": {
+            case "http", "httpupgrade": {
                 output.writeString(host);
                 output.writeString(path);
+                break;
+            }
+            case "splithttp": {
+                output.writeString(host);
+                output.writeString(path);
+                output.writeBoolean(shUseBrowserForwarder);
                 break;
             }
             case "quic": {
@@ -300,6 +308,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
                     host = input.readString();
                     path = input.readString();
                 }
+                if (version >= 20) {
+                    shUseBrowserForwarder = input.readBoolean();
+                }
                 break;
             }
         }
@@ -395,6 +406,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         bean.wsMaxEarlyData = wsMaxEarlyData;
         bean.earlyDataHeaderName = earlyDataHeaderName;
         bean.wsUseBrowserForwarder = wsUseBrowserForwarder;
+        bean.shUseBrowserForwarder = shUseBrowserForwarder;
         bean.certificates = certificates;
         bean.pinnedPeerCertificateChainSha256 = pinnedPeerCertificateChainSha256;
         bean.packetEncoding = packetEncoding;

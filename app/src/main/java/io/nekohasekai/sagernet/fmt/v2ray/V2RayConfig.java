@@ -1187,6 +1187,7 @@ public class V2RayConfig {
         public String path;
         public Map<String, String> headers;
         public Boolean noSSEHeader;
+        public Boolean useBrowserForwarding;
 
     }
 
@@ -1276,6 +1277,15 @@ public class V2RayConfig {
     public BrowserForwarderObject browserForwarder;
 
     public static class BrowserForwarderObject {
+
+        public String listenAddr;
+        public Integer listenPort;
+
+    }
+
+    public BrowserDialerObject browserDialer;
+
+    public static class BrowserDialerObject {
 
         public String listenAddr;
         public Integer listenPort;

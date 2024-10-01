@@ -59,7 +59,6 @@ import io.nekohasekai.sagernet.ktx.listenForPackageChanges
 import io.nekohasekai.sagernet.ktx.readableMessage
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ktx.showAllowingStateLoss
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV2RayBean>(),
@@ -141,6 +140,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverObfs = hy2ObfsPassword
 
         DataStore.serverWsBrowserForwarding = wsUseBrowserForwarder
+        DataStore.serverShBrowserForwarding = shUseBrowserForwarder
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverPacketEncoding = packetEncoding
 
@@ -218,6 +218,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         hy2ObfsPassword = DataStore.serverObfs
 
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
+        shUseBrowserForwarder = DataStore.serverShBrowserForwarding
         allowInsecure = DataStore.serverAllowInsecure
         packetEncoding = DataStore.serverPacketEncoding
 
@@ -260,6 +261,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var passwordUUID: EditTextPreference
 
     lateinit var wsCategory: PreferenceCategory
+    lateinit var splithttpCategory: PreferenceCategory
     lateinit var ssExperimentsCategory: PreferenceCategory
 
     lateinit var plugin: PluginPreference
@@ -324,6 +326,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         }
 
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
+        splithttpCategory = findPreference(Key.SERVER_SH_CATEGORY)!!
 
         when (bean) {
             is VLESSBean -> {
@@ -496,6 +499,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         }
 
         wsCategory.isVisible = isWS
+        splithttpCategory.isVisible = isSplitHTTP
 
         when (network) {
             "tcp" -> {

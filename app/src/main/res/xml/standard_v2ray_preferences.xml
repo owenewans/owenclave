@@ -207,6 +207,15 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        app:key="serverShCategory"
+        app:title="@string/cag_splithttp">
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverShBrowserForwarding"
+            app:title="@string/ws_browser_forwarding" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:icon="@drawable/ic_baseline_grid_3x3_24"
         app:key="serverVMessExperimentsCategory"
         app:title="@string/experimental_settings">

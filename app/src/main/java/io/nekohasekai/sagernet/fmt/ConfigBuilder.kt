@@ -54,6 +54,7 @@ import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.BrowserDialerObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.BrowserForwarderObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.DNSOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.DnsObject
@@ -128,6 +129,8 @@ class V2rayBuildResult(
     var index: List<IndexEntity>,
     var requireWs: Boolean,
     var wsPort: Int,
+    var requireSh: Boolean,
+    var shPort: Int,
     var outboundTags: List<String>,
     var outboundTagsCurrent: List<String>,
     var outboundTagsAll: Map<String, ProxyEntity>,
@@ -222,6 +225,7 @@ fun buildV2RayConfig(
     val trafficSniffing = DataStore.trafficSniffing
     val indexMap = ArrayList<IndexEntity>()
     var requireWs = false
+    var requireSh = false
     val requireHttp = !forTest && DataStore.requireHttp
     val requireTransproxy = if (forTest) false else DataStore.requireTransproxy
     val ipv6Mode = if (forTest) IPv6Mode.ENABLE else DataStore.ipv6Mode
@@ -366,7 +370,10 @@ fun buildV2RayConfig(
             for (proxyEntity in proxies) {
                 val bean = proxyEntity.requireBean()
 
-                if (bean is StandardV2RayBean && bean.type == "ws" && bean.wsUseBrowserForwarder == true) {
+                if (bean is StandardV2RayBean && (
+                    (bean.type == "ws" && bean.wsUseBrowserForwarder) ||
+                    (bean.type == "splithttp" && bean.shUseBrowserForwarder)
+                )) {
                     val route = RoutingObject.RuleObject().apply {
                         type = "field"
                         outboundTag = TAG_DIRECT
@@ -391,6 +398,7 @@ fun buildV2RayConfig(
                     }
                     wsRules[bean.host.takeIf { !it.isNullOrBlank() } ?: bean.serverAddress] = route
                 }
+
             }
 
             rules.addAll(wsRules.values)
@@ -841,6 +849,10 @@ fun buildV2RayConfig(
                                                 if (bean.path.isNotBlank()) {
                                                     path = bean.path
                                                 }
+                                                if (bean.shUseBrowserForwarder) {
+                                                    useBrowserForwarding = true
+                                                    requireSh = true
+                                                }
                                             }
                                         }
                                         "hysteria2" -> {
@@ -864,7 +876,8 @@ fun buildV2RayConfig(
                                     if (DataStore.enableFragment && bean.canTCPing()
                                         && (security == "tls" || security == "reality")
                                         && !(bean is ShadowsocksBean && bean.plugin.isNotEmpty()
-                                        && !(network == "ws" && bean.wsUseBrowserForwarder))
+                                        && !(network == "ws" && bean.wsUseBrowserForwarder)
+                                        && !(network == "splithttp" && bean.shUseBrowserForwarder))
                                     ) {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
                                             if (DataStore.enableFragment) {
@@ -1307,6 +1320,13 @@ fun buildV2RayConfig(
             }
         }
 
+        if (requireSh) {
+            browserDialer = BrowserDialerObject().apply {
+                listenAddr = LOCALHOST
+                listenPort = mkPort()
+            }
+        }
+
         outbounds.add(OutboundObject().apply {
             tag = TAG_DIRECT
             protocol = "freedom"
@@ -1644,6 +1664,8 @@ fun buildV2RayConfig(
             indexMap,
             requireWs,
             if (requireWs) browserForwarder.listenPort else 0,
+            requireSh,
+            if (requireSh) browserDialer.listenPort else 0,
             outboundTags,
             outboundTagsCurrent,
             outboundTagsAll,
@@ -1719,6 +1741,17 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
         }))
     }
 
+    var requireSh = false
+    var shPort = 0
+    if (config.containsKey("browserDialer")) {
+        config["browserDialer"] = JSONObject(gson.toJson(BrowserDialerObject().apply {
+            requireSh = true
+            listenAddr = LOCALHOST
+            listenPort = mkPort()
+            shPort = listenPort
+        }))
+    }
+
     val outbounds = try {
         config.getJSONArray("outbounds")?.filterIsInstance<JSONObject>()?.map { it ->
             gson.fromJson(it.toString().takeIf { it.isNotBlank() } ?: "{}",
@@ -1774,6 +1807,8 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
         emptyList(),
         requireWs,
         wsPort,
+        requireSh,
+        shPort,
         outboundTags,
         outboundTags,
         emptyMap(),

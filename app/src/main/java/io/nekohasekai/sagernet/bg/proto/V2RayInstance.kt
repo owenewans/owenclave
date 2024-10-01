@@ -70,6 +70,7 @@ abstract class V2RayInstance(
     lateinit var config: V2rayBuildResult
     lateinit var v2rayPoint: V2RayInstance
     private lateinit var wsForwarder: WebView
+    private lateinit var shForwarder: WebView
 
     val pluginPath = hashMapOf<String, PluginManager.InitResult>()
     val pluginConfigs = hashMapOf<Int, Pair<Int, String>>()
@@ -448,6 +449,39 @@ abstract class V2RayInstance(
             }
         }
 
+        if (config.requireSh) {
+            val url = "http://" + joinHostPort(LOCALHOST, config.shPort) + "/"
+
+            runOnMainDispatcher {
+                shForwarder = WebView(context)
+                shForwarder.settings.javaScriptEnabled = true
+                shForwarder.webViewClient = object : WebViewClient() {
+                    override fun onReceivedError(
+                        view: WebView?,
+                        request: WebResourceRequest?,
+                        error: WebResourceError?,
+                    ) {
+                        Logs.d("WebView load r: $error")
+
+                        runOnMainDispatcher {
+                            shForwarder.loadUrl("about:blank")
+
+                            delay(1000L)
+                            shForwarder.loadUrl(url)
+                        }
+                    }
+
+                    override fun onPageFinished(view: WebView, url: String) {
+                        super.onPageFinished(view, url)
+
+                        Logs.d("WebView loaded: ${view.title}")
+
+                    }
+                }
+                shForwarder.loadUrl(url)
+            }
+        }
+
     }
 
     private var isClosed = false
@@ -469,6 +503,15 @@ abstract class V2RayInstance(
                 onMainDispatcher {
                     wsForwarder.loadUrl("about:blank")
                     wsForwarder.destroy()
+                }
+            }
+        }
+
+        if (::shForwarder.isInitialized) {
+            runBlocking {
+                onMainDispatcher {
+                    shForwarder.loadUrl("about:blank")
+                    shForwarder.destroy()
                 }
             }
         }
