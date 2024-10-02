@@ -158,13 +158,14 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
             HysteriaBean.TYPE_BASE64 -> it["auth"] = authPayload
             HysteriaBean.TYPE_STRING -> it["auth_str"] = authPayload
         }
+        var servername = sni
         if (!usePortHopping && protocol != HysteriaBean.PROTOCOL_FAKETCP) {
-            if (sni.isBlank() && !serverAddress.isIpAddress()) {
-                sni = serverAddress
+            if (servername.isBlank() && !serverAddress.isIpAddress()) {
+                servername = serverAddress
             }
         }
-        if (sni.isNotBlank()) {
-            it["server_name"] = sni
+        if (servername.isNotBlank()) {
+            it["server_name"] = servername
         }
         if (alpn.isNotBlank()) it["alpn"] = alpn
         if (caText.isNotBlank() && cacheFile != null) {

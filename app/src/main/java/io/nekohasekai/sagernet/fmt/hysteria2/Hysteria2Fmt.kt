@@ -171,13 +171,14 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (allowInsecure) {
         tlsObject["insecure"] = true
     }
+    var servername = sni
     if (!usePortHopping) {
-        if (sni.isBlank() && !serverAddress.isIpAddress()) {
-            sni = serverAddress
+        if (servername.isBlank() && !serverAddress.isIpAddress()) {
+            servername = serverAddress
         }
     }
-    if (sni.isNotBlank()) {
-        tlsObject["sni"] = sni
+    if (servername.isNotBlank()) {
+        tlsObject["sni"] = servername
     }
     if (caText.isNotBlank() && cacheFile != null) {
         val caFile = cacheFile()
