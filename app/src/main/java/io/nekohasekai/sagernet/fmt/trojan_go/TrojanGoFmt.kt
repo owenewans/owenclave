@@ -135,12 +135,13 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
             }
         }
 
-        if (sni.isBlank() && !serverAddress.isIpAddress()) {
-            sni = serverAddress
+        var servername = sni
+        if (servername.isBlank() && !serverAddress.isIpAddress()) {
+            servername = serverAddress
         }
 
         conf["ssl"] = JSONObject().also {
-            if (sni.isNotBlank()) it["sni"] = sni
+            if (servername.isNotBlank()) it["sni"] = servername
             if (allowInsecure) it["verify"] = false
             if (utlsFingerprint.isNotBlank()) it["fingerprint"] = utlsFingerprint
         }
