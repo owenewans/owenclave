@@ -128,6 +128,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverWsMaxEarlyData = wsMaxEarlyData
         DataStore.serverEarlyDataHeaderName = earlyDataHeaderName
         DataStore.serverUTLSFingerprint = utlsFingerprint
+        DataStore.serverEchConfig = echConfig
+        DataStore.serverEchDohServer = echDohServer
 
         DataStore.serverRealityPublicKey = realityPublicKey
         DataStore.serverRealityShortId = realityShortId
@@ -206,6 +208,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         wsMaxEarlyData = DataStore.serverWsMaxEarlyData
         earlyDataHeaderName = DataStore.serverEarlyDataHeaderName
         utlsFingerprint = DataStore.serverUTLSFingerprint
+        echConfig = DataStore.serverEchConfig
+        echDohServer = DataStore.serverEchDohServer
 
         realityPublicKey = DataStore.serverRealityPublicKey
         realityShortId = DataStore.serverRealityShortId
@@ -244,6 +248,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var pinnedCertificateChain: EditTextPreference
     lateinit var allowInsecure: SwitchPreference
     lateinit var utlsFingerprint: SimpleMenuPreference
+    lateinit var echConfig: EditTextPreference
+    lateinit var echDohServer: EditTextPreference
 
     lateinit var realityPublicKey: EditTextPreference
     lateinit var realityShortId: EditTextPreference
@@ -300,6 +306,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         xtlsFlow = findPreference(Key.SERVER_FLOW)!!
         alterId = findPreference(Key.SERVER_ALTER_ID)!!
         utlsFingerprint = findPreference(Key.SERVER_UTLS_FINGERPRINT)!!
+        echConfig = findPreference(Key.SERVER_ECH_CONFIG)!!
+        echDohServer = findPreference(Key.SERVER_ECH_DOH_SERVER)!!
 
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
@@ -489,6 +497,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         hy2ObfsPassword.isVisible = isHysteria2
         quicSecurity.isVisible = isQUIC
         utlsFingerprint.isVisible = security.value == "tls" && (isTCP || isWS || isHTTP || isMeek || isHTTPUpgrade || isGRPC || isSplitHTTP)
+        echConfig.isVisible = security.value == "tls"
+        echDohServer.isVisible = security.value == "tls"
         realityFingerprint.isVisible = security.value == "reality"
         if (isQUIC) {
             if (DataStore.serverQuicSecurity !in quicSecurityValue) {
@@ -625,6 +635,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws"
                 || network.value == "http" || network.value == "meek" || network.value == "httpupgrade"
                 || network.value == "grpc" || network.value == "splithttp")
+        echConfig.isVisible = isTLS
+        echDohServer.isVisible = isTLS
         realityFingerprint.isVisible = isReality
     }
 

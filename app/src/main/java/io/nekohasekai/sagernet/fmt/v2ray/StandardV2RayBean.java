@@ -54,6 +54,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String certificates;
     public String pinnedPeerCertificateChainSha256;
     public String utlsFingerprint;
+    public String echConfig;
+    public String echDohServer;
 
     public Boolean wsUseBrowserForwarder;
     public Boolean shUseBrowserForwarder;
@@ -105,6 +107,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (allowInsecure == null) allowInsecure = false;
         if (StrUtil.isBlank(packetEncoding)) packetEncoding = "none";
         if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
+        if (StrUtil.isBlank(echConfig)) echConfig = "";
+        if (StrUtil.isBlank(echDohServer)) echDohServer = "";
 
         if (StrUtil.isBlank(realityPublicKey)) realityPublicKey = "";
         if (StrUtil.isBlank(realityShortId)) realityShortId = "";
@@ -124,7 +128,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(20);
+        output.writeInt(21);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -195,6 +199,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(pinnedPeerCertificateChainSha256);
                 output.writeBoolean(allowInsecure);
                 output.writeString(utlsFingerprint);
+                output.writeString(echConfig);
+                output.writeString(echDohServer);
                 break;
             }
             case "reality": {
@@ -330,6 +336,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (version >= 9) {
                     utlsFingerprint = input.readString();
                 }
+                if (version >= 21) {
+                    echConfig = input.readString();
+                    echDohServer = input.readString();
+                }
                 break;
             }
             case "xtls": { // removed, for compatibility
@@ -411,6 +421,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
         bean.pinnedPeerCertificateChainSha256 = pinnedPeerCertificateChainSha256;
         bean.packetEncoding = packetEncoding;
         bean.utlsFingerprint = utlsFingerprint;
+        bean.echConfig = echConfig;
+        bean.echDohServer = echDohServer;
         // bean.realityFingerprint = realityFingerprint; // fuck RPRX's disgusting "fp"
         bean.hy2DownMbps = hy2DownMbps;
         bean.hy2UpMbps = hy2UpMbps;

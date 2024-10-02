@@ -993,6 +993,9 @@ public class V2RayConfig {
         public String fingerprint;
         public String minVersion;
         public String maxVersion;
+        public Boolean allowInsecureIfPinnedPeerCertificate;
+        public String echConfig;
+        public String echDohServer;
 
         public static class CertificateObject {
 

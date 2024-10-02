@@ -708,6 +708,12 @@ fun buildV2RayConfig(
                                                 if (bean.utlsFingerprint.isNotBlank()) {
                                                     fingerprint = bean.utlsFingerprint
                                                 }
+                                                if (bean.echConfig.isNotBlank()) {
+                                                    echConfig = bean.echConfig
+                                                }
+                                                if (bean.echDohServer.isNotBlank()) {
+                                                    echDohServer = bean.echDohServer
+                                                }
                                             }
                                         }
                                         "reality" -> {
