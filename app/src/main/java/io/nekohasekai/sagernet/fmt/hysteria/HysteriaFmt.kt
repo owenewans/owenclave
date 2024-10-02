@@ -160,7 +160,7 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         }
         var servername = sni
         if (!usePortHopping && protocol != HysteriaBean.PROTOCOL_FAKETCP) {
-            if (servername.isBlank() && !serverAddress.isIpAddress()) {
+            if (servername.isBlank()) {
                 servername = serverAddress
             }
         }

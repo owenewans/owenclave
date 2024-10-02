@@ -28,6 +28,7 @@ import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.queryParameter
+import io.nekohasekai.sagernet.ktx.toHysteriaPort
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
 import org.yaml.snakeyaml.DumperOptions
@@ -173,7 +174,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     var servername = sni
     if (!usePortHopping) {
-        if (servername.isBlank() && !serverAddress.isIpAddress()) {
+        if (servername.isBlank()) {
             servername = serverAddress
         }
     }

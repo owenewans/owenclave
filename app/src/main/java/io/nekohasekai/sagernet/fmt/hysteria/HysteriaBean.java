@@ -66,9 +66,6 @@ public class HysteriaBean extends AbstractBean {
         if (protocol == PROTOCOL_FAKETCP) {
             return false;
         }
-        if (NetsKt.isIpAddress(serverAddress) && sni.isBlank()) {
-            return false;
-        }
         if (!DataStore.INSTANCE.getHysteriaEnablePortHopping()) {
             return true;
         }

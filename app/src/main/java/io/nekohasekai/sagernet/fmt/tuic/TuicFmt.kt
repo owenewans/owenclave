@@ -23,7 +23,6 @@ import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
-import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
@@ -60,8 +59,6 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
             if (sni.isNotBlank()) {
                 it["server"] = sni
                 it["ip"] = finalAddress
-            } else if (serverAddress.isIpAddress()) {
-                it["server"] = finalAddress
             } else {
                 it["server"] = serverAddress
                 it["ip"] = finalAddress

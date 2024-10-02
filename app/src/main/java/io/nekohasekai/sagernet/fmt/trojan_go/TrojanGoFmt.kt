@@ -136,7 +136,7 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
         }
 
         var servername = sni
-        if (servername.isBlank() && !serverAddress.isIpAddress()) {
+        if (servername.isBlank()) {
             servername = serverAddress
         }
 

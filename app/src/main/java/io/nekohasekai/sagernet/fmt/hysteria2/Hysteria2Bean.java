@@ -51,9 +51,6 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public boolean canMapping() {
-        if (NetsKt.isIpAddress(serverAddress) && sni.isBlank()) {
-            return false;
-        }
         if (!DataStore.INSTANCE.getHysteriaEnablePortHopping()) {
             return true;
         }

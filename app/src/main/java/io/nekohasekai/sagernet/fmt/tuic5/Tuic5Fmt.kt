@@ -25,7 +25,6 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.tuic.TuicBean
-import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
@@ -144,8 +143,6 @@ fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
             if (sni.isNotBlank()) {
                 it["server"] = joinHostPort(sni, finalPort)
                 it["ip"] = finalAddress
-            } else if (serverAddress.isIpAddress()) {
-                it["server"] = joinHostPort(finalAddress, finalPort)
             } else {
                 it["server"] = joinHostPort(serverAddress, finalPort)
                 it["ip"] = finalAddress

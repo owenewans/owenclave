@@ -53,7 +53,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     } else {
         builder.host = serverAddress
     }
-    if (proxyOnly) {
+    if (proxyOnly && canMapping()) {
         builder.port = finalPort
     } else {
         builder.port = serverPort
@@ -89,9 +89,20 @@ fun NaiveBean.buildNaiveConfig(port: Int): String {
             it["extra-headers"] = extraHeaders.split("\n").joinToString("\r\n")
         }
         if (sni.isNotBlank()) {
-            it["host-resolver-rules"] = "MAP $sni $finalAddress"
-        } else if (!serverAddress.isIpAddress()) {
-            it["host-resolver-rules"] = "MAP $serverAddress $finalAddress"
+            if (!sni.isIpAddress()) {
+                it["host-resolver-rules"] = "MAP $sni $finalAddress"
+            } else {
+                // do nothing
+            }
+        } else {
+            if (!serverAddress.isIpAddress()) {
+                it["host-resolver-rules"] = "MAP $serverAddress $finalAddress"
+            } else {
+                // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/1b022eb2f1d6a939531d8ccdc5b3fa5495f1a2ee/app/src/main/java/io/nekohasekai/sagernet/fmt/naive/NaiveFmt.kt#L69-L71
+                // for naive, using IP as SNI name hardly happens
+                // and host-resolver-rules cannot resolve the SNI problem
+                // so do nothing
+            }
         }
         if (DataStore.enableLog) {
             it["log"] = ""

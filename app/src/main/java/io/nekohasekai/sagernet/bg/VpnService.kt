@@ -283,7 +283,7 @@ class VpnService : BaseVpnService(),
         }
 
         val needProtectServer = tunImplementation == TunImplementation.SYSTEM && data.proxy!!.config.outboundTagsAll.values.any {
-            it.hysteria2Bean?.canMapping() == false || it.hysteriaBean?.canMapping() == false || it.juicityBean?.canMapping() == false
+            it.hysteria2Bean?.canMapping() == false || it.hysteriaBean?.canMapping() == false
         }
         if (needProtectServer) {
             config.protectPath = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/protect_path" // FIXME: incorrect working dir

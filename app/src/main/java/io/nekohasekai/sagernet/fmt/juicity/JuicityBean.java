@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
-import io.nekohasekai.sagernet.ktx.NetsKt;
 
 public class JuicityBean extends AbstractBean {
 
@@ -19,11 +18,6 @@ public class JuicityBean extends AbstractBean {
     public Boolean allowInsecure;
     public String congestionControl; // https://github.com/daeuniverse/softwind/blob/6daa40f6b7a5cb9a0c44ea252e86fcb3440a7a0e/protocol/tuic/common/congestion.go#L15
     public String pinnedCertChainSha256;
-
-    @Override
-    public boolean canMapping() {
-        return !NetsKt.isIpAddress(serverAddress) || !sni.isBlank();
-    }
 
     @Override
     public void initializeDefaultValues() {
