@@ -15,7 +15,6 @@ private val Project.android
     )
 private val Project.androidApp get() = android as ApplicationExtension
 
-private val javaVersion = JavaVersion.VERSION_17
 private lateinit var metadata: Properties
 private lateinit var localProperties: Properties
 private lateinit var flavor: String
@@ -101,8 +100,8 @@ fun Project.setupCommon(projectName: String) {
             }
         }
         compileOptions {
-            sourceCompatibility = javaVersion
-            targetCompatibility = javaVersion
+            sourceCompatibility = JavaVersion.VERSION_21
+            targetCompatibility = JavaVersion.VERSION_21
         }
         lint {
             showAll = true
