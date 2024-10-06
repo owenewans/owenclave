@@ -207,7 +207,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.mKcpSeed = it
                 }
             }
-            "http", "httpupgrade", "splithttp" -> {
+            "http", "splithttp" -> {
                 url.queryParameter("host")?.let {
                     bean.host = it
                 }
@@ -215,19 +215,33 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.path = it
                 }
             }
+            "httpupgrade" -> {
+                url.queryParameter("host")?.let {
+                    bean.host = it
+                }
+                url.queryParameter("path")?.let { path ->
+                    // RPRX's smart-assed invention. This of course will break under some conditions.
+                    bean.path = path
+                    val u = Libcore.parseURL(path)
+                    u.queryParameter("ed")?.let {
+                        u.deleteQueryParameter("ed")
+                        bean.path = u.string
+                    }
+                }
+            }
             "ws" -> {
                 url.queryParameter("host")?.let {
                     bean.host = it
                 }
-                url.queryParameter("path")?.let {
-                    // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/2743fcb3f2208f2189d86eb2a9d4655000bcf8fb/app/src/main/java/io/nekohasekai/sagernet/fmt/v2ray/V2RayFmt.kt#L545-L549
-                    // RPRX's smart-assed invention. This of course will break under some conditions. Do not report issue about this.
-                    if (it.contains("?ed=")) {
-                        bean.path = it.substringBefore("?ed=")
-                        bean.wsMaxEarlyData = it.substringAfter("?ed=").toIntOrNull() ?: 2048
+                url.queryParameter("path")?.let { path ->
+                    // RPRX's smart-assed invention. This of course will break under some conditions.
+                    bean.path = path
+                    val u = Libcore.parseURL(path)
+                    u.queryParameter("ed")?.let { ed ->
+                        u.deleteQueryParameter("ed")
+                        bean.path = u.string
+                        bean.wsMaxEarlyData = ed.toIntOrNull()
                         bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
-                    } else {
-                        bean.path = it
                     }
                 }
             }
@@ -244,6 +258,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "grpc" -> {
                 url.queryParameter("serviceName")?.let {
+                    // Xray hijacks the share link standard, uses escaped `grpcServiceName` and some other non-standard `grpcServiceName`s and breaks the compatibility with other implementations.
+                    // Fixing the compatibility with Xray will break the compatibility with V2Ray and others.
+                    // So do not fix the compatibility with Xray.
                     bean.grpcServiceName = it
                 }
             }
@@ -283,15 +300,26 @@ fun parseV2RayN(link: String): VMessBean {
     bean.host = json.getStr("host") ?: ""
     val path = json.getStr("path") ?: ""
 
-    if (bean.type == "ws" && path.contains("?ed=")) {
-        // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/2743fcb3f2208f2189d86eb2a9d4655000bcf8fb/app/src/main/java/io/nekohasekai/sagernet/fmt/v2ray/V2RayFmt.kt#L545-L549
-        // RPRX's smart-assed invention. This of course will break under some conditions. Do not report issue about this.
-        bean.path = path.substringBefore("?ed=")
-        bean.wsMaxEarlyData = path.substringAfter("?ed=").toIntOrNull() ?: 2048
-        bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
-    } else {
-        bean.path = path
+    bean.path = path
+    if (bean.type == "ws") {
+        // RPRX's smart-assed invention. This of course will break under some conditions.
+        val u = Libcore.parseURL(path)
+        u.queryParameter("ed")?.let { ed ->
+            u.deleteQueryParameter("ed")
+            bean.path = u.string
+            bean.wsMaxEarlyData = ed.toIntOrNull()
+            bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
+        }
     }
+    if (bean.type == "httpupgrade") {
+        // RPRX's smart-assed invention. This of course will break under some conditions.
+        val u = Libcore.parseURL(path)
+        u.queryParameter("ed")?.let {
+            u.deleteQueryParameter("ed")
+            bean.path = u.string
+        }
+    }
+
 
     when (bean.type) {
         "quic" -> {
