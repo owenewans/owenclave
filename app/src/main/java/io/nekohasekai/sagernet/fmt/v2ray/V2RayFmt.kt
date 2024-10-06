@@ -258,7 +258,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "grpc" -> {
                 url.queryParameter("serviceName")?.let {
-                    // Xray hijacks the share link standard, uses escaped `grpcServiceName` and some other non-standard `grpcServiceName`s and breaks the compatibility with other implementations.
+                    // Xray hijacks the share link standard, uses escaped `serviceName` and some other non-standard `serviceName`s and breaks the compatibility with other implementations.
                     // Fixing the compatibility with Xray will break the compatibility with V2Ray and others.
                     // So do not fix the compatibility with Xray.
                     bean.grpcServiceName = it
@@ -331,6 +331,9 @@ fun parseV2RayN(link: String): VMessBean {
             bean.mKcpSeed = bean.path
         }
         "grpc" -> {
+            // Xray hijacks the share link standard, uses escaped `serviceName` and some other non-standard `serviceName`s and breaks the compatibility with other implementations.
+            // Fixing the compatibility with Xray will break the compatibility with V2Ray and others.
+            // So do not fix the compatibility with Xray.
             bean.grpcServiceName = bean.path
             bean.host = ""
         }

@@ -1021,7 +1021,8 @@ public class V2RayConfig {
     public static class RealityObject {
 
         public Boolean show;
-        public String dest; // fxxk
+        public String dest; // String or Integer
+        public String target; // String or Integer
         public String type;
         public Integer xver;
         public List<String> serverNames;

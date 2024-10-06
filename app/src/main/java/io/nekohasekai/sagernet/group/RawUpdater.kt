@@ -653,7 +653,7 @@ object RawUpdater : GroupUpdater() {
         val proxies = ArrayList<AbstractBean>()
 
         with(outboundObject) {
-            // v2ray JSONv4 config or Xray config only
+            // v2ray JSONv4 config, Xray config and JSONv4 config of Exclave's v2ray fork only
             when (protocol) {
                 "vmess", "vless", "trojan", "shadowsocks", "socks", "http" -> {
                     val v2rayBean = when (protocol) {
@@ -791,6 +791,9 @@ object RawUpdater : GroupUpdater() {
                             }
                             "grpc", "gun" -> {
                                 v2rayBean.type = "grpc"
+                                // Xray hijacks the share link standard, uses escaped `serviceName` and some other non-standard `serviceName`s and breaks the compatibility with other implementations.
+                                // Fixing the compatibility with Xray will break the compatibility with V2Ray and others.
+                                // So do not fix the compatibility with Xray.
                                 gunSettings?.serviceName?.also {
                                     v2rayBean.grpcServiceName = it
                                 }
@@ -811,6 +814,13 @@ object RawUpdater : GroupUpdater() {
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string
                                         }
+                                    }
+                                }
+                            }
+                            "meek" -> {
+                                meekSettings?.apply {
+                                    url?.also {
+                                        v2rayBean.meekUrl = it
                                     }
                                 }
                             }
