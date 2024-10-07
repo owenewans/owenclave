@@ -539,7 +539,7 @@ object RawUpdater : GroupUpdater() {
         }
 
         try {
-            val json = JSONUtil.parse(text)
+            val json = JSONUtil.parse(Libcore.stripJSON(text))
             return parseJSON(json)
         } catch (ignored: JSONException) {
         }
