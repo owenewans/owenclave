@@ -8,6 +8,7 @@
 /.idea/gradle.xml
 /.idea/misc.xml
 /.idea/assetWizardSettings.xml
+/.idea/runConfigurations.xml
 .DS_Store
 build/
 /captures
