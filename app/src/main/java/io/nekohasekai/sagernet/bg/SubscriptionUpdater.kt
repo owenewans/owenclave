@@ -52,8 +52,7 @@ object SubscriptionUpdater {
         if (minDelay < 15) minDelay = 15
 
         RemoteWorkManager.getInstance(app).enqueueUniquePeriodicWork(
-            WORK_NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            WORK_NAME, ExistingPeriodicWorkPolicy.UPDATE,
             PeriodicWorkRequest.Builder(UpdateTask::class.java, minDelay, TimeUnit.MINUTES)
                 .apply {
                     if (minInitDelay > 0) setInitialDelay(minInitDelay, TimeUnit.SECONDS)
