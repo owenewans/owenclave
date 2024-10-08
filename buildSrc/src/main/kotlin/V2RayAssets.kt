@@ -137,16 +137,4 @@ fun Project.downloadAssets() {
         }
     }
 
-    val indexJsFile = File(assets, "v2ray/index.js")
-    if (indexJsFile.isFile) {
-        indexJsFile.inputStream().use { input ->
-            File(assets, "v2ray/index.js.xz").outputStream().use { out ->
-                XZOutputStream(out, LZMA2Options(9)).use {
-                    input.copyTo(it)
-                }
-            }
-        }
-        indexJsFile.delete()
-    }
-
 }
