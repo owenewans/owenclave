@@ -118,6 +118,13 @@ object RawUpdater : GroupUpdater() {
                     }
                 } catch (_: Exception) {
                 }
+            } else {
+                subscription.apply {
+                    bytesUsed = -1L
+                    bytesRemaining = -1L
+                    expiryDate = -1L
+                }
+
             }
 
         }
