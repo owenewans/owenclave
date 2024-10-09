@@ -1041,7 +1041,7 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.path = transport["path"]?.toString()
                                     val headers = transport["headers"] as? JSONObject
                                     val host = headers?.get("Host") as? (List<String>)
-                                    v2rayBean.host = host?.get(0)
+                                    v2rayBean.host = host?.get(0) ?: headers?.get("Host")?.toString()
                                 }
                                 "http" -> {
                                     // TODO?
@@ -1050,7 +1050,7 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.type = "http"
                                     v2rayBean.path = transport["path"]?.toString()
                                     val host = transport["host"] as? (List<String>)
-                                    v2rayBean.host = host?.joinToString(",")
+                                    v2rayBean.host = host?.joinToString(",") ?: transport["host"]?.toString()
                                 }
                                 "quic" -> {
                                     v2rayBean.type = "quic"
@@ -1076,7 +1076,7 @@ object RawUpdater : GroupUpdater() {
                             v2rayBean.sni = tls?.get("server_name")?.toString()
                             v2rayBean.allowInsecure = tls?.get("insecure")?.toString().toBoolean()
                             val alpn = tls?.get("alpn") as? (List<String>)
-                            v2rayBean.alpn = alpn?.joinToString("\n")
+                            v2rayBean.alpn = alpn?.joinToString("\n") ?: tls?.get("alpn")?.toString()
                             val reality = tls?.get("reality") as? JSONObject
                             if (reality?.get("enabled")?.toString().toBoolean()) {
                                 v2rayBean.security = "reality"
