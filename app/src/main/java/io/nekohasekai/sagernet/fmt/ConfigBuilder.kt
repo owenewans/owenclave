@@ -74,6 +74,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LazyInboundConfigurationObj
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LazyOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.LogObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MeekObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MekyaObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.MultiObservatoryObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ObservatoryObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.OutboundObject
@@ -881,6 +882,33 @@ fun buildV2RayConfig(
                                                         password = bean.hy2ObfsPassword
                                                     }
                                                 }
+                                            }
+                                        }
+                                        "mekya" -> {
+                                            mekyaSettings = MekyaObject().apply {
+                                                kcp = KcpObject().apply {
+                                                    mtu = 1350
+                                                    tti = 50
+                                                    uplinkCapacity = 12
+                                                    downlinkCapacity = 100
+                                                    congestion = false
+                                                    readBufferSize = 1
+                                                    writeBufferSize = 1
+                                                    header = KcpObject.HeaderObject().apply {
+                                                        type = bean.mekyaKcpHeaderType
+                                                    }
+                                                    if (bean.mKcpSeed.isNotBlank()) {
+                                                        seed = bean.mekyaKcpSeed
+                                                    }
+                                                }
+                                                if (bean.mekyaUrl.isNotBlank()) {
+                                                    url = bean.mekyaUrl
+                                                }
+                                                // magic values from https://github.com/v2fly/v2ray-core/pull/3120
+                                                maxWriteDelay = 80
+                                                maxRequestSize = 96000
+                                                pollingIntervalInitial = 200
+                                                h2PoolSize = 8
                                             }
                                         }
                                     }

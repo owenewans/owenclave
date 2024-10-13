@@ -141,6 +141,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverPassword = hy2Password
         DataStore.serverObfs = hy2ObfsPassword
 
+        DataStore.serverMekyaKcpSeed = mekyaKcpSeed
+        DataStore.serverMekyaKcpHeaderType = mekyaKcpHeaderType
+        DataStore.serverMekyaUrl = mekyaUrl
+
         DataStore.serverWsBrowserForwarding = wsUseBrowserForwarder
         DataStore.serverShBrowserForwarding = shUseBrowserForwarder
         DataStore.serverAllowInsecure = allowInsecure
@@ -221,6 +225,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         hy2Password = DataStore.serverPassword
         hy2ObfsPassword = DataStore.serverObfs
 
+        mekyaKcpSeed = DataStore.serverMekyaKcpSeed
+        mekyaKcpHeaderType = DataStore.serverMekyaKcpHeaderType
+        mekyaUrl = DataStore.serverMekyaUrl
+
         wsUseBrowserForwarder = DataStore.serverWsBrowserForwarding
         shUseBrowserForwarder = DataStore.serverShBrowserForwarding
         allowInsecure = DataStore.serverAllowInsecure
@@ -262,6 +270,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var hy2DownMbps: EditTextPreference
     lateinit var hy2Password: EditTextPreference
     lateinit var hy2ObfsPassword: EditTextPreference
+
+    lateinit var mekyaKcpSeed: EditTextPreference
+    lateinit var mekyaKcpHeaderType: SimpleMenuPreference
+    lateinit var mekyaUrl: EditTextPreference
 
     lateinit var socksProtocol: SimpleMenuPreference
     lateinit var passwordUUID: EditTextPreference
@@ -332,6 +344,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         hy2ObfsPassword.apply {
             summaryProvider = PasswordSummaryProvider
         }
+
+        mekyaKcpSeed = findPreference(Key.SERVER_MEKYA_KCP_SEED)!!
+        mekyaKcpHeaderType = findPreference(Key.SERVER_MEKYA_KCP_HEADER_TYPE)!!
+        mekyaUrl = findPreference(Key.SERVER_MEKYA_URL)!!
 
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
         splithttpCategory = findPreference(Key.SERVER_SH_CATEGORY)!!
@@ -491,12 +507,16 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         val isGRPC = network == "grpc"
         val isSplitHTTP = network == "splithttp"
         val isHysteria2 = network == "hysteria2"
+        val isMekya = network == "mekya"
         hy2UpMbps.isVisible = isHysteria2
         hy2DownMbps.isVisible = isHysteria2
         hy2Password.isVisible = isHysteria2
         hy2ObfsPassword.isVisible = isHysteria2
         quicSecurity.isVisible = isQUIC
-        utlsFingerprint.isVisible = security.value == "tls" && (isTCP || isWS || isHTTP || isMeek || isHTTPUpgrade || isGRPC || isSplitHTTP)
+        mekyaKcpSeed.isVisible = isMekya
+        mekyaKcpHeaderType.isVisible = isMekya
+        mekyaUrl.isVisible = isMekya
+        utlsFingerprint.isVisible = security.value == "tls" && (isTCP || isWS || isHTTP || isMeek || isHTTPUpgrade || isGRPC || isSplitHTTP || isMekya)
         echConfig.isVisible = security.value == "tls"
         echDohServer.isVisible = security.value == "tls"
         realityFingerprint.isVisible = security.value == "reality"
@@ -605,8 +625,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 path.isVisible = true
             }
             "meek" -> {
-                path.setTitle(R.string.meek_url)
-                path.setDialogTitle(R.string.meek_url)
+                path.setTitle(R.string.url)
+                path.setDialogTitle(R.string.url)
 
                 header.isVisible = false
                 requestHost.isVisible = false
@@ -616,6 +636,20 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 path.isVisible = false
                 header.isVisible = false
                 requestHost.isVisible = false
+            }
+            "mekya" -> {
+                path.isVisible = false
+                header.isVisible = false
+                requestHost.isVisible = false
+
+                mekyaKcpHeaderType.setEntries(R.array.kcp_quic_headers_entry)
+                mekyaKcpHeaderType.setEntryValues(R.array.kcp_quic_headers_value)
+                if (DataStore.serverMekyaKcpHeaderType !in kcpQuicHeadersValue) {
+                    mekyaKcpHeaderType.value = kcpQuicHeadersValue[0]
+                } else {
+                    mekyaKcpHeaderType.value = DataStore.serverMekyaKcpHeaderType
+                }
+                mekyaKcpHeaderType.onPreferenceChangeListener = null
             }
         }
     }
@@ -634,7 +668,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         realitySpiderX.isVisible = isReality
         utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws"
                 || network.value == "http" || network.value == "meek" || network.value == "httpupgrade"
-                || network.value == "grpc" || network.value == "splithttp")
+                || network.value == "grpc" || network.value == "splithttp" || network.value == "mekya")
         echConfig.isVisible = isTLS
         echDohServer.isVisible = isTLS
         realityFingerprint.isVisible = isReality

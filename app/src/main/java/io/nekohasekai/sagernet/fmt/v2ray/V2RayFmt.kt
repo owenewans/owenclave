@@ -270,6 +270,18 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.meekUrl = it
                 }
             }
+            "mekya" -> {
+                // not a standard
+                url.queryParameter("headerType")?.let {
+                    bean.mekyaKcpHeaderType = it
+                }
+                url.queryParameter("seed")?.let {
+                    bean.mekyaKcpSeed = it
+                }
+                url.queryParameter("url")?.let {
+                    bean.mekyaUrl = it
+                }
+            }
         }
 
     }
@@ -536,6 +548,18 @@ fun StandardV2RayBean.toUri(): String {
             // https://github.com/v2fly/v2ray-core/discussions/2638
             if (meekUrl.isNotBlank()) {
                 builder.addQueryParameter("url", meekUrl)
+            }
+        }
+        "mekya" -> {
+            // not a standard
+            if (mekyaKcpHeaderType.isNotBlank() && headerType != "none") {
+                builder.addQueryParameter("headerType", mekyaKcpHeaderType)
+            }
+            if (mekyaKcpSeed.isNotBlank()) {
+                builder.addQueryParameter("seed", mekyaKcpSeed)
+            }
+            if (mekyaUrl.isNotBlank()) {
+                builder.addQueryParameter("url", mekyaUrl)
             }
         }
     }

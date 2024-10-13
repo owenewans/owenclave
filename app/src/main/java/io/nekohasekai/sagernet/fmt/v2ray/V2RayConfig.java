@@ -935,6 +935,7 @@ public class V2RayConfig {
         public HTTPUpgradeObject httpupgradeSettings;
         public Hysteria2Object hy2Settings;
         public SplitHTTPObject splithttpSettings;
+        public MekyaObject mekyaSettings;
         public DTLSObject dtlsSettings;
         public RequestObject requestSettings;
         public SockoptObject sockopt;
@@ -1192,6 +1193,21 @@ public class V2RayConfig {
         public Map<String, String> headers;
         public Boolean noSSEHeader;
         public Boolean useBrowserForwarding;
+
+    }
+
+    public static class MekyaObject {
+
+        public KcpObject kcp;
+        public Integer maxWriteDelay;
+        public Integer maxRequestSize;
+        public Integer pollingIntervalInitial;
+        public Integer maxWriteSize;
+        public Integer maxWriteDurationMs;
+        public Integer maxSimultaneousWriteConnection;
+        public Integer packetWritingBuffer;
+        public String url;
+        public Integer h2PoolSize;
 
     }
 

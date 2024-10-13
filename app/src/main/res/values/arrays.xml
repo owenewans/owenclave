@@ -405,6 +405,7 @@
         <item>HTTPUpgrade</item>
         <item>SplitHTTP</item>
         <item>Hysteria2</item>
+        <item>Mekya</item>
     </string-array>
 
     <string-array name="networks_value">
@@ -418,6 +419,7 @@
         <item>httpupgrade</item>
         <item>splithttp</item>
         <item>hysteria2</item>
+        <item>mekya</item>
     </string-array>
 
     <string-array name="trojan_go_networks_entry">

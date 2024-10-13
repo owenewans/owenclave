@@ -115,6 +115,24 @@
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverObfs"
             app:title="@string/hysteria_obfs" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_format_align_left_24"
+            app:key="serverMekyaKcpSeed"
+            app:title="@string/kcp_seed"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:defaultValue="none"
+            app:entries="@array/kcp_quic_headers_entry"
+            app:entryValues="@array/kcp_quic_headers_value"
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverMekyaKcpHeaderType"
+            app:title="@string/header_type"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_airplanemode_active_24"
+            app:key="serverMekyaUrl"
+            app:title="@string/url"
+            app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/transport_layer_encryption_entry"
             app:entryValues="@array/transport_layer_encryption_value"

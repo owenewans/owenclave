@@ -162,6 +162,10 @@ object Key {
     const val SERVER_REALITY_SPIDER_X = "serverRealitySpiderX"
     const val SERVER_REALITY_FINGERPRINT = "serverRealityFingerprint"
 
+    const val SERVER_MEKYA_KCP_SEED = "serverMekyaKcpSeed"
+    const val SERVER_MEKYA_KCP_HEADER_TYPE = "serverMekyaKcpHeaderType"
+    const val SERVER_MEKYA_URL = "serverMekyaUrl"
+
     const val SERVER_SECURITY_CATEGORY = "serverSecurityCategory"
     const val SERVER_WS_CATEGORY = "serverWsCategory"
     const val SERVER_SH_CATEGORY = "serverShCategory"

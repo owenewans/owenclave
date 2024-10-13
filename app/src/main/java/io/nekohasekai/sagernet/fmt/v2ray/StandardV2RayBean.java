@@ -72,6 +72,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String hy2Password;
     public String hy2ObfsPassword;
 
+    public String mekyaKcpSeed;
+    public String mekyaKcpHeaderType;
+    public String mekyaUrl;
+
     public Boolean mux;
     public Integer muxConcurrency;
     public String muxPacketEncoding;
@@ -120,6 +124,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(hy2Password)) hy2Password = "";
         if (StrUtil.isBlank(hy2ObfsPassword)) hy2ObfsPassword = "";
 
+        if (StrUtil.isBlank(mekyaKcpSeed)) mekyaKcpSeed = "";
+        if (StrUtil.isBlank(mekyaKcpHeaderType)) mekyaKcpHeaderType = "none";
+        if (StrUtil.isBlank(mekyaUrl)) mekyaUrl = "";
+
         if (mux == null) mux = false;
         if (muxConcurrency == null) muxConcurrency = 8;
         if (StrUtil.isBlank(muxPacketEncoding)) muxPacketEncoding = "none";
@@ -128,7 +136,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(21);
+        output.writeInt(22);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -185,6 +193,12 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeInt(hy2UpMbps);
                 output.writeString(hy2ObfsPassword);
                 output.writeString(hy2Password);
+                break;
+            }
+            case "mekya": {
+                output.writeString(mekyaKcpHeaderType);
+                output.writeString(mekyaKcpSeed);
+                output.writeString(mekyaUrl);
                 break;
             }
         }
@@ -316,6 +330,14 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 }
                 if (version >= 20) {
                     shUseBrowserForwarder = input.readBoolean();
+                }
+                break;
+            }
+            case "mekya": {
+                if (version >= 22) {
+                    mekyaKcpHeaderType = input.readString();
+                    mekyaKcpSeed = input.readString();
+                    mekyaUrl = input.readString();
                 }
                 break;
             }
