@@ -684,11 +684,6 @@ fun buildV2RayConfig(
                                                     serverName = bean.sni
                                                 }
 
-                                                if (bean.sni.isBlank() && bean.serverAddress.isIpAddress()) {
-                                                    // v2ray bug?
-                                                    serverName = bean.serverAddress
-                                                }
-
                                                 if (bean.alpn.isNotBlank()) {
                                                     alpn = bean.alpn.listByLineOrComma()
                                                 }
@@ -1024,10 +1019,6 @@ fun buildV2RayConfig(
                                     tlsSettings = TLSObject().apply {
                                         if (bean.sni.isNotBlank()) {
                                             serverName = bean.sni
-                                        }
-                                        if (bean.sni.isBlank() && bean.serverAddress.isIpAddress()) {
-                                            // v2ray bug?
-                                            serverName = bean.serverAddress
                                         }
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
