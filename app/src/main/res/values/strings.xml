@@ -101,7 +101,7 @@
     <string name="security">Transport layer security</string>
     <string name="network">Network</string>
     <string name="flow">Flow</string>
-    <string name="header_type">Header type</string>
+    <string name="header_type">Obfuscation header type</string>
     <string name="ws_host">WebSocket host</string>
     <string name="ws_path">WebSocket path</string>
     <string name="http_host">HTTP host</string>

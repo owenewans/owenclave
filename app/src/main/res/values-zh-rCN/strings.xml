@@ -71,7 +71,7 @@
     <string name="alter_id">Alter ID</string>
     <string name="security">传输层安全</string>
     <string name="network">传输协议</string>
-    <string name="header_type">头类型</string>
+    <string name="header_type">伪装头类型</string>
     <string name="url">URL</string>
     <string name="tls">使用 TLS</string>
     <string name="sni">SNI</string>
