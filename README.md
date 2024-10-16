@@ -20,6 +20,10 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
 </details>
 
+## Report issues
+
+Please report issues [here](https://github.com/dyhkwong/Exclave/issues). Because the core used in Exclave is heavily modified, do not report issues to upstream.
+
 ## License
 
 ```
