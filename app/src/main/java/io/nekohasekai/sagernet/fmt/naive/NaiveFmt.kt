@@ -84,7 +84,11 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
 fun NaiveBean.buildNaiveConfig(port: Int): String {
     return JSONObject().also {
         it["listen"] = "socks://" + joinHostPort(LOCALHOST, port)
-        it["proxy"] = toUri(true)
+        // NaïveProxy v130.0.6723.40-2 release notes:
+        // Fixed a crash when the username or password contains the comma character `,`.
+        // The comma is used for delimiting proxies in a proxy chain.
+        // It must be percent-encoded in other URL components.
+        it["proxy"] = toUri(true).replace(",", "%2C")
         if (extraHeaders.isNotBlank()) {
             it["extra-headers"] = extraHeaders.split("\n").joinToString("\r\n")
         }
