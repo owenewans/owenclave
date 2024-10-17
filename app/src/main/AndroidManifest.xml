@@ -106,18 +106,10 @@
                 <data
                     android:host="subscription"
                     android:scheme="exclave" />
-
-            </intent-filter>
-
-            <intent-filter android:label="@string/subscription_import">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
-                    android:host="install-config"
-                    android:scheme="clash" />
+                    android:host="subscription"
+                    android:scheme="sn" />
+
             </intent-filter>
 
             <intent-filter android:label="@string/profile_import">

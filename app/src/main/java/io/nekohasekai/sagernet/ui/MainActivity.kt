@@ -122,7 +122,7 @@ class MainActivity : ThemedActivity(),
         val uri = intent.data ?: return
 
         runOnDefaultDispatcher {
-            if ((uri.scheme == "exclave" || uri.scheme == "sn") && uri.host == "subscription" || uri.scheme == "clash") {
+            if ((uri.scheme == "exclave" || uri.scheme == "sn") && uri.host == "subscription") {
                 importSubscription(uri)
             } else {
                 importProfile(uri)
@@ -141,12 +141,12 @@ class MainActivity : ThemedActivity(),
         val group: ProxyGroup
 
         val url = uri.getQueryParameter("url")
-        if (uri.scheme == "sn" && !url.isNullOrBlank()) {
+        if (!url.isNullOrBlank()) {
             group = ProxyGroup(type = GroupType.SUBSCRIPTION)
             val subscription = SubscriptionBean()
             group.subscription = subscription
 
-            // SagerNet cleartext format
+            // human-readable cleartext format
             subscription.link = url
             group.name = uri.getQueryParameter("name")
 
@@ -158,10 +158,11 @@ class MainActivity : ThemedActivity(),
             }
 
         } else {
+            // private binary format derived from SagerNet
             if (uri.scheme != "exclave") {
+                // do not be compatible with the private binary format from other software
                 return
             }
-            // private binary format
             val data = uri.encodedQuery.takeIf { !it.isNullOrBlank() } ?: return
             try {
                 group = KryoConverters.deserialize(
