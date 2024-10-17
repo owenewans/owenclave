@@ -81,7 +81,7 @@ object RawUpdater : GroupUpdater() {
                 if (subscription.customUserAgent.isNotBlank()) {
                     setUserAgent(subscription.customUserAgent)
                 } else {
-                    USER_AGENT
+                    setUserAgent(USER_AGENT)
                 }
             }.execute()
 
