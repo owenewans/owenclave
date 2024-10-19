@@ -22,7 +22,7 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
 ## Report issues
 
-Please report issues [here](https://github.com/dyhkwong/Exclave/issues). Because the core used in Exclave is heavily modified, do not report issues to upstream.
+Please report issues [here](https://github.com/dyhkwong/Exclave/issues). Because the core used in Exclave is heavily modified, do not report issues to upstream. If you think your issue contains sensitive information, encrypt with [this GPG public key](https://github.com/dyhkwong.gpg) before posting.
 
 ## License
 
