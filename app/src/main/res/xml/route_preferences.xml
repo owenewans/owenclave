@@ -62,11 +62,11 @@
             app:key="routeProtocol"
             app:title="protocol"
             app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
+        <!--EditTextPreference
             app:icon="@drawable/ic_baseline_manage_search_24"
             app:key="routeAttrs"
             app:title="attrs"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true" /-->
         <com.takisoft.preferencex.SimpleMenuPreference
             app:icon="@drawable/ic_hardware_router"
             app:key="routeOutbound"
