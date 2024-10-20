@@ -39,6 +39,11 @@
             app:summary="@string/allow_insecure_sum"
             app:title="@string/allow_insecure" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_vpn_key_24"
+            app:key="serverCertificates"
+            app:title="@string/certificates"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             app:icon="@drawable/ic_file_file_upload"
             app:key="serverUploadSpeed"
             app:title="@string/hysteria_upload_mbps"
@@ -53,11 +58,6 @@
     <PreferenceCategory
             app:title="@string/plugin_settings"
             app:summary="@string/hysteria2_plugin_settings_sum">
-        <EditTextPreference
-            app:icon="@drawable/ic_baseline_vpn_key_24"
-            app:key="serverCertificates"
-            app:title="@string/certificates"
-            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_baseline_push_pin_24"
             app:key="serverPinnedCertificateChain"

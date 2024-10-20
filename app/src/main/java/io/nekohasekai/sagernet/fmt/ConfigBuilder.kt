@@ -1023,6 +1023,13 @@ fun buildV2RayConfig(
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
                                         }
+                                        if (bean.caText.isNotBlank()) {
+                                            disableSystemRoot = true
+                                            certificates = listOf(TLSObject.CertificateObject().apply {
+                                                usage = "verify"
+                                                certificate = bean.caText.split("\n").filter { it.isNotBlank() }
+                                            })
+                                        }
                                     }
                                 }
                             }
