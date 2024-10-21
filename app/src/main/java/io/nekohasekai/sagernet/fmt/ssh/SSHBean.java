@@ -48,7 +48,7 @@ public class SSHBean extends AbstractBean {
         super.initializeDefaultValues();
 
         if (username == null) username = "root";
-        if (authType == null) authType = AUTH_TYPE_PASSWORD;
+        if (authType == null) authType = AUTH_TYPE_NONE;
         if (password == null) password = "";
         if (privateKey == null) privateKey = "";
         if (privateKeyPassphrase == null) privateKeyPassphrase = "";

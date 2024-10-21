@@ -1064,6 +1064,28 @@ object RawUpdater : GroupUpdater() {
                     }
                     proxies.add(wireguardBean)
                 }
+                "ssh" -> {
+                    val sshBean = SSHBean().applyDefaultValues()
+                    (settings.value as? V2RayConfig.SSHOutbountConfigurationObject)?.apply {
+                        sshBean.serverAddress = address
+                        sshBean.serverPort = port
+                        sshBean.username = user
+                        sshBean.password = password
+                        if (privateKey.isNotBlank()) {
+                            sshBean.authType = SSHBean.AUTH_TYPE_PRIVATE_KEY
+                            sshBean.privateKey = privateKey
+                            sshBean.privateKeyPassphrase = password
+                        } else if (password.isNotBlank()) {
+                            sshBean.authType = SSHBean.AUTH_TYPE_PASSWORD
+                            sshBean.password = password
+                        }
+                        sshBean.publicKey = publicKey
+                    }
+                    tag?.apply {
+                        sshBean.name = tag
+                    }
+                    proxies.add(sshBean)
+                }
             }
             Unit
         }
@@ -1263,8 +1285,15 @@ object RawUpdater : GroupUpdater() {
                     serverPort = outbound["server_port"]?.toString()?.toInt()
                     username = outbound["user"]?.toString()
                     password = outbound["password"]?.toString()
-                    privateKey = outbound["private_key"]?.toString()
-                    privateKeyPassphrase = outbound["private_key_passphrase"]?.toString()
+                    if (outbound["password"]?.toString()?.isNotBlank() == true) {
+                        authType = SSHBean.AUTH_TYPE_PASSWORD
+                        privateKey = outbound["password"].toString()
+                    }
+                    if (outbound["private_key"]?.toString()?.isNotBlank() == true) {
+                        authType = SSHBean.AUTH_TYPE_PRIVATE_KEY
+                        privateKey = outbound["private_key"].toString()
+                        privateKeyPassphrase = outbound["private_key_passphrase"].toString()
+                    }
                 }
                 proxies.add(sshBean)
             }

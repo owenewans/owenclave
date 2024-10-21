@@ -989,7 +989,7 @@ fun buildV2RayConfig(
                                                 privateKey = bean.privateKey
                                                 password = bean.privateKeyPassphrase
                                             }
-                                            else -> {
+                                            SSHBean.AUTH_TYPE_PASSWORD -> {
                                                 password = bean.password
                                             }
                                         }
