@@ -864,6 +864,19 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                             }
+                            "mekya" -> {
+                                mekyaSettings?.apply {
+                                    url?.also {
+                                        v2rayBean.mekyaUrl = it
+                                    }
+                                    kcp?.seed?.also {
+                                        v2rayBean.mekyaKcpSeed = it
+                                    }
+                                    kcp?.header?.type?.also {
+                                        v2rayBean.mekyaKcpHeaderType = it
+                                    }
+                                }
+                            }
                             "splithttp" -> {
                                 splithttpSettings?.apply {
                                     host?.also {
