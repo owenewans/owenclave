@@ -1033,12 +1033,15 @@ object RawUpdater : GroupUpdater() {
                                 }
                             }
                         }
-                        (settings.value as? V2RayConfig.Hysteria2OutboundConfigurationObject)?.servers?.forEach {
-                            hysteria2Bean.serverAddress = it.address
-                            hysteria2Bean.serverPorts = it.port.toString()
-                        }
-                        proxies.add(hysteria2Bean)
                     }
+                    (settings.value as? V2RayConfig.Hysteria2OutboundConfigurationObject)?.servers?.forEach {
+                        hysteria2Bean.serverAddress = it.address
+                        hysteria2Bean.serverPorts = it.port.toString()
+                    }
+                    tag?.apply {
+                        hysteria2Bean.name = tag
+                    }
+                    proxies.add(hysteria2Bean)
                 }
                 "wireguard" -> {
                     val wireguardBean = WireGuardBean().applyDefaultValues()
