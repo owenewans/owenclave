@@ -24,6 +24,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import cn.hutool.core.codec.Base64
 import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
 import com.github.shadowsocks.plugin.PluginConfiguration
@@ -959,10 +960,17 @@ fun buildV2RayConfig(
                                             if (reserved0 != null && reserved1 != null && reserved2 != null) {
                                                 reserved = listOf(reserved0, reserved1, reserved2)
                                             }
+                                        } else {
+                                            val array = Base64.decode(bean.reserved)
+                                            if (array.size == 3) {
+                                                reserved = listOf(array[0].toUByte().toInt(), array[1].toUByte().toInt(), array[2].toUByte().toInt())
+                                            }
                                         }
                                         peers = listOf(WireGuardOutboundConfigurationObject.WireGuardPeerObject().apply {
                                             publicKey = bean.peerPublicKey
-                                            preSharedKey = bean.peerPreSharedKey
+                                            if (bean.peerPreSharedKey.isNotBlank()) {
+                                                preSharedKey = bean.peerPreSharedKey
+                                            }
                                             endpoint = joinHostPort(bean.finalAddress, bean.finalPort)
                                         })
                                     })
