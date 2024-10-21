@@ -695,12 +695,12 @@ object RawUpdater : GroupUpdater() {
         with(outboundObject) {
             // v2ray JSONv4 config, Xray config and JSONv4 config of Exclave's v2ray fork only
             when (protocol) {
-                "vmess", "vless", "trojan", "shadowsocks", "socks", "http" -> {
+                "vmess", "vless", "trojan", "shadowsocks", "socks", "http", "shadowsocks2022", "shadowsocks-2022" -> {
                     val v2rayBean = when (protocol) {
                         "vmess" -> VMessBean()
                         "vless" -> VLESSBean()
                         "trojan" -> TrojanBean()
-                        "shadowsocks" -> ShadowsocksBean()
+                        "shadowsocks", "shadowsocks2022", "shadowsocks-2022" -> ShadowsocksBean()
                         "socks" -> SOCKSBean()
                         else -> HttpBean()
                     }.applyDefaultValues()
@@ -934,6 +934,14 @@ object RawUpdater : GroupUpdater() {
                         }
                         "shadowsocks" -> {
                             v2rayBean as ShadowsocksBean
+                            (settings.value as? V2RayConfig.ShadowsocksOutboundConfigurationObject)?.apply {
+                                if (plugin.isNotBlank() && pluginOpts.isBlank()) {
+                                    v2rayBean.plugin = plugin
+                                }
+                                if (plugin.isNotBlank() && pluginOpts.isNotBlank()) {
+                                    v2rayBean.plugin = "$plugin;$pluginOpts"
+                                }
+                            }
                             (settings.value as? V2RayConfig.ShadowsocksOutboundConfigurationObject)?.servers?.forEach {
                                 proxies.add(v2rayBean.clone().apply {
                                     name = tag
@@ -942,6 +950,44 @@ object RawUpdater : GroupUpdater() {
                                     method = it.method
                                     password = it.password
                                 })
+                            }
+                        }
+                        "shadowsocks2022" -> {
+                            v2rayBean as ShadowsocksBean
+                            (settings.value as? V2RayConfig.Shadowsocks_2022OutboundConfigurationObject)?.apply {
+                                if (plugin.isNotBlank() && pluginOpts.isBlank()) {
+                                    v2rayBean.plugin = plugin
+                                }
+                                if (plugin.isNotBlank() && pluginOpts.isNotBlank()) {
+                                    v2rayBean.plugin = "$plugin;$pluginOpts"
+                                }
+                                v2rayBean.name = tag
+                                v2rayBean.serverAddress = address
+                                v2rayBean.serverPort = port
+                                v2rayBean.method = method
+                                if (psk.isNotBlank()) {
+                                    if (ipsk.size > 0) {
+                                        v2rayBean.password = ipsk.joinToString(":") + ":" + psk
+                                    } else {
+                                        v2rayBean.password = psk
+                                    }
+                                }
+                            }
+                        }
+                        "shadowsocks-2022" -> {
+                            v2rayBean as ShadowsocksBean
+                            (settings.value as? V2RayConfig.Shadowsocks2022OutboundConfigurationObject)?.apply {
+                                if (plugin.isNotBlank() && pluginOpts.isBlank()) {
+                                    v2rayBean.plugin = plugin
+                                }
+                                if (plugin.isNotBlank() && pluginOpts.isNotBlank()) {
+                                    v2rayBean.plugin = "$plugin;$pluginOpts"
+                                }
+                                v2rayBean.name = tag
+                                v2rayBean.serverAddress = address
+                                v2rayBean.serverPort = port
+                                v2rayBean.method = method
+                                v2rayBean.password = key
                             }
                         }
                         "trojan" -> {
