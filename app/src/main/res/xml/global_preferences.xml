@@ -58,6 +58,7 @@
             app:title="@string/app_traffic_statistics" />
         <SwitchPreference
             app:defaultValue="true"
+            app:icon="@drawable/ic_baseline_manage_search_24"
             app:key="profileTrafficStatistics"
             app:summary="@string/profile_traffic_statistics_summary"
             app:title="@string/profile_traffic_statistics" />
@@ -76,6 +77,7 @@
             app:title="@string/show_direct_speed"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/ic_social_emoji_symbols"
             app:key="showGroupName"
             app:title="@string/show_group_name_in_notification" />
         <SwitchPreference
@@ -111,8 +113,9 @@
             app:key="bypassLan"
             app:title="@string/route_opt_bypass_lan" />
         <SwitchPreference
-            android:summary="@string/bypass_lan_in_core_only_sum"
+            app:icon="@drawable/ic_baseline_legend_toggle_24"
             app:key="bypassLanInCoreOnly"
+            app:summary="@string/bypass_lan_in_core_only_sum"
             app:title="@string/bypass_lan_in_core_only" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:defaultValue="AsIs"
@@ -138,6 +141,7 @@
             app:summary="@string/resolve_destination_summary"
             app:title="@string/resolve_destination" />
         <SwitchPreference
+            app:icon="@drawable/baseline_wrap_text_24"
             app:key="resolveDestinationForDirect"
             app:title="@string/resolve_destination_for_direct" />
         <com.takisoft.preferencex.SimpleMenuPreference
@@ -158,11 +162,13 @@
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat"
+            app:icon="@drawable/ic_baseline_link_24"
             app:key="rulesGeositeUrl"
             app:title="@string/rules_geosite_url"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:defaultValue="https://github.com/v2fly/geoip/releases/latest/download/geoip.dat"
+            app:icon="@drawable/ic_baseline_link_24"
             app:key="rulesGeoipUrl"
             app:title="@string/rules_geoip_url"
             app:useSimpleSummaryProvider="true" />
@@ -186,6 +192,7 @@
             app:title="@string/hysteria2_provider"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/ic_baseline_flip_camera_android_24"
             app:key="hysteriaEnablePortHopping"
             app:summary="@string/hysteria_enable_port_hopping_sum"
             app:title="@string/hysteria_enable_port_hopping_experimental"
@@ -211,20 +218,22 @@
             app:defaultValue="UseIPv4"
             app:entries="@array/dns_query_strategy"
             app:entryValues="@array/dns_query_strategy"
+            app:icon="@drawable/ic_baseline_manage_search_24"
             app:key="remoteDnsQueryStrategy"
             app:title="@string/remote_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-                app:icon="@drawable/ic_baseline_push_pin_24"
-                app:key="ednsClientIp"
-                app:title="@string/edns_client_ip"
-                app:useSimpleSummaryProvider="true" />
+            app:icon="@drawable/ic_baseline_push_pin_24"
+            app:key="ednsClientIp"
+            app:title="@string/edns_client_ip"
+            app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_home_24"
             app:key="useLocalDnsAsDirectDns"
             app:title="@string/use_local_dns_as_direct_dns" />
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
             app:defaultValue="tcp://223.5.5.5"
+            app:icon="@drawable/ic_action_dns"
             app:key="directDns"
             app:title="@string/direct_dns"
             app:useSimpleSummaryProvider="true" />
@@ -232,6 +241,7 @@
             app:defaultValue="UseIPv4"
             app:entries="@array/dns_query_strategy"
             app:entryValues="@array/dns_query_strategy"
+            app:icon="@drawable/ic_baseline_manage_search_24"
             app:key="directDnsQueryStrategy"
             app:title="@string/direct_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
@@ -240,6 +250,7 @@
             app:key="useLocalDnsAsBootstrapDns"
             app:title="@string/use_local_dns_as_bootstrap_dns" />
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+            app:icon="@drawable/ic_action_dns"
             app:key="bootstrapDns"
             app:title="@string/bootstrap_dns"
             app:useSimpleSummaryProvider="true" />
@@ -273,6 +284,7 @@
             app:title="@string/port_proxy"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_maps_directions_boat"
             app:key="portLocalDns"
             app:title="@string/port_local_dns"
             app:useSimpleSummaryProvider="true" />
@@ -281,15 +293,18 @@
             app:key="requireHttp"
             app:title="@string/require_http" />
         <EditTextPreference
+            app:icon="@drawable/ic_maps_directions_boat"
             app:key="httpPort"
             app:title="@string/port_http"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:defaultValue="true"
+            app:icon="@drawable/ic_baseline_texture_24"
             app:key="appendHttpProxy"
             app:summary="@string/append_http_proxy_sum"
             app:title="@string/append_http_proxy" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_domain_24"
             app:key="httpProxyException"
             app:title="@string/http_proxy_exception_list" />
         <SwitchPreference
@@ -297,6 +312,7 @@
             app:key="requireTransproxy"
             app:title="@string/require_transproxy" />
         <EditTextPreference
+            app:icon="@drawable/ic_maps_directions_boat"
             app:key="transproxyPort"
             app:title="@string/port_transproxy"
             app:useSimpleSummaryProvider="true" />
@@ -304,6 +320,7 @@
             app:defaultValue="0"
             app:entries="@array/transproxy_mode"
             app:entryValues="@array/int_array_2"
+            app:icon="@drawable/ic_baseline_layers_24"
             app:key="transproxyMode"
             app:title="@string/transproxy_mode"
             app:useSimpleSummaryProvider="true" />
@@ -317,21 +334,26 @@
             app:title="@string/connection_test_url"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/ic_baseline_texture_24"
             app:key="enableFragment"
             app:summary="@string/enable_fragment_sum"
             app:title="@string/enable_fragment" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
             app:key="fragmentLength"
             app:title="@string/fragment_length"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
             app:key="fragmentInterval"
             app:title="@string/fragment_interval"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/ic_baseline_texture_24"
             app:key="enableFragmentForDirect"
             app:title="@string/enable_fragment_for_direct" />
         <SwitchPreference
+            app:icon="@drawable/ic_baseline_vpn_key_24"
             app:key="allowAppsBypassVpn"
             app:summary="@string/allow_apps_bypass_vpn_sum"
             app:title="@string/allow_apps_bypass_vpn" />

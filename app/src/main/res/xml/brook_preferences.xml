@@ -64,6 +64,7 @@
             app:title="@string/utls_fingerprint"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverBrookFragment"
             app:title="@string/brook_fragment"
             app:useSimpleSummaryProvider="true" />
@@ -73,6 +74,7 @@
             app:title="@string/allow_insecure"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/baseline_wrap_text_24"
             app:key="serverBrookUdpOverStream"
             app:title="@string/brook_udp_over_stream"
             app:useSimpleSummaryProvider="true" />

@@ -55,6 +55,7 @@
             app:title="@string/naive_insecure_concurrency"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/baseline_construction_24"
             app:key="serverNaiveNoPostQuantum"
             app:title="@string/naive_no_post_quantum"
             app:useSimpleSummaryProvider="true" />
