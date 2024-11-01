@@ -35,7 +35,6 @@
     <string name="scanning">Skanner …</string>
     <string name="search_apps">Søk …</string>
     <string name="off">Av</string>
-    <string name="on">På</string>
     <string name="route_reset">Tilbakestill</string>
     <string name="route_profile">Velg profil …</string>
     <string name="route_proxy">Mellomtjener</string>
@@ -43,7 +42,6 @@
     <string name="prefer">Foretrekk</string>
     <string name="edit_config">Rediger oppsett</string>
     <string name="extra_headers">Ekstra hoder</string>
-    <string name="tls">Bruk TLS</string>
     <string name="http_path">HTTP-sti</string>
     <string name="header_type">Hodetype</string>
     <string name="network">Nettverk</string>
@@ -56,7 +54,6 @@
     <string name="group_status_empty">Tom gruppe</string>
     <string name="group_edit">Rediger gruppe</string>
     <string name="group_create">Opprett gruppe</string>
-    <string name="group_name_required">Gruppenavn påkrevd</string>
     <string name="group_subscription_link">Abonnementslenke</string>
     <string name="group_name">Gruppenavn</string>
     <string name="group_default">Ugruppert</string>
@@ -85,7 +82,6 @@
     <string name="clipboard_empty">Utklippstavlen er tom</string>
     <string name="connect">Koble til</string>
     <string name="profile_empty">Velg en profil</string>
-    <string name="vpn_error">%s</string>
     <string name="invalid_server">Ugyldig tjenernavn</string>
     <string name="service_proxy">Mellomtjener-tjeneste</string>
     <string name="service_vpn">VPN-tjeneste</string>
@@ -172,8 +168,6 @@
     <string name="error_title">Feil</string>
     <string name="cleartext_http_warning">Klartekst HTTP -trafikk er usikker</string>
     <string name="vpn_connected">Tilkoblet, trykk for å kontrollere tilkoblingen</string>
-    <string name="deprecated">Utfaset</string>
-    <string name="insecure">Utrygg</string>
     <plurals name="added">
         <item quantity="one">La til</item>
         <item quantity="other">%d fullmakter lagt til</item>
@@ -186,7 +180,6 @@
     <string name="action_import_msg">Importer vellykket!</string>
     <string name="action_export_err">Kunne ikke eksportere.</string>
     <string name="action_export_msg">Eksporter vellykket!</string>
-    <string name="action_from_link">Fra abonnement</string>
     <string name="circular_reference_sum">Ruten kan ikke inneholde seg selv.</string>
     <string name="circular_reference">Sirkulær referanse</string>
     <string name="chain_settings">Kjedeinnstillinger</string>
@@ -207,15 +200,11 @@
     <string name="invert_selections">Inverter valg</string>
     <string name="proxied_apps_summary">Konfigurer VPN -modus for utvalgte apper</string>
     <string name="proxied_apps">Apper VPN -modus</string>
-    <string name="tcp_keep_alive_interval">TCP beholder det aktive pakkeleveringsintervallet</string>
-    <string name="mux_for_all_sum">Hvis serveren ikke støtter Mux, kan vi ikke koble til den.</string>
-    <string name="mux_for_all">Aktiver Mux for alle mulige støttede protokoller</string>
     <string name="mux_concurrency">Mux samtidige tilkoblinger</string>
     <string name="mux_sum">Mux er designet for å redusere ventetid for TCP -håndtrykk, ikke for å øke tilkoblingsmengden. Å bruke Mux til å se på videoer, nedlasting eller hastighetstest er vanligvis kontraproduktivt</string>
     <string name="enable_mux">Aktiver Multiplexer</string>
     <string name="traffic_sniffing">Aktiver trafikksniff</string>
     <string name="domain_strategy">Domeneløsningsstrategi</string>
-    <string name="route_opt_block_ads">Blokker annonser</string>
     <string name="route_opt_bypass_lan">Omgå LAN</string>
     <string name="route_not_asset">Ikke en ressursfil: unntatt .dat, men %s</string>
     <string name="route_asset_updated">Oppdatert</string>
@@ -258,9 +247,6 @@
     <string name="protocol">Protokoll</string>
     <string name="enc_method">Krypter metode</string>
     <string name="password">Passord</string>
-    <string name="key_opt">Nøkkel (valgfritt)</string>
-    <string name="password_opt">Passord (valgfritt)</string>
-    <string name="username_opt">Brukernavn (valgfritt)</string>
     <string name="username">Brukernavn</string>
     <string name="server_port">Ekstern port</string>
     <string name="server_address">Tjener</string>
@@ -277,7 +263,6 @@
     <string name="direct_dns">Direkte DNS</string>
     <string name="remote_dns">Ekstern DNS</string>
     <string name="cag_dns">DNS innstillinger</string>
-    <string name="connection_test_fail">Internett utilgjengelig</string>
     <string name="connection_test_error">Mislyktes: %s</string>
     <string name="connection_test_available_http">Suksess: HTTP håndtrykk tok %dms</string>
     <string name="connection_test_available">Suksess: HTTPS håndtrykk tok %dms</string>

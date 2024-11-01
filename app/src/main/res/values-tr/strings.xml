@@ -9,7 +9,6 @@
     <string name="direct_dns">Direkt DNS</string>
     <string name="remote_dns">Uzak DNS</string>
     <string name="cag_dns">DNS Ayarları</string>
-    <string name="connection_test_fail">Internet Bağlantısı Yok</string>
     <string name="connection_test_error">Başarısız: %s</string>
     <string name="connection_test_available_http">Başarılı: HTTP el sıkışması %dms sonra gerçekleşti</string>
     <string name="connection_test_available">Başarılı: HTTPS el sıkışması %dms sonra gerçekleşti</string>
@@ -58,7 +57,6 @@
     <string name="group_edit">Grubu düzenle</string>
     <string name="group_create">Grup oluştur</string>
     <string name="group_subscription_link">Abonelik Linki</string>
-    <string name="group_name_required">Grup adı gerekli</string>
     <string name="group_update">Güncelle</string>
     <string name="tile_title">Değiştirici</string>
     <string name="group_name">Grup adı</string>
@@ -83,7 +81,6 @@
     <string name="dns_routing_message">Doğrudan DNS ile geçiş yollarındaki etki alanlarını çözümleyin. Potansiyel DNS sızıntılarının farkında olun</string>
     <string name="certificates">Sertifikalar</string>
     <string name="sni">Görünecek Sunucu Adı</string>
-    <string name="tls">TLS kullan</string>
     <string name="quic_key">Quic Anahtarı</string>
     <string name="quic_security">QUIC Güvenliği</string>
     <string name="http_path">HTTP Konumu</string>
@@ -99,9 +96,6 @@
     <string name="protocol">Protokol</string>
     <string name="enc_method">Şifreleme Metodu</string>
     <string name="password">Parola</string>
-    <string name="key_opt">Anahtar (İsteğe bağlı)</string>
-    <string name="password_opt">Parola (İsteğe bağlı)</string>
-    <string name="username_opt">Kullanıcı adı (İsteğe bağlı)</string>
     <string name="menu_traffic">Trafik</string>
     <string name="route_reverse_redirect">Ters Yönlendirme</string>
     <string name="route_reverse">Ters Vekil Sunucu</string>
@@ -144,7 +138,6 @@
     <string name="add_profile_methods_manual_settings">Elle Ayar Ekle</string>
     <string name="profile_config">Profil yapılandırması</string>
     <string name="file_manager_missing">Cihazınızda dosya yöneticisi bulunamadı, lütfen bir tane kurun, örneğin Material Files.</string>
-    <string name="action_from_link">Abonelikten</string>
     <string name="circular_reference_sum">Rota kendisini içinde barındıramaz.</string>
     <string name="circular_reference">Dairesel referans</string>
     <string name="config_settings">Yapılandırma Ayarları</string>
@@ -272,8 +265,6 @@
     <string name="not_connected">Bağlanmadı</string>
     <string name="vpn_connected">Bağlandı, bağlantıyı test etmek için dokunun</string>
     <string name="connecting">Bağlanıyor…</string>
-    <string name="insecure">Güvenli Değil</string>
-    <string name="deprecated">Geliştirmesi Durdurulmuş</string>
     <string name="undo">Geri Al</string>
     <plurals name="added">
         <item quantity="one">Eklendi</item>
@@ -311,7 +302,6 @@
     <string name="profile_empty">Lütfen bir profil seçin</string>
     <string name="reboot_required">VPN servisi oluşturma başarısız oldu. Cihazınızı yeniden başlatmanız gerekiyor olabilir.</string>
     <string name="vpn_permission_denied">VPN servisi oluşturabilmek için gereken izin isteği reddedildi</string>
-    <string name="vpn_error">%s</string>
     <string name="stopping">Kapatılıyor…</string>
     <string name="stop">Durdur</string>
     <string name="service_failed">Başarısız:</string>
@@ -327,23 +317,18 @@
     <string name="scanning">Taranıyor…</string>
     <string name="search_apps">Ara…</string>
     <string name="off">Kapalı</string>
-    <string name="on">Açık</string>
     <string name="proxied_apps_summary">VPN modunu seçili uygulamalar için ayarla</string>
     <string name="proxied_apps">Uygulama VPN modu</string>
-    <string name="mux_for_all_sum">Eğer sunucu çoklayıcıyı desteklemiyorsa o sunucuya bağlanamayız.</string>
-    <string name="mux_for_all">Çoklayıcıyı tüm olası desteklenen protokoller için etkinleştir</string>
     <string name="mux_concurrency">Çoklayıcı Eşzamanlı Bağlantı Sayısı</string>
     <string name="mux_sum">Çoklayıcı bağlantı verimini arttırmak için değil TCP el sıkışma gecikmesini azaltmak için tasarlanmıştır. Video izlemek, bir şeyler indirmek veya hız testleri için genellikle verimsizdir</string>
     <string name="enable_mux">Çoklayıcıyı Etkinleştir</string>
     <string name="traffic_sniffing">Trafik İzlemeyi Etkinleştir</string>
     <string name="domain_strategy">Alan Adı Çözümleme Stratejisi</string>
-    <string name="route_opt_block_ads">Reklamları engelle</string>
     <string name="route_asset_updated">Güncellendi</string>
     <string name="route_asset_no_update">Güncelleme yok</string>
     <string name="route_asset_status">Yerel sürüm: %s</string>
     <string name="route_rules_official">Resmi</string>
     <string name="obfs">Şaşırtmaca</string>
-    <string name="tcp_keep_alive_interval">TCP aktif paket teslim koruma aralığı</string>
     <string name="route_not_asset">Varlık dosyası değil: .dat beklendi ama %s</string>
     <string name="route_rules_provider">Rota Varlıkları Sağlayıcısı</string>
     <string name="route_assets">Varlıklar</string>
@@ -382,7 +367,6 @@
     <string name="app_statistics_disabled">Uygulama Trafiği istatistikleri devre dışı</string>
     <string name="enable_pcap">Pcap\'i Etkinleştir</string>
     <string name="route_play_store">%s için Play Store kuralı</string>
-    <string name="route_opt_block_analysis">Çözümlemeyi engelle</string>
     <string name="probe_url">Özel Test URL\'si</string>
     <string name="naive_insecure_concurrency">Güvensiz Eşzamanlılık</string>
     <string name="naive_insecure_concurrency_summary">Kötü ağ koşullarında daha sağlam olmak için N eşzamanlı tünel bağlantısı kullan. Daha fazla bağlantı, tünellemeyi algılamayı kolaylaştırır ve daha az güvenli hale getirir. Bu proje, trafik çözümlemesine karşı en güçlü güvenlik için çaba göstermektedir. Güvensiz bir şekilde kullanmak amacını bozar.

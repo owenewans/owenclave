@@ -334,7 +334,7 @@ class MainActivity : ThemedActivity(),
 
         binding.fab.changeState(state, this.state, animate)
         binding.stats.changeState(state)
-        if (msg != null) snackbar(getString(R.string.vpn_error, msg)).show()
+        if (msg != null) snackbar(msg).show()
         this.state = state
 
         when (state) {

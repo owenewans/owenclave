@@ -22,13 +22,13 @@
         <EditTextPreference
             app:icon="@drawable/ic_baseline_person_24"
             app:key="serverUsername"
-            app:title="@string/username_opt"
+            app:title="@string/username"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_settings_password"
             app:key="serverPassword"
-            app:title="@string/password_opt" />
+            app:title="@string/password" />
         <com.takisoft.preferencex.SimpleMenuPreference
             android:layout_height="match_parent"
             app:defaultValue="https"

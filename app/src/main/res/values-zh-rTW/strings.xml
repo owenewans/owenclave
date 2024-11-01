@@ -13,7 +13,6 @@
     <string name="group_name">群組名稱</string>
     <string name="group_update">更新</string>
     <string name="group_subscription_link">訂閱連接</string>
-    <string name="group_name_required">需要群組名稱</string>
     <string name="group_create">建立新組</string>
     <string name="group_edit">編輯</string>
     <string name="group_status_empty">空組</string>
@@ -53,13 +52,10 @@
     <string name="connection_test_testing">測試中……</string>
     <string name="connection_test_available">成功：HTTPS 握手花費 %dms</string>
     <string name="connection_test_error">失敗：%s</string>
-    <string name="connection_test_fail">網路不可用</string>
     <!-- proxy category -->
     <string name="profile_name">設定檔名稱</string>
     <string name="server_address">伺服器</string>
     <string name="server_port">遠端連接埠</string>
-    <string name="username_opt">使用者名稱（可選）</string>
-    <string name="password_opt">密碼（可選）</string>
     <string name="password">密碼</string>
     <string name="enc_method">加密方式</string>
     <string name="protocol">設定</string>
@@ -69,7 +65,6 @@
     <string name="uuid">使用者 ID</string>
     <string name="network">網路</string>
     <string name="header_type">標頭類型</string>
-    <string name="tls">使用 TLS</string>
     <string name="sni">伺服器名稱指示</string>
     <!-- feature category -->
     <string name="metered">計量付費提示</string>
@@ -77,7 +72,6 @@
     <string name="menu_route">路由</string>
     <string name="proxied_apps">應用程式 VPN 模式</string>
     <string name="proxied_apps_summary">為被選取的應用程式設定 VPN 模式</string>
-    <string name="on">啟用</string>
     <string name="off">停用</string>
     <string name="search_apps">搜尋…</string>
     <string name="scanning">掃描中……</string>
@@ -94,7 +88,6 @@
     <string name="invalid_server">伺服器名稱無效</string>
     <string name="stop">停止</string>
     <string name="stopping">關閉中……</string>
-    <string name="vpn_error">%s</string>
     <string name="vpn_permission_denied">建立 VPN 服務的權限被拒</string>
     <string name="reboot_required">無法啟動 VPN 服務，您可能需要重新啟動您的裝置。</string>
     <!-- alert category -->
@@ -106,7 +99,6 @@
     <string name="edit">編輯</string>
     <string name="share">分享</string>
     <string name="add_profile">新增設定檔</string>
-    <string name="action_from_link">來自訂閱</string>
     <string name="action_export_file">匯出至檔案</string>
     <string name="action_export_clipboard">匯出至剪貼簿</string>
     <string name="action_import">自剪貼簿匯入</string>
@@ -166,7 +158,6 @@
     <string name="ws_path">WebSocket 路徑</string>
     <string name="ws_host">WebSocket 主機</string>
     <string name="security">傳輸層安全性協定</string>
-    <string name="key_opt">金鑰（選用）</string>
     <string name="username">使用者名稱</string>
     <string name="connection_test_url">連線測試 URL</string>
     <string name="fakedns_message">可能導致其他應用程式在代理停止後需要重新啟動以重新連線至網路</string>
@@ -222,15 +213,11 @@
     <string name="route_asset_updated">已更新</string>
     <string name="route_not_asset">非資源檔案：預期副檔名為 .dat，但 %s</string>
     <string name="route_opt_bypass_lan">略過區域網路位址</string>
-    <string name="route_opt_block_ads">封鎖廣告</string>
     <string name="domain_strategy">網域解析策略</string>
     <string name="traffic_sniffing">啟用流量嗅探</string>
     <string name="enable_mux">啟用多工器</string>
     <string name="mux_sum">多工器被設計用於減少 TCP 握手延遲，而非提高連線的輸送量。使用多工器觀看影片，進行下載或進行網路速度測試通常都有反效果</string>
     <string name="mux_concurrency">多工器同時連線數目</string>
-    <string name="mux_for_all">為所有可能的支援的協定啟用多工器</string>
-    <string name="mux_for_all_sum">如果伺服器並不支援多工器，我們可能會無法成功連接它。</string>
-    <string name="tcp_keep_alive_interval">TCP 保持連線傳送間隔</string>
     <string name="service_failed">失敗：</string>
     <string name="select_profile">選擇設定檔</string>
     <string name="proxy_chain">代理鏈結</string>
@@ -245,8 +232,6 @@
     <string name="circular_reference_sum">路由中不能包含自己。</string>
     <string name="clear_profiles">清除</string>
     <string name="action_export">匯出</string>
-    <string name="insecure">不安全</string>
-    <string name="deprecated">已被取代</string>
     <string name="no_proxies_found_in_subscription">未在此訂閱中找到代理</string>
     <string name="no_proxies_found_in_file">未在此檔案中找到代理</string>
     <string name="no_proxies_found_in_clipboard">未在剪貼簿中找到代理</string>
@@ -392,7 +377,6 @@
     <string name="destination_override_summary">使用被偵測到的網域複寫目的地位址，而不是僅用於路由</string>
     <string name="probe_url">自定義測試 URL</string>
     <string name="group_filter_owners">所有者</string>
-    <string name="route_opt_block_analysis">封鎖分析</string>
     <string name="route_play_store">%s 谷歌Play商店規則</string>
     <string name="group_filter_owners_nf">此訂閱中沒有所有者</string>
     <string name="naive_insecure_concurrency">不安全並發</string>
@@ -417,7 +401,6 @@
     <string name="network_eth">乙太網路</string>
     <string name="network_data">行動網路</string>
     <string name="network_type">網路類型</string>
-    <string name="route_need_ssid">路由規則 `%s 需要訪問您的 **Wi-Fi SSID**，但在Android 8.0或以上的系統中需要獲得 **後台定位權限** 並 **啟用定位**</string>
     <string name="tools_network">網路</string>
     <string name="backup_settings">設置</string>
     <string name="backup_import">導入</string>

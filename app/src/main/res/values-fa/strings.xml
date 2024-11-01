@@ -35,7 +35,6 @@
     <string name="group_status_empty">گروه خالی</string>
     <string name="group_edit">ویرایش گروه</string>
     <string name="group_create">ایجاد گروه</string>
-    <string name="group_name_required">نام گروه لازم است</string>
     <string name="group_subscription_link">لینک اشتراک</string>
     <string name="group_update">به‌روزرسانی</string>
     <string name="group_name">نام گروه</string>
@@ -63,7 +62,6 @@
     <string name="remote_dns">DNS پروکسی</string>
     <string name="direct_dns">DNS مسیرهای مستقیم (خارج از پروکسی)</string>
     <string name="cag_dns">تنظیمات DNS</string>
-    <string name="connection_test_fail">اینترنت در دسترس نیست</string>
     <string name="connection_test_error">ناموفق: %s</string>
     <string name="connection_test_available_http">موفق: اتصال HTTPS طی %d میلی ثانیه انجام شد</string>
     <string name="connection_test_available">موفقیت: ارتباط با HTTPS\t%d میلی ثانیه طول کشید</string>
@@ -80,9 +78,6 @@
     <string name="server_address">سرور</string>
     <string name="profile_name">نام پروفایل</string>
     <string name="connection_test_url">تست اتصال نشانی وب</string>
-    <string name="key_opt">کلید (اختیاری)</string>
-    <string name="password_opt">رمز عبور (اختیاری)</string>
-    <string name="username_opt">نام کاربری (اختیاری)</string>
     <string name="username">نام کاربری</string>
     <string name="password">رمز عبور</string>
     <string name="protocol_param">پارامترهای پروتکل</string>
@@ -113,7 +108,6 @@
     <string name="certificates">گواهینامه ها</string>
     <string name="alpn">برنامه-مذاکره پروتکل لایه کاربردی</string>
     <string name="sni">نشانه نام سرور (SNI)</string>
-    <string name="tls">استفاده از TLS</string>
     <string name="force_resolve_sum">هنگام به روزرسانی، تمام نام دامنه ها را به آدرس های IP تبدیل کنید. میزبان و SNI در صورت امکان به طور خودکار اضافه می شوند</string>
     <string name="force_resolve">حل و فصل کردن</string>
     <string name="delete_group_prompt">آیا مطمئن هستید که می خواهید این گروه را حذف کنید؟</string>
@@ -126,7 +120,6 @@
     <string name="protocol_settings">تنظیمات پروتکل</string>
     <string name="bypass_lan_in_core_only_sum">اگر لاین هات‌اسپات برای استفاده کاربرها از VPN کار نمی کند، این را امتحان کنید.</string>
     <string name="bypass_lan_in_core_only">بای‌پس LAN فقط در هسته</string>
-    <string name="action_from_link">از اشتراک</string>
     <string name="append_http_proxy_sum">پروکسی HTTP مستقیماً از (مرورگر/ برخی از برنامه های پشتیبانی شده)، بدون عبور از دستگاه مجازی NIC استفاده می شود (اندروید ۱۰ و بالاتر)</string>
     <string name="append_http_proxy">اضافه کردن پروکسی HTTP به VPN</string>
     <string name="connection_test_timeout">منقضی شده</string>
@@ -183,8 +176,6 @@
     <string name="not_connected">متصل نشد</string>
     <string name="vpn_connected">متصل شد ، برای بررسی اتصال ضربه بزنید</string>
     <string name="connecting">درحال اتصال…</string>
-    <string name="deprecated">منسوخ شده</string>
-    <string name="insecure">ناامن</string>
     <string name="undo">بازگردانی</string>
     <plurals name="added">
         <item quantity="one">اضافه شد</item>
@@ -231,7 +222,6 @@
     <string name="profile_empty">لطفاً یک نمایه انتخاب کنید</string>
     <string name="reboot_required">سرویس VPN شروع نشد. شاید لازم باشد دستگاه خود را دوباره راه اندازی کنید.</string>
     <string name="vpn_permission_denied">اجازه ایجاد سرویس VPN رد شد</string>
-    <string name="vpn_error">%s</string>
     <string name="stopping">در حال خاموش شدن…</string>
     <string name="stop">متوقف کردن</string>
     <string name="service_failed">ناموفق:</string>
@@ -248,18 +238,13 @@
     <string name="scanning">درحال اسکن…</string>
     <string name="search_apps">جستجو…</string>
     <string name="off">خاموش</string>
-    <string name="on">روشن</string>
     <string name="proxied_apps_summary">پیکربندی حالت VPN برای برنامه های انتخابی</string>
     <string name="proxied_apps">حالت VPN برای برنامه ها</string>
-    <string name="tcp_keep_alive_interval">TCP نگه داشتن فاصله تحویل بسته فعال</string>
-    <string name="mux_for_all_sum">اگر سرور از Mux پشتیبانی نکند، دیگر نمی توانیم به آن متصل شویم.</string>
-    <string name="mux_for_all">فعالسازی Mux برای همه پروتکل های پشتیبانی شده</string>
     <string name="mux_concurrency">اتصالات همزمان Mux</string>
     <string name="mux_sum">تسهیم کننده Mux برای کاهش تأخیر TCP طراحی شده است، قادر به افزایش توان اتصال نیست. استفاده از Mux برای تماشای فیلم، بارگیری یا تست سرعت معمولاً خلاف قوانین تولید است</string>
     <string name="enable_mux">فعالسازی تسهیم کننده</string>
     <string name="traffic_sniffing">فعال کردن استشمام ترافیک</string>
     <string name="domain_strategy">استراتژی حل دامنه</string>
-    <string name="route_opt_block_ads">مسدود کردن تبلیغات</string>
     <string name="route_opt_bypass_lan">بای‌پس LAN</string>
     <string name="route_not_asset">پرونده دارایی نیست: به استثنای .dat ، اما %s</string>
     <string name="route_asset_updated">به روز شده</string>
@@ -383,7 +368,6 @@
     <string name="pcap_notice">فایل های Pcap در %s ذخیره می شوند</string>
     <string name="probe_url">تست سفارشی URL</string>
     <string name="naive_insecure_concurrency">همزمانی ناامن</string>
-    <string name="route_opt_block_analysis">آنالیز بلاک</string>
     <string name="stun_test">کشف رفتار NAT</string>
     <string name="nat_filtering_behaviour">رفتار فیلتر NAT</string>
     <string name="naive_insecure_concurrency_summary">از N اتصال تونل همزمان برای قوی‌تر بودن در شرایط بد شبکه استفاده کنید. اتصالات بیشتر تشخیص تونل را آسان‌تر و ناامن میکند. این پروژه برای قویترین امنیت در برابر تجزیه و شنود ترافیک تلاش می‌کند. استفاده از آن به روش ناامن، اهداف آن را از بین می‌برد.
@@ -391,7 +375,6 @@
 \nاگر باید از این استفاده کنید، ابتدا N=2 را امتحان کنید تا ببینید آیا مشکلات شما حل می شود یا خیر. اکیداً توصیه می شود از بیش از 4 اتصال استفاده نکنید.</string>
     <string name="stun_test_summary">تشخیص رفتار نقشه‌برداری NAT کلاینت و رفتار فیلترینگ NAT تعریف شده در RFC5780 با استفاده از STUN.</string>
     <string name="missing_permission">مجوز اعطا نشده</string>
-    <string name="route_need_ssid">قانون مسیریابی `%s` نیازمند دسترسی به ** SSID Wi-Fi** شماست، اما در Android 8 یا بالاتر برای این کار **مجوز موقعیت‌مکانی پس‌زمینه** و **فعال‌کردن موقعیت‌مکانی** لازم است</string>
     <string name="root_ca_mozilla">Mozilla</string>
     <string name="experimental_reduced_iv_head_entropy">این پیشنهاد GFWReport برای یک اقدام متقابل برای جریان تصادفی مانند رفتار مسدود کردن پروتکل مشاهده شده در GFW است.
 \n

@@ -13,7 +13,6 @@
     <string name="group_status_empty">مجموعة فارغة</string>
     <string name="group_edit">تحرير المجموعة</string>
     <string name="group_create">إنشاء مجموعة</string>
-    <string name="group_name_required">اسم المجموعة مطلوب</string>
     <string name="group_subscription_link">رابط الاشتراك</string>
     <string name="group_update">تحديث</string>
     <string name="group_name">أسم المجموعة</string>
@@ -59,9 +58,6 @@
     <string name="protocol">البروتوكول</string>
     <string name="enc_method">طريقة التشفير</string>
     <string name="password">كلمة المرور</string>
-    <string name="key_opt">مفتاح (اختياري)</string>
-    <string name="password_opt">كلمة المرور (اختياري)</string>
-    <string name="username_opt">اسم مستخدِم (اختياري)</string>
     <string name="username">اسم مستخدِم</string>
     <string name="server_port">منفذ بعيد</string>
     <string name="server_address">الخادم</string>
@@ -78,7 +74,6 @@
     <string name="direct_dns">DNS المباشر</string>
     <string name="remote_dns">DNS البعيد</string>
     <string name="cag_dns">إعدادات DNS</string>
-    <string name="connection_test_fail">الإنترنت غير متوفر</string>
     <string name="connection_test_error">فشل: %s</string>
     <string name="connection_test_available_http">نجاح: استغرقت مصافحة HTTP %dms</string>
     <string name="connection_test_available">نجاح: استغرقت مصافحة HTTPS %dms</string>
@@ -139,7 +134,6 @@
     <string name="certificates">الشهادات</string>
     <string name="alpn">تفاوض بروتوكول طبقة التطبيق</string>
     <string name="sni">بيان اسم الخادم</string>
-    <string name="tls">استخدم TLS</string>
     <string name="add_profile_methods_scan_qr_code">مسح رمز كيو آر</string>
     <string name="share_qr_nfc">رمز كيو آر</string>
     <string name="delete_confirm_prompt">هل أنت متأكد أنك تريد إزالة هذا ملف التعريف؟</string>
@@ -155,7 +149,6 @@
     <string name="action_export">يصدر</string>
     <string name="action_export_clipboard">تصدير إلى الحافظة</string>
     <string name="action_export_file">تصدير إلى ملف</string>
-    <string name="action_from_link">من الاشتراك</string>
     <string name="clear_profiles">صافي</string>
     <string name="circular_reference_sum">لا يمكن أن يحتوي المسار على نفسه.</string>
     <string name="circular_reference">مرجع دائري</string>
@@ -177,7 +170,6 @@
     <string name="profile_empty">الرجاء تحديد ملف تعريف</string>
     <string name="reboot_required">فشل بدء تشغيل خدمة VPN. قد تحتاج إلى إعادة تشغيل جهازك.</string>
     <string name="vpn_permission_denied">تم رفض الإذن لإنشاء خدمة VPN</string>
-    <string name="vpn_error">%s</string>
     <string name="stopping">جارٍ إيقاف التشغيل…</string>
     <string name="stop">قف</string>
     <string name="service_failed">باءت بالفشل:</string>
@@ -194,18 +186,13 @@
     <string name="scanning">يتم المسح…</string>
     <string name="search_apps">بحث…</string>
     <string name="off">عن</string>
-    <string name="on">على</string>
     <string name="proxied_apps_summary">تكوين وضع VPN للتطبيقات المحددة</string>
     <string name="proxied_apps">وضع تطبيقات VPN</string>
-    <string name="tcp_keep_alive_interval">يحتفظ TCP بالفاصل الزمني النشط لتسليم الحزم</string>
     <string name="mux_sum">تم تصميم Mux لتقليل زمن انتقال مصافحة TCP، وليس لزيادة إنتاجية الاتصال. عادةً ما يؤدي استخدام Mux لمشاهدة مقاطع الفيديو أو التنزيل أو اختبار السرعة إلى نتائج عكسية</string>
-    <string name="mux_for_all_sum">إذا كان الخادم لا يدعم Mux، فلن نتمكن من الاتصال به.</string>
-    <string name="mux_for_all">قم بتمكين Mux لجميع البروتوكولات المدعومة الممكنة</string>
     <string name="mux_concurrency">اتصالات مسك المتزامنة</string>
     <string name="enable_mux">تمكين المضاعف</string>
     <string name="traffic_sniffing">تمكين استنشاق حركة المرور</string>
     <string name="domain_strategy">استراتيجية حل المجال</string>
-    <string name="route_opt_block_ads">إعلانات كتلة</string>
     <string name="route_opt_bypass_lan">جانبا LAN</string>
     <string name="route_not_asset">ليس ملف أصل: استثناء .dat، لكن %s</string>
     <string name="hysteria_download_mbps">أقصى سرعة تنزيل (بالميجابت في الثانية)</string>
@@ -315,8 +302,6 @@
     <string name="not_connected">غير متصل</string>
     <string name="vpn_connected">متصل، انقر للتحقق من الاتصال</string>
     <string name="connecting">يتصل…</string>
-    <string name="deprecated">مهجور</string>
-    <string name="insecure">غير آمن</string>
     <string name="undo">تراجع</string>
     <plurals name="added">
         <item quantity="zero">مضاف</item>
@@ -376,7 +361,6 @@
     <string name="ssh_auth_type_none">لا شيء</string>
     <string name="probe_url">اختبار URL مخصص</string>
     <string name="route_play_store">قاعدة متجر Play لـ %s</string>
-    <string name="route_opt_block_analysis">تحليل الكتلة</string>
     <string name="group_filter_owners">أصحاب</string>
     <string name="app_statistics_disabled">تم تعطيل إحصاءات حركة مرور التطبيق</string>
     <string name="profile_traffic_statistics">إحصائيات حركة المرور الشخصية</string>

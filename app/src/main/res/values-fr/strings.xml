@@ -5,8 +5,6 @@
     <string name="delete">Retirer</string>
     <string name="add_profile_methods_scan_qr_code">Scannez le code QR</string>
     <string name="share_qr_nfc">Code QR</string>
-    <string name="deprecated">Obsolète</string>
-    <string name="insecure">Non sûr</string>
     <string name="donate">Faire un don</string>
     <string name="plugin">Greffon</string>
     <string name="ignore_battery_optimizations_sum">Retirer certaines restrictions</string>
@@ -49,7 +47,6 @@
     <string name="group_status_empty">Groupe vide</string>
     <string name="group_edit">Modifier le groupe</string>
     <string name="group_create">Créer un groupe</string>
-    <string name="group_name_required">Nom de groupe requis</string>
     <string name="group_subscription_link">Lien d’abonnement</string>
     <string name="group_update">Mettre à jour</string>
     <string name="group_name">Nom du groupe</string>
@@ -118,7 +115,6 @@
     <string name="connection_test_testing">Essai…</string>
     <string name="action_export_clipboard">Exporter dans le presse-papiers</string>
     <string name="dns_routing_message">Résoler les domaines dans les routes de contournement avec DNS Direct. Soyez conscient des fuites DNS potentielles</string>
-    <string name="on">Actif</string>
     <string name="menu_traffic">Trafic</string>
     <string name="connection_test_error">Échec : %s</string>
     <string name="menu_route">Route</string>
@@ -131,7 +127,6 @@
     <string name="require_transproxy">Activer Transproxy entrant</string>
     <string name="server_port">Port distant</string>
     <string name="show_direct_speed">Afficher la vitesse directe</string>
-    <string name="username_opt">Nom d\'utilisateur (facultatif)</string>
     <string name="stop">Arrêter</string>
     <string name="speed_detail">Proxy： %1$s↑ %2$s↓
 \nDirecte： %3$s↑ %4$s↓</string>
@@ -153,7 +148,6 @@
     <string name="speed_interval">Intervalle de mise à jour des notifications de vitesse</string>
     <string name="allow_insecure_sum">Désactivez la vérification des certificats. Lorsque cette option est activée, cette configuration est aussi sécurisée que le texte en clair</string>
     <string name="speed">%s/s</string>
-    <string name="connection_test_fail">Internet non disponible</string>
     <string name="transproxy_mode">Mode Transproxy</string>
     <string name="connection_test_unreachable">Non accessible</string>
     <string name="action_import_file">Importer depuis un fichier</string>
@@ -161,11 +155,9 @@
     <string name="probe_url">URL de test personnalisée</string>
     <string name="profile_name">Nom de profil</string>
     <string name="server_address">Serveur</string>
-    <string name="key_opt">Clé (facultatif)</string>
     <string name="enc_method">Méthode de chiffrement</string>
     <string name="http_host">Hôte HTTP</string>
     <string name="http_path">Chemin HTTP</string>
-    <string name="tls">Utiliser TLS</string>
     <string name="certificates">Certificats</string>
     <string name="edit_config">Modifier la configuration</string>
     <string name="ipv6">Route IPv6</string>
@@ -177,7 +169,6 @@
     <string name="search_apps">Rechercher…</string>
     <string name="show_system_apps">Afficher les applications système</string>
     <string name="service_failed">Échec :</string>
-    <string name="vpn_error">%s</string>
     <string name="clipboard_empty">Le presse-papiers est vide</string>
     <string name="connect">Connecter</string>
     <string name="settings">Préférences</string>
@@ -207,7 +198,6 @@
     <string name="network">Réseau</string>
     <string name="disable">Désactiver</string>
     <string name="route_asset_no_update">Aucune mise à jour</string>
-    <string name="password_opt">Mot de passe (facultatif)</string>
     <string name="only">Seulement</string>
     <string name="route_rules_official">Officiel</string>
     <string name="connecting">Connexion…</string>
@@ -227,7 +217,6 @@
     <string name="group_order_by_delay">Par délai</string>
     <string name="route_bypass_ip">Règle IP pour %s</string>
     <string name="config_settings">Préférences de la configuration</string>
-    <string name="action_from_link">Depuis la souscription</string>
     <string name="custom_config">Configuration personnalisée</string>
     <string name="connection_test_refused">Connexion refusée</string>
     <string name="open_app">Ouvrir l\'appli</string>

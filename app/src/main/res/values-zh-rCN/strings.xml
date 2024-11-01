@@ -14,7 +14,6 @@
     <string name="group_name">分组名</string>
     <string name="group_update">更新</string>
     <string name="group_subscription_link">订阅链接</string>
-    <string name="group_name_required">需要分组名称</string>
     <string name="group_create">创建分组</string>
     <string name="group_edit">编辑</string>
     <string name="group_status_empty">空</string>
@@ -54,13 +53,10 @@
     <string name="connection_test_testing">测试中……</string>
     <string name="connection_test_available">连接成功：HTTPS 握手耗时 %d ms</string>
     <string name="connection_test_error">失败：%s</string>
-    <string name="connection_test_fail">网络不可用</string>
     <!-- proxy category -->
     <string name="profile_name">配置名称</string>
     <string name="server_address">服务器</string>
     <string name="server_port">服务器端口</string>
-    <string name="username_opt">用户名（可选）</string>
-    <string name="password_opt">密码（可选）</string>
     <string name="password">密码</string>
     <string name="enc_method">加密方式</string>
     <string name="protocol">协议</string>
@@ -73,7 +69,6 @@
     <string name="network">传输协议</string>
     <string name="header_type">伪装头类型</string>
     <string name="url">URL</string>
-    <string name="tls">使用 TLS</string>
     <string name="sni">SNI</string>
     <!-- feature category -->
     <string name="ipv6">IPv6 路由</string>
@@ -82,7 +77,6 @@
     <string name="menu_route">路由</string>
     <string name="proxied_apps">分应用 VPN</string>
     <string name="proxied_apps_summary">代理所选应用的流量</string>
-    <string name="on">打开</string>
     <string name="off">关闭</string>
     <string name="search_apps">搜索……</string>
     <string name="scanning">扫描中……</string>
@@ -100,7 +94,6 @@
     <string name="service_failed">失败：</string>
     <string name="stop">停止</string>
     <string name="stopping">正在停止……</string>
-    <string name="vpn_error">%s</string>
     <string name="vpn_permission_denied">VPN 服务权限请求被拒绝</string>
     <string name="reboot_required">无法启动 VPN 服务，您可能需要重启您的设备。</string>
     <!-- alert category -->
@@ -112,7 +105,6 @@
     <string name="edit">编辑</string>
     <string name="share">分享</string>
     <string name="add_profile">添加服务器配置</string>
-    <string name="action_from_link">添加订阅</string>
     <string name="action_export_file">导出到文件</string>
     <string name="action_export_clipboard">导出到剪贴板</string>
     <string name="action_import">从剪贴板导入</string>
@@ -163,7 +155,6 @@
     <string name="route_bypass">绕过</string>
     <string name="route_block">屏蔽</string>
     <string name="route_opt_bypass_lan">绕过私有地址</string>
-    <string name="route_opt_block_ads">屏蔽广告</string>
     <string name="domain_strategy">域名解析策略</string>
     <string name="traffic_sniffing">启用流量嗅探</string>
     <string name="disable">禁用</string>
@@ -184,8 +175,6 @@
     <string name="deduplication">去重</string>
     <string name="version_x">版本（%s）</string>
     <string name="ss_cat">Shadowsocks 设置</string>
-    <string name="insecure">不安全</string>
-    <string name="deprecated">已废弃</string>
     <string name="show_direct_speed">显示直连速度</string>
     <string name="show_direct_speed_sum">在通知中显示不经过代理的流量速度</string>
     <string name="select_profile">选择配置</string>
@@ -194,9 +183,6 @@
     <string name="circular_reference">循环引用</string>
     <string name="circular_reference_sum">路由中不能包含自己。</string>
     <string name="mux_sum">Mux 是为了减少 TCP 的握手延迟而设计的，而非提高连接的吞吐量，用于看视频、下载或者测速通常都有反效果。</string>
-    <string name="mux_for_all">为所有可能支持的协议启用 Mux</string>
-    <string name="mux_for_all_sum">如果服务器不支持，则将无法连接。</string>
-    <string name="tcp_keep_alive_interval">TCP keepalive 间隔</string>
     <string name="route_add">新建路由规则</string>
     <string name="delete_route_prompt">您确定要移除此路由吗？</string>
     <string name="route_name">路由名称</string>
@@ -217,7 +203,6 @@
     <string name="donate_info">世界很可爱 请给世界钱</string>
     <string name="extra_headers">附加头</string>
     <string name="username">用户名</string>
-    <string name="key_opt">密钥（可选）</string>
     <string name="group_diff">变化（%s）</string>
     <string name="require_transproxy">启用透明代理入站</string>
     <string name="transproxy_mode">透明代理模式</string>
@@ -404,7 +389,6 @@
     <string name="start">开始</string>
     <string name="stun_attest_loading">这可能需要几分钟的时间……</string>
     <string name="route_play_store">%s Play 商店规则</string>
-    <string name="route_opt_block_analysis">屏蔽跟踪器</string>
     <string name="naive_insecure_concurrency">不安全并发</string>
     <string name="naive_insecure_concurrency_summary">使用 N 个并发的隧道连接，在恶劣的网络条件下效果更好，但是并发连接使隧道更容易被发现，安全性降低。以不安全的方式使用它违背了这个项目力求对抗流量分析的目的
 \n
@@ -412,7 +396,6 @@
     <string name="route_ssid">Wi-Fi SSID</string>
     <string name="missing_permission">缺少权限</string>
     <string name="location_disabled">位置已禁用</string>
-    <string name="route_need_ssid">路由规则 `%s 需要获取 **Wi-Fi SSID**，但这在 Android 8.0 或以上系统中需要获得 **后台定位** 权限并启用位置信息</string>
     <string name="network_type">网络类型</string>
     <string name="network_data">移动数据</string>
     <string name="network_wifi">Wi-Fi</string>
@@ -471,7 +454,6 @@
     <string name="reality_spider_x">REALITY SpiderX</string>
     <string name="reality_fingerprint">REALITY uTLS 指纹</string>
     <string name="shadowtls_v3">ShadowTLS v3</string>
-    <string name="mieru_mux_level">Mux 级别</string>
     <string name="wireguard_reserved">保留字段</string>
     <string name="shadowsocks_2022_implementation">Shadowsocks 2022 实现</string>
     <string name="action_copy">复制</string>

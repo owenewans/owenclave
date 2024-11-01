@@ -30,8 +30,6 @@
         <item quantity="other"/>
     </plurals>
     <string name="undo">Annulla</string>
-    <string name="insecure">Non sicuro</string>
-    <string name="deprecated">Obsoleto</string>
     <string name="connecting">Connessione…</string>
     <string name="vpn_connected">Connesso, tocca per verificare la connessione</string>
     <string name="donate_info">Me piase i schei</string>
@@ -110,7 +108,6 @@
     <string name="header_type">Tipo di Intestazione</string>
     <string name="show_direct_speed_sum">Mostra anche la velocità del traffico senza proxy nella notifica</string>
     <string name="not_connected">Non connesso</string>
-    <string name="action_from_link">Dall\'iscrizione</string>
     <string name="route_asset_no_update">Nessun aggiornamento</string>
     <string name="profile_name">Nome Profilo</string>
     <string name="quic_security">Protocollo QUIC</string>
@@ -122,7 +119,6 @@
     <string name="prefer">Preferisci</string>
     <string name="bypass_apps">Bypassa</string>
     <string name="apply">Applica</string>
-    <string name="tcp_keep_alive_interval">Intervallo consegna pacchetti TCP Keep-Active</string>
     <string name="profile_config">Configurazione del profilo</string>
     <string name="balancer_settings">Impostazioni Balancer</string>
     <string name="enable_dns_routing">Abilita l\'instradamento DNS</string>
@@ -138,7 +134,6 @@
     <string name="route_name">Nome Percorso</string>
     <string name="http_host">Host dell\'HTTP</string>
     <string name="domain_strategy">Modalità Risoluzione Dominio</string>
-    <string name="tls">Utilizza TLS</string>
     <string name="http_path">Percorso dell\'HTTP</string>
     <string name="grpc_service_name">Nome Servizio gRPC</string>
     <string name="ws_host">Host del WebSocket</string>
@@ -154,7 +149,6 @@
     <string name="speed_interval">Intervallo Aggiornamento della Notifica sulla Velocità</string>
     <string name="connection_test_timeout">Timeout</string>
     <string name="allow_insecure_sum">Disattiva la verifica dei certificati. Quando attiva, questa configurazione è sicura quanto il testo in chiaro</string>
-    <string name="on">Attivo</string>
     <string name="theme">Tema</string>
     <string name="group_name">Nome del Gruppo</string>
     <string name="group_diff">Diff (%s)</string>
@@ -190,12 +184,10 @@
     <string name="security">Crittografia del layer di trasporto</string>
     <string name="probe_url">URL di Testo Personalizzato</string>
     <string name="route_bypass_domain">Regola del Dominio per %s</string>
-    <string name="mux_for_all_sum">Se il server non supporta Mux, non sarà possibile collegarsi ad esso.</string>
     <string name="proxied_apps">Modalità VPN delle app</string>
     <string name="search_apps">Cerca…</string>
     <string name="scanning">Scansione…</string>
     <string name="show_system_apps">Mostra le app di sistema</string>
-    <string name="vpn_error">%s</string>
     <string name="share">Condividi</string>
     <string name="add_profile">Aggiungi profilo</string>
     <string name="group_filter_groups">Gruppi</string>
@@ -233,12 +225,9 @@
     <string name="route_asset_updated">Aggiornato</string>
     <string name="route_not_asset">Non è un file di risorse: serviva un .dat, ma ricevuto %s</string>
     <string name="route_opt_bypass_lan">Bypassa la LAN</string>
-    <string name="route_opt_block_ads">Blocca gli AD</string>
-    <string name="route_opt_block_analysis">Analisi del Blocco</string>
     <string name="traffic_sniffing">Abilità Sniffing Traffico</string>
     <string name="mux_sum">Mux è progettato per ridurre la latenza del TCP Handshake, non per aumentare la velocità di connessione. L\'utilizzo di Mux per guardare video, scaricare e fare speed test è controproducente</string>
     <string name="mux_concurrency">Connessioni Simultanee Mux</string>
-    <string name="mux_for_all">Abilità Mux per tutti i protocolli supportati</string>
     <string name="proxied_apps_summary">Configura la modalità VPN per le app selezionate</string>
     <string name="off">Inattivo</string>
     <string name="invert_selections">Inverti selezione</string>
@@ -287,7 +276,6 @@
     <string name="select_apps">Seleziona Applicazioni</string>
     <string name="apps_message">%d Applicazioni</string>
     <string name="hysteria_obfs">Password di offuscamento</string>
-    <string name="group_name_required">Nome Gruppo Obbligatorio</string>
     <string name="group_edit">Modifica Gruppo</string>
     <string name="group_subscription_link">Link Iscrizione</string>
     <string name="group_updated">%s: Aggiornato/i %d proxy</string>
@@ -312,7 +300,6 @@
     <string name="connection_test_testing">Test…</string>
     <string name="connection_test_available">Operazione Riuscita: l\'handshake HTTPS ha richiesto %dms</string>
     <string name="connection_test_error">Non Riuscito: %s</string>
-    <string name="connection_test_fail">Internet non Disponibile</string>
     <string name="cag_dns">Impostazioni DNS</string>
     <string name="direct_dns">DNS Diretto</string>
     <string name="dns_hosts">Riscrittura del Dominio</string>
@@ -322,9 +309,6 @@
     <string name="transproxy_mode">Modalità Transproxy</string>
     <string name="connection_test_url">URL per Test Connessione</string>
     <string name="server_port">Porta Remota</string>
-    <string name="username_opt">Nome Utente (Facoltativo)</string>
-    <string name="password_opt">Password (Facoltativa)</string>
-    <string name="key_opt">Chiave (Facoltativa)</string>
     <string name="password">Password</string>
     <string name="enc_method">Metodo di Crittografia</string>
     <string name="protocol">Protocollo</string>

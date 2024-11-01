@@ -45,8 +45,6 @@
     <string name="settings">Ajustes</string>
     <string name="scanning">Escaneando…</string>
     <string name="license">Licencias</string>
-    <string name="password_opt">Contraseña (opcional)</string>
-    <string name="username_opt">Nombre de usuario (opcional)</string>
     <string name="unsaved_changes_prompt">Cambios no guardados. ¿Quieres guardar\?</string>
     <string name="connecting">Conectando…</string>
     <string name="connection_test_clear_results">Limpiar resultados</string>
@@ -77,7 +75,6 @@
     <string name="menu_group">Grupo</string>
     <string name="logcat">Exportar información depurada</string>
     <string name="menu_about">Acerca de</string>
-    <string name="group_name_required">Requiere nombre de grupo</string>
     <string name="menu_configuration">Configuraciones</string>
     <string name="group_subscription_link">Enlace de subscripción</string>
     <string name="group_name">Nombre del grupo</string>
@@ -123,7 +120,6 @@
     <string name="pinned_peer_certificate_chain_sha256">Cadena de certificado fijada</string>
     <string name="certificates">Certificados</string>
     <string name="sni">SNI (Indicación del nombre del servidor)</string>
-    <string name="tls">Usar TLS</string>
     <string name="grpc_service_name">gRPC Nombre de servicio</string>
     <string name="kcp_seed">Semilla mKCP</string>
     <string name="quic_key">Llave QUIC</string>
@@ -137,7 +133,6 @@
     <string name="direct_dns">DNS directo</string>
     <string name="remote_dns">DNS remoto</string>
     <string name="cag_dns">Configuración de DNS</string>
-    <string name="connection_test_fail">Internet no disponible</string>
     <string name="connection_test_error">Error al detectar la conexión a Internet: %s</string>
     <string name="connection_test_available_http">Éxito: el protocolo de enlace HTTP tomó %dms</string>
     <string name="connection_test_available">Éxito: el protocolo de enlace HTTPS tomó %dms</string>
@@ -152,18 +147,13 @@
     <string name="invert_selections">Invertir selecciones</string>
     <string name="search_apps">Buscar…</string>
     <string name="off">Apagado</string>
-    <string name="on">En</string>
     <string name="proxied_apps_summary">Configurar el modo VPN para aplicaciones seleccionadas</string>
     <string name="proxied_apps">Modo VPN de aplicaciones</string>
-    <string name="tcp_keep_alive_interval">TCP mantiene el intervalo de entrega de paquetes activo</string>
-    <string name="mux_for_all_sum">Si el servidor no es compatible con Mux, no podremos conectarnos a él.</string>
-    <string name="mux_for_all">Habilite Mux para todos los posibles protocolos admitidos</string>
     <string name="mux_concurrency">Conexiones concurrentes de Mux</string>
     <string name="mux_sum">Mux está diseñado para reducir la latencia del protocolo de enlace de TCP, no para aumentar el rendimiento de la conexión. Usar Mux para ver videos, descargar o realizar pruebas de velocidad suele ser contraproducente</string>
     <string name="enable_mux">Activar multiplexor</string>
     <string name="traffic_sniffing">Activar rastreo de tráfico</string>
     <string name="domain_strategy">Estrategia de resolución de dominio</string>
-    <string name="route_opt_block_ads">Bloquear anuncios</string>
     <string name="route_not_asset">No es un archivo de activos: excepto .dat, pero %s</string>
     <string name="route_asset_updated">Actualizado</string>
     <string name="route_asset_no_update">Ninguna actualización</string>
@@ -192,7 +182,6 @@
     <string name="security">Cifrado de la capa de transporte</string>
     <string name="enc_method">Método de cifrado</string>
     <string name="password">Contraseña</string>
-    <string name="key_opt">Clave (opcional)</string>
     <string name="username">Nombre de usuario</string>
     <string name="server_port">Puerto remoto</string>
     <string name="server_address">Servidor</string>
@@ -323,8 +312,6 @@
     <string name="plugin_configure">Configurar …</string>
     <string name="deduplication">Deduplicación</string>
     <string name="vpn_connected">Conectado, toque para comprobar la conexión</string>
-    <string name="deprecated">Obsoleto</string>
-    <string name="insecure">Inseguro</string>
     <string name="undo">Deshacer</string>
     <plurals name="removed">
         <item quantity="one">Remoto</item>
@@ -336,7 +323,6 @@
     <string name="profile_config">Configuración de perfil</string>
     <string name="file_manager_missing">Su dispositivo carece de un selector de archivos estándar de Android; instale uno, como Archivos de materiales.</string>
     <string name="action_export_file">Exportar a archivo</string>
-    <string name="action_from_link">De suscripción</string>
     <string name="clear_profiles">Limpiar</string>
     <string name="circular_reference_sum">La ruta no puede contenerse a sí misma.</string>
     <string name="circular_reference">Referencia circular</string>
@@ -347,7 +333,6 @@
     <string name="balancer">equilibrador</string>
     <string name="balancer_settings">Configuración del equilibrador</string>
     <string name="proxy_chain">Cadena de proxy</string>
-    <string name="vpn_error">%s</string>
     <string name="stopping">Apagando…</string>
     <string name="stop">Detener</string>
     <string name="service_failed">Fallido:</string>
@@ -382,11 +367,9 @@
     <string name="destination_override_summary">Usar el dominio olfateado para sobrescribir la dirección de destino, no solo para el enrutamiento</string>
     <string name="resolve_destination">Resolver destino</string>
     <string name="route_play_store">Regla de la Play Store para %s</string>
-    <string name="route_opt_block_analysis">Bloquear analítica</string>
     <string name="group_filter_owners">Propietarios</string>
     <string name="missing_permission">Permiso faltante</string>
     <string name="location_disabled">Ubicación desactivada</string>
-    <string name="route_need_ssid">La regla de enrutamiento `%s` requiere acceso a su **SSID Wi-Fi**, pero esto requiere **permiso de ubicación en segundo plano** y **ubicación activada** en Android 8.0 o superior</string>
     <string name="route_ssid">SSID Wi-Fi</string>
     <string name="network_type">Tipo de red</string>
     <string name="network_data">Datos móviles</string>

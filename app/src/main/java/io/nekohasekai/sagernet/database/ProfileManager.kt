@@ -204,25 +204,6 @@ object ProfileManager {
         var rules = SagerDatabase.rulesDao.allRules()
         if (rules.isEmpty() && !DataStore.rulesFirstCreate) {
             DataStore.rulesFirstCreate = true
-            createRule(
-                RuleEntity(
-                    name = app.getString(R.string.route_opt_block_ads),
-                    domains = "geosite:category-ads-all",
-                    outbound = -2
-                )
-            )
-            createRule(
-                RuleEntity(
-                    name = app.getString(R.string.route_opt_block_analysis),
-                    domains = app.assets.open("analysis.txt").use {
-                            it.bufferedReader()
-                                .readLines()
-                                .filter { it.isNotBlank() }
-                                .joinToString("\n")
-                        },
-                    outbound = -2,
-                )
-            )
             var country = Locale.getDefault().country.lowercase()
             var displayCountry = Locale.getDefault().displayCountry
             if (country in arrayOf(

@@ -8,9 +8,6 @@
     <string name="protocol">Protokol</string>
     <string name="enc_method">Metode Enkrip</string>
     <string name="password">Kata sandi</string>
-    <string name="key_opt">Kunci (Opsional)</string>
-    <string name="password_opt">Kata sandi (Opsional)</string>
-    <string name="username_opt">Nama pengguna (Opsional)</string>
     <string name="username">Nama pengguna</string>
     <string name="server_port">Remot Port</string>
     <string name="server_address">Server</string>
@@ -27,7 +24,6 @@
     <string name="direct_dns">Direk DNS</string>
     <string name="remote_dns">Remot DNS</string>
     <string name="cag_dns">Pengaturan DNS</string>
-    <string name="connection_test_fail">Internet tidak tersedia</string>
     <string name="connection_test_error">Gagal: %s</string>
     <string name="connection_test_available_http">Sukses: handshake HTTP butuh %dms</string>
     <string name="connection_test_available">Sukses: handshake HTTPS butuh %dms</string>
@@ -71,7 +67,6 @@
     <string name="group_status_empty_subscription">Belum diperbarui</string>
     <string name="group_edit">Ubah grup</string>
     <string name="group_create">Buat grup</string>
-    <string name="group_name_required">Nama grup diperlukan</string>
     <string name="group_subscription_link">Tautan Langganan</string>
     <string name="group_update">Perbarui</string>
     <string name="group_name">Nama grup</string>
@@ -102,7 +97,6 @@
     <string name="settings">Pengaturan</string>
     <string name="clipboard_empty">Papan klip kosong</string>
     <string name="connect">Sambungkan</string>
-    <string name="vpn_error">%s</string>
     <string name="stopping">Mematikan…</string>
     <string name="stop">Berhenti</string>
     <string name="service_failed">Gagal:</string>
@@ -118,8 +112,6 @@
     <string name="enable_mux">Aktifkan Multiplexer</string>
     <string name="traffic_sniffing">Aktifkan Traffic Sniffing</string>
     <string name="off">Mati</string>
-    <string name="on">Nyala</string>
-    <string name="route_opt_block_ads">Blokir Iklan</string>
     <string name="route_asset_updated">Diperbarui</string>
     <string name="route_asset_no_update">Tidak ada pembaruan</string>
     <string name="route_asset_status">Versi lokal: %s</string>
@@ -136,7 +128,6 @@
     <string name="ipv6">Rute IPv6</string>
     <string name="edit_config">Sunting Konfigurasi</string>
     <string name="certificates">Sertifikat</string>
-    <string name="tls">Pakai TLS</string>
     <string name="network">Jaringan</string>
     <string name="uuid">ID Pengguna</string>
     <string name="obfs_param">Obfs Param</string>
@@ -161,9 +152,6 @@
     <string name="invert_selections">Balikkan pilihan</string>
     <string name="proxied_apps_summary">Konfigurasikan mode VPN untuk aplikasi yang dipilih</string>
     <string name="proxied_apps">Modus aplikasi VPN</string>
-    <string name="tcp_keep_alive_interval">TCP menjaga interval pengiriman paket aktif</string>
-    <string name="mux_for_all_sum">Jika server tidak mendukung Mux, kami tidak akan dapat menyambungkannya.</string>
-    <string name="mux_for_all">Aktifkan Mux untuk semua kemungkinan protokol yang didukung</string>
     <string name="mux_concurrency">Koneksi Mux Concurrent</string>
     <string name="mux_sum">Mux dirancang untuk mengurangi latensi handshake TCP, bukan untuk meningkatkan throughput koneksi. Menggunakan Mux untuk menonton video, mengunduh, atau uji kecepatan biasanya kontra produktif</string>
     <string name="domain_strategy">Strategi Resolusi Domain</string>
@@ -232,7 +220,6 @@
     <plurals name="removed">
         <item quantity="other">%d item terhapus</item>
     </plurals>
-    <string name="action_from_link">Dari langganan</string>
     <string name="share_qr_nfc">Kode QR</string>
     <string name="connecting">Menyambungkan…</string>
     <string name="random">Acak</string>
@@ -256,7 +243,6 @@
     <string name="hysteria_upload_mbps">Kecepatan Unggah Maksimum (dalam Mbps)</string>
     <string name="hysteria_download_mbps">Kecepatan Unduh Maksimum (dalam Mbps)</string>
     <string name="route_bypass_ip">Aturan IP untuk %s</string>
-    <string name="route_opt_block_analysis">Analisis blok</string>
     <string name="clear_profiles">Bersihkan</string>
     <string name="action_export_file">Ekspor ke file</string>
     <string name="action_export_clipboard">Ekspor ke Papan Klip</string>
@@ -270,8 +256,6 @@
     <string name="delete">Hapus</string>
     <string name="add_profile_methods_scan_qr_code">Pindai Kode QR</string>
     <string name="undo">Batalkan</string>
-    <string name="insecure">Tidak aman</string>
-    <string name="deprecated">Usang</string>
     <string name="vpn_connected">Tersambung, ketuk untuk cek koneksi</string>
     <string name="not_connected">Tidak tersambung</string>
     <string name="cleartext_http_warning">Lalu lintas HTTP Cleartext tidak aman</string>
@@ -362,7 +346,6 @@
     <string name="route_ssid">SSID Wifi</string>
     <string name="missing_permission">Izin Tidak Ada</string>
     <string name="location_disabled">Lokasi Dinonaktifkan</string>
-    <string name="route_need_ssid">Aturan perutean `%s` memerlukan akses ke **SSID Wi-Fi** Anda, tetapi ini memerlukan **izin lokasi latar belakang** dan **lokasi diaktifkan** pada Android 8.0 atau lebih tinggi</string>
     <string name="network_type">Tipe Jaringan</string>
     <string name="network_data">Data Seluler</string>
     <string name="network_wifi">Wifi</string>
