@@ -370,10 +370,10 @@ object RawUpdater : GroupUpdater() {
                                     "cipher" -> if (bean is VMessBean) bean.encryption = opt.value as String
                                     "flow" -> if (bean is VLESSBean) bean.flow = opt.value as String
                                     "packet-encoding" -> if (bean is VMessBean || bean is VLESSBean) {
-                                        if (opt.value as String == "packetaddr") {
-                                            bean.packetEncoding = "packet"
-                                        } else if (opt.value as String == "xudp") {
-                                            bean.packetEncoding = "xudp"
+                                        bean.packetEncoding = when (opt.value) {
+                                            "packetaddr" -> "packet"
+                                            "xudp" -> "xudp"
+                                            else -> ""
                                         }
                                     }
                                     "tls" -> if (bean is VMessBean || bean is VLESSBean) {
@@ -930,6 +930,11 @@ object RawUpdater : GroupUpdater() {
                                         uuid = user.id
                                         encryption = user.security
                                         alterId = user.alterId
+                                        packetEncoding = when ((settings.value as? V2RayConfig.VLESSOutboundConfigurationObject)?.packetEncoding?.lowercase()) {
+                                            "xudp" -> "xudp"
+                                            "packet" -> "packet"
+                                            else -> ""
+                                        }
                                         name = tag ?: (displayName() + " - ${user.security} - ${user.id}")
                                     })
                                 }
@@ -947,6 +952,14 @@ object RawUpdater : GroupUpdater() {
                                         uuid = user.id
                                         encryption = user.encryption
                                         flow = user.flow
+                                        packetEncoding = when ((settings.value as? V2RayConfig.VLESSOutboundConfigurationObject)?.packetEncoding?.lowercase()) {
+                                            "xudp" -> "xudp"
+                                            "packet" -> "packet"
+                                            else -> ""
+                                        }
+                                        if (flow.isNotBlank() && packetEncoding.isBlank()) {
+                                            packetEncoding = "xudp"
+                                        }
                                         name = tag ?: (displayName() + " - ${user.id}")
                                     })
                                 }
@@ -1269,16 +1282,20 @@ object RawUpdater : GroupUpdater() {
                         v2rayBean.uuid = outbound["uuid"]?.toString()
                         v2rayBean.security = outbound["security"]?.toString()
                         v2rayBean.alterId = outbound["alter_id"]?.toString()?.toInt()
-                        when (outbound["packet_encoding"]) {
-                            "packet", "xudp" -> v2rayBean.packetEncoding = outbound["packet_encoding"]?.toString()
+                        v2rayBean.packetEncoding = when (outbound["packet_encoding"]) {
+                            "packetaddr" -> "packet"
+                            "xudp" -> "xudp"
+                            else -> ""
                         }
                     }
                     "vless" -> {
                         v2rayBean as VLESSBean
                         v2rayBean.uuid = outbound["uuid"]?.toString()
                         v2rayBean.flow = outbound["flow"]?.toString()
-                        when (outbound["packet_encoding"]) {
-                            "packet", "xudp" -> v2rayBean.packetEncoding = outbound["packet_encoding"]?.toString()
+                        v2rayBean.packetEncoding = when (outbound["packet_encoding"]) {
+                            "packetaddr" -> "packet"
+                            "xudp" -> "xudp"
+                            else -> ""
                         }
                     }
                 }
