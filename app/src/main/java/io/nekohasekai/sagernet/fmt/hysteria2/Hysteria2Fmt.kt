@@ -19,16 +19,15 @@
 
 package io.nekohasekai.sagernet.fmt.hysteria2
 
+import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
-import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.isIpv6Address
 import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.queryParameter
-import io.nekohasekai.sagernet.ktx.toHysteriaPort
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
 import org.yaml.snakeyaml.DumperOptions
@@ -227,7 +226,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (maxConnReceiveWindow > 0) {
         quicObject["maxConnReceiveWindow"] = maxConnReceiveWindow
     }
-    if (!canMapping() && DataStore.tunImplementation == TunImplementation.SYSTEM) {
+    if (!canMapping() && DataStore.tunImplementation == TunImplementation.SYSTEM && DataStore.serviceMode == Key.MODE_VPN) {
         val sockoptsObject: MutableMap<String, Any> = HashMap()
         sockoptsObject["fdControlUnixSocket"] = "protect_path"
         quicObject["sockopts"] = sockoptsObject
