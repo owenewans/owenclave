@@ -99,6 +99,17 @@ object PluginManager {
             Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "com.github.dyhkwong.sagernet")), flags)
             .filter { it.providerInfo.exported }
         if (providers.isEmpty()) {
+            try {
+                initNativeInternal(pluginId)?.also { return InitResult(it) }
+            } catch (_: Throwable) {
+            }
+        }
+        if (providers.isEmpty()) {
+            providers = SagerNet.application.packageManager.queryIntentContentProviders(
+            Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "fr.husi")), flags)
+            .filter { it.providerInfo.exported }
+        }
+        if (providers.isEmpty()) {
             providers = SagerNet.application.packageManager.queryIntentContentProviders(
             Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "io.nekohasekai.sagernet")), flags)
             .filter { it.providerInfo.exported }
@@ -106,11 +117,6 @@ object PluginManager {
         if (providers.isEmpty()) {
             providers = SagerNet.application.packageManager.queryIntentContentProviders(
             Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "moe.matsuri.lite")), flags)
-            .filter { it.providerInfo.exported }
-        }
-        if (providers.isEmpty()) {
-            providers = SagerNet.application.packageManager.queryIntentContentProviders(
-            Intent(PluginContract.ACTION_NATIVE_PLUGIN, buildUri(pluginId, "fr.husi")), flags)
             .filter { it.providerInfo.exported }
         }
         if (providers.isEmpty()) {
@@ -162,6 +168,26 @@ object PluginManager {
         } catch (t: Throwable) {
             failure?.also { t.addSuppressed(it) }
             throw t
+        }
+    }
+
+    private fun initNativeInternal(pluginId: String): String? {
+        return when (pluginId) {
+            "brook-plugin" -> "libbrook.so"
+            "hysteria-plugin" -> "libhysteria.so"
+            "hysteria2-plugin" -> "libhysteria2.so"
+            "juicity-plugin" -> "libjuicity.so"
+            "mieru-plugin" -> "libmieru.so"
+            "naive-plugin" -> "libnaive.so"
+            "shadowtls-plugin" -> "libshadowtls.so"
+            "trojan-go-plugin" -> "libtrojan-go.so"
+            "tuic-plugin" -> "libtuic.so"
+            "tuic5-plugin" -> "libtuic5.so"
+            else -> return null
+        }.let {
+            File(SagerNet.application.applicationInfo.nativeLibraryDir, it).apply {
+                check(canExecute())
+            }.absolutePath
         }
     }
 
