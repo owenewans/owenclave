@@ -389,7 +389,12 @@ object RawUpdater : GroupUpdater() {
                                             "short-id" -> bean.realityShortId = realityOpt.value.toString()
                                         }
                                     }
-                                    "network" -> bean.type = opt.value as String
+                                    "network" -> {
+                                        when (opt.value) {
+                                            "h2" -> bean.type = "http"
+                                            "ws", "grpc", "http" -> bean.type = opt.value as String
+                                        }
+                                    }
                                     "ws-opts" -> for (wsOpt in (opt.value as Map<String, Any>)) {
                                         when (wsOpt.key.lowercase()) {
                                             "headers" -> for (wsHeader in (opt.value as Map<String, Any>)) {
