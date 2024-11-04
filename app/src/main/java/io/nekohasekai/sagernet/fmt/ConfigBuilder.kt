@@ -1539,7 +1539,7 @@ fun buildV2RayConfig(
         }
 
         var hasDnsTagDirect = false
-        if (bypassDomain.isNotEmpty()) {
+        if (bypassDomain.isNotEmpty() || bypassDomainSkipFakeDns.isNotEmpty() || bootstrapDomain.isNotEmpty()) {
             dns.servers.addAll(remoteDns.map {
                 DnsObject.StringOrServerObject().apply {
                     valueY = DnsObject.ServerObject().apply {
