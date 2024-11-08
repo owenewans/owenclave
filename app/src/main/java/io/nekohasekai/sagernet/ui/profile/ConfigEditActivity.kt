@@ -26,6 +26,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import cn.hutool.json.JSONObject
 import com.blacksquircle.ui.editorkit.listener.OnChangeListener
 import com.blacksquircle.ui.editorkit.model.ColorScheme
@@ -67,6 +70,31 @@ class ConfigEditActivity : ThemedActivity() {
         val binding = LayoutEditConfigBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbar)) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                top = bars.top,
+                left = bars.left,
+                right = bars.right,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.layout_editor)) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                left = bars.left,
+                right = bars.right,
+                bottom = bars.bottom,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
 
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.apply {

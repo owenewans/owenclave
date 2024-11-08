@@ -79,7 +79,6 @@
 
         <activity
             android:name="io.nekohasekai.sagernet.ui.MainActivity"
-            android:configChanges="uiMode"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
@@ -149,86 +148,59 @@
             android:excludeFromRecents="true"
             android:taskAffinity="" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.SocksSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.SocksSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.HttpSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.HttpSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ShadowsocksSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.ShadowsocksSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ShadowsocksRSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.ShadowsocksRSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.VMessSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.VMessSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.VLESSSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.VLESSSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.TrojanSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.TrojanSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.TrojanGoSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.TrojanGoSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.NaiveSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.NaiveSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.BrookSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.BrookSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.HysteriaSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.HysteriaSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.Hysteria2SettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.Hysteria2SettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.SSHSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.SSHSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.WireGuardSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.WireGuardSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.MieruSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.MieruSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.TuicSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.Tuic5SettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.Tuic5SettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ShadowTLSSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.ShadowTLSSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.JuicitySettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.JuicitySettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ConfigSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.ConfigSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ConfigEditActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.ConfigEditActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.ChainSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.ChainSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.profile.BalancerSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.profile.BalancerSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.GroupSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.GroupSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.RouteSettingsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.RouteSettingsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.AssetsActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.AssetsActivity" />
         <activity
-            android:name="io.nekohasekai.sagernet.ui.AppListActivity"
-            android:configChanges="uiMode" />
+            android:name="io.nekohasekai.sagernet.ui.AppListActivity" />
         <activity
             android:name=".QuickToggleShortcut"
             android:excludeFromRecents="true"
@@ -244,43 +216,36 @@
         </activity>
         <activity
             android:name="io.nekohasekai.sagernet.ui.AppManagerActivity"
-            android:configChanges="uiMode"
             android:excludeFromRecents="true"
             android:label="@string/proxied_apps"
             android:launchMode="singleTask"
             android:parentActivityName=".ui.MainActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.ScannerActivity"
-            android:configChanges="uiMode"
             android:excludeFromRecents="true"
             android:label="@string/add_profile_methods_scan_qr_code"
             android:launchMode="singleTask"
             android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.ProfileSelectActivity"
-            android:configChanges="uiMode"
             android:label="@string/select_profile"
             android:launchMode="singleTask"
             android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.StunActivity"
-            android:configChanges="uiMode"
             android:launchMode="singleTask"
             android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.StunLegacyActivity"
-            android:configChanges="uiMode"
             android:launchMode="singleTask"
             android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.ProbeCertActivity"
-            android:configChanges="uiMode"
             android:launchMode="singleTask"
             android:parentActivityName="io.nekohasekai.sagernet.ui.MainActivity" />
 
         <activity
             android:name="io.nekohasekai.sagernet.ui.SwitchActivity"
-            android:configChanges="uiMode"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.SagerNet.Dialog" />
@@ -376,7 +341,6 @@
 
         <activity
             android:name="io.nekohasekai.sagernet.tasker.TaskerActivity"
-            android:configChanges="uiMode"
             android:excludeFromRecents="true"
             android:exported="true">
             <intent-filter>

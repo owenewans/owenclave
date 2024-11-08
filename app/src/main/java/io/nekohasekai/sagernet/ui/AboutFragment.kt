@@ -32,6 +32,8 @@ import androidx.activity.result.component1
 import androidx.activity.result.component2
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.danielstone.materialaboutlibrary.MaterialAboutFragment
 import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem
@@ -39,12 +41,10 @@ import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList
 import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.R
-import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.databinding.LayoutAboutBinding
 import io.nekohasekai.sagernet.fmt.PluginEntry
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
-import io.nekohasekai.sagernet.widget.ListHolderListener
 import libcore.Libcore
 
 class AboutFragment : ToolbarFragment(R.layout.layout_about) {
@@ -54,8 +54,31 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
 
         val binding = LayoutAboutBinding.bind(view)
 
-        ViewCompat.setOnApplyWindowInsetsListener(view, ListHolderListener)
         toolbar.setTitle(R.string.menu_about)
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                top = bars.top,
+                left = bars.left,
+                right = bars.right,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.layout_about)) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                left = bars.left,
+                right = bars.right,
+                bottom = bars.bottom,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
 
         parentFragmentManager.beginTransaction()
             .replace(R.id.about_fragment_holder, AboutContent())

@@ -31,11 +31,14 @@ import android.os.RemoteException
 import android.provider.Settings
 import android.view.KeyEvent
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.preference.PreferenceDataStore
 import cn.hutool.core.codec.Base64Decoder
 import cn.hutool.core.util.ZipUtil
@@ -58,7 +61,6 @@ import io.nekohasekai.sagernet.fmt.PluginEntry
 import io.nekohasekai.sagernet.group.GroupInterfaceAdapter
 import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.*
-import io.nekohasekai.sagernet.widget.ListHolderListener
 import io.noties.markwon.Markwon
 
 class MainActivity : ThemedActivity(),
@@ -93,6 +95,33 @@ class MainActivity : ThemedActivity(),
             binding.drawerLayout.removeView(binding.navView)
         }
         navigation.setNavigationItemSelectedListener(this)
+        if (resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL) {
+            ViewCompat.setOnApplyWindowInsetsListener(navigation) { v, insets ->
+                val bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            or WindowInsetsCompat.Type.displayCutout()
+                )
+                v.updatePadding(
+                    top = bars.top,
+                    right = bars.right,
+                    bottom = bars.bottom,
+                )
+                WindowInsetsCompat.CONSUMED
+            }
+        } else {
+            ViewCompat.setOnApplyWindowInsetsListener(navigation) { v, insets ->
+                val bars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            or WindowInsetsCompat.Type.displayCutout()
+                )
+                v.updatePadding(
+                    top = bars.top,
+                    left = bars.left,
+                    bottom = bars.bottom,
+                )
+                WindowInsetsCompat.CONSUMED
+            }
+        }
 
         if (savedInstanceState == null) {
             displayFragmentWithId(R.id.nav_configuration)
@@ -106,7 +135,7 @@ class MainActivity : ThemedActivity(),
         binding.stats.setOnClickListener { if (state == BaseService.State.Connected) binding.stats.testConnection() }
 
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.coordinator, ListHolderListener)
+
         changeState(BaseService.State.Idle)
         connection.connect(this, this)
         DataStore.configurationStore.registerChangeListener(this)

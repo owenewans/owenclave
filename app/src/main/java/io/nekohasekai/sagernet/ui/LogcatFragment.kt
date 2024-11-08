@@ -27,6 +27,9 @@ import android.view.*
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.core.graphics.TypefaceCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.drawerlayout.widget.DrawerLayout
 import cn.hutool.core.util.RuntimeUtil
 import com.termux.terminal.TerminalColors
@@ -61,6 +64,30 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
 
         toolbar.inflateMenu(R.menu.logcat_menu)
         toolbar.setOnMenuItemClickListener(this)
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                top = bars.top,
+                left = bars.left,
+                right = bars.right,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(view.findViewById(R.id.layout_terminal)) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                left = bars.left + dp2px(8),
+                right = bars.right + dp2px(8),
+                bottom = bars.bottom + dp2px(8),
+            )
+            WindowInsetsCompat.CONSUMED
+        }
 
         binding = LayoutLogcatBinding.bind(view)
         val terminalView = binding.terminalView;

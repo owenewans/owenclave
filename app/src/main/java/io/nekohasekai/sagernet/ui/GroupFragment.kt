@@ -45,7 +45,6 @@ import io.nekohasekai.sagernet.databinding.LayoutGroupItemBinding
 import io.nekohasekai.sagernet.fmt.toUniversalLink
 import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.*
-import io.nekohasekai.sagernet.widget.ListHolderListener
 import io.nekohasekai.sagernet.widget.QRCodeDialog
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import kotlinx.coroutines.delay
@@ -65,12 +64,36 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
         super.onViewCreated(view, savedInstanceState)
         activity = requireActivity() as MainActivity
 
-        ViewCompat.setOnApplyWindowInsetsListener(view, ListHolderListener)
         toolbar.setTitle(R.string.menu_group)
         toolbar.inflateMenu(R.menu.add_group_menu)
         toolbar.setOnMenuItemClickListener(this)
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                top = bars.top,
+                left = bars.left,
+                right = bars.right,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
 
         groupListView = view.findViewById(R.id.group_list)
+        ViewCompat.setOnApplyWindowInsetsListener(groupListView) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                left = bars.left + dp2px(4),
+                right = bars.right + dp2px(4),
+                bottom = bars.bottom + dp2px(4),
+            )
+            WindowInsetsCompat.CONSUMED
+        }
+
         layoutManager = FixedLinearLayoutManager(groupListView)
         groupListView.layoutManager = layoutManager
         groupAdapter = GroupAdapter()

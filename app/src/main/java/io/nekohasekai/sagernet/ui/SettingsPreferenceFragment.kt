@@ -23,7 +23,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import androidx.core.app.ActivityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
@@ -48,6 +50,18 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         super.onViewCreated(view, savedInstanceState)
 
         listView.layoutManager = FixedLinearLayoutManager(listView)
+        ViewCompat.setOnApplyWindowInsetsListener(listView) { v, insets ->
+            val bars = insets.getInsets(
+                WindowInsetsCompat.Type.systemBars()
+                        or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.updatePadding(
+                left = bars.left,
+                right = bars.right,
+                bottom = bars.bottom,
+            )
+            WindowInsetsCompat.CONSUMED
+        }
     }
 
     val reloadListener = Preference.OnPreferenceChangeListener { _, _ ->
@@ -67,8 +81,9 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             val theme = Theme.getTheme(newTheme as Int)
             app.setTheme(theme)
             requireActivity().apply {
-                setTheme(theme)
-                ActivityCompat.recreate(this)
+                // FIXME
+                this.finish()
+                startActivity(intent)
             }
             true
         }
@@ -76,6 +91,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         nightTheme.setOnPreferenceChangeListener { _, newTheme ->
             Theme.currentNightMode = (newTheme as String).toInt()
             Theme.applyNightTheme()
+            requireActivity().apply {
+                // FIXME
+                this.finish()
+                startActivity(intent)
+            }
             true
         }
         val portSocks5 = findPreference<EditTextPreference>(Key.SOCKS_PORT)!!
