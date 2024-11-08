@@ -80,9 +80,13 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                 .commitAllowingStateLoss()
         }
 
-        override fun getMaterialAboutList(activityContext: Context): MaterialAboutList {
-
-            var versionName = BuildConfig.VERSION_NAME
+        override fun getMaterialAboutList(activityContext: Context?): MaterialAboutList {
+            try {
+                requireContext()
+            } catch (e: Exception) {
+                Logs.w(e)
+                return MaterialAboutList.Builder().build()
+            }
 
             return MaterialAboutList.Builder()
                 .addCard(MaterialAboutCard.Builder()
@@ -90,7 +94,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                     .addItem(MaterialAboutActionItem.Builder()
                         .icon(R.drawable.ic_baseline_update_24)
                         .text(R.string.app_version)
-                        .subText(versionName)
+                        .subText(BuildConfig.VERSION_NAME)
                         .setOnClickAction {
                             requireContext().launchCustomTab(
                                 "https://github.com/dyhkwong/Exclave/releases"

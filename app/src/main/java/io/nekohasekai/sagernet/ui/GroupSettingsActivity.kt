@@ -45,6 +45,7 @@ import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeListener
+import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
@@ -204,13 +205,6 @@ class GroupSettingsActivity(
         }
     }
 
-    fun PreferenceFragmentCompat.viewCreated(view: View, savedInstanceState: Bundle?) {
-    }
-
-    fun PreferenceFragmentCompat.displayPreferenceDialog(preference: Preference): Boolean {
-        return false
-    }
-
     class UnsavedChangesDialogFragment : AlertDialogFragment<Empty, Empty>() {
         override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
             setTitle(R.string.unsaved_changes_prompt)
@@ -339,12 +333,16 @@ class GroupSettingsActivity(
 
     class MyPreferenceFragmentCompat : PreferenceFragmentCompat() {
 
-        lateinit var activity: GroupSettingsActivity
+        var activity: GroupSettingsActivity? = null
 
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = DataStore.profileCacheStore
-            activity.apply {
-                createPreferences(savedInstanceState, rootKey)
+            try {
+                activity = (requireActivity() as GroupSettingsActivity).apply {
+                    createPreferences(savedInstanceState, rootKey)
+                }
+            } catch (e: Exception) {
+                Logs.w(e)
             }
         }
 
@@ -352,10 +350,6 @@ class GroupSettingsActivity(
             super.onViewCreated(view, savedInstanceState)
 
             ViewCompat.setOnApplyWindowInsetsListener(listView, ListListener)
-
-            activity.apply {
-                viewCreated(view, savedInstanceState)
-            }
         }
 
         override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -372,18 +366,11 @@ class GroupSettingsActivity(
             }
             R.id.action_apply -> {
                 runOnDefaultDispatcher {
-                    activity.saveAndExit()
+                    activity?.saveAndExit()
                 }
                 true
             }
             else -> false
-        }
-
-        override fun onDisplayPreferenceDialog(preference: Preference) {
-            activity.apply {
-                if (displayPreferenceDialog(preference)) return
-            }
-            super.onDisplayPreferenceDialog(preference)
         }
 
     }

@@ -42,9 +42,11 @@ import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeListener
 import io.nekohasekai.sagernet.fmt.AbstractBean
+import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.ui.GroupSettingsActivity
 import io.nekohasekai.sagernet.ui.ThemedActivity
 import io.nekohasekai.sagernet.utils.DirectBoot
 import io.nekohasekai.sagernet.widget.ListListener
@@ -209,16 +211,16 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
 
     class MyPreferenceFragmentCompat : PreferenceFragmentCompat() {
 
-        lateinit var activity: ProfileSettingsActivity<*>
+        var activity: ProfileSettingsActivity<*>? = null
 
         override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = DataStore.profileCacheStore
-            activity.apply {
-                createPreferences(savedInstanceState, rootKey)
-
-                if (isSubscription) {
-//                    findPreference<Preference>(Key.PROFILE_NAME)?.isEnabled = false
+            try {
+                activity = (requireActivity() as ProfileSettingsActivity<*>).apply {
+                    createPreferences(savedInstanceState, rootKey)
                 }
+            } catch (e: Exception) {
+                Logs.w(e)
             }
         }
 
@@ -227,12 +229,11 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
 
             ViewCompat.setOnApplyWindowInsetsListener(listView, ListListener)
 
-            activity.apply {
+            activity?.apply {
                 viewCreated(view, savedInstanceState)
+                DataStore.dirty = false
+                DataStore.profileCacheStore.registerChangeListener(this)
             }
-
-            DataStore.dirty = false
-            DataStore.profileCacheStore.registerChangeListener(activity)
         }
 
         override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
@@ -253,7 +254,7 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
             }
             R.id.action_apply -> {
                 runOnDefaultDispatcher {
-                    activity.saveAndExit()
+                    activity?.saveAndExit()
                 }
                 true
             }
@@ -261,7 +262,7 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
         }
 
         override fun onDisplayPreferenceDialog(preference: Preference) {
-            activity.apply {
+            activity?.apply {
                 if (displayPreferenceDialog(preference)) return
             }
             super.onDisplayPreferenceDialog(preference)

@@ -39,6 +39,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -1073,6 +1074,12 @@ class ConfigurationFragment @JvmOverloads constructor(
                     }
                 }
 
+                try {
+                    requireActivity()
+                } catch (e: Exception) {
+                    Logs.w(e)
+                    return@runOnDefaultDispatcher
+                }
                 val runFunc = if (now) requireActivity()::runOnUiThread else groupPager::post
                 runFunc {
                     groupList = newGroupList
