@@ -374,7 +374,7 @@ fun buildV2RayConfig(
 
                 if (bean is StandardV2RayBean && (
                     (bean.type == "ws" && bean.wsUseBrowserForwarder) ||
-                    (bean.type == "splithttp" && bean.security == "tls" && bean.shUseBrowserForwarder)
+                    (bean.type == "splithttp" && bean.shUseBrowserForwarder)
                 )) {
                     val route = RoutingObject.RuleObject().apply {
                         type = "field"
@@ -857,7 +857,10 @@ fun buildV2RayConfig(
                                                 if (bean.path.isNotBlank()) {
                                                     path = bean.path
                                                 }
-                                                if (bean.security == "tls" && bean.shUseBrowserForwarder) {
+                                                if (bean.splithttpMode != "auto") {
+                                                    mode = bean.splithttpMode
+                                                }
+                                                if (bean.shUseBrowserForwarder) {
                                                     useBrowserForwarding = true
                                                     requireSh = true
                                                 }
@@ -912,7 +915,7 @@ fun buildV2RayConfig(
                                         && (security == "tls" || security == "reality")
                                         && !(bean is ShadowsocksBean && bean.plugin.isNotEmpty()
                                         && !(network == "ws" && bean.wsUseBrowserForwarder)
-                                        && !(network == "splithttp" && bean.security == "tls" && bean.shUseBrowserForwarder))
+                                        && !(network == "splithttp" && bean.shUseBrowserForwarder))
                                     ) {
                                         sockopt = StreamSettingsObject.SockoptObject().apply {
                                             if (DataStore.enableFragment) {

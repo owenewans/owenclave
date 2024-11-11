@@ -71,7 +71,7 @@ fun parseHysteria(url: String): HysteriaBean {
 
 fun HysteriaBean.toUri(): String {
     if (!serverPorts.isValidHysteriaPort()) {
-        error("invalid port: $serverPorts")
+        return "" // error("invalid port: $serverPorts")
     }
     val builder = Libcore.newURL("hysteria")
     builder.host = serverAddress
@@ -118,6 +118,7 @@ fun HysteriaBean.toUri(): String {
 
 fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): String {
     if (!serverPorts.isValidHysteriaPort()) {
+
         error("invalid port: $serverPorts")
     }
     val usePortHopping = DataStore.hysteriaEnablePortHopping && serverPorts.isValidHysteriaMultiPort()

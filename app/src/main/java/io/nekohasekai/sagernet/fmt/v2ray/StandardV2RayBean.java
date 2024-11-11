@@ -22,13 +22,9 @@ package io.nekohasekai.sagernet.fmt.v2ray;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
-import java.util.List;
-import java.util.Objects;
-
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
-import io.nekohasekai.sagernet.ktx.NetsKt;
 import io.nekohasekai.sagernet.ktx.UUIDsKt;
 
 public abstract class StandardV2RayBean extends AbstractBean {
@@ -50,6 +46,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public Integer wsMaxEarlyData;
     public String earlyDataHeaderName;
     public String meekUrl;
+    public String splithttpMode;
 
     public String certificates;
     public String pinnedPeerCertificateChainSha256;
@@ -96,6 +93,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(quicSecurity)) quicSecurity = "none";
         if (StrUtil.isBlank(quicKey)) quicKey = "";
         if (StrUtil.isBlank(meekUrl)) meekUrl = "";
+        if (StrUtil.isBlank(splithttpMode)) splithttpMode = "auto";
 
         if (StrUtil.isBlank(security)) security = "none";
         if (StrUtil.isBlank(sni)) sni = "";
@@ -136,7 +134,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(22);
+        output.writeInt(23);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -172,6 +170,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(host);
                 output.writeString(path);
                 output.writeBoolean(shUseBrowserForwarder);
+                output.writeString(splithttpMode);
                 break;
             }
             case "quic": {
@@ -331,6 +330,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (version >= 20) {
                     shUseBrowserForwarder = input.readBoolean();
                 }
+                if (version >= 23) {
+                    splithttpMode = input.readString();
+                }
                 break;
             }
             case "mekya": {
@@ -424,9 +426,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public boolean canTCPing() {
-        List<String> alpns = NetsKt.listByLineOrComma(alpn);
-        return !type.equals("kcp") && !type.equals("quic") && !type.equals("hysteria2")
-                && !(type.equals("splithttp") && alpns.size() == 1 && Objects.equals(alpns.get(0), "h3"));
+        return !type.equals("kcp") && !type.equals("quic") && !type.equals("hysteria2");
     }
 
     @Override

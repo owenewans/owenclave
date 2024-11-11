@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.devtools.ksp") version "2.0.21-1.0.26"
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
     id("kotlin-parcelize")
     id("com.google.protobuf")
 }
@@ -60,8 +60,8 @@ dependencies {
     implementation("com.takisoft.preferencex:preferencex-simplemenu:1.1.0")
 
     implementation("com.google.android.material:material:1.12.0")
-    implementation("cn.hutool:hutool-core:5.8.32")
-    implementation("cn.hutool:hutool-json:5.8.32")
+    implementation("cn.hutool:hutool-core:5.8.33")
+    implementation("cn.hutool:hutool-json:5.8.33")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.google.zxing:core:3.5.3")
 
@@ -88,6 +88,6 @@ dependencies {
 
     implementation(project(":library:proto-stub"))
 
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.3")
 }
 

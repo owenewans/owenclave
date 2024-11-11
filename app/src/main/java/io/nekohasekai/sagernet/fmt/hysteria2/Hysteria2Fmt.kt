@@ -95,7 +95,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
 
 fun Hysteria2Bean.toUri(): String {
     if (!serverPorts.isValidHysteriaPort()) {
-        error("invalid port: $serverPorts")
+        return "" // error("invalid port: $serverPorts")
     }
     val builder = Libcore.newURL("hysteria2")
     builder.host = serverAddress

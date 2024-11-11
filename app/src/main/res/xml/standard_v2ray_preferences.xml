@@ -241,6 +241,14 @@
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverShBrowserForwarding"
             app:title="@string/ws_browser_forwarding" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:defaultValue="auto"
+            app:entries="@array/splithttp_mode_value"
+            app:entryValues="@array/splithttp_mode_value"
+            app:icon="@drawable/ic_baseline_stream_24"
+            app:key="serverSplithttpMode"
+            app:title="@string/splithttp_mode"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

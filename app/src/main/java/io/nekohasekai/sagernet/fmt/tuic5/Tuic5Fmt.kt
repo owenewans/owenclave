@@ -35,7 +35,7 @@ import libcore.Libcore
 fun parseTuic(server: String): AbstractBean {
     val link = Libcore.parseURL(server)
     link.queryParameter("version")?.let { version ->
-        if (version == "4") {
+        if (version == "4" || link.password.isBlank()) {
             return TuicBean().apply {
                 serverAddress = link.host
                 serverPort = link.port

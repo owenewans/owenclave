@@ -394,12 +394,12 @@
         <item/>
         <item>KCP</item>
         <item>WS</item>
-        <item>H2</item>
+        <item>HTTP</item>
         <item>QUIC</item>
         <item>GRPC</item>
         <item>Meek</item>
         <item>HTTPUpgrade</item>
-        <item>SplitHTTP</item>
+        <item>SplitHTTP/XHTTP</item>
         <item>Hysteria2</item>
         <item>Mekya</item>
     </string-array>
@@ -1056,6 +1056,12 @@
     <string-array name="front_landing_proxy_value">
         <item>0</item>
         <item>1</item>
+    </string-array>
+
+    <string-array name="splithttp_mode_value">
+        <item>auto</item>
+        <item>packet-up</item>
+        <item>stream-up</item>
     </string-array>
 
 </resources>
