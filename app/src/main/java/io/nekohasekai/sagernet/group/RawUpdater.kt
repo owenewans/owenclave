@@ -718,10 +718,11 @@ object RawUpdater : GroupUpdater() {
                         else -> HttpBean()
                     }.applyDefaultValues()
                     streamSettings?.apply {
-                        v2rayBean.security = security ?: v2rayBean.security
                         when (security) {
-                            "tls" -> {
-                                tlsSettings?.apply {
+                            "tls", "utls" -> {
+                                v2rayBean.security = "tls"
+                                val tlsConfig = if (security == "tls") tlsSettings else utlsSettings?.tlsConfig
+                                tlsConfig?.apply {
                                     serverName?.also {
                                         v2rayBean.sni = it
                                     }
@@ -739,9 +740,12 @@ object RawUpdater : GroupUpdater() {
                                             }
                                         }
                                     }
+                                    // do not parse "imitate"
+                                    // do not parse "fingerprint"
                                 }
                             }
                             "reality" -> {
+                                v2rayBean.security = "reality"
                                 realitySettings?.apply {
                                     serverName?.also {
                                         v2rayBean.sni = it
@@ -1549,22 +1553,28 @@ object RawUpdater : GroupUpdater() {
                     val securitySettings = streamSettings["securitySettings"] as? JSONObject
                     when (security) {
                         null, "none" -> {}
-                        "tls" -> {
+                        "tls", "utls" -> {
                             v2rayBean.security = "tls"
-                            v2rayBean.sni = securitySettings?.get("serverName")?.toString()
-                                ?: securitySettings?.get("server_name")?.toString()
-                            val pinnedPeerCertificateChainSha256 = securitySettings?.get("pinnedPeerCertificateChainSha256") as? List<String>
-                                ?: securitySettings?.get("pinned_peer_certificate_chain_sha256") as? List<String>
+                            val tlsConfig = if (security == "tls") {
+                                securitySettings
+                            } else {
+                                securitySettings?.get("tlsConfig") as? JSONObject ?: securitySettings?.get("tls_config") as? JSONObject
+                            }
+                            v2rayBean.sni = tlsConfig?.get("serverName")?.toString()
+                                ?: tlsConfig?.get("server_name")?.toString()
+                            val pinnedPeerCertificateChainSha256 = tlsConfig?.get("pinnedPeerCertificateChainSha256") as? List<String>
+                                ?: tlsConfig?.get("pinned_peer_certificate_chain_sha256") as? List<String>
                             v2rayBean.pinnedPeerCertificateChainSha256 = pinnedPeerCertificateChainSha256?.joinToString("\n")
                             if (!pinnedPeerCertificateChainSha256.isNullOrEmpty()) {
-                                v2rayBean.allowInsecure = securitySettings?.get("allowInsecureIfPinnedPeerCertificate")?.toString()?.toBoolean()
-                                    ?: securitySettings?.get("allow_insecure_if_pinned_peer_certificate")?.toString()?.toBoolean()
+                                v2rayBean.allowInsecure = tlsConfig?.get("allowInsecureIfPinnedPeerCertificate")?.toString()?.toBoolean()
+                                    ?: tlsConfig?.get("allow_insecure_if_pinned_peer_certificate")?.toString()?.toBoolean()
                             }
-                            val alpn = securitySettings?.get("nextProtocol") as? List<String>
-                                ?: securitySettings?.get("next_protocol") as? List<String>
+                            val alpn = tlsConfig?.get("nextProtocol") as? List<String>
+                                ?: tlsConfig?.get("next_protocol") as? List<String>
                             if (!alpn.isNullOrEmpty()) {
                                 v2rayBean.alpn = alpn.joinToString("\n")
                             }
+                            // do not parse "imitate"
                         }
                         else -> return proxies
                     }
