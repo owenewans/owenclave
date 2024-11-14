@@ -1782,7 +1782,7 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
         })
     }
 
-    var requireWs = false
+    /* var requireWs = false
     var wsPort = 0
     if (config.containsKey("browserForwarder")) {
         config["browserForwarder"] = JSONObject(gson.toJson(BrowserForwarderObject().apply {
@@ -1802,7 +1802,7 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
             listenPort = mkPort()
             shPort = listenPort
         }))
-    }
+    } */
 
     val outbounds = try {
         config.getJSONArray("outbounds")?.filterIsInstance<JSONObject>()?.map { it ->
@@ -1857,10 +1857,10 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
     return V2rayBuildResult(
         config.toStringPretty(),
         emptyList(),
-        requireWs,
-        wsPort,
-        requireSh,
-        shPort,
+        false, // requireWs
+        0, // wsPort
+        false, // requireSh
+        0, // shPort
         outboundTags,
         outboundTags,
         emptyMap(),
