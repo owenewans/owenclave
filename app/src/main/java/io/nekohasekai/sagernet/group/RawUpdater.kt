@@ -541,7 +541,7 @@ object RawUpdater : GroupUpdater() {
                                 privateKey = proxy["private-key"]?.toString()
                                 peerPublicKey = proxy["public-key"]?.toString()
                                 peerPreSharedKey = proxy["pre-shared-key"]?.toString()
-                                mtu = proxy["pre-shared-key"]?.toString()?.toInt() ?: 1408
+                                mtu = proxy["mtu"]?.toString()?.toInt() ?: 1408
                                 localAddress = listOfNotNull(proxy["ip"]?.toString(), proxy["ipv6"]?.toString()).joinToString("\n")
                                 name = proxy["name"]?.toString()
                                 (proxy["peers"] as? (List<Map<String, Any?>>))?.forEach {
