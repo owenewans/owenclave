@@ -421,7 +421,7 @@ data class ProxyEntity(
             return bean.type != "v2ray_outbound"
         }
         if (bean is Hysteria2Bean) {
-            return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY || bean.serverPorts.isValidHysteriaMultiPort() && DataStore.hysteriaEnablePortHopping
+            return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY
         }
         return when (type) {
             TYPE_TROJAN_GO -> true

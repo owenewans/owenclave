@@ -429,6 +429,7 @@ public class V2RayConfig {
             public String email;
             public String address;
             public Integer port;
+            public String method;
 
         }
 
@@ -1170,6 +1171,8 @@ public class V2RayConfig {
         public Boolean ignore_client_bandwidth;
         public Boolean use_udp_extension;
         public OBFSObject obfs;
+        public String hopPorts;
+        public Integer hopInterval;
 
         public static class CongestionObject {
             public String type; // invalid option

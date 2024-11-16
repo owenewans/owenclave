@@ -516,7 +516,7 @@
     <string name="plugin_settings">Plugin settings</string>
     <string name="hysteria2_plugin_settings_sum">These options only apply to plugins.</string>
     <string name="hysteria_enable_port_hopping_experimental">Enable Hysteria port hopping (Experimental)</string>
-    <string name="hysteria_enable_port_hopping_sum">This requires plugins and is incompatible with chain proxy. If disabled, a random port within the port hopping range will be used.</string>
+    <string name="hysteria_enable_port_hopping_sum">This is incompatible with chain proxy. If disabled, a random port within the port hopping range will be used.</string>
     <string name="enable_fragment">Enable TLS Client Hello fragmentation</string>
     <string name="enable_fragment_sum">May help circumvent SNI censorship. This option may get removed in the future.</string>
     <string name="fragment_length">Fragmentation length</string>

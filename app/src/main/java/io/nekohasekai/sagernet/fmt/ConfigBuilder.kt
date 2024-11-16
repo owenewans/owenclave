@@ -104,6 +104,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.isIpAddress
+import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.mkPort
@@ -1025,6 +1026,10 @@ fun buildV2RayConfig(
                                                 type = "salamander"
                                                 password = bean.obfs
                                             }
+                                        }
+                                        if (bean.serverPorts.isValidHysteriaMultiPort() && DataStore.hysteriaEnablePortHopping) {
+                                            hopPorts = bean.serverPorts
+                                            hopInterval = bean.hopInterval
                                         }
                                     }
                                     tlsSettings = TLSObject().apply {

@@ -53,6 +53,11 @@
             app:key="serverDownloadSpeed"
             app:title="@string/hysteria_download_mbps"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_flip_camera_android_24"
+            app:key="serverHopInterval"
+            app:title="@string/hysteria_hop_interval"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -62,11 +67,6 @@
             app:icon="@drawable/ic_baseline_push_pin_24"
             app:key="serverPinnedCertificateChain"
             app:title="@string/sha256_certificate_fingerprint"
-            app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:icon="@drawable/ic_baseline_flip_camera_android_24"
-            app:key="serverHopInterval"
-            app:title="@string/hysteria_hop_interval"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_baseline_texture_24"

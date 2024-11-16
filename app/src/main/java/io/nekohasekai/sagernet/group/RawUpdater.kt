@@ -1148,6 +1148,12 @@ object RawUpdater : GroupUpdater() {
                                             if (type == "salamander") hysteria2Bean.obfs = it
                                         }
                                     }
+                                    hopPorts?.also {
+                                        hysteria2Bean.serverPorts = it
+                                    }
+                                    hopInterval?.also {
+                                        hysteria2Bean.hopInterval = it
+                                    }
                                 }
                             }
                         }
@@ -1171,7 +1177,7 @@ object RawUpdater : GroupUpdater() {
                         proxies.add(hysteria2Bean.clone().apply {
                             name = tag
                             serverAddress = it.address
-                            serverPorts = it.port.toString()
+                            serverPorts = streamSettings?.hy2Settings?.hopPorts ?: it.port.toString()
                         })
                     }
                 }
