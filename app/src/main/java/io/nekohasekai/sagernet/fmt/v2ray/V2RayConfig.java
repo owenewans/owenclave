@@ -1189,7 +1189,6 @@ public class V2RayConfig {
         public String host;
         public String path;
         public Map<String, String> headers;
-        public Boolean noSSEHeader;
         public String mode;
         public Boolean useBrowserForwarding;
 

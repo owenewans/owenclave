@@ -479,7 +479,7 @@ object RawUpdater : GroupUpdater() {
                         "hysteria" -> {
                             proxies.add(HysteriaBean().apply {
                                 serverAddress = proxy["server"] as String
-                                serverPorts = proxy["port"].toString()
+                                serverPorts = proxy["ports"]?.toString() ?: proxy["port"]?.toString()
                                 protocol = when (proxy["protocol"]?.toString()) {
                                     "faketcp" -> HysteriaBean.PROTOCOL_FAKETCP
                                     "wechat-video" -> HysteriaBean.PROTOCOL_WECHAT_VIDEO
@@ -492,19 +492,21 @@ object RawUpdater : GroupUpdater() {
                                 sni = proxy["sni"]?.toString()
                                 allowInsecure = proxy["skip-cert-verify"]?.toString() == "true"
                                 obfuscation = proxy["obfs"]?.toString()
+                                hopInterval = proxy["hop-interval"]?.toString()?.toInt()
                                 name = proxy["name"]?.toString()
                             })
                         }
                         "hysteria2" -> {
                             proxies.add(Hysteria2Bean().apply {
                                 serverAddress = proxy["server"] as String
-                                serverPorts = proxy["port"].toString()
+                                serverPorts = proxy["ports"]?.toString() ?: proxy["port"]?.toString()
                                 auth = proxy["password"]?.toString()
                                 uploadMbps = proxy["up"]?.toString()?.toIntOrNull()?: 0 // support int only
                                 downloadMbps = proxy["down"]?.toString()?.toIntOrNull()?: 0 // support int only
                                 sni = proxy["sni"]?.toString()
                                 allowInsecure = proxy["skip-cert-verify"]?.toString() == "true"
                                 obfs = if (proxy["obfs"]?.toString() == "salamander") proxy["obfs-password"]?.toString() else ""
+                                hopInterval = proxy["hop-interval"]?.toString()?.toInt()
                                 name = proxy["name"]?.toString()
                             })
                         }
