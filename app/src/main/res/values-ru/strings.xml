@@ -19,8 +19,8 @@
     <string name="remote_dns">Удаленный DNS</string>
     <string name="cag_dns">Настройки DNS</string>
     <string name="connection_test_error">Ошибка: %s</string>
-    <string name="connection_test_available_http">Успех: рукопожатие HTTP заняло %d мс</string>
-    <string name="connection_test_available">Успех: рукопожатие HTTPS заняло %d мс</string>
+    <string name="connection_test_available_http">HTTP-соединение установлено за %d мс</string>
+    <string name="connection_test_available">HTTPS-соединение установлено за %d мс</string>
     <string name="connection_test_testing">Тест…</string>
     <string name="speed_detail">Прокси ： %1$s↑ %2$s↓
 \nПрямой ： %3$s↑%4$s↓</string>
@@ -451,7 +451,7 @@
     <string name="plugin_settings">Настройки плагина</string>
     <string name="hysteria2_plugin_settings_sum">Эти параметры применимы только к плагинам.</string>
     <string name="hysteria_enable_port_hopping_experimental">Включить переключение портов Hysteria (экспериментальная функция)</string>
-    <string name="hysteria_enable_port_hopping_sum">Это требует плагинов и несовместимо с цепочкой прокси. Если отключено, будет использоваться случайный порт в диапазоне переключения портов.</string>
+    <string name="hysteria_enable_port_hopping_sum">Несовместимо с цепочкой прокси. Если отключено, будет использоваться случайный порт в диапазоне переключения портов.</string>
     <string name="enable_fragment_sum">Может помочь обойти цензуру SNI. Эта опция может быть удалена в будущем.</string>
     <string name="fragment_interval">Интервал фрагментации</string>
     <string name="enable_fragment_for_direct">Также включить фрагментацию для прямого</string>
@@ -502,4 +502,5 @@
     <string name="front_proxy">Прямой прокси</string>
     <string name="allow_apps_bypass_vpn_sum">Разрешить использовать такие методы, как bindProcessToNetwork, для обхода VPN.</string>
     <string name="ech_config">ECH-конфиг</string>
+    <string name="splithttp_mode">Режим</string>
 </resources>
