@@ -322,52 +322,76 @@ fun parseV2RayN(link: String): VMessBean {
     bean.encryption = json.getStr("scy") ?: ""
     bean.uuid = json.getStr("id") ?: ""
     bean.alterId = json.getInt("aid") ?: 0
-    when (val net = json.getStr("net") ?: "tcp") {
-        "h2" -> bean.type = "http"
-        "" -> bean.type = "tcp"
-        "xhttp" -> bean.type = "splithttp" // There is no "xhttp" as of v2rayNG 1.9.16. Just in case.
-        "tcp", "kcp", "ws", "quic", "grpc", "httpupgrade", "splithttp" -> bean.type = net
+    bean.type = when (val net = json.getStr("net") ?: "tcp") {
+        "" -> "tcp"
+        "h2" -> "http"
+        "xhttp" -> "splithttp"
+        "tcp", "kcp", "ws", "http", "quic", "grpc", "httpupgrade", "splithttp" -> net
         else -> error("unknown net: $net")
     }
-    bean.headerType = json.getStr("type") ?: "none"
-    bean.host = json.getStr("host") ?: ""
+    val type = json.getStr("type")
+    val host = json.getStr("host") ?: ""
     val path = json.getStr("path") ?: ""
 
-    bean.path = path
-    if (bean.type == "ws") {
-        // RPRX's smart-assed invention. This of course will break under some conditions.
-        val u = Libcore.parseURL(path)
-        u.queryParameter("ed")?.let { ed ->
-            u.deleteQueryParameter("ed")
-            bean.path = u.string
-            bean.wsMaxEarlyData = ed.toIntOrNull()
-            bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
-        }
-    }
-    if (bean.type == "httpupgrade") {
-        // RPRX's smart-assed invention. This of course will break under some conditions.
-        val u = Libcore.parseURL(path)
-        u.queryParameter("ed")?.let {
-            u.deleteQueryParameter("ed")
-            bean.path = u.string
-        }
-    }
-
     when (bean.type) {
-        "quic" -> {
-            bean.quicSecurity = bean.host
-            bean.quicKey = bean.path
-            bean.host = ""
+        "tcp" -> {
+            bean.host = host
+            bean.path = path
+            type?.also {
+                bean.headerType = type
+            }
         }
         "kcp" -> {
-            bean.mKcpSeed = bean.path
+            bean.mKcpSeed = path
+            type?.also {
+                bean.headerType = type
+            }
+        }
+        "ws" -> {
+            bean.host = host
+            bean.path = path
+            // RPRX's smart-assed invention. This of course will break under some conditions.
+            val u = Libcore.parseURL(bean.path)
+            u.queryParameter("ed")?.let { ed ->
+                u.deleteQueryParameter("ed")
+                bean.path = u.string
+                bean.wsMaxEarlyData = ed.toIntOrNull()
+                bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
+            }
+        }
+        "httpupgrade" -> {
+            bean.host = host
+            bean.path = path
+            // RPRX's smart-assed invention. This of course will break under some conditions.
+            val u = Libcore.parseURL(bean.path)
+            u.queryParameter("ed")?.let {
+                u.deleteQueryParameter("ed")
+                bean.path = u.string
+            }
+        }
+        "http" -> {
+            bean.host = host
+            bean.path = path
+        }
+        "quic" -> {
+            bean.quicSecurity = host
+            bean.quicKey = path
+            type?.also {
+                bean.headerType = type
+            }
         }
         "grpc" -> {
             // Xray hijacks the share link standard, uses escaped `serviceName` and some other non-standard `serviceName`s and breaks the compatibility with other implementations.
             // Fixing the compatibility with Xray will break the compatibility with V2Ray and others.
             // So do not fix the compatibility with Xray.
             bean.grpcServiceName = bean.path
-            bean.host = ""
+        }
+        "splithttp" -> {
+            bean.host = host
+            bean.path = path
+            type?.also {
+                bean.splithttpMode = type
+            }
         }
     }
 
@@ -465,7 +489,8 @@ fun VMessBean.toV2rayN(): String {
         it["id"] = this.uuidOrGenerate()
         it["aid"] = alterId
         it["net"] = when (type) {
-            "tcp", "kcp", "ws", "httpupgrade", "quic", "grpc", "splithttp" -> type
+            "tcp", "kcp", "ws", "httpupgrade", "quic", "grpc" -> type
+            "splithttp" -> "xhttp"
             "http" -> "h2"
             else -> return "" // error("V2rayN format does not support $type")
         }
@@ -483,6 +508,7 @@ fun VMessBean.toV2rayN(): String {
         }
         it["type"] = when (type) {
             "tcp", "kcp", "quic" -> headerType
+            "splithttp" -> splithttpMode
             else -> ""
         }
         it["tls"] = when (security) {
