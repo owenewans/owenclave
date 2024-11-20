@@ -40,7 +40,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
 
     // fuck port hopping URL
     val hostPort = url.substringAfter("://").substringAfter("@")
-        .substringBefore("?").substringBefore("/")
+        .substringBefore("#").substringBefore("?").substringBefore("/")
     var port = ""
     if (!hostPort.endsWith("]") && hostPort.lastIndexOf(":") > 0) {
         port = hostPort.substringAfterLast(":")
@@ -137,8 +137,7 @@ fun Hysteria2Bean.toUri(): String {
     if (serverPorts.isValidHysteriaMultiPort()) {
         // fuck port hopping URL
         val port = url.substringAfter("://").substringAfter("@")
-            .substringBefore("?").substringBefore("/")
-            .substringAfterLast(":")
+            .substringBefore("/").substringAfterLast(":")
         return url.replace(":$port/", ":$serverPorts/")
     }
     return url
