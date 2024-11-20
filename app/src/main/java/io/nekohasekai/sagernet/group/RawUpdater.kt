@@ -819,6 +819,12 @@ object RawUpdater : GroupUpdater() {
                                             }
                                         }
                                     }
+                                    host?.also {
+                                        if (it.isNotEmpty()) {
+                                            // Xray's disgusting handling of Host header
+                                            v2rayBean.host = it
+                                        }
+                                    }
                                     maxEarlyData?.also {
                                         v2rayBean.wsMaxEarlyData = it
                                     }
@@ -842,6 +848,8 @@ object RawUpdater : GroupUpdater() {
                                 v2rayBean.type = "http"
                                 httpSettings?.apply {
                                     host?.also {
+                                        // will NOT follow https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
+                                        // as it will likely breaks the compatibility with v2ray
                                         v2rayBean.host = it.joinToString(",")
                                     }
                                     path?.also {
@@ -876,8 +884,18 @@ object RawUpdater : GroupUpdater() {
                             }
                             "httpupgrade" -> {
                                 httpupgradeSettings?.apply {
+                                    headers?.forEach { (key, value) ->
+                                        when (key.lowercase()) {
+                                            "host" -> {
+                                                // Xray's disgusting handling of Host header
+                                                v2rayBean.host = value
+                                            }
+                                        }
+                                    }
                                     host?.also {
-                                        v2rayBean.host = it
+                                        if (it.isNotEmpty()) {
+                                            v2rayBean.host = it
+                                        }
                                     }
                                     path?.also {
                                         v2rayBean.path = it
@@ -914,8 +932,29 @@ object RawUpdater : GroupUpdater() {
                                 v2rayBean.type = "splithttp"
                                 val settings = splithttpSettings ?: xhttpSettings
                                 settings?.apply {
+                                    headers?.forEach { (key, value) ->
+                                        when (key.lowercase()) {
+                                            "host" -> {
+                                                // Xray's disgusting handling of Host header
+                                                v2rayBean.host = value
+                                            }
+                                        }
+                                    }
+                                    extra?.apply {
+                                        // disgusting `json.RawMessage` from Xray
+                                        headers?.forEach { (key, value) ->
+                                            when (key.lowercase()) {
+                                                "host" -> {
+                                                    // Xray's disgusting handling of Host header
+                                                    v2rayBean.host = value
+                                                }
+                                            }
+                                        }
+                                    }
                                     host?.also {
-                                        v2rayBean.host = it
+                                        if (it.isNotEmpty()) {
+                                            v2rayBean.host = it
+                                        }
                                     }
                                     path?.also {
                                         v2rayBean.path = it

@@ -213,6 +213,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "http" -> {
                 url.queryParameter("host")?.let {
+                    // The proposal says "省略时复用 remote-host", but this is not correct.
+                    // will NOT follow https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
+                    // as it will likely breaks the compatibility with v2ray
                     bean.host = it
                 }
                 url.queryParameter("path")?.let {
@@ -221,8 +224,23 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "xhttp", "splithttp" -> {
                 bean.type = "splithttp"
+                url.queryParameter("extra")?.let {
+                    // disgusting `json.RawMessage` from Xray
+                    @Suppress("UNCHECKED_CAST")
+                    val headers = JSONObject(it)["headers"] as? Map<String, String>
+                    headers?.forEach { (key, value) ->
+                        when (key.lowercase()) {
+                            "host" -> {
+                                // Xray's disgusting handling of Host header
+                                bean.host = value
+                            }
+                        }
+                    }
+                }
                 url.queryParameter("host")?.let {
-                    bean.host = it
+                    if (it.isNotEmpty()) {
+                        bean.host = it
+                    }
                 }
                 url.queryParameter("path")?.let {
                     bean.path = it
