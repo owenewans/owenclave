@@ -281,6 +281,8 @@ public class V2RayConfig {
                     return VLiteUInboundConfigurationObject.class;
                 case "mixed":
                     return MixedInboundConfigurationObject.class;
+                case "wireguard":
+                    return WireGuardInboundConfigurationObject.class;
                 case "shadowsocks-2022":
                     return Shadowsocks2022InboundConfigurationObject.class;
                 case "shadowsocks-2022-multi":
@@ -479,6 +481,16 @@ public class V2RayConfig {
             public String pass;
 
         }
+
+    }
+
+    public static class WireGuardInboundConfigurationObject implements InboundConfigurationObject {
+
+        public List<String> address;
+        public String secretKey;
+        public Integer mtu;
+        public Integer workers;
+        public List<WireGuardOutboundConfigurationObject.WireGuardPeerObject> peers;
 
     }
 
