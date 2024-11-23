@@ -1314,14 +1314,13 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.type = "ws"
                                     v2rayBean.path = transport["path"]?.toString()
                                     val headers = transport["headers"] as? JSONObject
-                                    val host = headers?.get("Host") as? (List<String>)
-                                    v2rayBean.host = host?.get(0) ?: headers?.get("Host")
-                                        ?.toString()
+                                    val host = headers?.get("Host") as? (List<String>) ?: headers?.get("host") as? (List<String>)
+                                    v2rayBean.host = host?.get(0)
+                                        ?: headers?.get("Host")?.toString() ?: headers?.get("host")?.toString()
+                                    v2rayBean.wsMaxEarlyData = transport["max_early_data"]?.toString()?.toInt()
+                                    v2rayBean.earlyDataHeaderName = transport["early_data_header_name"]?.toString()
                                 }
                                 "http" -> {
-                                    // TODO?
-                                    // TLS is not enforced. If TLS is not configured, plain HTTP 1.1 is used.
-                                    // No TCP transport, plain HTTP is merged into the HTTP transport.
                                     v2rayBean.type = "http"
                                     v2rayBean.path = transport["path"]?.toString()
                                     val host = transport["host"] as? (List<String>)
