@@ -64,6 +64,7 @@ import io.nekohasekai.sagernet.databinding.LayoutProgressListBinding
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.toUniversalLink
 import io.nekohasekai.sagernet.fmt.v2ray.toV2rayN
+import io.nekohasekai.sagernet.fmt.wireguard.toV2rayN
 import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.group.Protocols
 import io.nekohasekai.sagernet.group.RawUpdater
@@ -1800,7 +1801,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         val popup = PopupMenu(requireContext(), anchor)
                         popup.menuInflater.inflate(R.menu.profile_share_menu, popup.menu)
 
-                        if (proxyEntity.vmessBean == null) {
+                        if (proxyEntity.vmessBean == null && proxyEntity.wgBean == null) {
                             popup.menu.findItem(R.id.action_group_qr).subMenu?.removeItem(R.id.action_v2rayn_qr)
                             popup.menu.findItem(R.id.action_group_clipboard).subMenu?.removeItem(R.id.action_v2rayn_clipboard)
                         }
@@ -1861,8 +1862,8 @@ class ConfigurationFragment @JvmOverloads constructor(
                         R.id.action_universal_clipboard -> export(
                             entity.requireBean().toUniversalLink()
                         )
-                        R.id.action_v2rayn_qr -> showCode(entity.vmessBean!!.toV2rayN())
-                        R.id.action_v2rayn_clipboard -> export(entity.vmessBean!!.toV2rayN())
+                        R.id.action_v2rayn_qr -> showCode(entity.vmessBean?.toV2rayN() ?: entity.wgBean?.toV2rayN() ?: error("unsupported"))
+                        R.id.action_v2rayn_clipboard -> export(entity.vmessBean?.toV2rayN() ?: entity.wgBean?.toV2rayN() ?: error("unsupported"))
                         R.id.action_config_export_clipboard -> export(entity.exportConfig().first)
                         R.id.action_config_export_file -> {
                             val cfg = entity.exportConfig()

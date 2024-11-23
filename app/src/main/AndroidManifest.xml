@@ -136,6 +136,7 @@
                 <data android:scheme="hy2" />
                 <data android:scheme="juicity" />
                 <data android:scheme="tuic" />
+                <data android:scheme="wireguard" />
 
             </intent-filter>
 

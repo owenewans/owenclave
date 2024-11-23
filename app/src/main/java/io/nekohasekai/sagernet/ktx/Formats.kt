@@ -37,6 +37,7 @@ import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
 import io.nekohasekai.sagernet.fmt.trojan_go.parseTrojanGo
 import io.nekohasekai.sagernet.fmt.tuic5.parseTuic
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
+import io.nekohasekai.sagernet.fmt.wireguard.parseV2rayNWireGuard
 
 fun formatObject(obj: Any): String {
     return gson.toJson(obj).let { JSONObject(it).toStringPretty() }
@@ -139,19 +140,24 @@ fun parseProxies(text: String): List<AbstractBean> {
             }.onFailure {
                 Logs.w(it)
             }
-        }
-        else if (startsWith("juicity://")) {
+        } else if (startsWith("juicity://")) {
             Logs.d("Try parse juicity link: $this")
             runCatching {
                 entities.add(parseJuicity(this))
             }.onFailure {
                 Logs.w(it)
             }
-        }
-        else if (startsWith("tuic://")) {
+        } else if (startsWith("tuic://")) {
             Logs.d("Try parse tuic link: $this")
             runCatching {
                 entities.add(parseTuic(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("wireguard://")) {
+            Logs.d("Try parse wireguard link: $this")
+            runCatching {
+                entities.add(parseV2rayNWireGuard(this))
             }.onFailure {
                 Logs.w(it)
             }

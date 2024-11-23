@@ -537,7 +537,7 @@ object RawUpdater : GroupUpdater() {
                             }
                         }
                         "wireguard" -> {
-                            proxies.add(WireGuardBean().apply {
+                            val wireGuardBean = WireGuardBean().apply {
                                 serverAddress = proxy["server"]?.toString()
                                 serverPort = proxy["port"]?.toString()?.toInt()
                                 privateKey = proxy["private-key"]?.toString()
@@ -546,7 +546,28 @@ object RawUpdater : GroupUpdater() {
                                 mtu = proxy["mtu"]?.toString()?.toInt() ?: 1408
                                 localAddress = listOfNotNull(proxy["ip"]?.toString(), proxy["ipv6"]?.toString()).joinToString("\n")
                                 name = proxy["name"]?.toString()
-                                (proxy["peers"] as? (List<Map<String, Any?>>))?.forEach {
+                                val res = proxy["reserved"] as? (List<Map<String, Any?>>)
+                                if (res != null) {
+                                    if (res.size == 3) {
+                                        val res0 = res[0].toString().toIntOrNull()
+                                        val res1 = res[1].toString().toIntOrNull()
+                                        val res2 = res[2].toString().toIntOrNull()
+                                        if (res0 != null && res1 != null && res2 != null) {
+                                            reserved = listOf(res0, res1, res2).joinToString(",")
+                                        }
+                                    }
+                                } else {
+                                    val res = Base64.decode(proxy["reserved"]?.toString())
+                                    if (res != null && res.size == 3) {
+                                        reserved = listOf(res[0].toUByte().toInt().toString(), res[1].toUByte().toInt().toString(), res[2].toUByte().toInt().toString()).joinToString(",")
+                                    }
+                                }
+                            }
+                            if (proxy.containsKey("server")) {
+                                proxies.add(wireGuardBean)
+                            }
+                            (proxy["peers"] as? (List<Map<String, Any?>>))?.forEach {
+                                proxies.add(wireGuardBean.clone().apply {
                                     serverAddress = it["server"]?.toString()
                                     serverPort = it["port"]?.toString()?.toInt()
                                     peerPublicKey = it["public-key"]?.toString()
@@ -567,8 +588,8 @@ object RawUpdater : GroupUpdater() {
                                             reserved = listOf(res[0].toUByte().toInt().toString(), res[1].toUByte().toInt().toString(), res[2].toUByte().toInt().toString()).joinToString(",")
                                         }
                                     }
-                                }
-                            })
+                                })
+                            }
                         }
                     }
                 }
@@ -666,10 +687,14 @@ object RawUpdater : GroupUpdater() {
                 }
                 // sing-box outbound
                 json.containsKey("type") -> {
+                    val endpoints = parseSingBoxEndpoint(json)
+                    if (endpoints.isNotEmpty()) {
+                        return endpoints
+                    }
                     return parseSingBoxOutbound(json)
                 }
-                json.containsKey("outbounds") -> {
-                    json.getJSONArray("outbounds").filterIsInstance<JSONObject>().forEach { outbound ->
+                json.containsKey("outbounds") || json.containsKey("endpoints")  -> {
+                    json.getJSONArray("outbounds")?.filterIsInstance<JSONObject>()?.forEach { outbound ->
                         val v2rayConfig = gson.fromJson(
                             outbound.toString(), V2RayConfig.OutboundObject::class.java
                         ).apply { init() }
@@ -682,6 +707,12 @@ object RawUpdater : GroupUpdater() {
                             }
                         } else if (outbound.containsKey("type")) {
                             proxies.addAll(parseSingBoxOutbound(outbound))
+                        }
+                    }
+                    // sing-box wireguard endpoint format introduced in 1.11.0-alpha.19
+                    json.getJSONArray("endpoints")?.filterIsInstance<JSONObject>()?.forEach { endpoint ->
+                        if (endpoint.containsKey("type")) {
+                            proxies.addAll(parseSingBoxEndpoint(endpoint))
                         }
                     }
                 }
@@ -1505,6 +1536,13 @@ object RawUpdater : GroupUpdater() {
                 proxies.add(sshBean)
             }
             "wireguard" -> {
+                if (!outbound.containsKey("local_address")) {
+                    return proxies
+                }
+                if (outbound.containsKey("address")) {
+                    // wireguard endpoint format introduced in 1.11.0-alpha.19
+                    return proxies
+                }
                 val wireGuardBean = WireGuardBean().applyDefaultValues().apply {
                     name = outbound["tag"]?.toString()
                     serverAddress = outbound["server"]?.toString() ?: return proxies
@@ -1520,9 +1558,7 @@ object RawUpdater : GroupUpdater() {
                     if (res != null) {
                         if (res.size == 3) {
                             reserved = listOf(
-                                res[0].toString(),
-                                res[1].toString(),
-                                res[2].toString()
+                                res[0].toString(), res[1].toString(), res[2].toString()
                             ).joinToString(",")
                         }
                     } else {
@@ -1535,37 +1571,96 @@ object RawUpdater : GroupUpdater() {
                             ).joinToString(",")
                         }
                     }
-                    if (outbound["peers"] != null) {
-                        val peers = outbound["server"] as? JSONArray
-                        peers?.forEach {
-                            val peer = it as? JSONObject
-                            serverAddress = peer?.get("server")?.toString()
-                            serverPort = peer?.get("server_port")?.toString()?.toInt()
-                            peerPublicKey = peer?.get("public_key")?.toString()
-                            peerPreSharedKey = peer?.get("pre_shared_key")?.toString()
-                            val res = peer?.get("reserved") as? (List<Int>)
-                            if (res != null) {
-                                if (res.size == 3) {
-                                    reserved = listOf(
-                                        res[0].toString(),
-                                        res[1].toString(),
-                                        res[2].toString()
-                                    ).joinToString(",")
-                                }
-                            } else {
-                                val res = Base64.decode(outbound["reserved"]?.toString())
-                                if (res != null && res.size == 3) {
-                                    reserved = listOf(
-                                        res[0].toUByte().toInt().toString(),
-                                        res[1].toUByte().toInt().toString(),
-                                        res[2].toUByte().toInt().toString()
-                                    ).joinToString(",")
-                                }
+                }
+                if (outbound.containsKey("server")) {
+                    proxies.add(wireGuardBean)
+                }
+                val peers = outbound["peers"] as? JSONArray
+                peers?.forEach {
+                    val peer = it as? JSONObject
+                    proxies.add(wireGuardBean.clone().apply {
+                        serverAddress = peer?.get("server")?.toString()
+                        serverPort = peer?.get("server_port")?.toString()?.toInt()
+                        peerPublicKey = peer?.get("public_key")?.toString()
+                        peerPreSharedKey = peer?.get("pre_shared_key")?.toString()
+                        val res = peer?.get("reserved") as? (List<Int>)
+                        if (res != null) {
+                            if (res.size == 3) {
+                                reserved = listOf(
+                                    res[0].toString(),
+                                    res[1].toString(),
+                                    res[2].toString()
+                                ).joinToString(",")
+                            }
+                        } else {
+                            val res = Base64.decode(peer?.get("reserved")?.toString())
+                            if (res != null && res.size == 3) {
+                                reserved = listOf(
+                                    res[0].toUByte().toInt().toString(),
+                                    res[1].toUByte().toInt().toString(),
+                                    res[2].toUByte().toInt().toString()
+                                ).joinToString(",")
                             }
                         }
-                    }
+                    })
                 }
-                proxies.add(wireGuardBean)
+            }
+        }
+        return proxies
+    }
+
+    fun parseSingBoxEndpoint(endpoint: JSONObject): List<AbstractBean> {
+        val proxies = ArrayList<AbstractBean>()
+        when (endpoint["type"]) {
+            "wireguard" -> {
+                if (endpoint.containsKey("local_address")) {
+                    // legacy wireguard outbound format
+                    return proxies
+                }
+                if (endpoint.containsKey("listen_port")) {
+                    // server endpoint
+                    return proxies
+                }
+                if (!endpoint.containsKey("address")) {
+                    return proxies
+                }
+                val wireGuardBean = WireGuardBean().applyDefaultValues().apply {
+                    name = endpoint["tag"]?.toString()
+                    privateKey = endpoint["private_key"]?.toString()
+                    mtu = endpoint["mtu"]?.toString()?.toInt() ?: 1408
+                    val localAddr = endpoint["address"] as? (List<String>)
+                    localAddress = localAddr?.joinToString("\n")
+                        ?: endpoint["address"]?.toString()
+                }
+                val peers = endpoint["peers"] as? JSONArray
+                peers?.forEach {
+                    val peer = it as? JSONObject
+                    proxies.add(wireGuardBean.clone().apply {
+                        serverAddress = peer?.get("address")?.toString()
+                        serverPort = peer?.get("port")?.toString()?.toInt()
+                        peerPublicKey = peer?.get("public_key")?.toString()
+                        peerPreSharedKey = peer?.get("pre_shared_key")?.toString()
+                        val res = peer?.get("reserved") as? (List<Int>)
+                        if (res != null) {
+                            if (res.size == 3) {
+                                reserved = listOf(
+                                    res[0].toString(),
+                                    res[1].toString(),
+                                    res[2].toString()
+                                ).joinToString(",")
+                            }
+                        } else {
+                            val res = Base64.decode(peer?.get("reserved")?.toString())
+                            if (res != null && res.size == 3) {
+                                reserved = listOf(
+                                    res[0].toUByte().toInt().toString(),
+                                    res[1].toUByte().toInt().toString(),
+                                    res[2].toUByte().toInt().toString()
+                                ).joinToString(",")
+                            }
+                        }
+                    })
+                }
             }
         }
         return proxies
