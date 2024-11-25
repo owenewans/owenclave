@@ -75,6 +75,9 @@ class WireGuardSettingsActivity : ProfileSettingsActivity<WireGuardBean>() {
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
+        findPreference<EditTextPreference>(Key.SERVER_PRIVATE_KEY)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
         findPreference<EditTextPreference>(Key.SERVER_MTU)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
         }

@@ -76,7 +76,9 @@ class SSHSettingsActivity : ProfileSettingsActivity<SSHBean>() {
         val password = findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
-        val privateKey = findPreference<EditTextPreference>(Key.SERVER_PRIVATE_KEY)!!
+        val privateKey = findPreference<EditTextPreference>(Key.SERVER_PRIVATE_KEY)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
         val privateKeyPassphrase = findPreference<EditTextPreference>(Key.SERVER_PASSWORD1)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }

@@ -49,12 +49,15 @@ class LinkOrContentPreference : EditTextPreference {
             val linkLayout = it.rootView.findViewById<TextInputLayout>(R.id.input_layout)
             fun validate() {
                 val link = it.text
-                if (link.isBlank()) {
+                if (link.isEmpty()) {
                     linkLayout.isErrorEnabled = false
                     return
                 }
 
                 try {
+                    if (link.toString().contains("\n")) {
+                            error("invalid url")
+                    }
                     val uri = Uri.parse(link.toString())
 
                     if (uri.scheme.isNullOrBlank()) {

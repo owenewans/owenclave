@@ -329,6 +329,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         realitySpiderX = findPreference(Key.SERVER_REALITY_SPIDER_X)!!
         realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
 
+        realityPublicKey.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
+
         hy2UpMbps = findPreference(Key.SERVER_UPLOAD_SPEED)!!
         hy2UpMbps.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
