@@ -935,7 +935,6 @@ public class V2RayConfig {
         public TLSObject tlsSettings;
         public UTLSObject utlsSettings;
         public RealityObject realitySettings;
-        public TcpObject rawSettings; // xray alias
         public TcpObject tcpSettings;
         public KcpObject kcpSettings;
         public WebSocketObject wsSettings;
@@ -948,7 +947,6 @@ public class V2RayConfig {
         public HTTPUpgradeObject httpupgradeSettings;
         public Hysteria2Object hy2Settings;
         public SplitHTTPObject splithttpSettings;
-        public SplitHTTPObject xhttpSettings; // xray alias
         public MekyaObject mekyaSettings;
         public DTLSObject dtlsSettings;
         public RequestObject requestSettings;
@@ -1116,7 +1114,6 @@ public class V2RayConfig {
     public static class WebSocketObject {
 
         public Boolean acceptProxyProtocol;
-        public String host; // syntactic sugar of Host header from Xray
         public String path;
         public Map<String, String> headers;
         public Integer maxEarlyData;
@@ -1206,7 +1203,6 @@ public class V2RayConfig {
         public String path;
         public Map<String, String> headers;
         public String mode;
-        public SplitHTTPObject extra; // disgusting `json.RawMessage` from Xray
         public Boolean useBrowserForwarding;
 
     }
