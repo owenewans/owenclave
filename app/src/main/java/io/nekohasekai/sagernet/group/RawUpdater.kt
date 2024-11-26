@@ -644,8 +644,9 @@ object RawUpdater : GroupUpdater() {
         val bean = WireGuardBean().applyDefaultValues()
         val localAddresses = iface.getAll("Address")
         if (localAddresses.isNullOrEmpty()) error("Empty address in 'Interface' selection")
-        bean.localAddress = localAddresses.flatMap { it.split(",") }.joinToString("\n")
+        bean.localAddress = localAddresses.flatMap { it.filterNot { it.isWhitespace() }.split(",") }.joinToString("\n")
         bean.privateKey = iface["PrivateKey"]
+        bean.mtu = iface["MTU"]?.toInt() ?: 1420
         val peers = ini.getAll("Peer")
         if (peers.isNullOrEmpty()) error("Missing 'Peer' selections")
         val beans = mutableListOf<WireGuardBean>()
@@ -659,7 +660,7 @@ object RawUpdater : GroupUpdater() {
             peerBean.serverAddress = endpoint.substringBeforeLast(":").removePrefix("[").removeSuffix("]")
             peerBean.serverPort = endpoint.substringAfterLast(":").toIntOrNull() ?: continue
             peerBean.peerPublicKey = peer["PublicKey"] ?: continue
-            peerBean.peerPreSharedKey = peer["PresharedKey"]
+            peerBean.peerPreSharedKey = peer["PreSharedKey"]
             beans.add(peerBean.applyDefaultValues())
         }
         if (beans.isEmpty()) error("Empty available peer list")

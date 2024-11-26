@@ -64,6 +64,7 @@ import io.nekohasekai.sagernet.databinding.LayoutProgressListBinding
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.toUniversalLink
 import io.nekohasekai.sagernet.fmt.v2ray.toV2rayN
+import io.nekohasekai.sagernet.fmt.wireguard.toConf
 import io.nekohasekai.sagernet.fmt.wireguard.toV2rayN
 import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.group.Protocols
@@ -1811,7 +1812,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                 popup.menu.removeItem(R.id.action_group_qr)
                                 popup.menu.removeItem(R.id.action_group_clipboard)
                             }
-                            !proxyEntity.haveStandardLink() -> {
+                            proxyEntity.wgBean == null && !proxyEntity.haveStandardLink() -> {
                                 popup.menu.findItem(R.id.action_group_qr).subMenu?.removeItem(R.id.action_standard_qr)
                                 popup.menu.findItem(R.id.action_group_clipboard).subMenu?.removeItem(
                                     R.id.action_standard_clipboard
@@ -1819,7 +1820,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                             }
                         }
 
-                        if (proxyEntity.brookBean != null) {
+                        if (proxyEntity.brookBean != null || proxyEntity.shadowtlsBean != null) {
                             popup.menu.removeItem(R.id.action_group_configuration)
                         }
 
@@ -1856,8 +1857,8 @@ class ConfigurationFragment @JvmOverloads constructor(
             override fun onMenuItemClick(item: MenuItem): Boolean {
                 try {
                     when (item.itemId) {
-                        R.id.action_standard_qr -> showCode(entity.toLink()!!)
-                        R.id.action_standard_clipboard -> export(entity.toLink()!!)
+                        R.id.action_standard_qr -> if (entity.wgBean != null) showCode(entity.wgBean?.toConf()!!) else showCode(entity.toLink()!!)
+                        R.id.action_standard_clipboard -> if (entity.wgBean != null) export(entity.wgBean?.toConf()!!) else export(entity.toLink()!!)
                         R.id.action_universal_qr -> showCode(entity.requireBean().toUniversalLink())
                         R.id.action_universal_clipboard -> export(
                             entity.requireBean().toUniversalLink()
