@@ -326,7 +326,7 @@ object RawUpdater : GroupUpdater() {
         if (localAddresses.isNullOrEmpty()) error("Empty address in 'Interface' selection")
         bean.localAddress = localAddresses.flatMap { it.filterNot { it.isWhitespace() }.split(",") }.joinToString("\n")
         bean.privateKey = iface["PrivateKey"]
-        bean.mtu = iface["MTU"]?.toInt() ?: 1420
+        bean.mtu = iface["MTU"]?.toInt()?.takeIf { it > 0 } ?: 1420
         val peers = ini.getAll("Peer")
         if (peers.isNullOrEmpty()) error("Missing 'Peer' selections")
         val beans = mutableListOf<WireGuardBean>()
@@ -1012,13 +1012,16 @@ object RawUpdater : GroupUpdater() {
                 }
                 outbound.getObject("settings")?.also { settings ->
                     settings.getString("secretKey")?.also {
-                        wireguardBean.privateKey = it
+                        // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L126-L148
+                        wireguardBean.privateKey = it.replace('_', '/').replace('-', '+').padEnd(44, '=')
                     }
+                    // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L75
+                    wireguardBean.localAddress = "10.0.0.1/32\nfd59:7153:2388:b5fd:0000:0000:0000:0001/128"
                     (settings.getAny("address") as? List<String>)?.also {
                         wireguardBean.localAddress = it.joinToString("\n")
                     }
                     wireguardBean.mtu = 1420
-                    settings.getInteger("mtu")?.also {
+                    settings.getInteger("mtu")?.takeIf { it > 0 }?.also {
                         wireguardBean.mtu = it
                     }
                     (settings.getAny("reserved") as? List<Int>)?.also {
@@ -1033,10 +1036,10 @@ object RawUpdater : GroupUpdater() {
                                 serverPort = it.substringAfterLast(":").toIntOrNull()
                             }
                             (peer as? JSONObject)?.getString("publicKey")?.also {
-                                peerPublicKey = it
+                                peerPublicKey = it.replace('_', '/').replace('-', '+').padEnd(44, '=')
                             }
                             (peer as? JSONObject)?.getString("preSharedKey")?.also {
-                                peerPreSharedKey = it
+                                peerPreSharedKey = it.replace('_', '/').replace('-', '+').padEnd(44, '=')
                             }
                         })
                     }
@@ -1451,7 +1454,7 @@ object RawUpdater : GroupUpdater() {
                         peerPreSharedKey = it
                     }
                     mtu = 1408
-                    outbound.getInteger("mtu")?.also {
+                    outbound.getInteger("mtu")?.takeIf { it > 0 }?.also {
                         mtu = it
                     }
                     (outbound.getAny("local_address") as? (List<String>))?.also {
@@ -1526,7 +1529,7 @@ object RawUpdater : GroupUpdater() {
                         privateKey = it
                     }
                     mtu = 1408
-                    endpoint.getInteger("mtu")?.also {
+                    endpoint.getInteger("mtu")?.takeIf { it > 0 }?.also {
                         mtu = it
                     }
                     (endpoint.getAny("address") as? (List<String>))?.also {
@@ -2130,8 +2133,8 @@ object RawUpdater : GroupUpdater() {
                         serverPort = proxy["port"]?.toString()?.toInt()
                         privateKey = proxy["private-key"]?.toString()
                         peerPublicKey = proxy["public-key"]?.toString()
-                        peerPreSharedKey = proxy["pre-shared-key"]?.toString()
-                        mtu = proxy["mtu"]?.toString()?.toInt() ?: 1408
+                        peerPreSharedKey = proxy["pre-shared-key"]?.toString() ?: proxy["preshared-key"]?.toString()
+                        mtu = proxy["mtu"]?.toString()?.toInt()?.takeIf { it > 0 } ?: 1408
                         localAddress = listOfNotNull(proxy["ip"]?.toString(), proxy["ipv6"]?.toString()).joinToString("\n")
                         name = proxy["name"]?.toString()
                         (proxy["reserved"] as? List<Map<String, Any?>>)?.also {

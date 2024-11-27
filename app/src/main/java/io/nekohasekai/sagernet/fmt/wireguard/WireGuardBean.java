@@ -51,7 +51,7 @@ public class WireGuardBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
         super.serialize(output);
         output.writeString(localAddress);
         output.writeString(privateKey);
@@ -69,6 +69,23 @@ public class WireGuardBean extends AbstractBean {
         privateKey = input.readString();
         peerPublicKey = input.readString();
         peerPreSharedKey = input.readString();
+        if (version <= 2) {
+            // On earlier versions, the code copied from Xray accepts non-standard addresses and keys.
+            // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L75
+            // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L126-L148
+            if (localAddress.isEmpty()) {
+                localAddress = "10.0.0.1/32\nfd59:7153:2388:b5fd:0000:0000:0000:0001/128";
+            }
+            if (!privateKey.isEmpty()) {
+                privateKey = String.format("%-44s", privateKey.replace('_', '/').replace('-', '+')).replace(' ', '=');
+            }
+            if (!peerPublicKey.isEmpty()) {
+                peerPublicKey = String.format("%-44s", peerPublicKey.replace('_', '/').replace('-', '+')).replace(' ', '=');
+            }
+            if (!peerPreSharedKey.isEmpty()) {
+                peerPreSharedKey = String.format("%-44s", peerPreSharedKey.replace('_', '/').replace('-', '+')).replace(' ', '=');
+            }
+        }
         if (version >= 1) {
             mtu = input.readInt();
         }

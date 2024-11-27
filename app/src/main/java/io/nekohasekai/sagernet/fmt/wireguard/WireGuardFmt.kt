@@ -1,6 +1,9 @@
 package io.nekohasekai.sagernet.fmt.wireguard
 
+import cn.hutool.core.codec.Base64
 import io.nekohasekai.sagernet.fmt.AbstractBean
+import io.nekohasekai.sagernet.ktx.getAny
+import io.nekohasekai.sagernet.ktx.getString
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
@@ -14,18 +17,23 @@ fun parseV2rayNWireGuard(server: String): AbstractBean {
     return WireGuardBean().apply {
         serverAddress = link.host
         serverPort = link.port
-        privateKey = link.username
+        if (link.username.isNotEmpty()) {
+            // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L126-L148
+            privateKey = link.username.replace('_', '/').replace('-', '+').padEnd(44, '=')
+        }
+        // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L75
+        localAddress = "10.0.0.1/32\nfd59:7153:2388:b5fd:0000:0000:0000:0001/128"
         link.queryParameter("address")?.also {
             localAddress = it.split(",").joinToString("\n")
         }
         link.queryParameter("publickey")?.let {
-            peerPublicKey = it
+            peerPublicKey = it.replace('_', '/').replace('-', '+').padEnd(44, '=')
         }
         link.queryParameter("presharedkey")?.let {
-            peerPreSharedKey = it
+            peerPreSharedKey = it.replace('_', '/').replace('-', '+').padEnd(44, '=')
         }
-        link.queryParameter("mtu")?.let {
-            mtu = it.toInt()
+        link.queryParameter("mtu")?.toIntOrNull()?.takeIf { it > 0 }?.let {
+            mtu = it
         }
         link.queryParameter("reserved")?.let {
             reserved = it
@@ -40,12 +48,7 @@ fun WireGuardBean.toConf(): String {
     val ini = Ini().apply {
         config.isEscape = false
     }
-    if (localAddress.isNotBlank()) {
-        ini.add("Interface", "Address", localAddress.listByLineOrComma().joinToString(", "))
-    } else {
-        // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L75
-        ini.add("Interface", "Address", "10.0.0.1/32, fd59:7153:2388:b5fd:0000:0000:0000:0001/128")
-    }
+    ini.add("Interface", "Address", localAddress.listByLineOrComma().joinToString(", "))
     if (mtu > 0) {
         ini.add("Interface", "MTU", mtu)
     }
@@ -78,7 +81,19 @@ fun WireGuardBean.toV2rayN(): String {
         builder.addQueryParameter("mtu", mtu.toString())
     }
     if (reserved.isNotBlank()) {
-        builder.addQueryParameter("reserved", reserved.listByLineOrComma().joinToString(","))
+        if (reserved.listByLineOrComma().size == 3) {
+            builder.addQueryParameter("reserved", reserved.listByLineOrComma().joinToString(","))
+        } else {
+            Base64.decode(reserved)?.also {
+                if (it.size == 3) {
+                    builder.addQueryParameter("reserved", listOf(
+                        it[0].toUByte().toInt().toString(),
+                        it[1].toUByte().toInt().toString(),
+                        it[2].toUByte().toInt().toString()
+                    ).joinToString(","))
+                }
+            }
+        }
     }
     if (name.isNotBlank()) {
         builder.setRawFragment(name.urlSafe())
