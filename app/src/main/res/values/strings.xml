@@ -537,4 +537,5 @@
     <string name="ech_config">ECH Config</string>
     <string name="ech_doh_server">ECH DoH server</string>
     <string name="splithttp_mode">Mode</string>
+    <string name="splithttp_extra" translatable="false">Extra</string>
 </resources>

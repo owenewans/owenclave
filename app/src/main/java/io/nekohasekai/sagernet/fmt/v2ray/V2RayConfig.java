@@ -985,7 +985,7 @@ public class V2RayConfig {
 
                 public String type;
                 public String packet;
-                public String delay; // String or Integer
+                public String delay;
 
             }
 
@@ -1203,6 +1203,11 @@ public class V2RayConfig {
         public String path;
         public Map<String, String> headers;
         public String mode;
+        public String scMaxConcurrentPosts;
+        public String scMaxEachPostBytes;
+        public String scMinPostsIntervalMs;
+        public String xPaddingBytes;
+        public Boolean noGRPCHeader;
         public Boolean useBrowserForwarding;
 
     }

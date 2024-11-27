@@ -224,30 +224,21 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "xhttp", "splithttp" -> {
                 bean.type = "splithttp"
-                url.queryParameter("extra")?.let {
-                    // disgusting `json.RawMessage` from Xray
-                    @Suppress("UNCHECKED_CAST")
-                    val headers = JSONObject(it)["headers"] as? Map<String, String>
-                    headers?.forEach { (key, value) ->
-                        when (key.lowercase()) {
-                            "host" -> {
-                                // Xray's disgusting handling of Host header
-                                bean.host = value
-                            }
-                        }
+                url.queryParameter("extra")?.let { extra ->
+                    JSONObject(extra).takeIf { !it.isEmpty() }?.also {
+                        // fuck RPRX `extra`
+                        bean.splithttpExtra = it.toString()
                     }
                 }
                 url.queryParameter("host")?.let {
-                    if (it.isNotEmpty()) {
-                        bean.host = it
-                    }
+                    bean.host = it
                 }
                 url.queryParameter("path")?.let {
                     bean.path = it
                 }
                 when (val mode = url.queryParameter("mode")) {
-                    "" -> bean.splithttpMode = "auto"
-                    "auto", "stream-up", "packet-up" -> bean.splithttpMode = mode
+                    "", "auto" -> bean.splithttpMode = "auto"
+                    else -> bean.splithttpMode = mode
                 }
             }
             "httpupgrade" -> {
@@ -408,7 +399,9 @@ fun parseV2RayN(link: String): VMessBean {
             bean.host = host
             bean.path = path
             type?.also {
-                bean.splithttpMode = type
+                if (it.isNotBlank() && it != "auto") {
+                    bean.splithttpMode = type
+                }
             }
         }
     }
@@ -609,6 +602,12 @@ fun StandardV2RayBean.toUri(): String {
             }
             if (splithttpMode != "auto") {
                 builder.addQueryParameter("mode", splithttpMode)
+            }
+            if (splithttpExtra.isNotBlank()) {
+                JSONObject(splithttpExtra).takeIf { !it.isEmpty() }?.also {
+                    // fuck RPRX `extra`
+                    builder.addQueryParameter("extra", it.toString())
+                }
             }
         }
         "quic" -> {

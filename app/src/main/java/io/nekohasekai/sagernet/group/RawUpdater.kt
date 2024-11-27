@@ -638,25 +638,6 @@ object RawUpdater : GroupUpdater() {
                         "splithttp", "xhttp" -> {
                             v2rayBean.type = "splithttp"
                             (streamSettings.getObject("splithttpSettings") ?: streamSettings.getObject("xhttpSettings"))?.also { splithttpSettings ->
-                                (splithttpSettings.getAny("headers") as? Map<String, String>)?.forEach { (key, value) ->
-                                    when (key.lowercase()) {
-                                        "host" -> {
-                                            // Xray's disgusting handling of Host header
-                                            v2rayBean.host = value
-                                        }
-                                    }
-                                }
-                                splithttpSettings.getObject("extra")?.also { extra ->
-                                    // disgusting `json.RawMessage` from Xray
-                                    (extra.getAny("headers") as? Map<String, String>)?.forEach { (key, value) ->
-                                        when (key.lowercase()) {
-                                            "host" -> {
-                                                // Xray's disgusting handling of Host header
-                                                v2rayBean.host = value
-                                            }
-                                        }
-                                    }
-                                }
                                 splithttpSettings.getString("host")?.also {
                                     v2rayBean.host = it
                                 }
@@ -664,9 +645,55 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.path = it
                                 }
                                 splithttpSettings.getString("mode")?.also {
-                                    if (it == "stream-up" || it == "packet-up") {
+                                    if (it != "" && it != "auto") {
                                         v2rayBean.splithttpMode = it
                                     }
+                                }
+                                // fuck RPRX `extra`
+                                var extra = JSONObject()
+                                splithttpSettings.getObject("extra")?.also {
+                                    extra = it
+                                }
+                                if (!extra.contains("scMaxConcurrentPosts")) {
+                                    splithttpSettings.getInteger("scMaxConcurrentPosts")?.also {
+                                        extra.set("scMaxConcurrentPosts", it)
+                                    } ?: splithttpSettings.getString("scMaxConcurrentPosts")?.also {
+                                        extra.set("scMaxConcurrentPosts", it)
+                                    }
+                                }
+                                if (!extra.contains("scMaxEachPostBytes")) {
+                                    splithttpSettings.getInteger("scMaxEachPostBytes")?.also {
+                                        extra.set("scMaxEachPostBytes", it)
+                                    } ?: splithttpSettings.getString("scMaxEachPostBytes")?.also {
+                                        extra.set("scMaxEachPostBytes", it)
+                                    }
+                                }
+                                if (!extra.contains("scMinPostsIntervalMs")) {
+                                    splithttpSettings.getInteger("scMinPostsIntervalMs")?.also {
+                                        extra.set("scMinPostsIntervalMs", it)
+                                    } ?: splithttpSettings.getString("scMinPostsIntervalMs")?.also {
+                                        extra.set("scMinPostsIntervalMs", it)
+                                    }
+                                }
+                                if (!extra.contains("xPaddingBytes")) {
+                                    splithttpSettings.getInteger("xPaddingBytes")?.also {
+                                        extra.set("xPaddingBytes", it)
+                                    } ?: splithttpSettings.getString("xPaddingBytes")?.also {
+                                        extra.set("xPaddingBytes", it)
+                                    }
+                                }
+                                if (!extra.contains("noGRPCHeader")) {
+                                    splithttpSettings.getBoolean("noGRPCHeader")?.also {
+                                        extra.set("noGRPCHeader", it)
+                                    }
+                                }
+                                if (!extra.contains("headers")) {
+                                    (splithttpSettings.getAny("headers") as? Map<String, String>)?.also {
+                                        extra.set("headers", it)
+                                    }
+                                }
+                                if (!extra.isEmpty()) {
+                                    v2rayBean.splithttpExtra = extra.toString()
                                 }
                             }
                         }

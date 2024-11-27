@@ -103,6 +103,10 @@ import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.app
+import io.nekohasekai.sagernet.ktx.getAny
+import io.nekohasekai.sagernet.ktx.getBoolean
+import io.nekohasekai.sagernet.ktx.getInteger
+import io.nekohasekai.sagernet.ktx.getString
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.joinHostPort
@@ -860,6 +864,38 @@ fun buildV2RayConfig(
                                                 }
                                                 if (bean.splithttpMode != "auto") {
                                                     mode = bean.splithttpMode
+                                                }
+                                                if (bean.splithttpExtra.isNotBlank()) {
+                                                    JSONObject(bean.splithttpExtra).also { extra ->
+                                                        // fuck RPRX `extra`
+                                                        extra.getInteger("scMaxConcurrentPosts")?.also {
+                                                            scMaxConcurrentPosts = it.toString()
+                                                        } ?: extra.getString("scMaxConcurrentPosts")?.also {
+                                                            scMaxConcurrentPosts = it
+                                                        }
+                                                        extra.getInteger("scMaxEachPostBytes")?.also {
+                                                            scMaxEachPostBytes = it.toString()
+                                                        } ?: extra.getString("scMaxEachPostBytes")?.also {
+                                                            scMaxEachPostBytes = it
+                                                        }
+                                                        extra.getInteger("scMinPostsIntervalMs")?.also {
+                                                            scMinPostsIntervalMs = it.toString()
+                                                        } ?: extra.getString("scMinPostsIntervalMs")?.also {
+                                                            scMinPostsIntervalMs = it
+                                                        }
+                                                        extra.getInteger("xPaddingBytes")?.also {
+                                                            scMinPostsIntervalMs = it.toString()
+                                                        } ?: extra.getString("xPaddingBytes")?.also {
+                                                            scMinPostsIntervalMs = it
+                                                        }
+                                                        extra.getBoolean("noGRPCHeader")?.also {
+                                                            noGRPCHeader = it
+                                                        }
+                                                        @Suppress("UNCHECKED_CAST")
+                                                        (extra.getAny("headers") as? Map<String, String>)?.also {
+                                                            headers = it
+                                                        }
+                                                    }
                                                 }
                                                 if (bean.shUseBrowserForwarder) {
                                                     useBrowserForwarding = true

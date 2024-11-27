@@ -149,6 +149,7 @@ object Key {
     const val SERVER_QUIC_SECURITY = "serverQuicSecurity"
     const val SERVER_WS_MAX_EARLY_DATA = "serverWsMaxEarlyData"
     const val SERVER_SPLITHTTP_MODE = "serverSplithttpMode"
+    const val SERVER_SPLITHTTP_EXTRA = "serverSplithttpExtra"
     const val SERVER_WS_BROWSER_FORWARDING = "serverWsBrowserForwarding"
     const val SERVER_SH_BROWSER_FORWARDING = "serverShBrowserForwarding"
     const val SERVER_EARLY_DATA_HEADER_NAME = "serverEarlyDataHeaderName"

@@ -244,11 +244,16 @@
             app:title="@string/ws_browser_forwarding" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:defaultValue="auto"
-            app:entries="@array/splithttp_mode_value"
+            app:entries="@array/splithttp_mode_entry"
             app:entryValues="@array/splithttp_mode_value"
             app:icon="@drawable/ic_baseline_stream_24"
             app:key="serverSplithttpMode"
             app:title="@string/splithttp_mode"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_action_settings"
+            app:key="serverSplithttpExtra"
+            app:title="@string/splithttp_extra"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 

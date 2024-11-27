@@ -47,6 +47,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String earlyDataHeaderName;
     public String meekUrl;
     public String splithttpMode;
+    public String splithttpExtra;
 
     public String certificates;
     public String pinnedPeerCertificateChainSha256;
@@ -94,6 +95,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (StrUtil.isBlank(quicKey)) quicKey = "";
         if (StrUtil.isBlank(meekUrl)) meekUrl = "";
         if (StrUtil.isBlank(splithttpMode)) splithttpMode = "auto";
+        if (StrUtil.isBlank(splithttpExtra)) splithttpExtra = "";
 
         if (StrUtil.isBlank(security)) security = "none";
         if (StrUtil.isBlank(sni)) sni = "";
@@ -134,7 +136,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(23);
+        output.writeInt(24);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -171,6 +173,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(path);
                 output.writeBoolean(shUseBrowserForwarder);
                 output.writeString(splithttpMode);
+                output.writeString(splithttpExtra);
                 break;
             }
             case "quic": {
@@ -332,6 +335,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 }
                 if (version >= 23) {
                     splithttpMode = input.readString();
+                }
+                if (version >= 24) {
+                    splithttpExtra = input.readString();
                 }
                 break;
             }

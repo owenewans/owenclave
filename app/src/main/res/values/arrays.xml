@@ -1058,10 +1058,18 @@
         <item>1</item>
     </string-array>
 
+    <string-array name="splithttp_mode_entry">
+        <item>AUTO</item>
+        <item>PACKET-UP</item>
+        <item>STREAM-UP</item>
+        <item>STREAM-ONE</item>
+    </string-array>
+
     <string-array name="splithttp_mode_value">
         <item>auto</item>
         <item>packet-up</item>
         <item>stream-up</item>
+        <item>stream-one</item>
     </string-array>
 
 </resources>

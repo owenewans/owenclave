@@ -128,6 +128,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverWsMaxEarlyData = wsMaxEarlyData
         DataStore.serverEarlyDataHeaderName = earlyDataHeaderName
         DataStore.serverSplithttpMode = splithttpMode
+        DataStore.serverSplithttpExtra = splithttpExtra
         DataStore.serverUTLSFingerprint = utlsFingerprint
         DataStore.serverEchConfig = echConfig
         DataStore.serverEchDohServer = echDohServer
@@ -213,6 +214,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         wsMaxEarlyData = DataStore.serverWsMaxEarlyData
         earlyDataHeaderName = DataStore.serverEarlyDataHeaderName
         splithttpMode = DataStore.serverSplithttpMode
+        splithttpExtra = DataStore.serverSplithttpExtra
         utlsFingerprint = DataStore.serverUTLSFingerprint
         echConfig = DataStore.serverEchConfig
         echDohServer = DataStore.serverEchDohServer
