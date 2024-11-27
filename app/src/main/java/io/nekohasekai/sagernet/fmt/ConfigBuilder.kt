@@ -161,9 +161,9 @@ fun buildV2RayConfig(
             val beans = SagerDatabase.proxyDao.getEntities(bean.proxies)
             val beansMap = beans.associateBy { it.id }
             val beanList = ArrayList<ProxyEntity>()
-            for (proxyId in bean.proxies) {
+            for ((index, proxyId) in bean.proxies.withIndex()) {
                 val item = beansMap[proxyId] ?: continue
-                if (!item.requireBean().canMapping()) error("Some configurations are incompatible with chain.")
+                if (!item.requireBean().canMapping() && index != 0) error("Some configurations are incompatible with chain.")
                 beanList.addAll(item.resolveChain())
             }
             return beanList.asReversed()
