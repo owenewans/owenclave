@@ -975,7 +975,7 @@ fun buildV2RayConfig(
                                             if (bean.peerPreSharedKey.isNotBlank()) {
                                                 preSharedKey = bean.peerPreSharedKey
                                             }
-                                            endpoint = joinHostPort(bean.finalAddress, bean.finalPort)
+                                            endpoint = joinHostPort(bean.serverAddress, bean.serverPort)
                                         })
                                     })
                                 if (currentDomainStrategy == "AsIs") {
