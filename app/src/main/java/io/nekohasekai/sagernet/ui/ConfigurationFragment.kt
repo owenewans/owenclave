@@ -1787,6 +1787,7 @@ class ConfigurationFragment @JvmOverloads constructor(
 
                 editButton.isGone = parent.select
                 deleteButton.isGone = parent.select
+                shareButton.isGone = parent.select
 
                 runOnDefaultDispatcher {
                     val selected = (parent.selectedItem?.id
