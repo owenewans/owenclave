@@ -21,6 +21,6 @@ package io.nekohasekai.sagernet.fmt.trojan
 
 import io.nekohasekai.sagernet.fmt.v2ray.toUri
 
-fun TrojanBean.toUri(): String {
+fun TrojanBean.toUri(): String? {
     return toUri()
 }

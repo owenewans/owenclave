@@ -5,23 +5,47 @@
         android:title="@string/share">
         <menu>
             <item
-                android:id="@+id/action_universal_clipboard"
+                android:id="@+id/action_clipboard"
                 android:title="@string/action_export_clipboard" />
             <item
-                android:id="@+id/action_universal_qr"
-                android:title="@string/share_qr_nfc" />
-        </menu>
-    </item>
-    <item
-        android:id="@+id/action_export"
-        android:title="@string/action_export">
-        <menu>
-            <item
-                android:id="@+id/action_export_clipboard"
-                android:title="@string/action_export_clipboard" />
-            <item
-                android:id="@+id/action_export_file"
+                android:id="@+id/action_file"
                 android:title="@string/action_export_file" />
+            <item
+                android:id="@+id/action_subscription_link"
+                android:title="@string/group_subscription_link">
+                <menu>
+                    <item
+                        android:id="@+id/action_subscription_link_qr"
+                        android:title="@string/share_qr_nfc" />
+                    <item
+                        android:id="@+id/action_subscription_link_clipboard"
+                        android:title="@string/action_export_clipboard" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_export_backup"
+                android:title="@string/backup">
+                <menu>
+                    <item
+                        android:id="@+id/action_export_backup_qr"
+                        android:title="@string/share_qr_nfc" />
+                    <item
+                        android:id="@+id/action_export_backup_clipboard"
+                        android:title="@string/action_export_clipboard" />
+                </menu>
+            </item>
+            <item
+                android:id="@+id/action_export_backup_of_all_profiles"
+                android:title="@string/backup_all_profiles">
+                <menu>
+                    <item
+                        android:id="@+id/action_export_backup_of_all_profiles_clipboard"
+                        android:title="@string/action_export_clipboard" />
+                    <item
+                        android:id="@+id/action_export_backup_of_all_profiles_file"
+                        android:title="@string/action_export_file" />
+                </menu>
+            </item>
         </menu>
     </item>
     <item

@@ -512,4 +512,5 @@
     <string name="ech_config">ECH 配置</string>
     <string name="ech_doh_server">ECH DoH 服务器</string>
     <string name="splithttp_mode">模式</string>
+    <string name="backup_all_profiles">备份所有配置</string>
 </resources>

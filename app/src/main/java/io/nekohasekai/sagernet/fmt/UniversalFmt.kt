@@ -25,7 +25,7 @@ import cn.hutool.core.util.ZipUtil
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.ProxyGroup
 
-fun parseUniversal(link: String): AbstractBean {
+fun parseBackupLink(link: String): AbstractBean {
     return if (link.contains("?")) {
         val type = link.substringAfter("exclave://").substringBefore("?")
         ProxyEntity(type = TypeMap[type] ?: error("Type $type not found")).apply {
@@ -39,7 +39,7 @@ fun parseUniversal(link: String): AbstractBean {
     }
 }
 
-fun AbstractBean.toUniversalLink(): String {
+fun AbstractBean.exportBackup(): String {
     var link = "exclave://"
     link += TypeMap.reversed[ProxyEntity().putBean(this).type]
     link += "?"
@@ -48,7 +48,7 @@ fun AbstractBean.toUniversalLink(): String {
 }
 
 
-fun ProxyGroup.toUniversalLink(): String {
+fun ProxyGroup.exportBackup(): String {
     var link = "exclave://subscription?"
     export = true
     link += Base64Encoder.encodeUrlSafe(ZipUtil.zlib(KryoConverters.serialize(this), 9))

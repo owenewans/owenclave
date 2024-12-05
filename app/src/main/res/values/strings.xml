@@ -538,4 +538,5 @@
     <string name="ech_doh_server">ECH DoH server</string>
     <string name="splithttp_mode">Mode</string>
     <string name="splithttp_extra" translatable="false">Extra</string>
+    <string name="backup_all_profiles">Backup all profiles</string>
 </resources>

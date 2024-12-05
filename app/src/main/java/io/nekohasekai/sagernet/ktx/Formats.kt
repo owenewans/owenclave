@@ -30,7 +30,7 @@ import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria
 import io.nekohasekai.sagernet.fmt.hysteria2.parseHysteria2
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.naive.parseNaive
-import io.nekohasekai.sagernet.fmt.parseUniversal
+import io.nekohasekai.sagernet.fmt.parseBackupLink
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
@@ -66,7 +66,7 @@ fun parseProxies(text: String): List<AbstractBean> {
         if (startsWith("exclave://")) {
             Logs.d("Try parse universal link: $this")
             runCatching {
-                entities.add(parseUniversal(this))
+                entities.add(parseBackupLink(this))
             }.onFailure {
                 Logs.w(it)
             }

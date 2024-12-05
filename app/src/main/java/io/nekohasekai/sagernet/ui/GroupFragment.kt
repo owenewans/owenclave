@@ -38,11 +38,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
+import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.GroupManager
 import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.databinding.LayoutGroupItemBinding
-import io.nekohasekai.sagernet.fmt.toUniversalLink
+import io.nekohasekai.sagernet.fmt.exportBackup
 import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.widget.QRCodeDialog
@@ -180,6 +181,35 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             runOnDefaultDispatcher {
                 val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
                 val links = profiles.mapNotNull { it.toLink() }.joinToString("\n")
+                try {
+                    (requireActivity() as MainActivity).contentResolver.openOutputStream(
+                        data
+                    )!!.bufferedWriter().use {
+                        it.write(links)
+                    }
+                    onMainDispatcher {
+                        snackbar(getString(R.string.action_export_msg)).show()
+                    }
+                } catch (e: Exception) {
+                    Logs.w(e)
+                    onMainDispatcher {
+                        snackbar(e.readableMessage).show()
+                    }
+                }
+
+            }
+        }
+    }
+
+    private val exportBackupOfAllProfiles = registerForActivityResult(ActivityResultContracts.CreateDocument()) { data ->
+        if (data != null) {
+            runOnDefaultDispatcher {
+                val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                val links = profiles.mapNotNull {
+                    if (it.canExportBackup()) {
+                        it.requireBean().exportBackup()
+                    } else null
+                }.joinToString("\n")
                 try {
                     (requireActivity() as MainActivity).contentResolver.openOutputStream(
                         data
@@ -382,13 +412,19 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             }
 
             when (item.itemId) {
-                R.id.action_universal_qr -> {
-                    showCode(proxyGroup.toUniversalLink())
+                R.id.action_subscription_link_qr -> {
+                    showCode(proxyGroup.subscription!!.link!!)
                 }
-                R.id.action_universal_clipboard -> {
-                    export(proxyGroup.toUniversalLink())
+                R.id.action_subscription_link_clipboard -> {
+                    val link = proxyGroup.subscription!!.link!!
+                    runOnDefaultDispatcher {
+                        onMainDispatcher {
+                            SagerNet.trySetPrimaryClip(link)
+                            snackbar(getString(androidx.browser.R.string.copy_toast_msg)).show()
+                        }
+                    }
                 }
-                R.id.action_export_clipboard -> {
+                R.id.action_clipboard -> {
                     runOnDefaultDispatcher {
                         val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
                         val links = profiles.mapNotNull { it.toLink() }.joinToString("\n")
@@ -398,8 +434,43 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                         }
                     }
                 }
-                R.id.action_export_file -> {
+                R.id.action_file -> {
                     startFilesForResult(exportProfiles, "profiles_${proxyGroup.displayName()}.txt")
+                }
+                R.id.action_export_backup_qr -> {
+                    showCode(proxyGroup.exportBackup())
+                }
+                R.id.action_export_backup_clipboard -> {
+                    export(proxyGroup.exportBackup())
+                }
+                R.id.action_export_backup_of_all_profiles_clipboard -> {
+                    runOnDefaultDispatcher {
+                        val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                        val links = profiles.mapNotNull {
+                            if (it.canExportBackup()) {
+                                it.requireBean().exportBackup()
+                            } else null
+                        }.joinToString("\n")
+                        onMainDispatcher {
+                            SagerNet.trySetPrimaryClip(links)
+                            snackbar(getString(androidx.browser.R.string.copy_toast_msg)).show()
+                        }
+                    }
+                }
+                R.id.action_export_backup_of_all_profiles_file -> {
+                    runOnDefaultDispatcher {
+                        val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                        val links = profiles.map {
+                            if (it.canExportBackup()) {
+                                it.requireBean().exportBackup()
+                            }
+                        }.joinToString("\n")
+                        onMainDispatcher {
+                            SagerNet.trySetPrimaryClip(links)
+                            snackbar(getString(androidx.browser.R.string.copy_toast_msg)).show()
+                        }
+                    }
+                    startFilesForResult(exportBackupOfAllProfiles, "profiles_${proxyGroup.displayName()}_backup.txt")
                 }
                 R.id.action_clear -> {
                     MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.confirm)
@@ -438,12 +509,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 GroupUpdater.startUpdate(proxyGroup, true)
             }
 
-            runOnDefaultDispatcher {
-                val showMenu = SagerDatabase.proxyDao.countByGroup(group.id) > 0
-                onMainDispatcher {
-                    optionsButton.isVisible = showMenu
-                }
-            }
             optionsButton.setOnClickListener {
                 selectedGroup = proxyGroup
 
@@ -451,8 +516,14 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 popup.menuInflater.inflate(R.menu.group_action_menu, popup.menu)
 
                 if (proxyGroup.type != GroupType.SUBSCRIPTION) {
-                    popup.menu.removeItem(R.id.action_share)
+                    popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_export_backup)
+                    popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_subscription_link)
                 }
+
+                if (proxyGroup.type == GroupType.SUBSCRIPTION && proxyGroup.subscription!!.type == SubscriptionType.OOCv1) {
+                    popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_subscription_link)
+                }
+
                 popup.setOnMenuItemClickListener(this)
                 popup.show()
             }

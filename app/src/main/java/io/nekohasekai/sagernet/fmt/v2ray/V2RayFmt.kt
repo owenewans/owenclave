@@ -19,7 +19,6 @@
 
 package io.nekohasekai.sagernet.fmt.v2ray
 
-import cn.hutool.core.codec.Base64
 import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.ktx.*
@@ -270,6 +269,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                         bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
                     }
                 }
+                url.queryParameter("eh")?.let {
+                    bean.earlyDataHeaderName = it // non-standard, invented by SagerNet and adopted by some other software
+                }
+                url.queryParameter("ed")?.toIntOrNull()?.let {
+                    bean.wsMaxEarlyData = it // non-standard, invented by SagerNet and adopted by some other software
+                }
             }
             "quic" -> {
                 url.queryParameter("headerType")?.let {
@@ -489,59 +494,7 @@ private fun parseCsvVMess(csv: String): VMessBean {
 
 }
 
-fun VMessBean.toV2rayN(): String {
-
-    return "vmess://" + JSONObject().also {
-
-        it["v"] = 2
-        it["ps"] = name
-        it["add"] = serverAddress
-        it["port"] = serverPort
-        it["id"] = this.uuidOrGenerate()
-        it["aid"] = alterId
-        it["net"] = when (type) {
-            "tcp", "kcp", "ws", "httpupgrade", "quic", "grpc" -> type
-            "splithttp" -> "xhttp"
-            "http" -> "h2"
-            else -> return "" // error("V2rayN format does not support $type")
-        }
-        it["host"] = when (type) {
-            "tcp", "ws", "httpupgrade", "http", "splithttp" -> host
-            "quic" -> quicSecurity
-            else -> ""
-        }
-        it["path"] = when (type) {
-            "ws", "httpupgrade", "http", "splithttp" -> path
-            "quic" -> quicKey
-            "kcp" -> mKcpSeed
-            "grpc" -> grpcServiceName
-            else -> ""
-        }
-        it["type"] = when (type) {
-            "tcp", "kcp", "quic" -> headerType
-            "splithttp" -> splithttpMode
-            else -> ""
-        }
-        it["tls"] = when (security) {
-            "tls", "reality" -> security
-            "none", "" -> ""
-            else -> ""
-        }
-        it["sni"] = sni
-        it["alpn"] = alpn.listByLineOrComma().joinToString(",")
-        it["scy"] = encryption
-        it["fp"] = when (security) {
-            "reality" -> realityFingerprint
-            "tls" -> "" // do not support this intentionally
-            else -> ""
-        }
-
-    }.toString().let { Base64.encode(it) }
-
-}
-
-fun StandardV2RayBean.toUri(): String {
-    if (this is VMessBean && alterId > 0) return toV2rayN()
+fun StandardV2RayBean.toUri(): String? {
 
     val builder = Libcore.newURL(
         if (this is VMessBean) "vmess" else if (this is VLESSBean) "vless" else "trojan"
@@ -557,7 +510,7 @@ fun StandardV2RayBean.toUri(): String {
     builder.addQueryParameter("type", when (type) {
         "splithttp" -> "xhttp"
         "tcp", "kcp", "ws", "http", "httpupgrade", "quic", "grpc", "meek", "meyka" -> type
-        else -> return "" // error("VMessAEAD/VLESS format does not support $type")
+        else -> return null
     })
 
     if (this !is TrojanBean) {
@@ -585,7 +538,23 @@ fun StandardV2RayBean.toUri(): String {
                 builder.addQueryParameter("seed", mKcpSeed)
             }
         }
-        "ws", "http", "httpupgrade" -> {
+        "ws" -> {
+            if (host.isNotBlank()) {
+                builder.addQueryParameter("host", host)
+            }
+            if (path.isNotBlank()) {
+                builder.addQueryParameter("path", path)
+            }
+            if (earlyDataHeaderName.isNotBlank()) {
+                // non-standard, invented by SagerNet and adopted by some other software
+                builder.addQueryParameter("eh", earlyDataHeaderName)
+            }
+            if (wsMaxEarlyData > 0) {
+                // non-standard, invented by SagerNet and adopted by some other software
+                builder.addQueryParameter("ed", wsMaxEarlyData.toString())
+            }
+        }
+        "http", "httpupgrade" -> {
             if (host.isNotBlank()) {
                 builder.addQueryParameter("host", host)
             }

@@ -60,7 +60,6 @@ import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.socks.toUri
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
-import io.nekohasekai.sagernet.fmt.toUniversalLink
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.trojan.toUri
 import io.nekohasekai.sagernet.fmt.trojan_go.TrojanGoBean
@@ -301,7 +300,7 @@ data class ProxyEntity(
         } ?: SOCKSBean().applyDefaultValues()
     }
 
-    fun haveLink(): Boolean {
+    fun canExportBackup(): Boolean {
         return when (type) {
             TYPE_CHAIN -> false
             TYPE_BALANCER -> false
@@ -309,10 +308,10 @@ data class ProxyEntity(
         }
     }
 
-    fun haveStandardLink(): Boolean {
-        return haveLink() && when (type) {
+    fun hasShareLink(): Boolean {
+        return when (type) {
             TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_SHADOWTLS -> false
-            TYPE_CONFIG -> false
+            TYPE_CONFIG, TYPE_CHAIN, TYPE_BALANCER -> false
             else -> true
         }
     }
@@ -334,12 +333,6 @@ data class ProxyEntity(
             is JuicityBean -> toUri()
             is TuicBean -> toUri()
             is Tuic5Bean -> toUri()
-
-            is ConfigBean -> toUniversalLink()
-            is SSHBean -> toUniversalLink()
-            is WireGuardBean -> toUniversalLink()
-            is MieruBean -> toUniversalLink()
-            is ShadowTLSBean -> toUniversalLink()
             else -> null
         }
     }
