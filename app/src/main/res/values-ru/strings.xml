@@ -83,13 +83,13 @@
     <string name="project">Проект</string>
     <string name="app_desc">Универсальный набор инструментов прокси для Android, написанный на Kotlin.</string>
     <plurals name="added">
-        <item quantity="one">Добавлен</item>
+        <item quantity="one">Добавлен %d прокси</item>
         <item quantity="few">Добавлено %d прокси</item>
         <item quantity="many">Добавлено %d прокси</item>
         <item quantity="other">Добавлено %d прокси</item>
     </plurals>
     <plurals name="removed">
-        <item quantity="one">Удалено</item>
+        <item quantity="one">%d элемент удалён</item>
         <item quantity="few">%d элемента удалены</item>
         <item quantity="many">%d элементов удалено</item>
         <item quantity="other">%d элементов удалено</item>
@@ -296,7 +296,7 @@
     <string name="sni">Server Name Indication (SNI)</string>
     <string name="grpc_service_name">Имя службы gRPC</string>
     <string name="kcp_seed">mKCP Seed</string>
-    <string name="quic_key">Quic key</string>
+    <string name="quic_key">Ключ QUIC</string>
     <string name="quic_security">Защита протокола QUIC</string>
     <string name="http_path">HTTP-путь</string>
     <string name="http_host">HTTP-хост</string>
@@ -326,7 +326,7 @@
     <string name="open_app">Открыть приложение</string>
     <string name="copy_package_name">Копировать имя пакета</string>
     <string name="copy_label">Копировать имя</string>
-    <string name="traffic_holder">Откройте VPN для записи статистики трафика</string>
+    <string name="traffic_holder">Включите VPN для записи статистики трафика</string>
     <string name="udp_connections">%d UDP-соединений</string>
     <string name="tcp_connections">%d TCP-соединений</string>
     <string name="traffic_stats">Статистика</string>
@@ -425,8 +425,8 @@
     <string name="tuic_udp_relay_mode">Режим UDP-ретранслятора</string>
     <string name="route_need_background_location">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **разрешение на фоновое определение местоположения**</string>
     <string name="route_need_coarse_location">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **грубое разрешение на определение местоположения**</string>
-    <string name="tuic_zero_rtt_handshake">0-RTT handshake</string>
-    <string name="reality_public_key">REALITY открытый ключ</string>
+    <string name="tuic_zero_rtt_handshake">0-RTT квитирование</string>
+    <string name="reality_public_key">REALITY public key</string>
     <string name="reality_short_id">REALITY Short ID</string>
     <string name="reality_spider_x">REALITY SpiderX</string>
     <string name="reality_fingerprint">REALITY uTLS fingerprint</string>
@@ -447,7 +447,7 @@
     <string name="mux_settings">Настройки Mux</string>
     <string name="update_subscription">Обновить подписку</string>
     <string name="group_not_a_subscription">Эта группа не является подпиской.</string>
-    <string name="sha256_certificate_fingerprint">SHA256 certificate fingerprint</string>
+    <string name="sha256_certificate_fingerprint">SHA256 хэш-сумма сертификата</string>
     <string name="plugin_settings">Настройки плагина</string>
     <string name="hysteria2_plugin_settings_sum">Эти параметры применимы только к плагинам.</string>
     <string name="hysteria_enable_port_hopping_experimental">Включить переключение портов Hysteria (экспериментальная функция)</string>
@@ -471,7 +471,7 @@
     <string name="connection_test_url_test">URL test</string>
     <string name="alter_id">Изменить ID</string>
     <string name="url">URL</string>
-    <string name="ooc_subscription_token">OOCv1 API token</string>
+    <string name="ooc_subscription_token">OOCv1 API токен</string>
     <string name="hysteria_init_stream_receive_window">QUIC init stream receive window</string>
     <string name="hysteria_max_stream_receive_window">QUIC max stream receive window</string>
     <string name="hysteria_init_conn_receive_window">QUIC init connection receive window</string>
