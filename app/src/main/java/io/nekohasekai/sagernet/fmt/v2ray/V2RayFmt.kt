@@ -121,8 +121,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             bean.uuid = url.username
         }
 
-        val protocol = url.queryParameter("type") ?: "tcp"
-        bean.type = protocol
+        bean.type = url.queryParameter("type")
 
         if (bean is TrojanBean) {
             bean.security = url.queryParameter("security") ?: "tls"
@@ -130,7 +129,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             bean.security = url.queryParameter("security") ?: "none"
         }
         when (bean.security) {
-            "tls" -> {
+            "tls", "xtls" -> {
+                bean.security = "tls"
                 if (bean is TrojanBean) {
                     bean.sni = url.queryParameter("sni") ?: url.queryParameter("peer")
                 } else {
@@ -141,23 +141,20 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 url.queryParameter("alpn")?.let {
                     bean.alpn = it.split(",").joinToString("\n")
                 }
-                if (bean is VLESSBean) {
+                if (bean is VLESSBean && bean.security == "tls") {
                     url.queryParameter("flow")?.let {
                         bean.flow = it
                         bean.packetEncoding = "xudp"
                     }
                 }
-                if (bean is TrojanBean) {
-                    // bad format from where?
-                    url.queryParameter("allowInsecure")?.let {
-                        if (it == "1" || it.lowercase() == "true") {
-                            bean.allowInsecure = true // non-standard
-                        }
+                // bad format from where?
+                url.queryParameter("allowInsecure")?.let {
+                    if (it == "1" || it.lowercase() == "true") {
+                        bean.allowInsecure = true // non-standard
                     }
-                    url.queryParameter("insecure")?.let {
-                        if (it == "1" || it.lowercase() == "true") {
-                            bean.allowInsecure = true // non-standard
-                        }
+                } ?: url.queryParameter("insecure")?.let {
+                    if (it == "1" || it.lowercase() == "true") {
+                        bean.allowInsecure = true // non-standard
                     }
                 }
                 //url.queryParameter("fp")?.let {} // do not support this intentionally
@@ -185,10 +182,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     }
                 }
             }
-            "none" -> {}
-            else -> error("unknown security: " + bean.security)
+            else -> bean.security = "none"
         }
-        when (protocol) {
+        when (bean.type) {
             "tcp" -> {
                 url.queryParameter("headerType")?.let { headerType ->
                     if (headerType == "http") {
@@ -313,12 +309,11 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.mekyaUrl = it
                 }
             }
-            else -> error("unknown type: " + bean.type)
+            "hysteria2" -> error("unsupported")
+            else -> bean.type = "tcp"
         }
 
     }
-
-    Logs.d(formatObject(bean))
 
     return bean
 }
@@ -336,12 +331,11 @@ fun parseV2RayN(link: String): VMessBean {
     bean.encryption = json.getStr("scy") ?: ""
     bean.uuid = json.getStr("id") ?: ""
     bean.alterId = json.getInt("aid") ?: 0
-    bean.type = when (val net = json.getStr("net") ?: "tcp") {
-        "" -> "tcp"
+    bean.type = when (val net = json.getStr("net")) {
         "h2" -> "http"
         "xhttp" -> "splithttp"
         "tcp", "kcp", "ws", "http", "quic", "grpc", "httpupgrade", "splithttp" -> net
-        else -> error("unknown net: $net")
+        else -> "tcp"
     }
     val type = json.getStr("type")
     val host = json.getStr("host") ?: ""
@@ -414,10 +408,19 @@ fun parseV2RayN(link: String): VMessBean {
     bean.name = json.getStr("ps") ?: ""
     bean.sni = json.getStr("sni") ?: bean.host
     bean.alpn = json.getStr("alpn")?.split(",")?.joinToString("\n")
-    when (val security = json.getStr("tls") ?: "none") {
-        "tls", "reality", "none" -> bean.security = security
-        "" -> bean.security = "none"
-        else -> error("unknown tls: $security")
+    // bad format from where?
+    json.getStr("allowInsecure")?.let {
+        if (it == "1" || it.lowercase() == "true") {
+            bean.allowInsecure = true // non-standard
+        }
+    } ?: json.getStr("insecure")?.let {
+        if (it == "1" || it.lowercase() == "true") {
+            bean.allowInsecure = true // non-standard
+        }
+    }
+    when (val security = json.getStr("tls")) {
+        "tls", "reality" -> bean.security = security
+        else -> bean.security = "none"
     }
     bean.realityFingerprint = json.getStr("fp")
     // bean.utlsFingerprint = ? // do not support this intentionally
