@@ -30,6 +30,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
+import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.fixInvalidParams
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
@@ -2241,6 +2242,25 @@ object RawUpdater : GroupUpdater() {
                         })
                     }
                 }
+            }
+            "mieru" -> {
+                val bean = MieruBean().apply {
+                    serverAddress = proxy["server"] as? String ?: return proxies
+                    // Why yet another protocol containing port-range? Let us use the first port only for now.
+                    serverPort = proxy["port"] as? Int ?: (proxy["port-range"] as? String)?.substringBefore("-")?.toInt() ?: return proxies
+                }
+                for (opt in proxy) {
+                    when (opt.key) {
+                        "name" -> bean.name = opt.value as? String
+                        "username" -> bean.username = opt.value as? String
+                        "password" -> bean.password = opt.value as? String
+                        "transport" -> when (opt.value) {
+                            "TCP" -> bean.protocol = MieruBean.PROTOCOL_TCP
+                            "UDP" -> bean.protocol = MieruBean.PROTOCOL_UDP // not implemented as of mihomo v1.19.0
+                        }
+                    }
+                }
+                proxies.add(bean)
             }
         }
         return proxies
