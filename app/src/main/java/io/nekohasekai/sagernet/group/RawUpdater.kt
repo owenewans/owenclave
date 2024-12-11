@@ -488,7 +488,7 @@ object RawUpdater : GroupUpdater() {
                                             v2rayBean.headerType = "http"
                                             header.getObject("request")?.also { request ->
                                                 request.getString("path")?.also {
-                                                    v2rayBean.host = it
+                                                    v2rayBean.path = it
                                                 }
                                                 request.getObject("headers")?.also { headers ->
                                                     (headers.getAny("Host") as? List<String>)?.also {
@@ -527,7 +527,10 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                                 wsSettings.getString("host")?.also {
-                                    v2rayBean.host = it // Xray's disgusting handling of Host header
+                                    // Xray has a separate field of Host header
+                                    // will not follow the breaking change in
+                                    // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
+                                    v2rayBean.host = it
                                 }
                                 wsSettings.getInteger("maxEarlyData")?.also {
                                     v2rayBean.wsMaxEarlyData = it
@@ -551,10 +554,11 @@ object RawUpdater : GroupUpdater() {
                             }
                         }
                         "http", "h2", "h3" -> {
+                            // h3 is invented by Xray and is not compatible with h2.
                             v2rayBean.type = "http"
                             streamSettings.getObject("httpSettings")?.also { httpSettings ->
-                                // will NOT follow https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
-                                // as streamSettings will likely breaks the compatibility with v2ray
+                                // will not follow the breaking change in
+                                // https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
                                 httpSettings.getString("host")?.also {
                                     v2rayBean.host = it
                                 }
@@ -593,15 +597,9 @@ object RawUpdater : GroupUpdater() {
                         "httpupgrade" -> {
                             v2rayBean.type = "httpupgrade"
                             streamSettings.getObject("httpupgradeSettings")?.also { httpupgradeSettings ->
-                                (httpupgradeSettings.getAny("headers") as? Map<String, String>)?.forEach { (key, value) ->
-                                    when (key.lowercase()) {
-                                        "host" -> {
-                                            // Xray's disgusting handling of Host header
-                                            v2rayBean.host = value
-                                        }
-                                    }
-                                }
                                 httpupgradeSettings.getString("host")?.also {
+                                    // will not follow the breaking change in
+                                    // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
                                     v2rayBean.host = it
                                 }
                                 httpupgradeSettings.getString("path")?.also {
@@ -691,11 +689,6 @@ object RawUpdater : GroupUpdater() {
                                 if (!extra.contains("noGRPCHeader")) {
                                     splithttpSettings.getBoolean("noGRPCHeader")?.also {
                                         extra.set("noGRPCHeader", it)
-                                    }
-                                }
-                                if (!extra.contains("headers")) {
-                                    (splithttpSettings.getAny("headers") as? Map<String, String>)?.also {
-                                        extra.set("headers", it)
                                     }
                                 }
                                 if (!extra.isEmpty()) {

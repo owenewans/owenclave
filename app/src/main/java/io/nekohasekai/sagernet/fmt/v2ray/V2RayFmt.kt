@@ -187,6 +187,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
         when (bean.type) {
             "tcp" -> {
                 url.queryParameter("headerType")?.let { headerType ->
+                    // invented by v2rayNG
                     if (headerType == "http") {
                         bean.headerType = headerType
                         url.queryParameter("host")?.let {
@@ -208,9 +209,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "http" -> {
                 url.queryParameter("host")?.let {
-                    // The proposal says "省略时复用 remote-host", but this is not correct.
-                    // will NOT follow https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
-                    // as it will likely breaks the compatibility with v2ray
+                    // The proposal says "省略时复用 remote-host", but this is not correct except for the breaking change below.
+                    // will not follow the breaking change in
+                    // https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
                     bean.host = it
                 }
                 url.queryParameter("path")?.let {
@@ -238,6 +239,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "httpupgrade" -> {
                 url.queryParameter("host")?.let {
+                    // will not follow the breaking change in
+                    // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
                     bean.host = it
                 }
                 url.queryParameter("path")?.let { path ->
@@ -252,6 +255,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             "ws" -> {
                 url.queryParameter("host")?.let {
+                    // will not follow the breaking change in
+                    // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
                     bean.host = it
                 }
                 url.queryParameter("path")?.let { path ->
@@ -523,8 +528,8 @@ fun StandardV2RayBean.toUri(): String? {
     when (type) {
         "tcp" -> {
             if (headerType == "http") {
+                // invented by v2rayNG
                 builder.addQueryParameter("headerType", headerType)
-
                 if (host.isNotBlank()) {
                     builder.addQueryParameter("host", host)
                 }
