@@ -62,7 +62,7 @@ fun parseTrojanGo(server: String): TrojanGoBean {
         link.queryParameter("plugin")?.let {
             plugin = it
         }
-        link.fragment.takeIf { !it.isNullOrBlank() }?.let {
+        link.fragment.takeIf { !it.isNullOrEmpty() }?.let {
             name = it
         }
     }
@@ -74,35 +74,35 @@ fun TrojanGoBean.toUri(): String {
     builder.port = serverPort
     builder.username = password
 
-    if (sni.isNotBlank()) {
+    if (sni.isNotEmpty()) {
         builder.addQueryParameter("sni", sni)
     }
-    if (type.isNotBlank() && type != "original") {
+    if (type.isNotEmpty() && type != "original") {
         builder.addQueryParameter("type", type)
 
         when (type) {
             "ws" -> {
-                if (host.isNotBlank()) {
+                if (host.isNotEmpty()) {
                     builder.addQueryParameter("host", host)
                 }
-                if (path.isNotBlank()) {
+                if (path.isNotEmpty()) {
                     builder.addQueryParameter("path", path)
                 }
             }
         }
     }
-    if (encryption.isNotBlank() && encryption != "none") {
+    if (encryption.isNotEmpty() && encryption != "none") {
         builder.addQueryParameter("encryption", encryption)
     }
-    if (plugin.isNotBlank() && PluginConfiguration(plugin).selected.isNotBlank()) {
+    if (plugin.isNotEmpty() && PluginConfiguration(plugin).selected.isNotEmpty()) {
         var p = PluginConfiguration(plugin).selected
-        if (PluginConfiguration(plugin).getOptions().toString().isNotBlank()) {
+        if (PluginConfiguration(plugin).getOptions().toString().isNotEmpty()) {
             p += ";" + PluginConfiguration(plugin).getOptions().toString()
         }
         builder.addQueryParameter("plugin", p)
     }
 
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
 
@@ -136,14 +136,14 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
         }
 
         var servername = sni
-        if (servername.isBlank()) {
+        if (servername.isEmpty()) {
             servername = serverAddress
         }
 
         conf["ssl"] = JSONObject().also {
-            if (servername.isNotBlank()) it["sni"] = servername
+            if (servername.isNotEmpty()) it["sni"] = servername
             if (allowInsecure) it["verify"] = false
-            if (utlsFingerprint.isNotBlank()) it["fingerprint"] = utlsFingerprint
+            if (utlsFingerprint.isNotEmpty()) it["fingerprint"] = utlsFingerprint
         }
 
         when {
@@ -156,7 +156,7 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
             }
         }
 
-        if (plugin.isNotBlank()) {
+        if (plugin.isNotEmpty()) {
             val pluginConfiguration = PluginConfiguration(plugin ?: "")
             PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
                 conf["transport_plugin"] = JSONObject().also {

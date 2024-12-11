@@ -36,16 +36,16 @@ fun TuicBean.toUri(): String {
     builder.addQueryParameter("version", "4")
     builder.addQueryParameter("udp_relay_mode", udpRelayMode)
     builder.addQueryParameter("congestion_control", congestionController)
-    if (sni.isNotBlank()) {
+    if (sni.isNotEmpty()) {
         builder.addQueryParameter("sni", sni)
     }
-    if (alpn.isNotBlank()) {
+    if (alpn.isNotEmpty()) {
         builder.addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
     }
     if (disableSNI) {
         builder.addQueryParameter("disable_sni", "1")
     }
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
     builder.addQueryParameter("udp_relay-mode", udpRelayMode)
@@ -56,7 +56,7 @@ fun TuicBean.toUri(): String {
 fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {
         it["relay"] = JSONObject().also {
-            if (sni.isNotBlank()) {
+            if (sni.isNotEmpty()) {
                 it["server"] = sni
                 it["ip"] = finalAddress
             } else {
@@ -66,13 +66,13 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
             it["port"] = finalPort
             it["token"] = token
 
-            if (caText.isNotBlank() && cacheFile != null) {
+            if (caText.isNotEmpty() && cacheFile != null) {
                 val caFile = cacheFile()
                 caFile.writeText(caText)
                 it["certificates"] = JSONArray().apply {
                     put(caFile.absolutePath)
                 }
-            } else if (DataStore.providerRootCA == RootCAProvider.SYSTEM && caText.isBlank()) {
+            } else if (DataStore.providerRootCA == RootCAProvider.SYSTEM && caText.isEmpty()) {
                 it["certificates"] = JSONArray().apply {
                     // workaround tuic can't load Android system root certificates without forking it
                     File("/system/etc/security/cacerts").listFiles()?.forEach { put(it) }
@@ -80,7 +80,7 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
             }
 
             it["udp_relay_mode"] = udpRelayMode
-            if (alpn.isNotBlank()) {
+            if (alpn.isNotEmpty()) {
                 it["alpn"] = JSONArray(alpn.listByLineOrComma())
             }
             it["congestion_controller"] = congestionController

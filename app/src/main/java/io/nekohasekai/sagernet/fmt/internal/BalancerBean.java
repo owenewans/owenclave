@@ -27,7 +27,6 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
 public class BalancerBean extends InternalBean {
@@ -58,7 +57,7 @@ public class BalancerBean extends InternalBean {
 
     @Override
     public String displayName() {
-        if (StrUtil.isNotBlank(name)) {
+        if (!name.isEmpty()) {
             return name;
         } else {
             return "Balancer " + Math.abs(hashCode());

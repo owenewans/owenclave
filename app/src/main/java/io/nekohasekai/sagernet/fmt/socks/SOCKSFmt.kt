@@ -77,15 +77,16 @@ fun SOCKSBean.toUri(): String {
     val builder = Libcore.newURL("socks${protocolVersion()}")
     builder.host = serverAddress
     builder.port = serverPort
-    if (!username.isNullOrBlank()) builder.username = username
-    if (!password.isNullOrBlank()) builder.password = password
+    if (!username.isNullOrEmpty()) builder.username = username
+    if (!password.isNullOrEmpty()) builder.password = password
     if (security == "tls") {
+        // non-standard
         builder.addQueryParameter("tls", "true") // non-standard
-        if (sni.isNotBlank()) {
+        if (sni.isNotEmpty()) {
             builder.addQueryParameter("sni", sni) // non-standard
         }
     }
-    if (!name.isNullOrBlank()) builder.setRawFragment(name.urlSafe())
+    if (!name.isNullOrEmpty()) builder.setRawFragment(name.urlSafe())
     return builder.string
 
 }

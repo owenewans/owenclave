@@ -41,7 +41,7 @@ class UserAgentPreference : EditTextPreference {
     }
 
     override fun getSummary(): CharSequence? {
-        if (text.isNullOrBlank()) {
+        if (text.isNullOrEmpty()) {
             return USER_AGENT
         }
         return super.getSummary()

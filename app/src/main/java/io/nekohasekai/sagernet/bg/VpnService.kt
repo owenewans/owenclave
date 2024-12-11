@@ -218,7 +218,7 @@ class VpnService : BaseVpnService(),
                 }
             }
             if (proxyApps) {
-                individual.addAll(DataStore.individual.split('\n').filter { it.isNotBlank() })
+                individual.addAll(DataStore.individual.split('\n').filter { it.isNotEmpty() })
                 if (bypass && needBypassRootUid) {
                     val individualNew = allApps.toMutableList()
                     individualNew.removeAll(individual)
@@ -253,7 +253,7 @@ class VpnService : BaseVpnService(),
         builder.addDnsServer(PRIVATE_VLAN4_GATEWAY)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && DataStore.appendHttpProxy && DataStore.requireHttp) {
-            if (DataStore.httpProxyException.isNotBlank()) {
+            if (DataStore.httpProxyException.isNotEmpty()) {
                 builder.setHttpProxy(ProxyInfo.buildDirectProxy(LOCALHOST, DataStore.httpPort,
                     DataStore.httpProxyException.listByLineOrComma()))
             } else {

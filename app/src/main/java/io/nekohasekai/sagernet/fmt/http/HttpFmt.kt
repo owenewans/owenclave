@@ -48,17 +48,17 @@ fun HttpBean.toUri(): String {
     builder.host = serverAddress
     builder.port = serverPort
 
-    if (username.isNotBlank()) {
+    if (username.isNotEmpty()) {
         builder.username = username
     }
-    if (password.isNotBlank()) {
+    if (password.isNotEmpty()) {
         builder.password = password
     }
-    if (security == "tls" && sni.isNotBlank()) {
+    if (security == "tls" && sni.isNotEmpty()) {
         // non-standard
         builder.addQueryParameter("sni", sni)
     }
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
 

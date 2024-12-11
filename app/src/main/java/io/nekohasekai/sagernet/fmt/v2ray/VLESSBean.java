@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
 
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
@@ -35,12 +34,8 @@ public class VLESSBean extends StandardV2RayBean {
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
 
-        if (StrUtil.isBlank(encryption)) {
-            encryption = "none";
-        }
-        if (StrUtil.isBlank(flow)) {
-            flow = "";
-        }
+        if (encryption == null) encryption = "none";
+        if (flow == null) flow = "";
 
     }
 
@@ -48,7 +43,7 @@ public class VLESSBean extends StandardV2RayBean {
     public void applyFeatureSettings(AbstractBean other) {
         super.applyFeatureSettings(other);
         if (!(other instanceof VLESSBean bean)) return;
-        if (flow.endsWith("-udp443") && !StrUtil.isBlank(bean.flow) && !bean.flow.endsWith("-udp443")) {
+        if (flow.endsWith("-udp443") && !bean.flow.isEmpty() && !bean.flow.endsWith("-udp443")) {
             bean.flow = flow; // keep -udp443
         }
     }

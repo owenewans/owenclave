@@ -47,7 +47,7 @@ class EditConfigPreference : Preference {
 
     override fun getSummary(): CharSequence {
         val config = DataStore.serverConfig
-        return if (DataStore.serverConfig.isBlank()) {
+        return if (DataStore.serverConfig.isEmpty()) {
             return app.resources.getString(androidx.preference.R.string.not_set)
         } else {
             app.resources.getString(R.string.lines, config.split('\n').size)

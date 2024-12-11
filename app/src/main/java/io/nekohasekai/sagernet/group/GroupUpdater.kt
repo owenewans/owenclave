@@ -158,32 +158,32 @@ abstract class GroupUpdater {
             when (this) {
                 is StandardV2RayBean -> {
                     when (security) {
-                        "tls" -> if (sni.isBlank()) sni = bean.serverAddress
+                        "tls" -> if (sni.isEmpty()) sni = bean.serverAddress
                     }
                 }
                 is TrojanGoBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is HysteriaBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is Hysteria2Bean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is NaiveBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is BrookBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is JuicityBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is TuicBean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
                 is Tuic5Bean -> {
-                    if (sni.isBlank()) sni = bean.serverAddress
+                    if (sni.isEmpty()) sni = bean.serverAddress
                 }
             }
 

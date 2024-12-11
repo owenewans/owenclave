@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import cn.hutool.core.clone.Cloneable;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import io.nekohasekai.sagernet.ExtraType;
 import io.nekohasekai.sagernet.fmt.gson.GsonsKt;
@@ -55,7 +54,7 @@ public abstract class AbstractBean extends Serializable implements Cloneable<Abs
     public List<String> tags;
 
     public String displayName() {
-        if (StrUtil.isNotBlank(name)) {
+        if (!name.isEmpty()) {
             return name;
         } else {
             return displayAddress();
@@ -84,14 +83,8 @@ public abstract class AbstractBean extends Serializable implements Cloneable<Abs
 
     @Override
     public void initializeDefaultValues() {
-        if (StrUtil.isBlank(serverAddress)) {
-            serverAddress = "127.0.0.1";
-        } else if (serverAddress.startsWith("[") && serverAddress.endsWith("]")) {
-            serverAddress = NetsKt.unwrapHost(serverAddress);
-        }
-        if (serverPort == null) {
-            serverPort = 1080;
-        }
+        if (serverAddress == null) serverAddress = "127.0.0.1";
+        if (serverPort == null) serverPort = 1080;
         if (name == null) name = "";
 
         finalAddress = serverAddress;

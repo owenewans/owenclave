@@ -26,7 +26,6 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
@@ -52,10 +51,10 @@ public class TrojanGoBean extends AbstractBean {
 
         if (password == null) password = "";
         if (sni == null) sni = "";
-        if (StrUtil.isBlank(type)) type = "none";
+        if (type == null) type = "none";
         if (host == null) host = "";
         if (path == null) path = "";
-        if (StrUtil.isBlank(encryption)) encryption = "none";
+        if (encryption == null) encryption = "none";
         if (plugin == null) plugin = "";
         if (allowInsecure == null) allowInsecure = false;
         if (utlsFingerprint == null) utlsFingerprint = "";

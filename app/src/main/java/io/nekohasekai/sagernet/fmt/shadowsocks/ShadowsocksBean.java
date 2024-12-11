@@ -26,7 +26,6 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean;
@@ -42,8 +41,7 @@ public class ShadowsocksBean extends StandardV2RayBean {
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
 
-        if (StrUtil.isBlank(method)) method = "aes-256-gcm";
-        if (method == null) method = "";
+        if (method == null) method = "none";
         if (password == null) password = "";
         if (plugin == null) plugin = "";
         if (experimentReducedIvHeadEntropy == null) experimentReducedIvHeadEntropy = false;

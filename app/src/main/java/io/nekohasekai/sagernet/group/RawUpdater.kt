@@ -78,7 +78,7 @@ object RawUpdater : GroupUpdater() {
                 }
             }.newRequest().apply {
                 setURL(subscription.link)
-                if (subscription.customUserAgent.isNotBlank()) {
+                if (subscription.customUserAgent.isNotEmpty()) {
                     setUserAgent(subscription.customUserAgent)
                 } else {
                     setUserAgent(USER_AGENT)
@@ -158,7 +158,7 @@ object RawUpdater : GroupUpdater() {
                     val index = uniqueProxies.indexOf(proxy)
                     if (uniqueNames.containsKey(proxy)) {
                         val name = uniqueNames[proxy]!!.replace(" ($index)", "")
-                        if (name.isNotBlank()) {
+                        if (name.isNotEmpty()) {
                             duplicate.add("$name ($index)")
                             uniqueNames[proxy] = ""
                         }
@@ -338,7 +338,7 @@ object RawUpdater : GroupUpdater() {
         val beans = mutableListOf<WireGuardBean>()
         for (peer in peers) {
             val endpoint = peer["Endpoint"]
-            if (endpoint.isNullOrBlank() || !endpoint.contains(":")) {
+            if (endpoint.isNullOrEmpty() || !endpoint.contains(":")) {
                 continue
             }
 
@@ -710,7 +710,7 @@ object RawUpdater : GroupUpdater() {
                                         v2rayBean.hy2DownMbps = it
                                     }
                                 }
-                                hy2Settings.getObject("obfs")?.also { obfs ->
+                                /* hy2Settings.getObject("obfs")?.also { obfs ->
                                     obfs.getString("type")?.also { type ->
                                         if (type == "salamander") {
                                             obfs.getString("password")?.also {
@@ -718,7 +718,7 @@ object RawUpdater : GroupUpdater() {
                                             }
                                         }
                                     }
-                                }
+                                } */
                             }
                         }
                         else -> return proxies
@@ -734,7 +734,7 @@ object RawUpdater : GroupUpdater() {
                             v2rayBean.packetEncoding = when (settings.getString("packetEncoding")?.lowercase()) {
                                 "xudp" -> "xudp"
                                 "packet" -> "packet"
-                                else -> ""
+                                else -> "none"
                             }
                             (settings.getArray("vnext")?.get(0) as? JSONObject)?.also { vnext ->
                                 vnext.getString("address")?.also {
@@ -775,7 +775,7 @@ object RawUpdater : GroupUpdater() {
                             v2rayBean.packetEncoding = when (settings.getString("packetEncoding")?.lowercase()) {
                                 "xudp" -> "xudp"
                                 "packet" -> "packet"
-                                else -> ""
+                                else -> "none"
                             }
                             (settings.getArray("vnext")?.get(0) as? JSONObject)?.also { vnext ->
                                 vnext.getString("address")?.also {
@@ -1281,7 +1281,7 @@ object RawUpdater : GroupUpdater() {
                         v2rayBean.packetEncoding = when (outbound.getString("packet_encoding")) {
                             "packetaddr" -> "packet"
                             "xudp" -> "xudp"
-                            else -> ""
+                            else -> "none"
                         }
                     }
                     "vless" -> {
@@ -1295,7 +1295,7 @@ object RawUpdater : GroupUpdater() {
                         v2rayBean.packetEncoding = when (outbound.getString("packet_encoding")) {
                             "packetaddr" -> "packet"
                             "xudp", null -> "xudp"
-                            else -> ""
+                            else -> "none"
                         }
                     }
                     else -> return proxies
@@ -1355,13 +1355,13 @@ object RawUpdater : GroupUpdater() {
                     outbound.getInteger("server_port")?.also {
                         serverPorts = it.toString()
                     } ?: return proxies
-                    if (outbound.getString("auth")?.isNotBlank() == true) {
+                    if (outbound.getString("auth")?.isNotEmpty() == true) {
                         authPayloadType = HysteriaBean.TYPE_BASE64
                         outbound.getString("auth")?.also {
                             authPayload = it
                         }
                     }
-                    if (outbound.getString("auth_str")?.isNotBlank() == true) {
+                    if (outbound.getString("auth_str")?.isNotEmpty() == true) {
                         authPayloadType = HysteriaBean.TYPE_STRING
                         outbound.getString("auth_str")?.also {
                             authPayload = it
@@ -1440,13 +1440,13 @@ object RawUpdater : GroupUpdater() {
                     outbound.getString("user")?.also {
                         username = it
                     }
-                    if (outbound.getString("password")?.isNotBlank() == true) {
+                    if (outbound.getString("password")?.isNotEmpty() == true) {
                         authType = SSHBean.AUTH_TYPE_PASSWORD
                         outbound.getString("password")?.also {
                             password = it
                         }
                     }
-                    if (outbound.getString("private_key")?.isNotBlank() == true) {
+                    if (outbound.getString("private_key")?.isNotEmpty() == true) {
                         authType = SSHBean.AUTH_TYPE_PRIVATE_KEY
                         outbound.getString("private_key")?.also {
                             privateKey = it
@@ -2011,7 +2011,7 @@ object RawUpdater : GroupUpdater() {
                             bean.packetEncoding = when ((opt.value as? String)?.lowercase()) {
                                 "packetaddr" -> "packet"
                                 "xudp" -> "xudp"
-                                else -> ""
+                                else -> "none"
                             }
                         }
                         "tls" -> if (bean is VMessBean || bean is VLESSBean) {

@@ -60,7 +60,7 @@ object SIP008Updater : GroupUpdater() {
                 }
             }.newRequest().apply {
                 setURL(subscription.link)
-                if (subscription.customUserAgent.isNotBlank()) {
+                if (subscription.customUserAgent.isNotEmpty()) {
                     setUserAgent(subscription.customUserAgent)
                 } else {
                     setUserAgent(USER_AGENT)
@@ -97,7 +97,7 @@ object SIP008Updater : GroupUpdater() {
                     val index = uniqueProfiles.indexOf(proxy)
                     if (uniqueNames.containsKey(proxy)) {
                         val name = uniqueNames[proxy]!!.replace(" ($index)", "")
-                        if (name.isNotBlank()) {
+                        if (name.isNotEmpty()) {
                             duplicate.add("$name ($index)")
                             uniqueNames[proxy] = ""
                         }

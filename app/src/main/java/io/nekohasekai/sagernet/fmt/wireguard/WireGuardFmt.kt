@@ -32,7 +32,7 @@ fun parseV2rayNWireGuard(server: String): AbstractBean {
         link.queryParameter("reserved")?.let {
             reserved = it
         }
-        link.fragment.takeIf { !it.isNullOrBlank() }?.let {
+        link.fragment.takeIf { !it.isNullOrEmpty() }?.let {
             name = it
         }
     }
@@ -49,7 +49,7 @@ fun WireGuardBean.toConf(): String {
     ini.add("Interface", "PrivateKey", privateKey)
     ini.add("Peer", "Endpoint", joinHostPort(serverAddress, serverPort))
     ini.add("Peer", "PublicKey", peerPublicKey)
-    if (peerPreSharedKey.isNotBlank()) {
+    if (peerPreSharedKey.isNotEmpty()) {
         ini.add("Peer", "PreSharedKey", peerPreSharedKey)
     }
     val conf = StringWriter()

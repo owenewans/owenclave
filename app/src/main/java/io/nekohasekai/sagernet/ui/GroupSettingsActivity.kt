@@ -84,7 +84,7 @@ class GroupSettingsActivity(
     }
 
     fun ProxyGroup.serialize() {
-        name = DataStore.groupName.takeIf { it.isNotBlank() }
+        name = DataStore.groupName.takeIf { it.isNotEmpty() }
             ?: ("My group " + System.currentTimeMillis() / 1000)
         type = DataStore.groupType
         order = DataStore.groupOrder
@@ -399,7 +399,7 @@ class GroupSettingsActivity(
 
         override fun provideSummary(preference: EditTextPreference): CharSequence {
             val text = preference.text
-            return if (text.isNullOrBlank()) {
+            return if (text.isNullOrEmpty()) {
                 preference.context.getString(androidx.preference.R.string.not_set)
             } else {
                 "\u2022".repeat(text.length)

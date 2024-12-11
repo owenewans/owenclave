@@ -53,7 +53,7 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
 
         var link = Libcore.parseURL(url)
 
-        if (link.username.isBlank()) { // fix justmysocks's shit link
+        if (link.username.isEmpty()) { // fix justmysocks's shit link
             link = Libcore.parseURL(
                 ("ss://" + url.substringAfter("ss://").substringBefore("#").decodeBase64UrlSafe())
             )
@@ -62,7 +62,7 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
 
         // ss-android style
 
-        if (link.password.isNotBlank() || url.substringAfter("ss://").substringBefore("@").endsWith(":")) {
+        if (link.password.isNotEmpty() || url.substringAfter("ss://").substringBefore("@").endsWith(":")) {
 
             return ShadowsocksBean().apply {
 
@@ -136,16 +136,16 @@ fun ShadowsocksBean.toUri(): String {
         builder.username = Base64.encodeUrlSafe("$method:$password")
     }
 
-    if (plugin.isNotBlank() && PluginConfiguration(plugin).selected.isNotBlank()) {
+    if (plugin.isNotEmpty() && PluginConfiguration(plugin).selected.isNotEmpty()) {
         var p = PluginConfiguration(plugin).selected
-        if (PluginConfiguration(plugin).getOptions().toString().isNotBlank()) {
+        if (PluginConfiguration(plugin).getOptions().toString().isNotEmpty()) {
             p += ";" + PluginConfiguration(plugin).getOptions().toString()
         }
         builder.rawPath = "/"
         builder.addQueryParameter("plugin", p)
     }
 
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
 
@@ -157,7 +157,7 @@ fun JSONObject.parseShadowsocks(): ShadowsocksBean {
     return ShadowsocksBean().apply {
         var pluginStr = ""
         val pId = getStr("plugin")
-        if (!pId.isNullOrBlank()) {
+        if (!pId.isNullOrEmpty()) {
             val plugin = PluginOptions(pId, getStr("plugin_opts"))
             pluginStr = plugin.toString(false)
         }

@@ -51,7 +51,7 @@ class OOCv1TokenPreference : EditTextPreference {
             val linkLayout = editText.rootView.findViewById<TextInputLayout>(R.id.input_layout)
 
             fun validate() {
-                if (editText.text.isBlank()) {
+                if (editText.text.isEmpty()) {
                     linkLayout.isErrorEnabled = false
                     return
                 }
@@ -70,7 +70,7 @@ class OOCv1TokenPreference : EditTextPreference {
                     if (isValid) {
                         val baseUrl = tokenObject.getStr("baseUrl")
                         when {
-                            baseUrl.isNullOrBlank() -> {
+                            baseUrl.isNullOrEmpty() -> {
                                 linkLayout.error = "Missing field: baseUrl"
                                 isValid = false
                             }
@@ -90,17 +90,17 @@ class OOCv1TokenPreference : EditTextPreference {
                             }
                         }
                     }
-                    if (isValid && tokenObject.getStr("secret").isNullOrBlank()) {
+                    if (isValid && tokenObject.getStr("secret").isNullOrEmpty()) {
                         isValid = false
                         linkLayout.error = "Missing field: secret"
                     }
-                    if (isValid && tokenObject.getStr("userId").isNullOrBlank()) {
+                    if (isValid && tokenObject.getStr("userId").isNullOrEmpty()) {
                         isValid = false
                         linkLayout.error = "Missing field: userId"
                     }
                     if (isValid) {
                         val certSha256 = tokenObject.getStr("certSha256")
-                        if (!certSha256.isNullOrBlank()) {
+                        if (!certSha256.isNullOrEmpty()) {
                             when {
                                 certSha256.length != 64 -> {
                                     isValid = false

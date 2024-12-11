@@ -103,7 +103,7 @@ data class ProxyGroup(
     }
 
     fun displayName(): String {
-        return name.takeIf { !it.isNullOrBlank() } ?: app.getString(R.string.group_default)
+        return name.takeIf { !it.isNullOrEmpty() } ?: app.getString(R.string.group_default)
     }
 
     @androidx.room.Dao

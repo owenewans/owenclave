@@ -207,11 +207,11 @@ class MainActivity : ThemedActivity(),
             }
         }
 
-        val name = group.name.takeIf { !it.isNullOrBlank() } ?: group.subscription?.link
+        val name = group.name.takeIf { !it.isNullOrEmpty() } ?: group.subscription?.link
         ?: group.subscription?.token
-        if (name.isNullOrBlank()) return
+        if (name.isNullOrEmpty()) return
 
-        group.name = group.name.takeIf { !it.isNullOrBlank() }
+        group.name = group.name.takeIf { !it.isNullOrEmpty() }
             ?: ("Subscription #" + System.currentTimeMillis())
 
         onMainDispatcher {

@@ -45,7 +45,7 @@ public class NaiveBean extends AbstractBean {
 
     @Override
     public boolean canMapping() {
-        return !NetsKt.isIpAddress(serverAddress) || (!sni.isBlank() && !NetsKt.isIpAddress(sni));
+        return !NetsKt.isIpAddress(serverAddress) || (!sni.isEmpty() && !NetsKt.isIpAddress(sni));
     }
 
     @Override

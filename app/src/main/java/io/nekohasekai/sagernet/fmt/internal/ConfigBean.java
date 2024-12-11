@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
 public class ConfigBean extends InternalBean {
@@ -35,7 +34,7 @@ public class ConfigBean extends InternalBean {
 
     @Override
     public String displayName() {
-        if (StrUtil.isNotBlank(name)) {
+        if (!name.isEmpty()) {
             return name;
         } else {
             return "Config " + Math.abs(hashCode());

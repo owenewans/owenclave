@@ -297,7 +297,7 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
 
         override fun provideSummary(preference: EditTextPreference): CharSequence {
             val text = preference.text
-            return if (text.isNullOrBlank()) {
+            return if (text.isNullOrEmpty()) {
                 preference.context.getString(androidx.preference.R.string.not_set)
             } else {
                 "\u2022".repeat(text.length)

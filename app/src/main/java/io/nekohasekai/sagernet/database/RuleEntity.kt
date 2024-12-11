@@ -51,32 +51,32 @@ data class RuleEntity(
 ) : Parcelable {
 
     fun isBypassRule(): Boolean {
-        return (domains.isNotBlank() && ip.isBlank() || ip.isNotBlank() && domains.isBlank()) && port.isBlank() && sourcePort.isBlank() && network.isBlank() && source.isBlank() && protocol.isBlank() && attrs.isBlank() && !reverse && redirect.isBlank() && outbound == -1L && packages.isEmpty() && ssid.isBlank() && networkType.isBlank()
+        return (domains.isNotEmpty() && ip.isEmpty() || ip.isNotEmpty() && domains.isEmpty()) && port.isEmpty() && sourcePort.isEmpty() && network.isEmpty() && source.isEmpty() && protocol.isEmpty() && attrs.isEmpty() && !reverse && redirect.isEmpty() && outbound == -1L && packages.isEmpty() && ssid.isEmpty() && networkType.isEmpty()
     }
 
     fun isProxyRule(): Boolean {
-        return !(domains.isNotBlank() && ip.isNotBlank()) && outbound == 0L
+        return !(domains.isNotEmpty() && ip.isNotEmpty()) && outbound == 0L
     }
 
     fun displayName(): String {
-        return name.takeIf { it.isNotBlank() } ?: "Rule $id"
+        return name.takeIf { it.isNotEmpty() } ?: "Rule $id"
     }
 
     fun mkSummary(): String {
         var summary = ""
-        if (domains.isNotBlank()) summary += "$domains\n"
-        if (ip.isNotBlank()) summary += "$ip\n"
-        if (sourcePort.isNotBlank()) summary += "$sourcePort\n"
-        if (network.isNotBlank()) summary += "$network\n"
-        if (source.isNotBlank()) summary += "$source\n"
-        if (protocol.isNotBlank()) summary += "$protocol\n"
-        if (attrs.isNotBlank()) summary += "$attrs\n"
+        if (domains.isNotEmpty()) summary += "$domains\n"
+        if (ip.isNotEmpty()) summary += "$ip\n"
+        if (sourcePort.isNotEmpty()) summary += "$sourcePort\n"
+        if (network.isNotEmpty()) summary += "$network\n"
+        if (source.isNotEmpty()) summary += "$source\n"
+        if (protocol.isNotEmpty()) summary += "$protocol\n"
+        if (attrs.isNotEmpty()) summary += "$attrs\n"
         if (reverse) summary += "$redirect\n"
         if (packages.isNotEmpty()) summary += app.getString(
             R.string.apps_message, packages.size
         ) + "\n"
-        if (ssid.isNotBlank()) summary += "$ssid\n"
-        if (networkType.isNotBlank()) {
+        if (ssid.isNotEmpty()) summary += "$ssid\n"
+        if (networkType.isNotEmpty()) {
             summary += app.getString(
                 when (networkType) {
                     NetworkType.WIFI -> R.string.network_wifi

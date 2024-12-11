@@ -1729,12 +1729,12 @@ class ConfigurationFragment @JvmOverloads constructor(
                     address = address.substring(0, 27) + "..."
                 }
 
-                if (proxyEntity.requireBean().name.isBlank() || !parent.alwaysShowAddress) {
+                if (proxyEntity.requireBean().name.isEmpty() || !parent.alwaysShowAddress) {
                     address = ""
                 }
 
                 profileAddress.text = address
-                (trafficText.parent as View).isGone = (!showTraffic || proxyEntity.status <= 0) && address.isBlank()
+                (trafficText.parent as View).isGone = (!showTraffic || proxyEntity.status <= 0) && address.isEmpty()
 
                 if (proxyEntity.status <= 0) {
                     if (showTraffic) {

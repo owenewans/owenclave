@@ -26,9 +26,9 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import kotlin.random.Random
 
-fun URL.queryParameter(key: String) = queryParameterNotBlank(key).takeIf { it.isNotBlank() }
+fun URL.queryParameter(key: String) = queryParameterNotBlank(key).takeIf { it.isNotEmpty() }
 var URL.pathSegments: List<String>
-    get() = path.split("/").filter { it.isNotBlank() }
+    get() = path.split("/").filter { it.isNotEmpty() }
     set(value) {
         path = value.joinToString("/")
     }

@@ -391,7 +391,7 @@ fun buildV2RayConfig(
                                     skipDomain = true
                                 }
                             }
-                            bean.host.isNotBlank() -> {
+                            bean.host.isNotEmpty() -> {
                                 domain = listOf(bean.host)
                             }
                             bean.serverAddress.isIpAddress() -> {
@@ -403,7 +403,7 @@ fun buildV2RayConfig(
                             else -> domain = listOf(bean.serverAddress)
                         }
                     }
-                    wsRules[bean.host.takeIf { !it.isNullOrBlank() } ?: bean.serverAddress] = route
+                    wsRules[bean.host.takeIf { !it.isNullOrEmpty() } ?: bean.serverAddress] = route
                 }
 
             }
@@ -511,7 +511,7 @@ fun buildV2RayConfig(
                                                             if (bean.alterId > 0) {
                                                                 alterId = bean.alterId
                                                             }
-                                                            security = bean.encryption.takeIf { it.isNotBlank() }
+                                                            security = bean.encryption.takeIf { it.isNotEmpty() }
                                                                 ?: "auto"
                                                             experiments = ""
                                                             if (bean.experimentalAuthenticatedLength) {
@@ -523,7 +523,7 @@ fun buildV2RayConfig(
                                                                 }
                                                                 experiments += "NoTerminationSignal"
                                                             }
-                                                            if (experiments.isBlank()) experiments = null
+                                                            if (experiments.isEmpty()) experiments = null
                                                         })
                                                 })
                                             when (bean.packetEncoding) {
@@ -547,7 +547,7 @@ fun buildV2RayConfig(
                                                         .apply {
                                                             id = bean.uuidOrGenerate()
                                                             encryption = bean.encryption
-                                                            if (bean.flow.isNotBlank()) {
+                                                            if (bean.flow.isNotEmpty()) {
                                                                 flow = bean.flow
                                                             }
                                                         })
@@ -591,7 +591,7 @@ fun buildV2RayConfig(
                                                     }
                                                     psk = keys[keys.size - 1]
                                                 }
-                                                if (bean.plugin.isNotBlank()) {
+                                                if (bean.plugin.isNotEmpty()) {
                                                     val pluginConfiguration = PluginConfiguration(bean.plugin)
                                                     try {
                                                         PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
@@ -621,7 +621,7 @@ fun buildV2RayConfig(
                                                     if (!bean.method.startsWith("2022-blake3-") && bean.experimentReducedIvHeadEntropy) {
                                                         experimentReducedIvHeadEntropy = bean.experimentReducedIvHeadEntropy
                                                     }
-                                                    if (bean.plugin.isNotBlank()) {
+                                                    if (bean.plugin.isNotEmpty()) {
                                                         val pluginConfiguration = PluginConfiguration(bean.plugin)
                                                         try {
                                                             PluginManager.init(pluginConfiguration)?.let { (path, opts, _) ->
@@ -648,10 +648,13 @@ fun buildV2RayConfig(
                                             servers = listOf(SocksOutboundConfigurationObject.ServerObject().apply {
                                                 address = bean.serverAddress
                                                 port = bean.serverPort
-                                                if (!bean.username.isNullOrBlank()) {
+                                                if (!bean.username.isNullOrEmpty() || !bean.password.isNullOrEmpty()) {
                                                     users = listOf(SocksOutboundConfigurationObject.ServerObject.UserObject().apply {
+                                                        if (!bean.username.isNullOrEmpty()) {
+                                                            user = bean.username
+                                                        }
                                                         user = bean.username
-                                                        if (!bean.password.isNullOrBlank() && bean.protocolName() == "SOCKS5") {
+                                                        if (!bean.password.isNullOrEmpty() && bean.protocolName() == "SOCKS5") {
                                                             pass = bean.password
                                                         }
                                                     })
@@ -667,10 +670,14 @@ fun buildV2RayConfig(
                                             servers = listOf(HTTPOutboundConfigurationObject.ServerObject().apply {
                                                 address = bean.serverAddress
                                                 port = bean.serverPort
-                                                if (!bean.username.isNullOrBlank()) {
+                                                if (!bean.username.isNullOrEmpty() || !bean.password.isNullOrEmpty()) {
                                                     users = listOf(HTTPInboundConfigurationObject.AccountObject().apply {
-                                                        user = bean.username
-                                                        pass = bean.password
+                                                        if (!bean.username.isNullOrEmpty()) {
+                                                            user = bean.username
+                                                        }
+                                                        if (!bean.password.isNullOrEmpty()) {
+                                                            pass = bean.password
+                                                        }
                                                     })
                                                 }
                                             })
@@ -680,64 +687,64 @@ fun buildV2RayConfig(
 
                                 streamSettings = StreamSettingsObject().apply {
                                     network = bean.type
-                                    if (bean.security.isNotBlank()) {
+                                    if (bean.security.isNotEmpty()) {
                                         security = bean.security
                                     }
                                     when (security) {
                                         "tls" -> {
                                             tlsSettings = TLSObject().apply {
-                                                if (bean.sni.isNotBlank()) {
+                                                if (bean.sni.isNotEmpty()) {
                                                     serverName = bean.sni
                                                 }
 
-                                                if (bean.alpn.isNotBlank()) {
+                                                if (bean.alpn.isNotEmpty()) {
                                                     alpn = bean.alpn.listByLineOrComma()
                                                 }
 
-                                                if (bean.certificates.isNotBlank()) {
+                                                if (bean.certificates.isNotEmpty()) {
                                                     disableSystemRoot = true
                                                     certificates = listOf(TLSObject.CertificateObject()
                                                         .apply {
                                                             usage = "verify"
                                                             certificate = bean.certificates.split(
                                                                 "\n"
-                                                            ).filter { it.isNotBlank() }
+                                                            ).filter { it.isNotEmpty() }
                                                         })
                                                 }
 
-                                                if (bean.pinnedPeerCertificateChainSha256.isNotBlank()) {
+                                                if (bean.pinnedPeerCertificateChainSha256.isNotEmpty()) {
                                                     pinnedPeerCertificateChainSha256 = bean.pinnedPeerCertificateChainSha256.listByLineOrComma()
                                                 }
 
                                                 if (bean.allowInsecure) {
                                                     allowInsecure = true
                                                 }
-                                                if (bean.utlsFingerprint.isNotBlank()) {
+                                                if (bean.utlsFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.utlsFingerprint
                                                 }
-                                                if (bean.echConfig.isNotBlank()) {
+                                                if (bean.echConfig.isNotEmpty()) {
                                                     echConfig = bean.echConfig
                                                 }
-                                                if (bean.echDohServer.isNotBlank()) {
+                                                if (bean.echDohServer.isNotEmpty()) {
                                                     echDohServer = bean.echDohServer
                                                 }
                                             }
                                         }
                                         "reality" -> {
                                             realitySettings = RealityObject().apply {
-                                                if (bean.sni.isNotBlank()) {
+                                                if (bean.sni.isNotEmpty()) {
                                                     serverName = bean.sni
                                                 }
-                                                if (bean.realityPublicKey.isNotBlank()) {
+                                                if (bean.realityPublicKey.isNotEmpty()) {
                                                     publicKey = bean.realityPublicKey
                                                 }
-                                                if (bean.realityShortId.isNotBlank()) {
+                                                if (bean.realityShortId.isNotEmpty()) {
                                                     shortId = bean.realityShortId
                                                 }
-                                                if (bean.realitySpiderX.isNotBlank()) {
+                                                if (bean.realitySpiderX.isNotEmpty()) {
                                                     spiderX = bean.realitySpiderX
                                                 }
-                                                if (bean.realityFingerprint.isNotBlank()) {
+                                                if (bean.realityFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.realityFingerprint
                                                 }
                                             }
@@ -750,17 +757,17 @@ fun buildV2RayConfig(
                                                 if (bean.headerType == "http") {
                                                     header = TcpObject.HeaderObject().apply {
                                                         type = "http"
-                                                        if (bean.host.isNotBlank() || bean.path.isNotBlank()) {
+                                                        if (bean.host.isNotEmpty() || bean.path.isNotEmpty()) {
                                                             request = TcpObject.HeaderObject.HTTPRequestObject()
                                                                 .apply {
                                                                     headers = mutableMapOf()
-                                                                    if (bean.host.isNotBlank()) {
+                                                                    if (bean.host.isNotEmpty()) {
                                                                         headers["Host"] = TcpObject.HeaderObject.StringOrListObject()
                                                                             .apply {
                                                                                 valueY = bean.host.listByLineOrComma()
                                                                             }
                                                                     }
-                                                                    if (bean.path.isNotBlank()) {
+                                                                    if (bean.path.isNotEmpty()) {
                                                                         path = bean.path.listByLineOrComma()
                                                                     }
                                                                 }
@@ -781,7 +788,7 @@ fun buildV2RayConfig(
                                                 header = KcpObject.HeaderObject().apply {
                                                     type = bean.headerType
                                                 }
-                                                if (bean.mKcpSeed.isNotBlank()) {
+                                                if (bean.mKcpSeed.isNotEmpty()) {
                                                     seed = bean.mKcpSeed
                                                 }
                                             }
@@ -790,17 +797,17 @@ fun buildV2RayConfig(
                                             wsSettings = WebSocketObject().apply {
                                                 headers = mutableMapOf()
 
-                                                if (bean.host.isNotBlank()) {
+                                                if (bean.host.isNotEmpty()) {
                                                     headers["Host"] = bean.host
                                                 }
 
-                                                path = bean.path.takeIf { it.isNotBlank() } ?: "/"
+                                                path = bean.path.takeIf { it.isNotEmpty() } ?: "/"
 
                                                 if (bean.wsMaxEarlyData > 0) {
                                                     maxEarlyData = bean.wsMaxEarlyData
                                                 }
 
-                                                if (bean.earlyDataHeaderName.isNotBlank()) {
+                                                if (bean.earlyDataHeaderName.isNotEmpty()) {
                                                     earlyDataHeaderName = bean.earlyDataHeaderName
                                                 }
 
@@ -814,20 +821,20 @@ fun buildV2RayConfig(
                                             network = "http"
 
                                             httpSettings = HttpObject().apply {
-                                                if (bean.host.isNotBlank()) {
+                                                if (bean.host.isNotEmpty()) {
                                                     host = bean.host.listByLineOrComma()
                                                 }
 
-                                                path = bean.path.takeIf { it.isNotBlank() } ?: "/"
+                                                path = bean.path.takeIf { it.isNotEmpty() } ?: "/"
                                             }
                                         }
                                         "quic" -> {
                                             quicSettings = QuicObject().apply {
-                                                security = bean.quicSecurity.takeIf { it.isNotBlank() }
+                                                security = bean.quicSecurity.takeIf { it.isNotEmpty() }
                                                     ?: "none"
                                                 key = bean.quicKey
                                                 header = QuicObject.HeaderObject().apply {
-                                                    type = bean.headerType.takeIf { it.isNotBlank() }
+                                                    type = bean.headerType.takeIf { it.isNotEmpty() }
                                                         ?: "none"
                                                 }
                                             }
@@ -839,33 +846,33 @@ fun buildV2RayConfig(
                                         }
                                         "meek" -> {
                                             meekSettings = MeekObject().apply {
-                                                if (bean.meekUrl.isNotBlank()) {
+                                                if (bean.meekUrl.isNotEmpty()) {
                                                     url = bean.meekUrl
                                                 }
                                             }
                                         }
                                         "httpupgrade" -> {
                                             httpupgradeSettings = HTTPUpgradeObject().apply {
-                                                if (bean.host.isNotBlank()) {
+                                                if (bean.host.isNotEmpty()) {
                                                     host = bean.host
                                                 }
-                                                if (bean.path.isNotBlank()) {
+                                                if (bean.path.isNotEmpty()) {
                                                     path = bean.path
                                                 }
                                             }
                                         }
                                         "splithttp" -> {
                                             splithttpSettings = SplitHTTPObject().apply {
-                                                if (bean.host.isNotBlank()) {
+                                                if (bean.host.isNotEmpty()) {
                                                     host = bean.host
                                                 }
-                                                if (bean.path.isNotBlank()) {
+                                                if (bean.path.isNotEmpty()) {
                                                     path = bean.path
                                                 }
                                                 if (bean.splithttpMode != "auto") {
                                                     mode = bean.splithttpMode
                                                 }
-                                                if (bean.splithttpExtra.isNotBlank()) {
+                                                if (bean.splithttpExtra.isNotEmpty()) {
                                                     JSONObject(bean.splithttpExtra).also { extra ->
                                                         // fuck RPRX `extra`
                                                         extra.getInteger("scMaxConcurrentPosts")?.also {
@@ -905,19 +912,19 @@ fun buildV2RayConfig(
                                         }
                                         "hysteria2" -> {
                                             hy2Settings = Hysteria2Object().apply {
-                                                if (bean.hy2Password.isNotBlank()) {
+                                                if (bean.hy2Password.isNotEmpty()) {
                                                     password = bean.hy2Password
                                                 }
                                                 congestion = Hysteria2Object.CongestionObject().apply {
                                                     down_mbps = bean.hy2DownMbps
                                                     up_mbps = bean.hy2UpMbps
                                                 }
-                                                if (bean.hy2ObfsPassword.isNotBlank()) {
+                                                /* if (bean.hy2ObfsPassword.isNotEmpty()) {
                                                     obfs = Hysteria2Object.OBFSObject().apply {
                                                         type = "salamander"
                                                         password = bean.hy2ObfsPassword
                                                     }
-                                                }
+                                                } */
                                             }
                                         }
                                         "mekya" -> {
@@ -933,11 +940,11 @@ fun buildV2RayConfig(
                                                     header = KcpObject.HeaderObject().apply {
                                                         type = bean.mekyaKcpHeaderType
                                                     }
-                                                    if (bean.mKcpSeed.isNotBlank()) {
+                                                    if (bean.mKcpSeed.isNotEmpty()) {
                                                         seed = bean.mekyaKcpSeed
                                                     }
                                                 }
-                                                if (bean.mekyaUrl.isNotBlank()) {
+                                                if (bean.mekyaUrl.isNotEmpty()) {
                                                     url = bean.mekyaUrl
                                                 }
                                                 // magic values from https://github.com/v2fly/v2ray-core/pull/3120
@@ -1008,7 +1015,7 @@ fun buildV2RayConfig(
                                         }
                                         peers = listOf(WireGuardOutboundConfigurationObject.WireGuardPeerObject().apply {
                                             publicKey = bean.peerPublicKey
-                                            if (bean.peerPreSharedKey.isNotBlank()) {
+                                            if (bean.peerPreSharedKey.isNotEmpty()) {
                                                 preSharedKey = bean.peerPreSharedKey
                                             }
                                             endpoint = joinHostPort(bean.serverAddress, bean.serverPort)
@@ -1050,14 +1057,14 @@ fun buildV2RayConfig(
                                     security = "tls"
                                     hy2Settings = Hysteria2Object().apply {
                                         use_udp_extension = true
-                                        if (bean.auth.isNotBlank()) {
+                                        if (bean.auth.isNotEmpty()) {
                                             password = bean.auth
                                         }
                                         congestion = Hysteria2Object.CongestionObject().apply {
                                             down_mbps = bean.downloadMbps
                                             up_mbps = bean.uploadMbps
                                         }
-                                        if (bean.obfs.isNotBlank()) {
+                                        if (bean.obfs.isNotEmpty()) {
                                             obfs = Hysteria2Object.OBFSObject().apply {
                                                 type = "salamander"
                                                 password = bean.obfs
@@ -1069,17 +1076,17 @@ fun buildV2RayConfig(
                                         }
                                     }
                                     tlsSettings = TLSObject().apply {
-                                        if (bean.sni.isNotBlank()) {
+                                        if (bean.sni.isNotEmpty()) {
                                             serverName = bean.sni
                                         }
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
                                         }
-                                        if (bean.caText.isNotBlank()) {
+                                        if (bean.caText.isNotEmpty()) {
                                             disableSystemRoot = true
                                             certificates = listOf(TLSObject.CertificateObject().apply {
                                                 usage = "verify"
-                                                certificate = bean.caText.split("\n").filter { it.isNotBlank() }
+                                                certificate = bean.caText.split("\n").filter { it.isNotEmpty() }
                                             })
                                         }
                                     }
@@ -1205,7 +1212,7 @@ fun buildV2RayConfig(
             if (isBalancer) {
                 val balancerBean = balancer()!!
                 val observatory = ObservatoryObject().apply {
-                    probeUrl = balancerBean.probeUrl.ifBlank {
+                    probeUrl = balancerBean.probeUrl.ifEmpty {
                         DataStore.connectionTestURL
                     }
                     if (balancerBean.probeInterval > 0) {
@@ -1233,7 +1240,7 @@ fun buildV2RayConfig(
                         }
                     }
                     strategy = StrategyObject().apply {
-                        type = balancerBean.strategy.takeIf { it.isNotBlank() } ?: "random"
+                        type = balancerBean.strategy.takeIf { it.isNotEmpty() } ?: "random"
                         when (type) {
                             "leastPing", "leastLoad" -> {
                                 settings = StrategyObject.strategyConfig().apply {
@@ -1302,7 +1309,7 @@ fun buildV2RayConfig(
                     }.toHashSet().toList()
                 }
 
-                if (rule.ssid.isNotBlank() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (rule.ssid.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (app.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         throw Alerts.RouteAlertException(
                             Alerts.ROUTE_ALERT_NEED_FINE_LOCATION_ACCESS, rule.displayName()
@@ -1332,34 +1339,34 @@ fun buildV2RayConfig(
                     }
                 }
 
-                if (rule.domains.isNotBlank()) {
+                if (rule.domains.isNotEmpty()) {
                     domain = rule.domains.listByLineOrComma()
                 }
-                if (rule.ip.isNotBlank()) {
+                if (rule.ip.isNotEmpty()) {
                     ip = rule.ip.listByLineOrComma()
                 }
-                if (rule.port.isNotBlank()) {
+                if (rule.port.isNotEmpty()) {
                     port = rule.port
                 }
-                if (rule.sourcePort.isNotBlank()) {
+                if (rule.sourcePort.isNotEmpty()) {
                     sourcePort = rule.sourcePort
                 }
-                if (rule.network.isNotBlank()) {
+                if (rule.network.isNotEmpty()) {
                     network = rule.network
                 }
-                if (rule.source.isNotBlank()) {
+                if (rule.source.isNotEmpty()) {
                     source = rule.source.listByLineOrComma()
                 }
-                if (rule.protocol.isNotBlank()) {
+                if (rule.protocol.isNotEmpty()) {
                     protocol = rule.protocol.listByLineOrComma()
                 }
-                if (rule.attrs.isNotBlank()) {
+                if (rule.attrs.isNotEmpty()) {
                     attrs = rule.attrs
                 }
-                if (rule.ssid.isNotBlank()) {
+                if (rule.ssid.isNotEmpty()) {
                     ssidList = rule.ssid.listByLineOrComma()
                 }
-                if (rule.networkType.isNotBlank()) {
+                if (rule.networkType.isNotEmpty()) {
                     networkType = rule.networkType
                 }
                 when {
@@ -1520,7 +1527,7 @@ fun buildV2RayConfig(
                     // let users provide them manually
                     bean.serverAddresses.listByLineOrComma().forEach {
                         when {
-                            it.isBlank() -> {}
+                            it.isEmpty() -> {}
                             it.isIpAddress() -> {
                                 bypassIP.add(it)
                             }
@@ -1553,12 +1560,12 @@ fun buildV2RayConfig(
 
         if (enableDnsRouting) {
             for (bypassRule in extraRules.filter { it.isBypassRule() }) {
-                if (bypassRule.domains.isNotBlank()) {
+                if (bypassRule.domains.isNotEmpty()) {
                     bypassDomain.addAll(bypassRule.domains.listByLineOrComma())
                 }
             }
             for (proxyRule in extraRules.filter { it.isProxyRule() }) {
-                if (proxyRule.domains.isNotBlank()) {
+                if (proxyRule.domains.isNotEmpty()) {
                     proxyDomain.addAll(proxyRule.domains.listByLineOrComma())
                 }
             }
@@ -1590,7 +1597,7 @@ fun buildV2RayConfig(
                         address = it
                         domains = proxyDomain.toList() // v2fly/v2ray-core#1558, v2fly/v2ray-core#1855
                         queryStrategy = remoteDnsQueryStrategy
-                        if (DataStore.ednsClientIp.isNotBlank()) {
+                        if (DataStore.ednsClientIp.isNotEmpty()) {
                             clientIp = DataStore.ednsClientIp
                         }
                         if (useFakeDns) {
@@ -1689,7 +1696,7 @@ fun buildV2RayConfig(
                     valueY = DnsObject.ServerObject().apply {
                         address = it
                         queryStrategy = remoteDnsQueryStrategy
-                        if (DataStore.ednsClientIp.isNotBlank()) {
+                        if (DataStore.ednsClientIp.isNotEmpty()) {
                             clientIp = DataStore.ednsClientIp
                         }
                         if (useFakeDns) {
@@ -1847,7 +1854,7 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
 
     val outbounds = try {
         config.getJSONArray("outbounds")?.filterIsInstance<JSONObject>()?.map { it ->
-            gson.fromJson(it.toString().takeIf { it.isNotBlank() } ?: "{}",
+            gson.fromJson(it.toString().takeIf { it.isNotEmpty() } ?: "{}",
                 OutboundObject::class.java)
         }?.toMutableList()
     } catch (e: JsonSyntaxException) {
@@ -1880,7 +1887,7 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
                 directOutbounds[0]
             }
         }
-        if (directOutbound.tag.isNullOrBlank()) {
+        if (directOutbound.tag.isNullOrEmpty()) {
             directOutbound.tag = TAG_DIRECT
             flushOutbounds = true
         }

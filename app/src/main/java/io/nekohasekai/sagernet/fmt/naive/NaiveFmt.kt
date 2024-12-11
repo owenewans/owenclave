@@ -48,7 +48,7 @@ fun parseNaive(link: String): NaiveBean {
 
 fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     val builder = Libcore.newURL(if (proxyOnly) proto else "naive+$proto")
-    if (sni.isNotBlank() && proxyOnly) {
+    if (sni.isNotEmpty() && proxyOnly) {
         builder.host = sni
     } else {
         builder.host = serverAddress
@@ -58,23 +58,23 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     } else {
         builder.port = serverPort
     }
-    if (username.isNotBlank()) {
+    if (username.isNotEmpty()) {
         builder.username = username
-        if (password.isNotBlank()) {
-            builder.password = password
-        }
+    }
+    if (password.isNotEmpty()) {
+        builder.password = password
     }
     if (!proxyOnly) {
-        if (extraHeaders.isNotBlank()) {
+        if (extraHeaders.isNotEmpty()) {
             builder.addQueryParameter("extra-headers", extraHeaders)
         }
-        if (name.isNotBlank()) {
+        if (name.isNotEmpty()) {
             builder.setRawFragment(name.urlSafe())
         }
         if (insecureConcurrency > 0) {
             builder.addQueryParameter("insecure-concurrency", "$insecureConcurrency")
         }
-        if (sni.isNotBlank()) {
+        if (sni.isNotEmpty()) {
             builder.addQueryParameter("sni", sni)
         }
     }
@@ -89,10 +89,10 @@ fun NaiveBean.buildNaiveConfig(port: Int): String {
         // The comma is used for delimiting proxies in a proxy chain.
         // It must be percent-encoded in other URL components.
         it["proxy"] = toUri(true).replace(",", "%2C")
-        if (extraHeaders.isNotBlank()) {
+        if (extraHeaders.isNotEmpty()) {
             it["extra-headers"] = extraHeaders.split("\n").joinToString("\r\n")
         }
-        if (sni.isNotBlank()) {
+        if (sni.isNotEmpty()) {
             if (!sni.isIpAddress()) {
                 it["host-resolver-rules"] = "MAP $sni $finalAddress"
             } else {

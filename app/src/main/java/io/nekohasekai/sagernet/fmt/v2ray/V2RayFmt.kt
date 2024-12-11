@@ -41,7 +41,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
     bean.serverPort = url.port
     bean.name = url.fragment
 
-    if (bean is VMessBean && url.password.isNotBlank()) {
+    if (bean is VMessBean && url.password.isNotEmpty()) {
         // https://github.com/v2fly/v2fly-github-io/issues/26
         var protocol = url.username
         bean.type = protocol
@@ -53,9 +53,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             protocol = protocol.substring(0, protocol.length - 4)
 
             url.queryParameter("tlsServerName")?.let {
-                if (it.isNotBlank()) {
-                    bean.sni = it
-                }
+                bean.sni = it
             }
         }
 
@@ -113,7 +111,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
 
         if (bean is TrojanBean) {
             bean.password = url.username
-            if (url.password.isNotBlank()) {
+            if (url.password.isNotEmpty()) {
                 // https://github.com/trojan-gfw/igniter/issues/318
                 bean.password += ":" + url.password
             }
@@ -331,20 +329,20 @@ fun parseV2RayN(link: String): VMessBean {
     val bean = VMessBean()
     val json = JSONObject(result)
 
-    bean.serverAddress = json.getStr("add") ?: ""
-    bean.serverPort = json.getInt("port") ?: 0
-    bean.encryption = json.getStr("scy") ?: ""
-    bean.uuid = json.getStr("id") ?: ""
-    bean.alterId = json.getInt("aid") ?: 0
+    bean.serverAddress = json.getStr("add")?.takeIf { it.isNotEmpty() }
+    bean.serverPort = json.getInt("port")?.takeIf { it > 0 }
+    bean.encryption = json.getStr("scy")?.takeIf { it.isNotEmpty() }
+    bean.uuid = json.getStr("id")?.takeIf { it.isNotEmpty() }
+    bean.alterId = json.getInt("aid")?.takeIf { it > 0 }
     bean.type = when (val net = json.getStr("net")) {
         "h2" -> "http"
         "xhttp" -> "splithttp"
         "tcp", "kcp", "ws", "http", "quic", "grpc", "httpupgrade", "splithttp" -> net
         else -> "tcp"
     }
-    val type = json.getStr("type")
-    val host = json.getStr("host") ?: ""
-    val path = json.getStr("path") ?: ""
+    val type = json.getStr("type")?.takeIf { it.isNotEmpty() }
+    val host = json.getStr("host")?.takeIf { it.isNotEmpty() }
+    val path = json.getStr("path")?.takeIf { it.isNotEmpty() }
 
     when (bean.type) {
         "tcp" -> {
@@ -403,16 +401,16 @@ fun parseV2RayN(link: String): VMessBean {
             bean.host = host
             bean.path = path
             type?.also {
-                if (it.isNotBlank() && it != "auto") {
+                if (it.isNotEmpty() && it != "auto") {
                     bean.splithttpMode = type
                 }
             }
         }
     }
 
-    bean.name = json.getStr("ps") ?: ""
-    bean.sni = json.getStr("sni") ?: bean.host
-    bean.alpn = json.getStr("alpn")?.split(",")?.joinToString("\n")
+    bean.name = json.getStr("ps")?.takeIf { it.isNotEmpty() }
+    bean.sni = json.getStr("sni")?.takeIf { it.isNotEmpty() } ?: bean.host
+    bean.alpn = json.getStr("alpn")?.takeIf { it.isNotEmpty() }?.split(",")?.joinToString("\n")
     // bad format from where?
     json.getStr("allowInsecure")?.let {
         if (it == "1" || it.lowercase() == "true") {
@@ -427,7 +425,7 @@ fun parseV2RayN(link: String): VMessBean {
         "tls", "reality" -> bean.security = security
         else -> bean.security = "none"
     }
-    bean.realityFingerprint = json.getStr("fp")
+    bean.realityFingerprint = json.getStr("fp")?.takeIf { it.isNotEmpty() }
     // bean.utlsFingerprint = ? // do not support this intentionally
 
     if (json.getInt("v", 2) < 2) {
@@ -530,30 +528,30 @@ fun StandardV2RayBean.toUri(): String? {
             if (headerType == "http") {
                 // invented by v2rayNG
                 builder.addQueryParameter("headerType", headerType)
-                if (host.isNotBlank()) {
+                if (host.isNotEmpty()) {
                     builder.addQueryParameter("host", host)
                 }
-                if (path.isNotBlank()) {
+                if (path.isNotEmpty()) {
                     builder.addQueryParameter("path", path)
                 }
             }
         }
         "kcp" -> {
-            if (headerType.isNotBlank() && headerType != "none") {
+            if (headerType.isNotEmpty() && headerType != "none") {
                 builder.addQueryParameter("headerType", headerType)
             }
-            if (mKcpSeed.isNotBlank()) {
+            if (mKcpSeed.isNotEmpty()) {
                 builder.addQueryParameter("seed", mKcpSeed)
             }
         }
         "ws" -> {
-            if (host.isNotBlank()) {
+            if (host.isNotEmpty()) {
                 builder.addQueryParameter("host", host)
             }
-            if (path.isNotBlank()) {
+            if (path.isNotEmpty()) {
                 builder.addQueryParameter("path", path)
             }
-            if (earlyDataHeaderName.isNotBlank()) {
+            if (earlyDataHeaderName.isNotEmpty()) {
                 // non-standard, invented by SagerNet and adopted by some other software
                 builder.addQueryParameter("eh", earlyDataHeaderName)
             }
@@ -563,24 +561,24 @@ fun StandardV2RayBean.toUri(): String? {
             }
         }
         "http", "httpupgrade" -> {
-            if (host.isNotBlank()) {
+            if (host.isNotEmpty()) {
                 builder.addQueryParameter("host", host)
             }
-            if (path.isNotBlank()) {
+            if (path.isNotEmpty()) {
                 builder.addQueryParameter("path", path)
             }
         }
         "splithttp" -> {
-            if (host.isNotBlank()) {
+            if (host.isNotEmpty()) {
                 builder.addQueryParameter("host", host)
             }
-            if (path.isNotBlank()) {
+            if (path.isNotEmpty()) {
                 builder.addQueryParameter("path", path)
             }
             if (splithttpMode != "auto") {
                 builder.addQueryParameter("mode", splithttpMode)
             }
-            if (splithttpExtra.isNotBlank()) {
+            if (splithttpExtra.isNotEmpty()) {
                 JSONObject(splithttpExtra).takeIf { !it.isEmpty() }?.also {
                     // fuck RPRX `extra`
                     builder.addQueryParameter("extra", it.toString())
@@ -588,22 +586,22 @@ fun StandardV2RayBean.toUri(): String? {
             }
         }
         "quic" -> {
-            if (headerType.isNotBlank() && headerType != "none") {
+            if (headerType.isNotEmpty() && headerType != "none") {
                 builder.addQueryParameter("headerType", headerType)
             }
-            if (quicSecurity.isNotBlank() && quicSecurity != "none") {
+            if (quicSecurity.isNotEmpty() && quicSecurity != "none") {
                 builder.addQueryParameter("quicSecurity", quicSecurity)
                 builder.addQueryParameter("key", quicKey)
             }
         }
         "grpc" -> {
-            if (grpcServiceName.isNotBlank()) {
+            if (grpcServiceName.isNotEmpty()) {
                 builder.addQueryParameter("serviceName", grpcServiceName)
             }
         }
         "meek" -> {
             // https://github.com/v2fly/v2ray-core/discussions/2638
-            if (meekUrl.isNotBlank()) {
+            if (meekUrl.isNotEmpty()) {
                 builder.addQueryParameter("url", meekUrl)
             }
         }
@@ -612,10 +610,10 @@ fun StandardV2RayBean.toUri(): String? {
             if (headerType != "none") {
                 builder.addQueryParameter("headerType", mekyaKcpHeaderType)
             }
-            if (mekyaKcpSeed.isNotBlank()) {
+            if (mekyaKcpSeed.isNotEmpty()) {
                 builder.addQueryParameter("seed", mekyaKcpSeed)
             }
-            if (mekyaUrl.isNotBlank()) {
+            if (mekyaUrl.isNotEmpty()) {
                 builder.addQueryParameter("url", mekyaUrl)
             }
         }
@@ -624,38 +622,38 @@ fun StandardV2RayBean.toUri(): String? {
     when (security) {
         "tls" -> {
             builder.addQueryParameter("security", security)
-            if (sni.isNotBlank()) {
+            if (sni.isNotEmpty()) {
                 builder.addQueryParameter("sni", sni)
             }
-            if (alpn.isNotBlank()) {
+            if (alpn.isNotEmpty()) {
                 builder.addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
             }
             if (allowInsecure) {
                 // bad format from where?
                 builder.addQueryParameter("allowInsecure", "1")
             }
-            if (this is VLESSBean && flow.isNotBlank()) {
+            if (this is VLESSBean && flow.isNotEmpty()) {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
             }
         }
         "reality" -> {
             builder.addQueryParameter("security", security)
-            if (sni.isNotBlank()) {
+            if (sni.isNotEmpty()) {
                 builder.addQueryParameter("sni", sni)
             }
-            if (realityPublicKey.isNotBlank()) {
+            if (realityPublicKey.isNotEmpty()) {
                 builder.addQueryParameter("pbk", realityPublicKey)
             }
-            if (realityShortId.isNotBlank()) {
+            if (realityShortId.isNotEmpty()) {
                 builder.addQueryParameter("sid", realityShortId)
             }
-            if (realitySpiderX.isNotBlank()) {
+            if (realitySpiderX.isNotEmpty()) {
                 builder.addQueryParameter("spx", realitySpiderX)
             }
-            if (realityFingerprint.isNotBlank()) {
+            if (realityFingerprint.isNotEmpty()) {
                 builder.addQueryParameter("fp", realityFingerprint)
             }
-            if (this is VLESSBean && flow.isNotBlank()) {
+            if (this is VLESSBean && flow.isNotEmpty()) {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
             }
         }
@@ -664,7 +662,7 @@ fun StandardV2RayBean.toUri(): String? {
         }
     }
 
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
 

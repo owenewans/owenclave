@@ -183,13 +183,13 @@ fun BrookBean.toUri(): String {
         "wss" -> {
             builder.host = "wssserver"
             Libcore.newURL("wss").apply {
-                host = sni.ifBlank { serverAddress }
+                host = sni.ifEmpty { serverAddress }
                 port = serverPort
                 path = wsPath
             }?.string?.let {
                 builder.addQueryParameter("wssserver", it)
             }
-            if (sni.isNotBlank()) {
+            if (sni.isNotEmpty()) {
                 builder.addQueryParameter("address", joinHostPort(serverAddress, serverPort))
             }
             if (withoutBrookProtocol) {
@@ -198,22 +198,22 @@ fun BrookBean.toUri(): String {
             if (insecure) {
                 builder.addQueryParameter("insecure", "true")
             }
-            if (tlsfingerprint.isNotBlank()) {
+            if (tlsfingerprint.isNotEmpty()) {
                 builder.addQueryParameter("tlsfingerprint", tlsfingerprint)
             }
-            if (fragment.isNotBlank()) {
+            if (fragment.isNotEmpty()) {
                 builder.addQueryParameter("fragment", fragment)
             }
         }
         "quic" -> {
             builder.host = "quicserver"
             Libcore.newURL("quic").apply {
-                host = sni.ifBlank { serverAddress }
+                host = sni.ifEmpty { serverAddress }
                 port = serverPort
             }?.string?.let {
                 builder.addQueryParameter("quicserver", it)
             }
-            if (sni.isNotBlank()) {
+            if (sni.isNotEmpty()) {
                 builder.addQueryParameter("address", joinHostPort(serverAddress, serverPort))
             }
             if (withoutBrookProtocol) {
@@ -236,7 +236,7 @@ fun BrookBean.toUri(): String {
     }
     builder.addQueryParameter("password", password)
 
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.addQueryParameter("name", name)
     }
     return builder.string
@@ -251,7 +251,7 @@ fun BrookBean.toInternalUri(): String {
             builder.addQueryParameter("wsserver", Libcore.newURL("ws").apply {
                 host = finalAddress
                 port = finalPort
-                if (wsPath.isNotBlank()) {
+                if (wsPath.isNotEmpty()) {
                     path = wsPath
                 }
             }.string)
@@ -262,9 +262,9 @@ fun BrookBean.toInternalUri(): String {
         "wss" -> {
             builder.host = "wssserver"
             builder.addQueryParameter("wssserver", Libcore.newURL("wss").apply {
-                host = sni.ifBlank { serverAddress }
+                host = sni.ifEmpty { serverAddress }
                 port = finalPort
-                if (wsPath.isNotBlank()) {
+                if (wsPath.isNotEmpty()) {
                     path = wsPath
                 }
             }.string)
@@ -274,10 +274,10 @@ fun BrookBean.toInternalUri(): String {
             if (insecure) {
                 builder.addQueryParameter("insecure", "true")
             }
-            if (tlsfingerprint.isNotBlank()) {
+            if (tlsfingerprint.isNotEmpty()) {
                 builder.addQueryParameter("tlsfingerprint", tlsfingerprint)
             }
-            if (fragment.isNotBlank()) {
+            if (fragment.isNotEmpty()) {
                 builder.addQueryParameter("fragment", fragment)
             }
             builder.addQueryParameter("address", joinHostPort(finalAddress, finalPort))
@@ -285,7 +285,7 @@ fun BrookBean.toInternalUri(): String {
         "quic" -> {
             builder.host = "quicserver"
             builder.addQueryParameter("quicserver", Libcore.newURL("quic").apply {
-                host = sni.ifBlank { serverAddress }
+                host = sni.ifEmpty { serverAddress }
                 port = finalPort
             }.string)
             if (withoutBrookProtocol) {

@@ -388,7 +388,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 encryption.setEntryValues(R.array.enc_method_value)
                 val sev = resources.getStringArray(R.array.enc_method_value)
                 if (encryption.value !in sev) {
-                    encryption.value = "aes-256-gcm"
+                    encryption.value = "none"
                 }
             }
             else -> {

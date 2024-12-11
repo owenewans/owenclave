@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
 
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 
@@ -38,10 +37,10 @@ public class VMessBean extends StandardV2RayBean {
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
 
-        alterId = alterId != null ? alterId : 0;
-        encryption = StrUtil.isNotBlank(encryption) ? encryption : "auto";
-        experimentalAuthenticatedLength = experimentalAuthenticatedLength != null ? experimentalAuthenticatedLength : false;
-        experimentalNoTerminationSignal = experimentalNoTerminationSignal != null ? experimentalNoTerminationSignal : false;
+        if (alterId == null) alterId = 0;
+        if (encryption == null) encryption = "auto";
+        if (experimentalAuthenticatedLength == null) experimentalAuthenticatedLength = false;
+        if (experimentalNoTerminationSignal == null) experimentalNoTerminationSignal = false;
     }
 
     @Override

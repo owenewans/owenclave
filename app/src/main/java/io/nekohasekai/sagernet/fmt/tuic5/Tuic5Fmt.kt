@@ -35,7 +35,7 @@ import libcore.Libcore
 fun parseTuic(server: String): AbstractBean {
     val link = Libcore.parseURL(server)
     link.queryParameter("version")?.let { version ->
-        if (version == "4" || link.password.isBlank()) {
+        if (version == "4" || link.password.isEmpty()) {
             return TuicBean().apply {
                 serverAddress = link.host
                 serverPort = link.port
@@ -64,7 +64,7 @@ fun parseTuic(server: String): AbstractBean {
                 link.queryParameter("disable_sni")?.let {
                     disableSNI = it == "1" || it == "true"
                 }
-                link.fragment.takeIf { !it.isNullOrBlank() }?.let {
+                link.fragment.takeIf { !it.isNullOrEmpty() }?.let {
                     name = it
                 }
             }
@@ -99,7 +99,7 @@ fun parseTuic(server: String): AbstractBean {
         link.queryParameter("disable_sni")?.let {
             disableSNI = it == "1" || it == "true"
         }
-        link.fragment.takeIf { !it.isNullOrBlank() }?.let {
+        link.fragment.takeIf { !it.isNullOrEmpty() }?.let {
             name = it
         }
     }
@@ -116,16 +116,16 @@ fun Tuic5Bean.toUri(): String {
 
     builder.addQueryParameter("congestion_control", congestionControl)
 
-    if (sni.isNotBlank()) {
+    if (sni.isNotEmpty()) {
         builder.addQueryParameter("sni", sni)
     }
-    if (alpn.isNotBlank()) {
+    if (alpn.isNotEmpty()) {
         builder.addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
     }
     if (disableSNI) {
         builder.addQueryParameter("disable_sni", "1")
     }
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
     builder.addQueryParameter("udp_relay-mode", udpRelayMode)
@@ -136,7 +136,7 @@ fun Tuic5Bean.toUri(): String {
 fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
     return JSONObject().also {
         it["relay"] = JSONObject().also {
-            if (sni.isNotBlank()) {
+            if (sni.isNotEmpty()) {
                 it["server"] = joinHostPort(sni, finalPort)
                 it["ip"] = finalAddress
             } else {
@@ -146,13 +146,13 @@ fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
             it["uuid"] = uuid
             it["password"] = password
 
-            if (caText.isNotBlank() && cacheFile != null) {
+            if (caText.isNotEmpty() && cacheFile != null) {
                 val caFile = cacheFile()
                 caFile.writeText(caText)
                 it["certificates"] = JSONArray().apply {
                     put(caFile.absolutePath)
                 }
-            } else if (DataStore.providerRootCA == RootCAProvider.SYSTEM && caText.isBlank()) {
+            } else if (DataStore.providerRootCA == RootCAProvider.SYSTEM && caText.isEmpty()) {
                 it["certificates"] = JSONArray().apply {
                     // https://github.com/maskedeken/tuic/commit/88e57f6e41ae8985edd8f620950e3f8e7d29e1cc
                     // workaround tuic can't load Android system root certificates without forking it
@@ -161,7 +161,7 @@ fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
             }
 
             it["udp_relay_mode"] = udpRelayMode
-            if (alpn.isNotBlank()) {
+            if (alpn.isNotEmpty()) {
                 it["alpn"] = JSONArray(alpn.listByLineOrComma())
             }
             it["congestion_control"] = congestionControl

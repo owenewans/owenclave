@@ -379,15 +379,15 @@ abstract class V2RayInstance(
                         commands.add(joinHostPort(LOCALHOST, port))
                         commands.add("--server")
                         commands.add(joinHostPort(bean.finalAddress, bean.finalPort))
-                        if (bean.sni.isNotBlank()) {
+                        if (bean.sni.isNotEmpty()) {
                             commands.add("--sni")
                             commands.add(bean.sni)
                         }
-                        if (bean.alpn.isNotBlank()) {
+                        if (bean.alpn.isNotEmpty()) {
                             commands.add("--alpn")
                             commands.add(bean.alpn)
                         }
-                        if (bean.password.isNotBlank()) {
+                        if (bean.password.isNotEmpty()) {
                             commands.add("--password")
                             commands.add(bean.password)
                         }

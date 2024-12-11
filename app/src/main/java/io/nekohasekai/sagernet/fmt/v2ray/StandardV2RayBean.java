@@ -23,7 +23,6 @@ import com.esotericsoftware.kryo.io.ByteBufferInput;
 import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import cn.hutool.core.lang.UUID;
-import cn.hutool.core.util.StrUtil;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.ktx.UUIDsKt;
 
@@ -82,55 +81,54 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
 
-        if (StrUtil.isBlank(uuid)) uuid = "";
+        if (uuid == null) uuid = "";
 
-        if (StrUtil.isBlank(type)) type = "tcp";
-        else if ("h2".equals(type)) type = "http";
+        if (type == null) type = "tcp";
 
-        if (StrUtil.isBlank(host)) host = "";
-        if (StrUtil.isBlank(path)) path = "";
-        if (StrUtil.isBlank(headerType)) headerType = "none";
-        if (StrUtil.isBlank(mKcpSeed)) mKcpSeed = "";
-        if (StrUtil.isBlank(quicSecurity)) quicSecurity = "none";
-        if (StrUtil.isBlank(quicKey)) quicKey = "";
-        if (StrUtil.isBlank(meekUrl)) meekUrl = "";
-        if (StrUtil.isBlank(splithttpMode)) splithttpMode = "auto";
-        if (StrUtil.isBlank(splithttpExtra)) splithttpExtra = "";
+        if (host == null) host = "";
+        if (path == null) path = "";
+        if (headerType == null) headerType = "none";
+        if (mKcpSeed == null) mKcpSeed = "";
+        if (quicSecurity == null) quicSecurity = "none";
+        if (quicKey == null) quicKey = "";
+        if (meekUrl == null) meekUrl = "";
+        if (splithttpMode == null) splithttpMode = "auto";
+        if (splithttpExtra == null) splithttpExtra = "";
 
-        if (StrUtil.isBlank(security)) security = "none";
-        if (StrUtil.isBlank(sni)) sni = "";
-        if (StrUtil.isBlank(alpn)) alpn = "";
+        if (security == null) security = "none";
+        if (sni == null) sni = "";
+        if (alpn == null) alpn = "";
 
-        if (StrUtil.isBlank(grpcServiceName)) grpcServiceName = "";
+        if (grpcServiceName == null) grpcServiceName = "";
         if (wsMaxEarlyData == null) wsMaxEarlyData = 0;
         if (wsUseBrowserForwarder == null) wsUseBrowserForwarder = false;
         if (shUseBrowserForwarder == null) shUseBrowserForwarder = false;
-        if (StrUtil.isBlank(certificates)) certificates = "";
-        if (StrUtil.isBlank(pinnedPeerCertificateChainSha256)) pinnedPeerCertificateChainSha256 = "";
-        if (StrUtil.isBlank(earlyDataHeaderName)) earlyDataHeaderName = "";
+        if (certificates == null) certificates = "";
+        if (pinnedPeerCertificateChainSha256 == null) pinnedPeerCertificateChainSha256 = "";
+        if (earlyDataHeaderName == null) earlyDataHeaderName = "";
         if (allowInsecure == null) allowInsecure = false;
-        if (StrUtil.isBlank(packetEncoding)) packetEncoding = "none";
-        if (StrUtil.isBlank(utlsFingerprint)) utlsFingerprint = "";
-        if (StrUtil.isBlank(echConfig)) echConfig = "";
-        if (StrUtil.isBlank(echDohServer)) echDohServer = "";
+        if (packetEncoding == null) packetEncoding = "none";
+        if (utlsFingerprint == null) utlsFingerprint = "";
+        if (echConfig == null) echConfig = "";
+        if (echDohServer == null) echDohServer = "";
 
-        if (StrUtil.isBlank(realityPublicKey)) realityPublicKey = "";
-        if (StrUtil.isBlank(realityShortId)) realityShortId = "";
-        if (StrUtil.isBlank(realitySpiderX)) realitySpiderX = "";
-        if (StrUtil.isBlank(realityFingerprint)) realityFingerprint = "chrome";
+        if (realityPublicKey == null) realityPublicKey = "";
+        if (realityShortId == null) realityShortId = "";
+        if (realitySpiderX == null) realitySpiderX = "";
+        if (realityFingerprint == null) realityFingerprint = "chrome";
 
         if (hy2DownMbps == null) hy2DownMbps = 0;
         if (hy2UpMbps == null) hy2UpMbps = 0;
-        if (StrUtil.isBlank(hy2Password)) hy2Password = "";
-        if (StrUtil.isBlank(hy2ObfsPassword)) hy2ObfsPassword = "";
+        if (hy2Password == null) hy2Password = "";
+        if (hy2ObfsPassword == null) hy2ObfsPassword = "";
 
-        if (StrUtil.isBlank(mekyaKcpSeed)) mekyaKcpSeed = "";
-        if (StrUtil.isBlank(mekyaKcpHeaderType)) mekyaKcpHeaderType = "none";
-        if (StrUtil.isBlank(mekyaUrl)) mekyaUrl = "";
+        if (mekyaKcpSeed == null) mekyaKcpSeed = "";
+        if (mekyaKcpHeaderType == null) mekyaKcpHeaderType = "none";
+        if (mekyaUrl == null) mekyaUrl = "";
 
         if (mux == null) mux = false;
         if (muxConcurrency == null) muxConcurrency = 8;
-        if (StrUtil.isBlank(muxPacketEncoding)) muxPacketEncoding = "none";
+        if (muxPacketEncoding == null) muxPacketEncoding = "none";
 
     }
 

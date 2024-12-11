@@ -36,19 +36,19 @@ fun JuicityBean.toUri(): String {
     builder.port = serverPort
     builder.username = uuid
     builder.password = password
-    if (congestionControl.isNotBlank()) {
+    if (congestionControl.isNotEmpty()) {
         builder.addQueryParameter("congestion_control", congestionControl)
     }
     if (allowInsecure) {
         builder.addQueryParameter("allow_insecure", "1")
     }
-    if (sni.isNotBlank()) {
+    if (sni.isNotEmpty()) {
         builder.addQueryParameter("sni", sni)
     }
-    if (pinnedCertChainSha256.isNotBlank()) {
+    if (pinnedCertChainSha256.isNotEmpty()) {
         builder.addQueryParameter("pinned_certchain_sha256", pinnedCertChainSha256)
     }
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
     return builder.string
@@ -61,7 +61,7 @@ fun JuicityBean.buildJuicityConfig(port: Int): String {
         it["uuid"] = uuid
         it["password"] = password
         it["congestion_control"] = congestionControl
-        if (sni.isNotBlank()) {
+        if (sni.isNotEmpty()) {
             it["sni"] = sni
         } else {
             it["sni"] = serverAddress
@@ -69,7 +69,7 @@ fun JuicityBean.buildJuicityConfig(port: Int): String {
         if (allowInsecure) {
             it["allow_insecure"] = allowInsecure
         }
-        if (pinnedCertChainSha256.isNotBlank()) {
+        if (pinnedCertChainSha256.isNotEmpty()) {
             it["pinned_certchain_sha256"] = pinnedCertChainSha256
         }
         if (DataStore.enableLog) {

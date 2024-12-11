@@ -66,11 +66,11 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
             serverPorts = it
         }
 
-        if (link.username.isNotBlank()) {
+        if (link.username.isNotEmpty()) {
             auth = link.username
         }
 
-        if (link.password.isNotBlank()) {
+        if (link.password.isNotEmpty()) {
             auth += ":" + link.password
         }
 
@@ -105,7 +105,7 @@ fun Hysteria2Bean.toUri(): String? {
         serverPorts.toInt()
     }
 
-    if (auth.isNotBlank()) {
+    if (auth.isNotEmpty()) {
         val a = auth.split(":")
         if (a.size == 2) {
             // https://github.com/apernet/hysteria/blob/c7545cc870e5cc62a187ad03a083920e6bef049f/app/cmd/client.go#L308-L316
@@ -116,20 +116,20 @@ fun Hysteria2Bean.toUri(): String? {
         }
     }
 
-    if (sni.isNotBlank()) {
+    if (sni.isNotEmpty()) {
         builder.addQueryParameter("sni", sni)
     }
     if (allowInsecure) {
         builder.addQueryParameter("insecure", "1")
     }
-    if (pinSHA256.isNotBlank()) {
+    if (pinSHA256.isNotEmpty()) {
         builder.addQueryParameter("pinSHA256", pinSHA256)
     }
-    if (obfs.isNotBlank()) {
+    if (obfs.isNotEmpty()) {
         builder.addQueryParameter("obfs", "salamander")
         builder.addQueryParameter("obfs-password", obfs)
     }
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
     builder.rawPath = "/"
@@ -162,7 +162,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
 
     val confObject: MutableMap<String, Any> = HashMap()
     confObject["server"] = hostPort
-    if (auth.isNotBlank()) {
+    if (auth.isNotEmpty()) {
         confObject["auth"] = auth
     }
 
@@ -172,19 +172,19 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     var servername = sni
     if (!usePortHopping) {
-        if (servername.isBlank()) {
+        if (servername.isEmpty()) {
             servername = serverAddress
         }
     }
-    if (servername.isNotBlank()) {
+    if (servername.isNotEmpty()) {
         tlsObject["sni"] = servername
     }
-    if (caText.isNotBlank() && cacheFile != null) {
+    if (caText.isNotEmpty() && cacheFile != null) {
         val caFile = cacheFile()
         caFile.writeText(caText)
         tlsObject["ca"] = caFile.absolutePath
     }
-    if (pinSHA256.isNotBlank()) {
+    if (pinSHA256.isNotEmpty()) {
         tlsObject["pinSHA256"] = pinSHA256
     }
     if (tlsObject.isNotEmpty()) {
@@ -200,7 +200,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     }
     confObject["transport"] = transportObject
 
-    if (obfs.isNotBlank()) {
+    if (obfs.isNotEmpty()) {
         val obfsObject: MutableMap<String, Any> = HashMap()
         obfsObject["type"] = "salamander"
         val salamanderObject: MutableMap<String, Any> = HashMap()

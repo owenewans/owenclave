@@ -43,7 +43,7 @@ fun parseHysteria(url: String): HysteriaBean {
         link.queryParameter("peer")?.also {
             sni = it
         }
-        link.queryParameter("auth")?.takeIf { it.isNotBlank() }?.also {
+        link.queryParameter("auth")?.also {
             authPayloadType = HysteriaBean.TYPE_STRING
             authPayload = it
         }
@@ -80,10 +80,10 @@ fun HysteriaBean.toUri(): String? {
     if (serverPorts.isValidHysteriaMultiPort()) {
         builder.addQueryParameter("mport", serverPorts)
     }
-    if (sni.isNotBlank()) {
+    if (sni.isNotEmpty()) {
         builder.addQueryParameter("peer", sni)
     }
-    if (authPayload.isNotBlank()) {
+    if (authPayload.isNotEmpty()) {
         builder.addQueryParameter("auth", authPayload)
     }
     if (uploadMbps != 0) {
@@ -92,10 +92,10 @@ fun HysteriaBean.toUri(): String? {
     if (downloadMbps != 0) {
         builder.addQueryParameter("downmbps", "$downloadMbps")
     }
-    if (alpn.isNotBlank()) {
+    if (alpn.isNotEmpty()) {
         builder.addQueryParameter("alpn", alpn)
     }
-    if (obfuscation.isNotBlank()) {
+    if (obfuscation.isNotEmpty()) {
         builder.addQueryParameter("obfs", "xplus")
         builder.addQueryParameter("obfsParam", obfuscation)
     }
@@ -110,7 +110,7 @@ fun HysteriaBean.toUri(): String? {
     if (protocol == HysteriaBean.PROTOCOL_FAKETCP) {
         builder.addQueryParameter("protocol", "faketcp")
     }
-    if (name.isNotBlank()) {
+    if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())
     }
     return builder.string
@@ -161,15 +161,15 @@ fun HysteriaBean.buildHysteriaConfig(port: Int, cacheFile: (() -> File)?): Strin
         }
         var servername = sni
         if (!usePortHopping && protocol != HysteriaBean.PROTOCOL_FAKETCP) {
-            if (servername.isBlank()) {
+            if (servername.isEmpty()) {
                 servername = serverAddress
             }
         }
-        if (servername.isNotBlank()) {
+        if (servername.isNotEmpty()) {
             it["server_name"] = servername
         }
-        if (alpn.isNotBlank()) it["alpn"] = alpn
-        if (caText.isNotBlank() && cacheFile != null) {
+        if (alpn.isNotEmpty()) it["alpn"] = alpn
+        if (caText.isNotEmpty() && cacheFile != null) {
             val caFile = cacheFile()
             caFile.writeText(caText)
             it["ca"] = caFile.absolutePath
