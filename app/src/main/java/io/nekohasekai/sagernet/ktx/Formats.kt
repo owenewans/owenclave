@@ -70,7 +70,8 @@ fun parseProxies(text: String): List<AbstractBean> {
             }.onFailure {
                 Logs.w(it)
             }
-        } else if (startsWith("socks://") || startsWith("socks4://") || startsWith("socks4a://") || startsWith("socks5://")) {
+        } else if (startsWith("socks://") || startsWith("socks4://") || startsWith("socks4a://") ||
+            startsWith("socks5://") || startsWith("socks5h://")) {
             Logs.d("Try parse socks link: $this")
             runCatching {
                 entities.add(parseSOCKS(this))

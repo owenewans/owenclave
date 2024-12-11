@@ -61,7 +61,7 @@ public class BrookBean extends AbstractBean {
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(password);
-        output.writeBoolean(udpovertcp);
+        output.writeBoolean(udpovertcp); // FIXME: move it to the correct place on the next bean version bump
         switch (protocol) {
             case "ws":
                 output.writeString(wsPath);

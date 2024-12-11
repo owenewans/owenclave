@@ -44,6 +44,9 @@ fun parseBrook(text: String): AbstractBean {
             link.queryParameter("password")?.let {
                 bean.password = it
             }
+            link.queryParameter("udpovertcp")?.let {
+                bean.udpovertcp = it == "true"
+            }
         }
         "wsserver" -> {
             bean as BrookBean
@@ -67,11 +70,8 @@ fun parseBrook(text: String): AbstractBean {
             link.queryParameter("password")?.let {
                 bean.password = it
             }
-            if (link.queryParameter("udpovertcp") == "true") {
-                bean.udpovertcp = true
-            }
-            if (link.queryParameter("withoutBrookProtocol") == "true") {
-                bean.withoutBrookProtocol = true
+            link.queryParameter("withoutBrookProtocol")?.let {
+                bean.withoutBrookProtocol = it == "true"
             }
         }
         "wssserver" -> {
@@ -97,14 +97,11 @@ fun parseBrook(text: String): AbstractBean {
             link.queryParameter("password")?.let {
                 bean.password = it
             }
-            if (link.queryParameter("udpovertcp") == "true") {
-                bean.udpovertcp = true
+            link.queryParameter("withoutBrookProtocol")?.let {
+                bean.withoutBrookProtocol = it == "true"
             }
-            if (link.queryParameter("withoutBrookProtocol") == "true") {
-                bean.withoutBrookProtocol = true
-            }
-            if (link.queryParameter("insecure") == "true") {
-                bean.insecure = true
+            link.queryParameter("insecure")?.let {
+                bean.insecure = it == "true"
             }
             link.queryParameter("tlsfingerprint")?.let {
                 bean.tlsfingerprint = it
@@ -135,14 +132,14 @@ fun parseBrook(text: String): AbstractBean {
             link.queryParameter("password")?.let {
                 bean.password = it
             }
-            if (link.queryParameter("withoutBrookProtocol") == "true") {
-                bean.withoutBrookProtocol = true
+            link.queryParameter("withoutBrookProtocol")?.let {
+                bean.withoutBrookProtocol = it == "true"
             }
-            if (link.queryParameter("insecure") == "true") {
-                bean.insecure = true
+            link.queryParameter("insecure")?.let {
+                bean.insecure = it == "true"
             }
-            if (link.queryParameter("udpoverstream") == "true") {
-                bean.udpoverstream = true
+            link.queryParameter("udpoverstream")?.let {
+                bean.udpoverstream = it == "true"
             }
         }
         "socks5" -> {
@@ -232,15 +229,14 @@ fun BrookBean.toUri(): String {
         else -> {
             builder.host = "server"
             builder.addQueryParameter("server", joinHostPort(serverAddress, serverPort))
+            if (udpovertcp) {
+                builder.addQueryParameter("udpovertcp", "true")
+            }
         }
     }
-    if (password.isNotEmpty()) {
-        builder.addQueryParameter("password", password)
-    }
-    if (udpovertcp) {
-        builder.addQueryParameter("udpovertcp", "true")
-    }
-    if (name.isNotEmpty()) {
+    builder.addQueryParameter("password", password)
+
+    if (name.isNotBlank()) {
         builder.addQueryParameter("name", name)
     }
     return builder.string
@@ -255,7 +251,7 @@ fun BrookBean.toInternalUri(): String {
             builder.addQueryParameter("wsserver", Libcore.newURL("ws").apply {
                 host = finalAddress
                 port = finalPort
-                if (wsPath.isNotEmpty()) {
+                if (wsPath.isNotBlank()) {
                     path = wsPath
                 }
             }.string)
@@ -268,7 +264,7 @@ fun BrookBean.toInternalUri(): String {
             builder.addQueryParameter("wssserver", Libcore.newURL("wss").apply {
                 host = sni.ifBlank { serverAddress }
                 port = finalPort
-                if (wsPath.isNotEmpty()) {
+                if (wsPath.isNotBlank()) {
                     path = wsPath
                 }
             }.string)
@@ -306,16 +302,11 @@ fun BrookBean.toInternalUri(): String {
         else -> {
             builder.host = "server"
             builder.addQueryParameter("server", joinHostPort(finalAddress, finalPort))
+            if (udpovertcp) {
+                builder.addQueryParameter("udpovertcp", "true")
+            }
         }
     }
-    if (password.isNotBlank()) {
-        builder.addQueryParameter("password", password)
-    }
-    if (udpovertcp) {
-        builder.addQueryParameter("udpovertcp", "true")
-    }
-    if (name.isNotBlank()) {
-        builder.addQueryParameter("name", name)
-    }
+    builder.addQueryParameter("password", password)
     return builder.string
 }

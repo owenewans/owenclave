@@ -76,7 +76,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
     lateinit var tlsfingerprint: SimpleMenuPreference
     lateinit var fragment: EditTextPreference
     lateinit var sni: EditTextPreference
+    lateinit var udpovertcp: SwitchPreference
     lateinit var udpoverstream: SwitchPreference
+    lateinit var withoutBrookProtocol: SwitchPreference
 
     override fun PreferenceFragmentCompat.createPreferences(
         savedInstanceState: Bundle?,
@@ -98,7 +100,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         tlsfingerprint = findPreference(Key.SERVER_BROOK_TLS_FINGERPRINT)!!
         fragment = findPreference(Key.SERVER_BROOK_FRAGMENT)!!
         sni = findPreference(Key.SERVER_SNI)!!
+        udpovertcp = findPreference(Key.SERVER_BROOK_UDP_OVER_TCP)!!
         udpoverstream = findPreference(Key.SERVER_BROOK_UDP_OVER_STREAM)!!
+        withoutBrookProtocol = findPreference(Key.SERVER_WITHOUT_BROOK_PROTOCOL)!!
 
         if (protocol.value !in protocolValue) {
             protocol.value = protocolValue[0]
@@ -117,7 +121,9 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         tlsfingerprint.isVisible = value == "wss"
         fragment.isVisible = value == "wss"
         sni.isVisible = value == "wss" || value == "quic"
+        udpovertcp.isVisible = value == ""
         udpoverstream.isVisible = value == "quic"
+        withoutBrookProtocol.isVisible = value == "ws" || value == "wss" || value == "quic"
     }
 
 }

@@ -36,7 +36,7 @@ fun parseNaive(link: String): NaiveBean {
         it.proto = proto
     }.apply {
         serverAddress = url.host
-        serverPort = url.port
+        serverPort = url.port.takeIf { it > 0 } ?: 443
         username = url.username
         password = url.password
         extraHeaders = url.queryParameter("extra-headers")?.unUrlSafe()?.replace("\r\n", "\n")

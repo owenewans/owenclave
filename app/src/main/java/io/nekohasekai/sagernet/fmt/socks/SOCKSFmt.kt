@@ -19,28 +19,39 @@
 
 package io.nekohasekai.sagernet.fmt.socks
 
-import cn.hutool.core.codec.Base64
+import io.nekohasekai.sagernet.ktx.decodeBase64UrlSafe
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.unUrlSafe
 import io.nekohasekai.sagernet.ktx.urlSafe
 import libcore.Libcore
 
 fun parseSOCKS(link: String): SOCKSBean {
-    if (!link.substringAfter("://").contains(":")) {
+    val url = Libcore.parseURL(link)
+    if (url.port == 0 && url.username.isEmpty() && url.password.isEmpty() &&
+        url.host.decodeBase64UrlSafe().contains(":")) {
         // v2rayN shit format
-        val url = Libcore.parseURL(link)
+        val url1 = Libcore.parseURL("socks://" + url.host.decodeBase64UrlSafe())
+        return SOCKSBean().apply {
+            serverAddress = url1.host
+            serverPort = url1.port
+            username = url1.username.takeIf { it != "null" } ?: ""
+            password = url1.password.takeIf { it != "null" } ?: ""
+            if (link.contains("#")) {
+                name = link.substringAfter("#").unUrlSafe()
+            }
+        }
+    } else if (url.password.isEmpty() && url.username.decodeBase64UrlSafe().contains(":")) {
+        // new v2rayNG format?
         return SOCKSBean().apply {
             serverAddress = url.host
             serverPort = url.port
-            username = url.username.takeIf { it != "null" } ?: ""
-            password = url.password.takeIf { it != "null" } ?: ""
+            username = url.username.decodeBase64UrlSafe().substringBefore(":")
+            password = url.username.decodeBase64UrlSafe().substringAfter(":")
             if (link.contains("#")) {
                 name = link.substringAfter("#").unUrlSafe()
             }
         }
     } else {
-        val url = Libcore.parseURL(link)
-
         return SOCKSBean().apply {
             protocol = when {
                 link.startsWith("socks4://") -> SOCKSBean.PROTOCOL_SOCKS4
@@ -48,10 +59,16 @@ fun parseSOCKS(link: String): SOCKSBean {
                 else -> SOCKSBean.PROTOCOL_SOCKS5
             }
             serverAddress = url.host
-            serverPort = url.port
+            serverPort = url.port.takeIf { it > 0 } ?: 1080
             username = url.username
             password = url.password
             name = url.fragment
+            url.queryParameter("tls")?.takeIf { it == "true" || it == "1" }?.let {
+                // non-standard
+                url.queryParameter("sni")?.let {
+                    sni = it
+                }
+            }
         }
     }
 }
@@ -70,21 +87,5 @@ fun SOCKSBean.toUri(): String {
     }
     if (!name.isNullOrBlank()) builder.setRawFragment(name.urlSafe())
     return builder.string
-
-}
-
-fun SOCKSBean.toV2rayN(): String {
-
-    var link = ""
-    if (username.isNotBlank()) {
-        link += username.urlSafe() + ":" + password.urlSafe() + "@"
-    }
-    link += "$serverAddress:$serverPort"
-    link = "socks://" + Base64.encode(link)
-    if (name.isNotBlank()) {
-        link += "#" + name.urlSafe()
-    }
-
-    return link
 
 }
