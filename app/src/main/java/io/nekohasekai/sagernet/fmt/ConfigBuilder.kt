@@ -1492,9 +1492,9 @@ fun buildV2RayConfig(
                 protocol = "dokodemo-door"
                 settings = LazyInboundConfigurationObject(this,
                     DokodemoDoorInboundConfigurationObject().apply {
-                        address = "1.0.0.1" // FIXME
+                        address = "127.0.0.1" // placeholder, all queries are handled internally
                         network = "tcp,udp"
-                        port = 53
+                        port = 0 // placeholder, all queries are handled internally
                     })
 
             })
@@ -1506,22 +1506,6 @@ fun buildV2RayConfig(
             settings = LazyOutboundConfigurationObject(this,
                 DNSOutboundConfigurationObject().apply {
                     userLevel = 1
-                    address = "1.0.0.1" // FIXME
-                    port = 53
-                    var dns = remoteDns.first()
-                    if (!dns.contains("://")) dns = "udp://$dns"
-                    val uri = Uri.parse(dns)
-                    uri.scheme?.also {
-                        if (it.startsWith("tcp") || it.startsWith("https") || it.startsWith("tls")) {
-                            network = "tcp"
-                        }
-                        if (it.startsWith("tcp") || it.startsWith("udp")) {
-                            address = uri.host
-                            if (uri.port > 0) {
-                                port = uri.port
-                            }
-                        }
-                    }
                 })
             proxySettings = OutboundObject.ProxySettingsObject().apply {
                 tag = tagProxy // won't fix: v2ray does not support using a balancer tag here

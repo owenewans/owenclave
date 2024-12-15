@@ -22,6 +22,7 @@ import android.net.DnsResolver
 import android.net.Network
 import android.os.Build
 import android.os.CancellationSignal
+import androidx.annotation.RequiresApi
 import cn.hutool.core.lang.Validator
 import io.nekohasekai.sagernet.ktx.tryResume
 import io.nekohasekai.sagernet.ktx.tryResumeWithException
@@ -35,11 +36,11 @@ import kotlin.coroutines.suspendCoroutine
 
 interface LocalResolver : LocalResolver {
 
-    companion object {
-        const val RCODE_NXDOMAIN = 3
-    }
-
     var underlyingNetwork: Network?
+
+    override fun supportExchange(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+    }
 
     override fun lookupIP(network: String, domain: String): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -115,6 +116,39 @@ interface LocalResolver : LocalResolver {
                 return ""
             }
             return filtered.joinToString(",")
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    override fun exchange(message: ByteArray): ByteArray {
+        return runBlocking {
+            suspendCoroutine { continuation ->
+                val signal = CancellationSignal()
+                val callback = object : DnsResolver.Callback<ByteArray> {
+                    override fun onAnswer(answer: ByteArray, rcode: Int) {
+                        when {
+                            answer.isNotEmpty() -> {
+                                continuation.tryResume(answer)
+                            }
+                            else -> {
+                                continuation.tryResumeWithException(Exception("rcode $rcode"))
+                            }
+                        }
+                    }
+
+                    override fun onError(error: DnsResolver.DnsException) {
+                        continuation.tryResumeWithException(error)
+                    }
+                }
+                DnsResolver.getInstance().rawQuery(
+                    underlyingNetwork,
+                    message,
+                    DnsResolver.FLAG_NO_RETRY,
+                    Dispatchers.IO.asExecutor(),
+                    signal,
+                    callback
+                )
+            }
         }
     }
 }
