@@ -28,7 +28,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.23.3
+          go-version: 1.23.4
           cache-dependency-path: "**/go.sum"
       - name: LibCore Cache
         id: cache
@@ -100,7 +100,7 @@ jobs:
           path: artifacts
       - name: Release
         run: |
-          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.16.2/ghr_v0.16.2_linux_amd64.tar.gz
+          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.17.0/ghr_v0.17.0_linux_amd64.tar.gz
           tar -xvf ghr.tar.gz
           mv ghr*linux_amd64/ghr .
           mkdir apks
