@@ -53,6 +53,7 @@ import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
+import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.BrowserDialerObject
@@ -875,11 +876,6 @@ fun buildV2RayConfig(
                                                 if (bean.splithttpExtra.isNotEmpty()) {
                                                     JSONObject(bean.splithttpExtra).also { extra ->
                                                         // fuck RPRX `extra`
-                                                        extra.getInteger("scMaxConcurrentPosts")?.also {
-                                                            scMaxConcurrentPosts = it.toString()
-                                                        } ?: extra.getString("scMaxConcurrentPosts")?.also {
-                                                            scMaxConcurrentPosts = it
-                                                        }
                                                         extra.getInteger("scMaxEachPostBytes")?.also {
                                                             scMaxEachPostBytes = it.toString()
                                                         } ?: extra.getString("scMaxEachPostBytes")?.also {
@@ -1091,6 +1087,26 @@ fun buildV2RayConfig(
                                         }
                                     }
                                 }
+                            } else if (bean is Tuic5Bean) {
+                                protocol = "tuic"
+                                settings = LazyOutboundConfigurationObject(this,
+                                    V2RayConfig.TUICOutboundConfigurationObject().apply {
+                                        address = bean.serverAddress
+                                        port = bean.serverPort
+                                        uuid = bean.uuid
+                                        password = bean.password
+                                        congestionControl = bean.congestionControl
+                                        udpRelayMode = bean.udpRelayMode
+                                        if (bean.zeroRTTHandshake) zeroRTTHandshake = bean.zeroRTTHandshake
+                                        if (bean.sni.isNotEmpty()) serverName = bean.sni
+                                        if (bean.alpn.isNotEmpty())  alpn = bean.alpn.listByLineOrComma()
+                                        if (bean.caText.isNotEmpty()) {
+                                            certificate = bean.caText.split("\n").filter { it.isNotEmpty() }
+                                        }
+                                        if (bean.disableSNI) disableSNI = bean.disableSNI
+                                        if (bean.allowInsecure) allowInsecure = bean.allowInsecure
+                                    }
+                                )
                             }
                             if (bean is StandardV2RayBean && bean.mux) {
                                 mux = OutboundObject.MuxObject().apply {

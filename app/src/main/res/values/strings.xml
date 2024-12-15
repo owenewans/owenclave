@@ -539,4 +539,5 @@
     <string name="splithttp_mode">Mode</string>
     <string name="splithttp_extra" translatable="false">Extra</string>
     <string name="backup_all_profiles">Backup all profiles</string>
+    <string name="tuic_v5_provider">TUIC v5 provider</string>
 </resources>

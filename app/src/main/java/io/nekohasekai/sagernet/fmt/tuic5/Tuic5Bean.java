@@ -40,6 +40,7 @@ public class Tuic5Bean extends AbstractBean {
     public Boolean zeroRTTHandshake;
     public Integer mtu;
     public String sni;
+    public Boolean allowInsecure;
 
     @Override
     public void initializeDefaultValues() {
@@ -54,11 +55,12 @@ public class Tuic5Bean extends AbstractBean {
         if (zeroRTTHandshake == null) zeroRTTHandshake = false;
         if (mtu == null) mtu = 1500;
         if (sni == null) sni = "";
+        if (allowInsecure == null) allowInsecure = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeString(password);
         output.writeString(caText);
@@ -70,6 +72,7 @@ public class Tuic5Bean extends AbstractBean {
         output.writeInt(mtu);
         output.writeString(sni);
         output.writeString(uuid);
+        output.writeBoolean(allowInsecure);
     }
 
     @Override
@@ -86,6 +89,9 @@ public class Tuic5Bean extends AbstractBean {
         mtu = input.readInt();
         sni = input.readString();
         uuid = input.readString();
+        if (version >= 1) {
+            allowInsecure = input.readBoolean();
+        }
     }
 
     @Override
@@ -104,6 +110,7 @@ public class Tuic5Bean extends AbstractBean {
         bean.caText = caText;
         bean.zeroRTTHandshake = zeroRTTHandshake;
         bean.mtu = mtu;
+        bean.allowInsecure = allowInsecure;
     }
 
     @NotNull

@@ -415,6 +415,9 @@ data class ProxyEntity(
         if (bean is Hysteria2Bean) {
             return DataStore.providerHysteria2 != Hysteria2Provider.V2RAY
         }
+        if (bean is Tuic5Bean) {
+            return DataStore.providerTuic5 != Hysteria2Provider.V2RAY
+        }
         return when (type) {
             TYPE_TROJAN_GO -> true
             TYPE_NAIVE -> true
@@ -422,7 +425,6 @@ data class ProxyEntity(
             TYPE_BROOK -> true
             TYPE_MIERU -> true
             TYPE_TUIC -> true
-            TYPE_TUIC5 -> true
             TYPE_SHADOWTLS -> true
             TYPE_JUICITY -> true
 

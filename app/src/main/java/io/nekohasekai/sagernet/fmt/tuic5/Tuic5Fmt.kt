@@ -99,6 +99,11 @@ fun parseTuic(server: String): AbstractBean {
         link.queryParameter("disable_sni")?.let {
             disableSNI = it == "1" || it == "true"
         }
+        link.queryParameter("allow_insecure")?.let {
+            allowInsecure = it == "1" || it == "true"
+        } ?: link.queryParameter("insecure")?.let {
+            allowInsecure = it == "1" || it == "true"
+        }
         link.fragment.takeIf { !it.isNullOrEmpty() }?.let {
             name = it
         }
@@ -124,6 +129,10 @@ fun Tuic5Bean.toUri(): String {
     }
     if (disableSNI) {
         builder.addQueryParameter("disable_sni", "1")
+    }
+    if (allowInsecure) {
+        builder.addQueryParameter("allow_insecure", "1")
+        builder.addQueryParameter("insecure", "1")
     }
     if (name.isNotEmpty()) {
         builder.setRawFragment(name.urlSafe())

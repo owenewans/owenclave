@@ -198,6 +198,13 @@
             app:title="@string/hysteria_enable_port_hopping_experimental"
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
+            android:icon="@drawable/baseline_flight_takeoff_24"
+            app:entries="@array/tuic5_provider"
+            app:entryValues="@array/tuic5_provider_value"
+            app:key="providerTuic5"
+            app:title="@string/tuic_v5_provider"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/ic_baseline_push_pin_24"
             app:defaultValue="0"
             app:entries="@array/root_ca_provider_entry"

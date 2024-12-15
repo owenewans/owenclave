@@ -553,8 +553,7 @@ object RawUpdater : GroupUpdater() {
                                 }
                             }
                         }
-                        "http", "h2", "h3" -> {
-                            // h3 is invented by Xray and is not compatible with h2.
+                        "http", "h2" -> {
                             v2rayBean.type = "http"
                             streamSettings.getObject("httpSettings")?.also { httpSettings ->
                                 // will not follow the breaking change in
@@ -657,13 +656,6 @@ object RawUpdater : GroupUpdater() {
                                 var extra = JSONObject()
                                 splithttpSettings.getObject("extra")?.also {
                                     extra = it
-                                }
-                                if (!extra.contains("scMaxConcurrentPosts")) {
-                                    splithttpSettings.getInteger("scMaxConcurrentPosts")?.also {
-                                        extra.set("scMaxConcurrentPosts", it)
-                                    } ?: splithttpSettings.getString("scMaxConcurrentPosts")?.also {
-                                        extra.set("scMaxConcurrentPosts", it)
-                                    }
                                 }
                                 if (!extra.contains("scMaxEachPostBytes")) {
                                     splithttpSettings.getInteger("scMaxEachPostBytes")?.also {
@@ -1102,6 +1094,48 @@ object RawUpdater : GroupUpdater() {
                     proxies.add(sshBean)
                 }
             }
+            "tuic" -> {
+                val tuic5Bean = Tuic5Bean().applyDefaultValues()
+                outbound.getObject("settings")?.also { settings ->
+                    outbound.getString("tag")?.also {
+                        tuic5Bean.name = it
+                    }
+                    settings.getString("address")?.also {
+                        tuic5Bean.serverAddress = it
+                    }
+                    settings.getIntFromStringOrInt("port")?.also {
+                        tuic5Bean.serverPort = it
+                    }
+                    settings.getString("uuid")?.also {
+                        tuic5Bean.uuid = it
+                    }
+                    settings.getString("password")?.also {
+                        tuic5Bean.password = it
+                    }
+                    settings.getString("congestionControl")?.also {
+                        tuic5Bean.congestionControl = it
+                    }
+                    settings.getString("udpRelayMode")?.also {
+                        tuic5Bean.udpRelayMode = it
+                    }
+                    settings.getBoolean("zeroRTTHandshake")?.also {
+                        tuic5Bean.zeroRTTHandshake = it
+                    }
+                    settings.getString("serverName")?.also {
+                        tuic5Bean.sni = it
+                    }
+                    (settings.getAny("alpn") as? List<String>)?.also {
+                        tuic5Bean.alpn = it.joinToString("\n")
+                    }
+                    settings.getBoolean("allowInsecure")?.also {
+                        tuic5Bean.allowInsecure = it
+                    }
+                    settings.getBoolean("disableSNI")?.also {
+                        tuic5Bean.disableSNI = it
+                    }
+                    proxies.add(tuic5Bean)
+                }
+            }
         }
         return proxies
     }
@@ -1415,12 +1449,21 @@ object RawUpdater : GroupUpdater() {
                     outbound.getString("udp_relay_mode")?.also {
                         udpRelayMode = it
                     }
+                    outbound.getBoolean("zero_rtt_handshake")?.also {
+                        zeroRTTHandshake = it
+                    }
                     outbound.getObject("tls")?.also { tls ->
                         if (tls.getBoolean("enabled") != true) {
                             return proxies
                         }
                         tls.getString("server_name")?.also {
                             sni = it
+                        }
+                        tls.getBoolean("insecure")?.also {
+                            allowInsecure = it
+                        }
+                        tls.getBoolean("disable_sni")?.also {
+                            disableSNI = it
                         }
                     } ?: return proxies
                 }
@@ -2170,8 +2213,10 @@ object RawUpdater : GroupUpdater() {
                         serverPort = proxy["port"] as? Int ?: return proxies
                         token = proxy["token"] as? String
                         udpRelayMode = proxy["udp-relay-mode"] as? String
+                        congestionController = proxy["congestion-controller"] as? String
                         disableSNI = proxy["disable-sni"] as? Boolean == true
                         reduceRTT = proxy["reduce-rtt"] as? Boolean == true
+                        // allowInsecure = proxy["skip-cert-verify"] as? Boolean == true
                         sni = proxy["sni"] as? String
                         name = proxy["name"] as? String
                     })
@@ -2182,8 +2227,10 @@ object RawUpdater : GroupUpdater() {
                         uuid = proxy["uuid"] as? String
                         password = proxy["password"] as? String
                         udpRelayMode = proxy["udp-relay-mode"] as? String
+                        congestionControl = proxy["congestion-controller"] as? String
                         disableSNI = proxy["disable-sni"] as? Boolean == true
                         zeroRTTHandshake = proxy["reduce-rtt"] as? Boolean == true
+                        allowInsecure = proxy["skip-cert-verify"] as? Boolean == true
                         sni = proxy["sni"] as? String
                         name = proxy["name"] as? String
                     })

@@ -65,6 +65,11 @@
             app:icon="@drawable/baseline_flight_takeoff_24"
             app:key="serverReduceRTT"
             app:title="@string/tuic_zero_rtt_handshake" />
+        <SwitchPreference
+            app:icon="@drawable/ic_notification_enhanced_encryption"
+            app:key="serverAllowInsecure"
+            app:summary="@string/allow_insecure_sum"
+            app:title="@string/allow_insecure" />
         <EditTextPreference
             app:icon="@drawable/baseline_public_24"
             app:key="serverMTU"

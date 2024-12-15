@@ -653,6 +653,8 @@ public class V2RayConfig {
                     return Shadowsocks_2022OutboundConfigurationObject.class;
                 case "hysteria2":
                     return Hysteria2OutboundConfigurationObject.class;
+                case "tuic":
+                    return TUICOutboundConfigurationObject.class;
             }
             return null;
         }
@@ -910,6 +912,23 @@ public class V2RayConfig {
             public Integer level;
 
         }
+
+    }
+
+    public static class TUICOutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public String uuid;
+        public String password;
+        public String congestionControl;
+        public String udpRelayMode;
+        public Boolean zeroRTTHandshake;
+        public String serverName;
+        public List<String> alpn;
+        public List<String> certificate;
+        public Boolean allowInsecure;
+        public Boolean disableSNI;
 
     }
 

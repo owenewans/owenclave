@@ -49,6 +49,7 @@ class Tuic5SettingsActivity : ProfileSettingsActivity<Tuic5Bean>() {
         DataStore.serverSNI = sni
         DataStore.serverReduceRTT = zeroRTTHandshake
         DataStore.serverMTU = mtu
+        DataStore.serverAllowInsecure = allowInsecure
 
     }
 
@@ -66,6 +67,7 @@ class Tuic5SettingsActivity : ProfileSettingsActivity<Tuic5Bean>() {
         sni = DataStore.serverSNI
         zeroRTTHandshake = DataStore.serverReduceRTT
         mtu = DataStore.serverMTU
+        allowInsecure = DataStore.serverAllowInsecure
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
