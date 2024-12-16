@@ -176,6 +176,7 @@ fun Project.setupAppCommon(projectName: String) {
                     storePassword = keystorePwd
                     keyAlias = alias
                     keyPassword = pwd
+                    enableV3Signing = true
                 }
             }
         } else if (requireFlavor().contains("OssRelease")) {
