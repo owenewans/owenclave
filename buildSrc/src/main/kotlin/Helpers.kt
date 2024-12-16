@@ -97,6 +97,7 @@ fun Project.setupCommon(projectName: String) {
         buildTypes {
             getByName("release") {
                 isMinifyEnabled = true
+                vcsInfo.include = false
             }
         }
         compileOptions {
