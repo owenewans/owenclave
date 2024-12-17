@@ -42,6 +42,11 @@ jobs:
         run: |
           export ANDROID_NDK_HOME=${ANDROID_NDK_LATEST_HOME}
           ./run lib core
+      - name: Upload LibCore
+        uses: actions/upload-artifact@v4
+        with:
+          path: app/libs/libcore.aar
+          name: "LibCore"
   build:
     name: Gradle Build
     runs-on: ubuntu-latest
