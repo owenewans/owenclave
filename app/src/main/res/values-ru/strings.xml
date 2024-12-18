@@ -472,7 +472,6 @@
     <string name="alter_id">Изменить ID</string>
     <string name="url">URL</string>
     <string name="ooc_subscription_token">OOCv1 API токен</string>
-    <string name="hysteria_init_stream_receive_window"></string>
     <string name="hysteria_max_stream_receive_window">QUIC max stream receive window</string>
     <string name="hysteria_init_conn_receive_window">QUIC init connection receive window</string>
     <string name="hysteria_max_conn_receive_window">QUIC max connection receive window</string>
