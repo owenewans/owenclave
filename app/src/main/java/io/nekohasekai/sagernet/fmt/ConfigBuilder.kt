@@ -887,9 +887,9 @@ fun buildV2RayConfig(
                                                             scMinPostsIntervalMs = it
                                                         }
                                                         extra.getInteger("xPaddingBytes")?.also {
-                                                            scMinPostsIntervalMs = it.toString()
+                                                            xPaddingBytes = it.toString()
                                                         } ?: extra.getString("xPaddingBytes")?.also {
-                                                            scMinPostsIntervalMs = it
+                                                            xPaddingBytes = it
                                                         }
                                                         extra.getBoolean("noGRPCHeader")?.also {
                                                             noGRPCHeader = it
