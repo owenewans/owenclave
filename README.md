@@ -66,6 +66,10 @@ ALIAS_PASS=your_alias_pass
     ```
     ./gradlew :app:downloadAssets
     ```
+  - (Optional) update assets version:
+    ```
+    ./gradlew :app:updateAssets
+    ```
   - Build app:
     ```
     ./gradlew :app:assembleOssRelease

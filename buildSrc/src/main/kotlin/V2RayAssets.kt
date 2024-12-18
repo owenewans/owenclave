@@ -8,16 +8,27 @@ import org.tukaani.xz.XZOutputStream
 import java.io.File
 import java.util.*
 
-fun Project.downloadAssets() {
+fun Project.downloadAssets(update: Boolean) {
     val assets = File(projectDir, "src/main/assets")
     val downloader = OkHttpClient.Builder().followRedirects(true).followSslRedirects(true).build()
 
     val github = GitHubBuilder().build()
-    val geoip = github.getRepository("v2fly/geoip").latestRelease
-    val geoipFile = File(assets, "v2ray/geoip.dat.xz")
+
     val geoipVersion = File(assets, "v2ray/geoip.version.txt")
-    if (!geoipVersion.isFile || geoipVersion.readText() != geoip.tagName) {
-        geoipVersion.deleteRecursively()
+    val geoip = if (update) {
+        github.getRepository("v2fly/geoip").latestRelease
+    } else {
+        github.getRepository("v2fly/geoip").listReleases().find {
+            it.tagName == geoipVersion.readText()
+        }
+    } ?: error("unable to list geoip release")
+
+    val geoipFile = File(assets, "v2ray/geoip.dat.xz")
+
+    if (!geoipVersion.isFile || (!update && !geoipFile.isFile) || geoipVersion.readText() != geoip.tagName) {
+        if (update) {
+            geoipVersion.deleteRecursively()
+        }
         geoipFile.parentFile.mkdirs()
 
         val geoipDat = (geoip.listAssets().toSet().find { it.name == "geoip.dat" }
@@ -29,13 +40,9 @@ fun Project.downloadAssets() {
         println("Downloading $sha256sum ...")
 
         val checksum = downloader.newCall(
-        Request.Builder().url(sha256sum).build()
-    )
-        .execute().body
-            .string()
-            .trim()
-            .substringBefore(" ")
-            .uppercase(Locale.ROOT)
+            Request.Builder().url(sha256sum).build()
+        ).execute().body.string().trim().substringBefore(" ").uppercase(Locale.ROOT)
+
         var count = 0
 
         while (true) {
@@ -44,13 +51,10 @@ fun Project.downloadAssets() {
             println("Downloading $geoipDat ...")
 
             downloader.newCall(
-            Request.Builder().url(geoipDat).build()
-        )
-            .execute().body
-                .byteStream()
-                .use {
-                    geoipFile.outputStream().use { out -> it.copyTo(out) }
-                }
+                Request.Builder().url(geoipDat).build()
+            ).execute().body.byteStream().use {
+                geoipFile.outputStream().use { out -> it.copyTo(out) }
+            }
 
             val fileSha256 = DigestUtil.sha256Hex(geoipFile).uppercase(Locale.ROOT)
             if (fileSha256 != checksum) {
@@ -73,16 +77,28 @@ fun Project.downloadAssets() {
                 }
             }
 
-            geoipVersion.writeText(geoip.tagName)
+            if (update) {
+                geoipVersion.writeText(geoip.tagName)
+            }
             break
         }
     }
 
-    val geosite = github.getRepository("v2fly/domain-list-community").latestRelease
-    val geositeFile = File(assets, "v2ray/geosite.dat.xz")
     val geositeVersion = File(assets, "v2ray/geosite.version.txt")
-    if (!geositeVersion.isFile || geositeVersion.readText() != geosite.tagName) {
-        geositeVersion.deleteRecursively()
+    val geosite = if (update) {
+        github.getRepository("v2fly/domain-list-community").latestRelease
+    } else {
+        github.getRepository("v2fly/domain-list-community").listReleases().find {
+            it.tagName == geositeVersion.readText()
+        }
+    } ?: error("unable to list geosite release")
+
+    val geositeFile = File(assets, "v2ray/geosite.dat.xz")
+
+    if (!geositeVersion.isFile || (!update && !geositeFile.isFile) || geositeVersion.readText() != geosite.tagName) {
+        if (update) {
+            geositeVersion.deleteRecursively()
+        }
 
         val geositeDat = (geosite.listAssets().toSet().find { it.name == "dlc.dat.xz" }
             ?: error("dlc.dat.xz not found in ${geosite.assetsUrl}")).browserDownloadUrl
@@ -93,13 +109,8 @@ fun Project.downloadAssets() {
         println("Downloading $sha256sum ...")
 
         val checksum = downloader.newCall(
-        Request.Builder().url(sha256sum).build()
-    )
-        .execute().body
-            .string()
-            .trim()
-            .substringBefore(" ")
-            .uppercase(Locale.ROOT)
+            Request.Builder().url(sha256sum).build()
+        ).execute().body.string().trim().substringBefore(" ").uppercase(Locale.ROOT)
 
         var count = 0
 
@@ -109,13 +120,10 @@ fun Project.downloadAssets() {
             println("Downloading $geositeDat ...")
 
             downloader.newCall(
-            Request.Builder().url(geositeDat).build()
-        )
-            .execute().body
-                .byteStream()
-                .use {
-                    geositeFile.outputStream().use { out -> it.copyTo(out) }
-                }
+                Request.Builder().url(geositeDat).build()
+            ).execute().body.byteStream().use {
+                geositeFile.outputStream().use { out -> it.copyTo(out) }
+            }
 
             val fileSha256 = DigestUtil.sha256Hex(geositeFile).uppercase(Locale.ROOT)
             if (fileSha256 != checksum) {
@@ -131,8 +139,9 @@ fun Project.downloadAssets() {
                 continue
             }
 
-            geositeVersion.writeText(geosite.tagName)
-
+            if (update) {
+                geositeVersion.writeText(geosite.tagName)
+            }
             break
         }
     }

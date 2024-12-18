@@ -16,9 +16,8 @@ build/
 .cxx
 local.properties
 /app/libs/
-/app/src/main/assets/v2ray/geo*
-/app/src/main/assets/mozilla_included.pem
-/app/src/main/assets/mozilla_included.pem.sha256sum
+/app/src/main/assets/v2ray/geoip.dat.xz
+/app/src/main/assets/v2ray/geosite.dat.xz
 /service_account_credentials.json
 jniLibs/
 /.kotlin

@@ -355,8 +355,17 @@ fun Project.setupApp() {
                 requireFlavor().endsWith("Debug")
             }
             doLast {
+                downloadAssets(false)
+            }
+        }
+
+        tasks.register("updateAssets") {
+            outputs.upToDateWhen {
+                requireFlavor().endsWith("Debug")
+            }
+            doLast {
                 downloadRootCAList()
-                downloadAssets()
+                downloadAssets(true)
             }
         }
     }
