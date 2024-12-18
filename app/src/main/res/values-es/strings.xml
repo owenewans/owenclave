@@ -501,4 +501,6 @@
     <string name="allow_apps_bypass_vpn">Permitir que las aplicaciones eviten la VPN</string>
     <string name="ech_config">Configuración ECH</string>
     <string name="ech_doh_server">Servidor ECH DoH</string>
+    <string name="tuic_v5_provider">Proveedor TUIC v5</string>
+    <string name="backup_all_profiles">Copia de seguridad de todos los perfiles</string>
 </resources>
