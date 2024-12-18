@@ -16,9 +16,9 @@ fun Project.downloadAssets(update: Boolean) {
 
     val geoipVersion = File(assets, "v2ray/geoip.version.txt")
     val geoip = if (update) {
-        github.getRepository("v2fly/geoip").latestRelease
+        github.getRepository("dyhkwong/v2ray-geoip").latestRelease
     } else {
-        github.getRepository("v2fly/geoip").listReleases().find {
+        github.getRepository("dyhkwong/v2ray-geoip").listReleases().find {
             it.tagName == geoipVersion.readText()
         }
     } ?: error("unable to list geoip release")
