@@ -514,4 +514,5 @@
     <string name="splithttp_mode">模式</string>
     <string name="backup_all_profiles">备份所有配置</string>
     <string name="tuic_v5_provider">TUIC v5 提供程序</string>
+    <string name="browser_forwarder_hint">请从 v2ray-core 发行下载 v2ray-extra.zip 并将 index.html 和 index.js 放置到 Android/data/%s/files，或者将 index.html 和 index.js 导入为路由资源。</string>
 </resources>

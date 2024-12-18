@@ -29,7 +29,6 @@ import androidx.activity.result.component2
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.whenCreated
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
@@ -58,6 +57,7 @@ import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.listenForPackageChanges
 import io.nekohasekai.sagernet.ktx.readableMessage
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.nekohasekai.sagernet.ktx.showAllowingStateLoss
 import kotlinx.coroutines.launch
 
@@ -361,6 +361,18 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
         splithttpCategory = findPreference(Key.SERVER_SH_CATEGORY)!!
         splithttpMode = findPreference(Key.SERVER_SPLITHTTP_MODE)!!
+
+        findPreference<SwitchPreference>(Key.SERVER_WS_BROWSER_FORWARDING)!!.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue as Boolean) {
+                runOnMainDispatcher {
+                    MaterialAlertDialogBuilder(this@StandardV2RaySettingsActivity)
+                        .setMessage(getString(R.string.browser_forwarder_hint, packageName))
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
+                }
+            }
+            true
+        }
 
         when (bean) {
             is VLESSBean -> {
