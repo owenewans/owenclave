@@ -36,6 +36,11 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
+      - name: Setup Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r27c
       - name: LibCore Cache
         id: cache
         uses: actions/cache@v4
@@ -45,8 +50,9 @@ jobs:
           key: ${{ hashFiles('.github/workflows/*', 'bin/lib/core/*', 'libcore_status') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
-          export ANDROID_NDK_HOME=${ANDROID_NDK_LATEST_HOME}
           ./run lib core
       - name: Upload LibCore
         uses: actions/upload-artifact@v4

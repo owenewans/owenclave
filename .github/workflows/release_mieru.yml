@@ -17,11 +17,16 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch Status
         run: git submodule status 'plugin/mieru/*' > mieru_status
-      - name: Install Golang
+      - name: Setup Golang
         uses: actions/setup-go@v5
         with:
           go-version: 1.23.4
           cache-dependency-path: "**/go.sum"
+      - name: Setup Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r27c
       - name: Mieru Cache
         id: cache
         uses: actions/cache@v4
@@ -31,8 +36,9 @@ jobs:
           key: ${{ hashFiles('.github/workflows/*', 'bin/lib/mieru/*', 'mieru_status') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
         run: |
-          export ANDROID_NDK_HOME=${ANDROID_NDK_LATEST_HOME}
           ./run plugin mieru
   build:
     name: Gradle Build
