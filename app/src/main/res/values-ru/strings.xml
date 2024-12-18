@@ -472,7 +472,7 @@
     <string name="alter_id">Изменить ID</string>
     <string name="url">URL</string>
     <string name="ooc_subscription_token">OOCv1 API токен</string>
-    <string name="hysteria_init_stream_receive_window">QUIC init stream receive window</string>
+    <string name="hysteria_init_stream_receive_window"></string>
     <string name="hysteria_max_stream_receive_window">QUIC max stream receive window</string>
     <string name="hysteria_init_conn_receive_window">QUIC init connection receive window</string>
     <string name="hysteria_max_conn_receive_window">QUIC max connection receive window</string>
@@ -490,7 +490,7 @@
     <string name="action_flash_off">Выключить вспышку</string>
     <string name="hysteria_hop_interval">Интервал перехода</string>
     <string name="connection_test_delete_unavailable">Удалить недоступные</string>
-    <string name="hysteria2_provider">Провайдер Hysteria 2</string>
+    <string name="hysteria2_provider">Реализация Hysteria 2</string>
     <string name="nat_stun_server_hint">STUN сервер</string>
     <string name="naive_no_post_quantum">Отключить постквантовое соглашение ключей</string>
     <string name="hysteria2_password">Пароль Hysteria2</string>
@@ -503,4 +503,6 @@
     <string name="allow_apps_bypass_vpn_sum">Разрешить использовать такие методы, как bindProcessToNetwork, для обхода VPN.</string>
     <string name="ech_config">ECH-конфиг</string>
     <string name="splithttp_mode">Режим</string>
+    <string name="tuic_v5_provider">Реализация TUIC v5</string>
+    <string name="backup_all_profiles">Бэкап всех профилей</string>
 </resources>
