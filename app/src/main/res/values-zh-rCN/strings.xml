@@ -199,6 +199,7 @@
     <string name="file_manager_missing">您的设备缺少 Android 标准文件选择器，请安装一个，如质感文件。</string>
     <string name="restart">重载代理服务以应用修改</string>
     <string name="theme">主题</string>
+    <string name="donate_to_original_author">向原作者捐款</string>
     <string name="donate">捐款</string>
     <string name="donate_info">世界很可爱 请给世界钱</string>
     <string name="extra_headers">附加头</string>

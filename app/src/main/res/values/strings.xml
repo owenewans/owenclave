@@ -251,6 +251,7 @@
     <string name="no_proxies_found_in_file">No proxy found in the file</string>
     <string name="no_proxies_found_in_clipboard">No proxy found in the clipboard</string>
     <string name="deduplication">Deduplication</string>
+    <string name="donate_to_original_author">Donate to original author</string>
     <string name="donate">Donate</string>
     <string name="donate_info">I love money</string>
     <string name="ignore_battery_optimizations">Ignore battery optimizations</string>
