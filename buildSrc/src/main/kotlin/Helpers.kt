@@ -1,6 +1,7 @@
 import cn.hutool.core.codec.Base64
 import com.android.build.api.dsl.*
 import com.android.build.gradle.AbstractAppExtension
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.apache.tools.ant.filters.StringInputStream
 import org.gradle.api.JavaVersion
@@ -280,7 +281,6 @@ fun Project.setupPlugin(projectName: String) {
         }
 
         applicationVariants.all {
-
             outputs.all {
                 this as BaseVariantOutputImpl
                 outputFileName = outputFileName.replace(
@@ -298,7 +298,7 @@ fun Project.setupPlugin(projectName: String) {
 fun Project.setupApp() {
     val pkgName = requireMetadata().getProperty("PACKAGE_NAME").trim()
     val verName = requireMetadata().getProperty("VERSION_NAME").trim()
-    val verCode = requireMetadata().getProperty("VERSION_CODE").trim().toInt()
+    val verCode = requireMetadata().getProperty("VERSION_CODE").trim().toInt() * 5
     androidApp.apply {
         defaultConfig {
             applicationId = pkgName
@@ -341,6 +341,15 @@ fun Project.setupApp() {
         }
 
         applicationVariants.all {
+            outputs.forEach { output ->
+                output as ApkVariantOutputImpl
+                when (output.filters.find { it.filterType == "ABI" }?.identifier) {
+                    "arm64-v8a" -> output.versionCodeOverride = verCode + 4
+                    "x86_64" -> output.versionCodeOverride = verCode + 3
+                    "armeabi-v7a" -> output.versionCodeOverride = verCode + 2
+                    "x86" -> output.versionCodeOverride = verCode + 1
+                }
+            }
             outputs.all {
                 this as BaseVariantOutputImpl
                 outputFileName = outputFileName.replace(project.name, "Exclave-$versionName")
