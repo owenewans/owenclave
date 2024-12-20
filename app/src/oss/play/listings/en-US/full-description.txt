@@ -1,0 +1,1 @@
+Exclave is a proxy client. It is a fork of SagerNet and based on a custom fork of v2ray-core. It uses plugins to support some protocols that is not natively supported.
