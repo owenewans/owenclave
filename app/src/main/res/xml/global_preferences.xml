@@ -100,6 +100,11 @@
             app:key="enableLog"
             app:summary="@string/enable_log_sum"
             app:title="@string/enable_log" />
+        <EditTextPreference
+            app:defaultValue="127.0.0.1:6060"
+            app:key="pprofServer"
+            app:title="pprof server listen address"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/cag_route">

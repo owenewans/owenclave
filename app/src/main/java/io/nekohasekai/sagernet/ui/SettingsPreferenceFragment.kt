@@ -182,6 +182,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val transproxyMode = findPreference<SimpleMenuPreference>(Key.TRANSPROXY_MODE)!!
         val enableLog = findPreference<SwitchPreference>(Key.ENABLE_LOG)!!
 
+        findPreference<EditTextPreference>(Key.PPROF_SERVER)!!.apply {
+            isVisible = DataStore.enableDebug
+            onPreferenceChangeListener = reloadListener
+        }
+
         transproxyPort.isEnabled = requireTransproxy.isChecked
         transproxyMode.isEnabled = requireTransproxy.isChecked
 

@@ -92,7 +92,7 @@ class SagerNet : Application(),
 
         if (!isMainProcess) {
             Libcore.setUidDumper(this, Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-            if (BuildConfig.DEBUG) {
+            if (DataStore.enableDebug && DataStore.pprofServer.isNotEmpty()) {
                 DebugInstance().launch()
             }
         }

@@ -88,6 +88,8 @@ object Key {
     const val RULES_GEOSITE_URL = "rulesGeositeUrl"
     const val RULES_GEOIP_URL = "rulesGeoipUrl"
     const val ENABLE_LOG = "enableLog"
+    const val ENABLE_DEBUG = "enableDebug"
+    const val PPROF_SERVER = "pprofServer"
 
     const val ALWAYS_SHOW_ADDRESS = "alwaysShowAddress"
     const val SHOW_GROUP_NAME = "showGroupName"

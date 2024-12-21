@@ -19,6 +19,7 @@
 package io.nekohasekai.sagernet.bg.test
 
 import io.nekohasekai.sagernet.bg.AbstractInstance
+import io.nekohasekai.sagernet.database.DataStore
 import libcore.DebugInstance
 import libcore.Libcore
 
@@ -27,7 +28,7 @@ class DebugInstance : AbstractInstance {
     lateinit var instance: DebugInstance
 
     override fun launch() {
-        instance = Libcore.newDebugInstance()
+        instance = Libcore.newDebugInstance(DataStore.pprofServer)
     }
 
     override fun close() {

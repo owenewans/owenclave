@@ -41,6 +41,7 @@ import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList
 import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.databinding.LayoutAboutBinding
 import io.nekohasekai.sagernet.fmt.PluginEntry
 import io.nekohasekai.sagernet.ktx.*
@@ -122,6 +123,9 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             requireContext().launchCustomTab(
                                 "https://github.com/dyhkwong/Exclave/releases"
                             )
+                        }
+                        .setOnLongClickAction {
+                            DataStore.enableDebug = !DataStore.enableDebug
                         }
                         .build())
                     .addItem(MaterialAboutActionItem.Builder()
