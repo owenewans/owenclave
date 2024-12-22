@@ -144,6 +144,8 @@ object RawUpdater : GroupUpdater() {
         }
         proxies = proxiesMap.values.toList()
 
+        if (subscription.forceResolve) forceResolve(proxies, proxyGroup.id)
+
         val exists = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
         val duplicate = ArrayList<String>()
         if (subscription.deduplication) {
