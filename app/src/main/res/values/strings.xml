@@ -542,4 +542,5 @@
     <string name="backup_all_profiles">Backup all profiles</string>
     <string name="tuic_v5_provider">TUIC v5 provider</string>
     <string name="browser_forwarder_hint">Please download v2ray-extra.zip from v2ray-core release and place index.html and index.js in Android/data/%s/files or import index.html and index.js as route assets.</string>
+    <string name="mieru_multiplexing_level">Multiplexing level</string>
 </resources>

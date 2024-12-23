@@ -1012,17 +1012,19 @@
     </string-array>
 
     <string-array name="mieru_mux_level_entry">
-        <item>off</item>
-        <item>low</item>
-        <item>middle</item>
-        <item>high</item>
+        <item />
+        <item>MULTIPLEXING_OFF</item>
+        <item>MULTIPLEXING_LOW</item>
+        <item>MULTIPLEXING_MIDDLE</item>
+        <item>MULTIPLEXING_HIGH</item>
     </string-array>
 
     <string-array name="mieru_mux_level_value">
-        <item>1</item>
         <item>0</item>
+        <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
     </string-array>
 
     <string-array name="brook_tls_fingerprint_entry">

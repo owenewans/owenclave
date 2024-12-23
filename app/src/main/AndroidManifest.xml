@@ -138,6 +138,7 @@
                 <data android:scheme="juicity" />
                 <data android:scheme="tuic" />
                 <data android:scheme="wireguard" />
+                <data android:scheme="mierus" />
 
             </intent-filter>
 

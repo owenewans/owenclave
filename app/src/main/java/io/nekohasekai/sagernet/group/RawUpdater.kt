@@ -2297,6 +2297,13 @@ object RawUpdater : GroupUpdater() {
                         "transport" -> when (opt.value) {
                             "TCP" -> bean.protocol = MieruBean.PROTOCOL_TCP
                             "UDP" -> bean.protocol = MieruBean.PROTOCOL_UDP // not implemented as of mihomo v1.19.0
+                            else -> return proxies
+                        }
+                        "multiplexing" -> when (opt.value) {
+                            "MULTIPLEXING_OFF" -> bean.multiplexingLevel = MieruBean.MULTIPLEXING_OFF
+                            "MULTIPLEXING_LOW" -> bean.multiplexingLevel = MieruBean.MULTIPLEXING_LOW
+                            "MULTIPLEXING_MIDDLE" -> bean.multiplexingLevel = MieruBean.MULTIPLEXING_MIDDLE
+                            "MULTIPLEXING_HIGH" -> bean.multiplexingLevel = MieruBean.MULTIPLEXING_HIGH
                         }
                     }
                 }

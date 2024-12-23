@@ -49,6 +49,7 @@ import io.nekohasekai.sagernet.fmt.juicity.buildJuicityConfig
 import io.nekohasekai.sagernet.fmt.juicity.toUri
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.mieru.buildMieruConfig
+import io.nekohasekai.sagernet.fmt.mieru.toUri
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
@@ -310,7 +311,7 @@ data class ProxyEntity(
 
     fun hasShareLink(): Boolean {
         return when (type) {
-            TYPE_SSH, TYPE_WG, TYPE_MIERU, TYPE_SHADOWTLS -> false
+            TYPE_SSH, TYPE_WG, TYPE_SHADOWTLS -> false
             TYPE_CONFIG, TYPE_CHAIN, TYPE_BALANCER -> false
             else -> true
         }
@@ -333,6 +334,7 @@ data class ProxyEntity(
             is JuicityBean -> toUri()
             is TuicBean -> toUri()
             is Tuic5Bean -> toUri()
+            is MieruBean -> toUri()
             else -> null
         }
     }
