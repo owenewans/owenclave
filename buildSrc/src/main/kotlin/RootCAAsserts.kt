@@ -10,8 +10,6 @@ fun Project.downloadRootCAList() {
     val data = HttpUtil.get("https://ccadb.my.salesforce-sites.com/mozilla/IncludedRootsPEMTxt?TrustBitsInclude=Websites")
         ?: error("download mozilla_included.pem failed")
     val dataSha256 = DigestUtil.sha256Hex(data)
-    if (!pem.isFile || !pemSha256.isFile || pemSha256.readText() != dataSha256) {
-        pem.writeText(data)
-        pemSha256.writeText(dataSha256)
-    }
+    pem.writeText(data)
+    pemSha256.writeText(dataSha256)
 }
