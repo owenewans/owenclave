@@ -193,7 +193,11 @@ abstract class V2RayInstance(
     override fun launch() {
         val context = if (Build.VERSION.SDK_INT < 24 || SagerNet.user.isUserUnlocked) SagerNet.application else SagerNet.deviceStorage
         val useSystemCACerts = DataStore.providerRootCA == RootCAProvider.SYSTEM
-        val rootCaPem by lazy { File(app.filesDir, "mozilla_included.pem").canonicalPath }
+        val rootCaPem by lazy {
+            (File(app.externalAssets, "mozilla_included.pem").takeIf { it.isFile }
+                ?: File(app.filesDir, "mozilla_included.pem")).canonicalPath
+        }
+
 
         for ((_, chain) in config.index) {
             chain.entries.forEachIndexed { _, (port, profile) ->

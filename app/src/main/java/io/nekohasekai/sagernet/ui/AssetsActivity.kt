@@ -150,7 +150,7 @@ class AssetsActivity : ThemedActivity() {
                 .substringAfterLast('/')
                 .substringAfter(':')
 
-            if (!fileName.endsWith(".dat") && fileName != "index.html" && fileName != "index.js") {
+            if (!fileName.endsWith(".dat") && fileName != "index.html" && fileName != "index.js" && fileName != "mozilla_included.pem") {
                 runOnMainDispatcher {
                     alert(getString(R.string.route_not_asset, fileName)).show()
                 }
