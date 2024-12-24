@@ -28,8 +28,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class, StatsEntity::class],
-    version = 24,
+    entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class, StatsEntity::class, AssetEntity::class],
+    version = 25,
     autoMigrations = [AutoMigration(
         from = 12,
         to = 14,
@@ -66,6 +66,9 @@ import kotlinx.coroutines.launch
     ), AutoMigration(
         from = 23,
         to = 24,
+    ), AutoMigration(
+        from = 24,
+        to = 25,
     )]
 )
 @TypeConverters(value = [KryoConverters::class, GsonConverters::class])
@@ -100,6 +103,7 @@ abstract class SagerDatabase : RoomDatabase() {
         val proxyDao get() = instance.proxyDao()
         val rulesDao get() = instance.rulesDao()
         val statsDao get() = instance.statsDao()
+        val assetDao get() = instance.assetDao()
 
     }
 
@@ -107,5 +111,6 @@ abstract class SagerDatabase : RoomDatabase() {
     abstract fun proxyDao(): ProxyEntity.Dao
     abstract fun rulesDao(): RuleEntity.Dao
     abstract fun statsDao(): StatsEntity.Dao
+    abstract fun assetDao(): AssetEntity.Dao
 
 }

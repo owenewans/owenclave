@@ -28,4 +28,9 @@ public class ParcelizeBridge {
     public static RuleEntity createRule(Parcel parcel) {
         return (RuleEntity) RuleEntity.CREATOR.createFromParcel(parcel);
     }
+
+    public static AssetEntity createAsset(Parcel parcel) {
+        return (AssetEntity) AssetEntity.CREATOR.createFromParcel(parcel);
+    }
+
 }

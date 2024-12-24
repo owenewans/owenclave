@@ -517,4 +517,14 @@
     <string name="tuic_v5_provider">TUIC v5 提供程序</string>
     <string name="browser_forwarder_hint">请从 v2ray-core 发行下载 v2ray-extra.zip 并将 index.html 和 index.js 放置到 Android/data/%s/files，或者将 index.html 和 index.js 导入为路由资源。</string>
     <string name="mieru_multiplexing_level">多路复用级别</string>
+    <string name="route_asset_add">添加路由资源</string>
+    <string name="route_asset_add_url">添加 URL</string>
+    <string name="route_asset_invalid_filename">无效的文件名：%s</string>
+    <string name="route_asset_reserved_filename">文件名不能为 %s</string>
+    <string name="route_asset_duplicate_filename">文件名为 %s 的资源已经存在</string>
+    <string name="route_asset_invalid_url">无效的 URL：%s</string>
+    <string name="route_asset_delete_prompt">您确定要删除这个资源吗？</string>
+    <string name="route_asset_name">资源名称</string>
+    <string name="route_asset_url">资源 URL</string>
+    <string name="route_asset_settings">资源设置</string>
 </resources>

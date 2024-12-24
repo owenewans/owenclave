@@ -203,6 +203,8 @@
         <activity
             android:name="io.nekohasekai.sagernet.ui.AssetsActivity" />
         <activity
+            android:name="io.nekohasekai.sagernet.ui.AssetEditActivity" />
+        <activity
             android:name="io.nekohasekai.sagernet.ui.AppListActivity" />
         <activity
             android:name=".QuickToggleShortcut"

@@ -543,4 +543,14 @@
     <string name="tuic_v5_provider">TUIC v5 provider</string>
     <string name="browser_forwarder_hint">Please download v2ray-extra.zip from v2ray-core release and place index.html and index.js in Android/data/%s/files or import index.html and index.js as route assets.</string>
     <string name="mieru_multiplexing_level">Multiplexing level</string>
+    <string name="route_asset_add">Add route asset</string>
+    <string name="route_asset_add_url">Add URL</string>
+    <string name="route_asset_invalid_filename">Invalid filename: %s</string>
+    <string name="route_asset_reserved_filename">Filename can\'t be %s</string>
+    <string name="route_asset_duplicate_filename">Asset with filename %s already exists</string>
+    <string name="route_asset_invalid_url">Invalid URL: %s</string>
+    <string name="route_asset_delete_prompt">Are you sure you want to delete this asset?</string>
+    <string name="route_asset_name">Asset name</string>
+    <string name="route_asset_url">Asset URL</string>
+    <string name="route_asset_settings">Asset settings</string>
 </resources>

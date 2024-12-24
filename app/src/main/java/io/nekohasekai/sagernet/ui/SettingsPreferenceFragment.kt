@@ -38,6 +38,7 @@ import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.utils.Theme
 import io.nekohasekai.sagernet.widget.ColorPickerPreference
+import io.nekohasekai.sagernet.widget.LinkOrContentPreference
 import kotlinx.coroutines.delay
 import libcore.Libcore
 import java.io.File
@@ -272,8 +273,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val allowAppsBypassVpn = findPreference<SwitchPreference>(Key.ALLOW_APPS_BYPASS_VPN)!!
 
         val rulesProvider = findPreference<SimpleMenuPreference>(Key.RULES_PROVIDER)!!
-        val rulesGeositeUrl = findPreference<EditTextPreference>(Key.RULES_GEOSITE_URL)!!
-        val rulesGeoipUrl = findPreference<EditTextPreference>(Key.RULES_GEOIP_URL)!!
+        val rulesGeositeUrl = findPreference<LinkOrContentPreference>(Key.RULES_GEOSITE_URL)!!
+        val rulesGeoipUrl = findPreference<LinkOrContentPreference>(Key.RULES_GEOIP_URL)!!
         rulesGeositeUrl.isVisible = DataStore.rulesProvider > 2
         rulesGeoipUrl.isVisible = DataStore.rulesProvider > 2
         rulesProvider.setOnPreferenceChangeListener { _, newValue ->

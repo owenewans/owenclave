@@ -161,6 +161,11 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
                     add(it.toBase64Str())
                 }
             }
+            out["assets"] = JSONArray().apply {
+                SagerDatabase.assetDao.getAll().forEach {
+                    add(it.toBase64Str())
+                }
+            }
         }
         if (setting) {
             out["settings"] = JSONArray().apply {
@@ -308,6 +313,18 @@ class BackupFragment : NamedFragment(R.layout.layout_backup) {
             }
             SagerDatabase.rulesDao.reset()
             SagerDatabase.rulesDao.insert(rules)
+
+            val assets = mutableListOf<AssetEntity>()
+            content.getJSONArray("assets").toList().forEach {
+                val data = Base64Decoder.decode(it.toString())
+                val parcel = Parcel.obtain()
+                parcel.unmarshall(data, 0, data.size)
+                parcel.setDataPosition(0)
+                assets.add(ParcelizeBridge.createAsset(parcel))
+                parcel.recycle()
+            }
+            SagerDatabase.assetDao.reset()
+            SagerDatabase.assetDao.insert(assets)
         }
         if (setting && content.containsKey("settings")) {
             val settings = mutableListOf<KeyValuePair>()

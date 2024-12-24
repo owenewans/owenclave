@@ -371,6 +371,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var subscriptionAutoUpdate by profileCacheStore.boolean(Key.SUBSCRIPTION_AUTO_UPDATE)
     var subscriptionAutoUpdateDelay by profileCacheStore.stringToInt(Key.SUBSCRIPTION_AUTO_UPDATE_DELAY) { 360 }
 
+    var editingAssetName by profileCacheStore.string(Key.EDITING_ASSET_NAME)
+    var assetName by profileCacheStore.string(Key.ASSET_NAME)
+    var assetUrl by profileCacheStore.string(Key.ASSET_URL)
+
     var taskerAction by profileCacheStore.stringToInt(Key.TASKER_ACTION)
     var taskerProfile by profileCacheStore.stringToInt(Key.TASKER_PROFILE)
     var taskerProfileId by profileCacheStore.long(Key.TASKER_PROFILE_ID) { -1L }
