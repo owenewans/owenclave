@@ -103,9 +103,7 @@ class SagerNet : Application(),
             filesDir.absolutePath + "/",
             externalAssets.absolutePath + "/",
             "v2ray/",
-            { DataStore.rulesProvider == 0 },
             { DataStore.providerRootCA == RootCAProvider.SYSTEM },
-            isMainProcess
         )
 
         Theme.apply(this)

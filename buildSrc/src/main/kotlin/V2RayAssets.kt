@@ -3,18 +3,16 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.gradle.api.Project
 import org.kohsuke.github.GitHubBuilder
-import org.tukaani.xz.LZMA2Options
-import org.tukaani.xz.XZOutputStream
 import java.io.File
 import java.util.*
 
 fun Project.downloadAssets(update: Boolean) {
-    val assets = File(projectDir, "src/main/assets")
+    val assetsDir = File(projectDir, "src/main/assets")
     val downloader = OkHttpClient.Builder().followRedirects(true).followSslRedirects(true).build()
 
     val github = GitHubBuilder().build()
 
-    val geoipVersion = File(assets, "v2ray/geoip.version.txt")
+    val geoipVersion = File(assetsDir, "v2ray/geoip.version.txt")
     val geoipRelease = if (update) {
         github.getRepository("dyhkwong/v2ray-geoip").latestRelease
     } else {
@@ -23,7 +21,7 @@ fun Project.downloadAssets(update: Boolean) {
         }
     } ?: error("unable to list geoip release")
 
-    val geoipFile = File(assets, "v2ray/geoip.dat.xz")
+    val geoipFile = File(assetsDir, "v2ray/geoip.dat")
 
     if (update) {
         geoipVersion.deleteRecursively()
@@ -69,20 +67,13 @@ fun Project.downloadAssets(update: Boolean) {
             continue
         }
 
-        val geoipBytes = geoipFile.readBytes()
-        geoipFile.outputStream().use { out ->
-            XZOutputStream(out, LZMA2Options(9)).use {
-                it.write(geoipBytes)
-            }
-        }
-
         if (update) {
             geoipVersion.writeText(geoipRelease.tagName)
         }
         break
     }
 
-    val geositeVersion = File(assets, "v2ray/geosite.version.txt")
+    val geositeVersion = File(assetsDir, "v2ray/geosite.version.txt")
     val geositeRelease = if (update) {
         github.getRepository("v2fly/domain-list-community").latestRelease
     } else {
@@ -91,17 +82,17 @@ fun Project.downloadAssets(update: Boolean) {
         }
     } ?: error("unable to list geosite release")
 
-    val geositeFile = File(assets, "v2ray/geosite.dat.xz")
+    val geositeFile = File(assetsDir, "v2ray/geosite.dat")
 
     if (update) {
         geositeVersion.deleteRecursively()
     }
 
-    val geositeDat = (geositeRelease.listAssets().toSet().find { it.name == "dlc.dat.xz" }
-        ?: error("dlc.dat.xz not found in ${geositeRelease.assetsUrl}")).browserDownloadUrl
+    val geositeDat = (geositeRelease.listAssets().toSet().find { it.name == "dlc.dat" }
+        ?: error("dlc.dat not found in ${geositeRelease.assetsUrl}")).browserDownloadUrl
 
-    val geositeDatSha256sum = (geositeRelease.listAssets().toSet().find { it.name == "dlc.dat.xz.sha256sum" }
-        ?: error("dlc.dat.xz.sha256sum not found in ${geositeRelease.assetsUrl}")).browserDownloadUrl
+    val geositeDatSha256sum = (geositeRelease.listAssets().toSet().find { it.name == "dlc.dat.sha256sum" }
+        ?: error("dlc.dat.sha256sum not found in ${geositeRelease.assetsUrl}")).browserDownloadUrl
 
     println("Downloading $geositeDatSha256sum ...")
 

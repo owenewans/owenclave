@@ -261,13 +261,7 @@ class AssetsActivity : ThemedActivity() {
                     DateFormat.getDateFormat(app).format(Date(file.lastModified()))
                 }
             } else {
-                try {
-                    assets.open("v2ray/" + versionFile.name).bufferedReader().readText().trim()
-                } catch (e: FileNotFoundException) {
-                    versionFile.readText()
-                    Logs.w(e)
-                    "<unknown>"
-                }
+                "<unknown>"
             }
 
             binding.assetStatus.text = getString(R.string.route_asset_status, localVersion)
@@ -310,12 +304,14 @@ class AssetsActivity : ThemedActivity() {
                     repo = "v2fly/geoip"
                 } else {
                     repo = "v2fly/domain-list-community"
-                    fileName = "dlc.dat.xz"
+                    fileName = "dlc.dat"
                 }
             }
             1 -> repo = "Loyalsoldier/v2ray-rules-dat"
             2 -> repo = "Chocolate4U/Iran-v2ray-rules"
-            else -> return updateCustomAsset(file, versionFile)
+            else -> {
+                return updateCustomAsset(file, versionFile)
+            }
         }
 
         val client = Libcore.newHttpClient().apply {
@@ -355,12 +351,7 @@ class AssetsActivity : ThemedActivity() {
 
             response.writeTo(cacheFile.canonicalPath)
 
-            if (fileName.endsWith(".xz")) {
-                Libcore.unxz(cacheFile.absolutePath, file.absolutePath)
-                cacheFile.delete()
-            } else {
-                cacheFile.renameTo(file)
-            }
+            cacheFile.renameTo(file)
 
             versionFile.writeText(tagName)
 

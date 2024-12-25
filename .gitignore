@@ -16,8 +16,7 @@ build/
 .cxx
 local.properties
 /app/libs/
-/app/src/main/assets/v2ray/geoip.dat.xz
-/app/src/main/assets/v2ray/geosite.dat.xz
+/app/src/main/assets/v2ray/*.dat
 /service_account_credentials.json
 jniLibs/
 /.kotlin

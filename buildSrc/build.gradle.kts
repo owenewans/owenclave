@@ -10,7 +10,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.1.0")
     implementation("cn.hutool:hutool-http:5.8.34")
     implementation("cn.hutool:hutool-crypto:5.8.34")
-    implementation("org.tukaani:xz:1.10")
     implementation("org.kohsuke:github-api:1.326")
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.14")
     implementation("com.google.protobuf:protobuf-gradle-plugin:0.9.4")
