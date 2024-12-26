@@ -183,6 +183,10 @@ fun Project.setupAppCommon(projectName: String) {
         } else if (requireFlavor().contains("OssRelease")) {
             return
         }
+        dependenciesInfo {
+            includeInApk = false
+            includeInBundle = false
+        }
         buildTypes {
             val key = signingConfigs.findByName("release")
             if (key != null) {
@@ -212,6 +216,11 @@ fun Project.setupPlugin(projectName: String) {
     val targetAbi = requireTargetAbi()
 
     androidApp.apply {
+        dependenciesInfo {
+            includeInApk = false
+            includeInBundle = false
+        }
+
         this as AbstractAppExtension
 
         buildTypes {
