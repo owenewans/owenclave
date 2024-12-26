@@ -504,4 +504,6 @@
     <string name="splithttp_mode">Режим</string>
     <string name="tuic_v5_provider">Реализация TUIC v5</string>
     <string name="backup_all_profiles">Бэкап всех профилей</string>
+    <string name="donate_to_original_author">Пожертвовать автору</string>
+    <string name="mieru_multiplexing_level">Уровень мультиплексирования</string>
 </resources>
