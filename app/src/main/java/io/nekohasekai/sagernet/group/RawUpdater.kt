@@ -50,6 +50,8 @@ import org.yaml.snakeyaml.TypeDescription
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.error.YAMLException
 import java.io.StringReader
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 object RawUpdater : GroupUpdater() {
@@ -694,14 +696,6 @@ object RawUpdater : GroupUpdater() {
                                 hy2Settings.getString("password")?.also {
                                     v2rayBean.hy2Password = it
                                 }
-                                hy2Settings.getObject("congestion")?.also { congestion ->
-                                    congestion.getInteger("up_mbps")?.also {
-                                        v2rayBean.hy2UpMbps = it
-                                    }
-                                    congestion.getInteger("down_mbps")?.also {
-                                        v2rayBean.hy2DownMbps = it
-                                    }
-                                }
                                 /* hy2Settings.getObject("obfs")?.also { obfs ->
                                     obfs.getString("type")?.also { type ->
                                         if (type == "salamander") {
@@ -978,14 +972,6 @@ object RawUpdater : GroupUpdater() {
                                 streamSettings.getObject("hy2Settings")?.also { hy2Settings ->
                                     hy2Settings.getString("password")?.also {
                                         hysteria2Bean.auth = it
-                                    }
-                                    hy2Settings.getObject("congestion")?.also { congestion ->
-                                        congestion.getInteger("up_mbps")?.also {
-                                            hysteria2Bean.uploadMbps = it
-                                        }
-                                        congestion.getInteger("down_mbps")?.also {
-                                            hysteria2Bean.downloadMbps = it
-                                        }
                                     }
                                     hy2Settings.getObject("obfs")?.also { obfs ->
                                         obfs.getString("type")?.also { type ->
@@ -1307,7 +1293,7 @@ object RawUpdater : GroupUpdater() {
                             v2rayBean.uuid = it
                         }
                         outbound.getString("security")?.also {
-                            v2rayBean.security = it
+                            v2rayBean.encryption = it
                         }
                         outbound.getInteger("security")?.also {
                             v2rayBean.alterId = it
@@ -1346,7 +1332,17 @@ object RawUpdater : GroupUpdater() {
                     } ?: return proxies
                     outbound.getInteger("server_port")?.also {
                         serverPorts = it.toString()
+                    } ?: (outbound.getAny("server_ports") as? List<String>)?.also {
+                        serverPorts = it.joinToString(",").replace(":", "-")
+                    } ?: (outbound.getAny("server_ports") as? String)?.also {
+                        serverPorts = it.replace(":", "-")
                     } ?: return proxies
+                    outbound.getString("hop_interval")?.also {
+                        try {
+                            val duration = Duration.parse(it)
+                            hopInterval = duration.toInt(DurationUnit.SECONDS)
+                        } catch (_: Exception) {}
+                    }
                     outbound.getString("password")?.also {
                         auth = it
                     }
@@ -1368,12 +1364,6 @@ object RawUpdater : GroupUpdater() {
                         obfuscation.getString("password")?.also {
                             obfs = it
                         }
-                    }
-                    outbound.getInteger("up_mbps")?.also {
-                        uploadMbps = it
-                    }
-                    outbound.getInteger("down_mbps")?.also {
-                        downloadMbps = it
                     }
                 }
                 proxies.add(hysteria2Bean)
@@ -1415,14 +1405,6 @@ object RawUpdater : GroupUpdater() {
                             allowInsecure = it
                         }
                     } ?: return proxies
-                    uploadMbps = 10
-                    outbound.getInteger("up_mbps")?.also {
-                        uploadMbps = it
-                    }
-                    downloadMbps = 50
-                    outbound.getInteger("down_mbps")?.also {
-                        downloadMbps = it
-                    }
                 }
                 proxies.add(hysteriaBean)
             }
@@ -1830,14 +1812,6 @@ object RawUpdater : GroupUpdater() {
                                 transportSettings["password"]?.toString()?.also {
                                     v2rayBean.hy2Password = it
                                 }
-                                (transportSettings["congestion"] as? JSONObject)?.also { congestion ->
-                                    (congestion["up_mbps"] as? Int ?: congestion["upMbps"] as? Int)?.also {
-                                        v2rayBean.hy2UpMbps = it
-                                    }
-                                    (congestion["down_mbps"] as? Int ?: congestion["downMbps"] as? Int)?.also {
-                                        v2rayBean.hy2DownMbps = it
-                                    }
-                                }
 
                             }
                         }
@@ -1931,14 +1905,6 @@ object RawUpdater : GroupUpdater() {
                     streamSettings.getObject("transportSettings")?.also { transportSettings ->
                         transportSettings["password"]?.toString()?.also {
                             hysteria2Bean.auth = it
-                        }
-                        (transportSettings["congestion"] as? JSONObject)?.also { congestion ->
-                            (congestion["up_mbps"]?.toString()?.toInt()?: congestion["upMbps"]?.toString()?.toInt())?.also {
-                                hysteria2Bean.uploadMbps = it
-                            }
-                            (congestion["down_mbps"]?.toString()?.toInt() ?: congestion["downMbps"]?.toString()?.toInt())?.also {
-                                hysteria2Bean.downloadMbps = it
-                            }
                         }
                     }
                     proxies.add(hysteria2Bean)
@@ -2183,8 +2149,6 @@ object RawUpdater : GroupUpdater() {
                     }
                     authPayloadType = HysteriaBean.TYPE_STRING
                     authPayload = proxy["auth-str"] as? String
-                    uploadMbps = (proxy["up"] as? String)?.toIntOrNull()?: 10 // support int only
-                    downloadMbps = (proxy["down"] as? String)?.toIntOrNull()?: 50 // support int only
                     sni = proxy["sni"] as? String
                     allowInsecure = proxy["skip-cert-verify"] as? Boolean == true
                     obfuscation = proxy["obfs"] as? String
@@ -2197,8 +2161,6 @@ object RawUpdater : GroupUpdater() {
                     serverAddress = proxy["server"] as? String ?: return proxies
                     serverPorts = proxy["ports"] as? String ?: (proxy["port"] as? Int)?.toString() ?: return proxies
                     auth = proxy["password"] as? String
-                    uploadMbps = (proxy["up"] as? String)?.toIntOrNull()?: 0 // support int only
-                    downloadMbps = (proxy["down"] as? String)?.toIntOrNull()?: 0 // support int only
                     sni = proxy["sni"] as? String
                     allowInsecure = proxy["skip-cert-verify"] as? Boolean == true
                     obfs = if (proxy["obfs"] as? String == "salamander") proxy["obfs-password"] as? String else ""
