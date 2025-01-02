@@ -663,7 +663,7 @@
 
     <string-array name="hysteria2_provider">
         <item>@string/plugin</item>
-        <item>V2Ray</item>
+        <item>@string/core</item>
     </string-array>
 
     <string-array name="hysteria2_provider_value">
@@ -673,7 +673,7 @@
 
     <string-array name="tuic5_provider">
         <item>@string/plugin</item>
-        <item>V2Ray</item>
+        <item>@string/core</item>
     </string-array>
 
     <string-array name="tuic5_provider_value">

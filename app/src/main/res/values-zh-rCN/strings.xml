@@ -173,7 +173,7 @@
     <string name="group_duplicate">重复：
 \n%s</string>
     <string name="deduplication">去重</string>
-    <string name="version_x">版本（%s）</string>
+    <string name="version_x">版本 (%s)</string>
     <string name="ss_cat">Shadowsocks 设置</string>
     <string name="show_direct_speed">显示直连速度</string>
     <string name="show_direct_speed_sum">在通知中显示不经过代理的流量速度</string>
@@ -527,4 +527,5 @@
     <string name="route_asset_name">资源名称</string>
     <string name="route_asset_url">资源 URL</string>
     <string name="route_asset_settings">资源设置</string>
+    <string name="core">核心</string>
 </resources>

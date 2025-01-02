@@ -204,6 +204,7 @@
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/baseline_flight_takeoff_24"
+            app:defaultValue="1"
             app:entries="@array/tuic5_provider"
             app:entryValues="@array/tuic5_provider_value"
             app:key="providerTuic5"
