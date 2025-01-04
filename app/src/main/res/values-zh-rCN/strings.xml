@@ -317,7 +317,7 @@
     <string name="fakedns_message">可能导致其他应用程序在代理停止后需要重新启动以重新连接到网络</string>
     <string name="ws_max_early_data">最大前置数据</string>
     <string name="hijack_dns">劫持 DNS</string>
-    <string name="hijack_dns_message">在 TUN 中劫持 DNS 而不是使用 DNS 流量嗅探模块</string>
+    <string name="hijack_dns_message">使用 DNS 嗅探模块劫持不是发往 TUN DNS 地址的 DNS 查询</string>
     <string name="dns_hosts">域名重写</string>
     <string name="apps">应用</string>
     <string name="select_apps">选择应用</string>

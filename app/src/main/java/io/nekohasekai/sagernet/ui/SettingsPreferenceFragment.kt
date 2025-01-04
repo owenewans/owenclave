@@ -176,7 +176,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         val enableDnsRouting = findPreference<SwitchPreference>(Key.ENABLE_DNS_ROUTING)!!
         val enableFakeDns = findPreference<SwitchPreference>(Key.ENABLE_FAKEDNS)!!
-        val hijackDns = findPreference<SwitchPreference>(Key.HIJACK_DNS)!!
 
         val requireTransproxy = findPreference<SwitchPreference>(Key.REQUIRE_TRANSPROXY)!!
         val transproxyPort = findPreference<EditTextPreference>(Key.TRANSPROXY_PORT)!!
@@ -248,9 +247,12 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val tunImplementation = findPreference<SimpleMenuPreference>(Key.TUN_IMPLEMENTATION)!!
         val trafficSniffing = findPreference<SwitchPreference>(Key.TRAFFIC_SNIFFING)!!
         val destinationOverride = findPreference<SwitchPreference>(Key.DESTINATION_OVERRIDE)!!
+        val hijackDns = findPreference<SwitchPreference>(Key.HIJACK_DNS)!!
         destinationOverride.isEnabled = trafficSniffing.isChecked
+        hijackDns.isEnabled = trafficSniffing.isChecked
         trafficSniffing.setOnPreferenceChangeListener { _, newValue ->
             destinationOverride.isEnabled = newValue as Boolean
+            hijackDns.isEnabled = newValue
             needReload()
             true
         }
@@ -336,6 +338,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         appTrafficStatistics.onPreferenceChangeListener = reloadListener
         tunImplementation.onPreferenceChangeListener = reloadListener
         destinationOverride.onPreferenceChangeListener = reloadListener
+        hijackDns.onPreferenceChangeListener = reloadListener
         resolveDestination.onPreferenceChangeListener = reloadListener
         resolveDestinationForDirect.onPreferenceChangeListener = reloadListener
         mtu.onPreferenceChangeListener = reloadListener

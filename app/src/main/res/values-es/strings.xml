@@ -425,7 +425,6 @@
     <string name="hijack_dns">Secuestrar DNS</string>
     <string name="reality_public_key">Clave pública REALITY</string>
     <string name="tuic_zero_rtt_handshake">Protocolo de enlace 0-RTT</string>
-    <string name="hijack_dns_message">Interceptar DNS en TUN en lugar de utilizar un rastreador de DNS</string>
     <string name="hysteria_init_stream_receive_window">Ventana de recepción de secuencia de inicio QUIC</string>
     <string name="hysteria_max_stream_receive_window">Ventana de recepción de flujo máximo QUIC</string>
     <string name="hysteria_init_conn_receive_window">Ventana de recepción de conexión de inicio QUIC</string>

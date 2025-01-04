@@ -73,7 +73,7 @@
     <string name="enable_fakedns">Enable fake DNS</string>
     <string name="fakedns_message">May cause other applications to need to be restarted to reconnect to the network after the proxy is disconnected</string>
     <string name="hijack_dns">Hijack DNS</string>
-    <string name="hijack_dns_message">Hijack DNS in TUN instead of using DNS sniffer</string>
+    <string name="hijack_dns_message">Hijack DNS queries that are not sent to TUN DNS address with DNS sniffer</string>
     <string name="dns_hosts">Domain rewriting</string>
     <string name="port_local_dns">Local DNS port</string>
     <string name="require_transproxy">Enable transparent proxy inbound</string>

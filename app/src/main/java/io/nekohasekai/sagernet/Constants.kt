@@ -43,7 +43,7 @@ object Key {
     const val USE_LOCAL_DNS_AS_BOOTSTRAP_DNS = "useLocalDnsAsBootstrapDns"
     const val ENABLE_DNS_ROUTING = "enableDnsRouting"
     const val ENABLE_FAKEDNS = "enableFakeDns"
-    const val HIJACK_DNS = "hijackDns"
+    const val HIJACK_DNS = "hijackDns0"
     const val DNS_HOSTS = "dnsHosts0"
     const val REMOTE_DNS_QUERY_STRATEGY = "remoteDnsQueryStrategy"
     const val DIRECT_DNS_QUERY_STRATEGY = "directDnsQueryStrategy"
