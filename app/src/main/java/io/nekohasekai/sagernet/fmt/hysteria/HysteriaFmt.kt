@@ -66,6 +66,12 @@ fun parseHysteria(url: String): HysteriaBean {
                 }
             }
         }
+        link.queryParameter("upmbps")?.also {
+            uploadMbps = it.toIntOrNull()
+        }
+        link.queryParameter("downmbps")?.also {
+            downloadMbps = it.toIntOrNull()
+        }
     }
 }
 

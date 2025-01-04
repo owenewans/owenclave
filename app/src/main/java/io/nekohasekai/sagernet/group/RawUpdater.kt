@@ -696,6 +696,14 @@ object RawUpdater : GroupUpdater() {
                                 hy2Settings.getString("password")?.also {
                                     v2rayBean.hy2Password = it
                                 }
+                                hy2Settings.getObject("congestion")?.also { congestion ->
+                                    congestion.getInteger("up_mbps")?.also {
+                                        v2rayBean.hy2UpMbps = it
+                                    }
+                                    congestion.getInteger("down_mbps")?.also {
+                                        v2rayBean.hy2DownMbps = it
+                                    }
+                                }
                                 /* hy2Settings.getObject("obfs")?.also { obfs ->
                                     obfs.getString("type")?.also { type ->
                                         if (type == "salamander") {
@@ -972,6 +980,14 @@ object RawUpdater : GroupUpdater() {
                                 streamSettings.getObject("hy2Settings")?.also { hy2Settings ->
                                     hy2Settings.getString("password")?.also {
                                         hysteria2Bean.auth = it
+                                    }
+                                    hy2Settings.getObject("congestion")?.also { congestion ->
+                                        congestion.getInteger("up_mbps")?.also {
+                                            hysteria2Bean.uploadMbps = it
+                                        }
+                                        congestion.getInteger("down_mbps")?.also {
+                                            hysteria2Bean.downloadMbps = it
+                                        }
                                     }
                                     hy2Settings.getObject("obfs")?.also { obfs ->
                                         obfs.getString("type")?.also { type ->
@@ -1365,6 +1381,12 @@ object RawUpdater : GroupUpdater() {
                             obfs = it
                         }
                     }
+                    outbound.getInt("up_mbps")?.also {
+                        uploadMbps = it
+                    }
+                    outbound.getInt("down_mbps")?.also {
+                        downloadMbps = it
+                    }
                 }
                 proxies.add(hysteria2Bean)
             }
@@ -1405,6 +1427,16 @@ object RawUpdater : GroupUpdater() {
                             allowInsecure = it
                         }
                     } ?: return proxies
+                    outbound.getInt("up_mbps")?.also {
+                        uploadMbps = it
+                    } ?: outbound.getString("up")?.toMegaBits()?.also {
+                        uploadMbps = it
+                    }
+                    outbound.getInt("down_mbps")?.also {
+                        downloadMbps = it
+                    } ?: outbound.getString("down")?.toMegaBits()?.also {
+                        downloadMbps = it
+                    }
                 }
                 proxies.add(hysteriaBean)
             }
@@ -1812,7 +1844,14 @@ object RawUpdater : GroupUpdater() {
                                 transportSettings["password"]?.toString()?.also {
                                     v2rayBean.hy2Password = it
                                 }
-
+                                (transportSettings["congestion"] as? JSONObject)?.also { congestion ->
+                                    (congestion["up_mbps"] as? Int ?: congestion["upMbps"] as? Int)?.also {
+                                        v2rayBean.hy2UpMbps = it
+                                    }
+                                    (congestion["down_mbps"] as? Int ?: congestion["downMbps"] as? Int)?.also {
+                                        v2rayBean.hy2DownMbps = it
+                                    }
+                                }
                             }
                         }
                         else -> return proxies
@@ -1905,6 +1944,14 @@ object RawUpdater : GroupUpdater() {
                     streamSettings.getObject("transportSettings")?.also { transportSettings ->
                         transportSettings["password"]?.toString()?.also {
                             hysteria2Bean.auth = it
+                        }
+                        (transportSettings["congestion"] as? JSONObject)?.also { congestion ->
+                            (congestion["up_mbps"]?.toString()?.toInt()?: congestion["upMbps"]?.toString()?.toInt())?.also {
+                                hysteria2Bean.uploadMbps = it
+                            }
+                            (congestion["down_mbps"]?.toString()?.toInt() ?: congestion["downMbps"]?.toString()?.toInt())?.also {
+                                hysteria2Bean.downloadMbps = it
+                            }
                         }
                     }
                     proxies.add(hysteria2Bean)
@@ -2149,6 +2196,8 @@ object RawUpdater : GroupUpdater() {
                     }
                     authPayloadType = HysteriaBean.TYPE_STRING
                     authPayload = proxy["auth-str"] as? String
+                    uploadMbps = (proxy["up"] as? String)?.toMegaBitsPerSecond()
+                    downloadMbps = (proxy["down"] as? String)?.toMegaBitsPerSecond()
                     sni = proxy["sni"] as? String
                     allowInsecure = proxy["skip-cert-verify"] as? Boolean == true
                     obfuscation = proxy["obfs"] as? String
@@ -2161,6 +2210,8 @@ object RawUpdater : GroupUpdater() {
                     serverAddress = proxy["server"] as? String ?: return proxies
                     serverPorts = proxy["ports"] as? String ?: (proxy["port"] as? Int)?.toString() ?: return proxies
                     auth = proxy["password"] as? String
+                    uploadMbps = (proxy["up"] as? String)?.toMegaBitsPerSecond()
+                    downloadMbps = (proxy["down"] as? String)?.toMegaBitsPerSecond()
                     sni = proxy["sni"] as? String
                     allowInsecure = proxy["skip-cert-verify"] as? Boolean == true
                     obfs = if (proxy["obfs"] as? String == "salamander") proxy["obfs-password"] as? String else ""

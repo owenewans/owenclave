@@ -24,6 +24,7 @@ import io.nekohasekai.sagernet.BuildConfig
 import libcore.URL
 import java.net.InetSocketAddress
 import java.net.Socket
+import kotlin.math.roundToInt
 import kotlin.random.Random
 
 fun URL.queryParameter(key: String) = queryParameterNotBlank(key).takeIf { it.isNotEmpty() }
@@ -176,6 +177,79 @@ fun String.toHysteriaPort(): Int {
         oldLen = newLen
     }
     error("invalid port range")
+}
+
+fun String.toMegaBitsPerSecond(): Int? {
+    // mihomo
+    if (this.isEmpty()) {
+        return 0
+    }
+    this.toIntOrNull()?.let {
+        return it.takeIf { it >= 0 }
+    }
+    var splitAt = 0
+    for ((i, ch) in this.withIndex()) {
+        splitAt = i
+        if (!ch.isDigit()) {
+            break
+        }
+    }
+    this.substring(0, splitAt).toIntOrNull()?.takeIf { it >= 0 }?.let {
+        val ret = when (this.substring(splitAt).trim()) {
+            "bps" -> (it / 1000000f).roundToInt()
+            "Kbps" -> (it / 1000f).roundToInt()
+            "Mbps" -> it
+            "Gbps" -> it * 1000
+            "Tbps" -> it * 1000000
+            "Bps" -> (it / 125000f).roundToInt()
+            "KBps" -> (it / 125f).roundToInt()
+            "MBps" -> it * 8
+            "GBps" -> it * 8000
+            "TBps" -> it * 8000000
+            else -> return null
+        }
+        return if (it > 0 && ret == 0) 1 else ret
+    } ?: return null
+}
+
+fun String.toMegaBits(): Int? {
+    // sing-box
+    if (this.isEmpty()) {
+        return null
+    }
+    this.replace(",", "").trim().toFloatOrNull()?.let {
+        if (it < 0f) {
+            return null
+        }
+        val ret = (it / 1000f / 1000f).roundToInt()
+        return if (it > 0f && ret == 0) 1 else ret
+    }
+    var splitAt = 0
+    for ((i, ch) in this.withIndex()) {
+        splitAt = i
+        if (!(ch.isDigit() || ch == '.' || ch == ',')) {
+            break
+        }
+    }
+    this.substring(0, splitAt).replace(",", "").toFloatOrNull()?.takeIf { it >= 0f }?.let {
+        val ret = when (this.substring(splitAt).trim().lowercase()) {
+            "b" -> (it / 1000f / 1000f).roundToInt()
+            "k", "kb" -> (it / 1000f).roundToInt()
+            "m", "mb" -> it.roundToInt()
+            "g", "gb" -> (it * 1000f).roundToInt()
+            "t", "tb" -> (it * 1000f * 1000f).roundToInt()
+            "p", "pb" -> (it * 1000f * 1000f * 1000f).roundToInt()
+            "e", "eb" -> (it * 1000f * 1000f * 1000f * 1000f).roundToInt()
+            "ki", "kib" -> (it * 1.024f / 1000f).roundToInt()
+            "mi", "mib" -> (it * 1.024f * 1.024f).roundToInt()
+            "gi", "gib" -> (it * 1.024f * 1.024f * 1.024f * 1000f).roundToInt()
+            "ti", "tib" -> (it * 1.024f * 1.024f * 1.024f * 1.024f * 1000f * 1000f).roundToInt()
+            "pi", "pib" -> (it * 1.024f * 1.024f * 1.024f * 1.024f * 1.024f * 1000f * 1000f * 1000f).roundToInt()
+            "ei", "eib" -> (it * 1.024f * 1.024f * 1.024f * 1.024f * 1.024f * 1.024f * 1000f * 1000f * 1000f * 1000f).roundToInt()
+            else -> return null
+        }
+        return if (it > 0f && ret == 0) 1 else ret
+    } ?: return null
 }
 
 const val USER_AGENT = "Exclave/${BuildConfig.VERSION_NAME}"
