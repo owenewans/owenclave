@@ -4,9 +4,9 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
 ## Download
 
-- [Exclave](https://github.com/dyhkwong/Exclave/releases/latest)
+  [<img src="images/get-it-on-github.png" alt="Get it on GitHub" height="80">](https://github.com/dyhkwong/Exclave/releases) [<img src="images/get-it-on-f-droid.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/com.github.dyhkwong.sagernet)
 
-- [NaïveProxy plugin (use upstream releases directly)](https://github.com/klzgrad/naiveproxy/releases)
+- [NaïveProxy plugin](https://github.com/klzgrad/naiveproxy/releases) (use upstream releases directly)
 
 - [Hysteria 2 plugin](https://github.com/dyhkwong/Exclave/releases?q=hysteria-plugin-2)
 

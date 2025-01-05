@@ -1,1 +1,1 @@
-See https://github.com/dyhkwong/Exclave/releases for details.
+See <a href="https://github.com/dyhkwong/Exclave/releases">release notes</a> for details.
