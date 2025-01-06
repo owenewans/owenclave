@@ -18,8 +18,6 @@ A fork of SagerNet, the universal proxy toolchain for Android written in Kotlin.
 
 - [Other plugins](https://github.com/dyhkwong/Exclave/releases/tag/0.12.0-0-legacy-plugins)
 
-</details>
-
 ## Report issues
 
 Please report issues [here](https://github.com/dyhkwong/Exclave/issues). Do not report issues to upstream because the core used is heavily modified. Encrypt with [this GPG public key](https://github.com/dyhkwong.gpg) before posting if the issue contains sensitive information.
