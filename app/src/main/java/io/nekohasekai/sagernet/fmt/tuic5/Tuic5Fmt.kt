@@ -18,7 +18,6 @@
 
 package io.nekohasekai.sagernet.fmt.tuic5
 
-import android.os.Build
 import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.RootCAProvider
@@ -166,11 +165,7 @@ fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
                 it["certificates"] = JSONArray().apply {
                     // https://github.com/maskedeken/tuic/commit/88e57f6e41ae8985edd8f620950e3f8e7d29e1cc
                     // workaround tuic can't load Android system root certificates without forking it
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        File("/apex/com.android.conscrypt/cacerts").listFiles()?.forEach { put(it) }
-                    } else {
-                        File("/system/etc/security/cacerts").listFiles()?.forEach { put(it) }
-                    }
+                    File("/system/etc/security/cacerts").listFiles()?.forEach { put(it) }
                 }
             }
 

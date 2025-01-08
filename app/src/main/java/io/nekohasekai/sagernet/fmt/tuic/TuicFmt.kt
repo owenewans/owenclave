@@ -18,7 +18,6 @@
 
 package io.nekohasekai.sagernet.fmt.tuic
 
-import android.os.Build
 import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
 import io.nekohasekai.sagernet.RootCAProvider
@@ -76,11 +75,7 @@ fun TuicBean.buildTuicConfig(port: Int, cacheFile: (() -> File)?): String {
             } else if (DataStore.providerRootCA == RootCAProvider.SYSTEM && caText.isEmpty()) {
                 it["certificates"] = JSONArray().apply {
                     // workaround tuic can't load Android system root certificates without forking it
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        File("/apex/com.android.conscrypt/cacerts").listFiles()?.forEach { put(it) }
-                    } else {
-                        File("/system/etc/security/cacerts").listFiles()?.forEach { put(it) }
-                    }
+                    File("/system/etc/security/cacerts").listFiles()?.forEach { put(it) }
                 }
             }
 
