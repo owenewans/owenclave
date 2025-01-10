@@ -535,7 +535,7 @@ object RawUpdater : GroupUpdater() {
                                     v2rayBean.host = it
                                 }
                                 wsSettings.getInteger("maxEarlyData")?.also {
-                                    v2rayBean.wsMaxEarlyData = it
+                                    v2rayBean.maxEarlyData = it
                                 }
                                 wsSettings.getString("earlyDataHeaderName")?.also {
                                     v2rayBean.earlyDataHeaderName = it
@@ -548,7 +548,7 @@ object RawUpdater : GroupUpdater() {
                                         u.deleteQueryParameter("ed")
                                         v2rayBean.path = u.string
                                         (ed.toIntOrNull())?.also {
-                                            v2rayBean.wsMaxEarlyData = it
+                                            v2rayBean.maxEarlyData = it
                                         }
                                         v2rayBean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
                                     }
@@ -611,6 +611,12 @@ object RawUpdater : GroupUpdater() {
                                         u.deleteQueryParameter("ed")
                                         v2rayBean.path = u.string
                                     }
+                                }
+                                httpupgradeSettings.getInteger("maxEarlyData")?.also {
+                                    v2rayBean.maxEarlyData = it
+                                }
+                                httpupgradeSettings.getString("earlyDataHeaderName")?.also {
+                                    v2rayBean.earlyDataHeaderName = it
                                 }
                             }
                         }
@@ -1183,7 +1189,7 @@ object RawUpdater : GroupUpdater() {
                                         }
                                     }
                                     transport.getInteger("max_early_data")?.also {
-                                        v2rayBean.wsMaxEarlyData = it
+                                        v2rayBean.maxEarlyData = it
                                     }
                                     transport.getString("early_data_header_name")?.also {
                                         v2rayBean.earlyDataHeaderName = it
@@ -1757,7 +1763,7 @@ object RawUpdater : GroupUpdater() {
                                 }
                                 (transportSettings["maxEarlyData"]?.toString()?.toInt()
                                     ?: transportSettings["max_early_data"]?.toString()?.toInt())?.also {
-                                    v2rayBean.wsMaxEarlyData = it
+                                    v2rayBean.maxEarlyData = it
                                 }
                                 (transportSettings["earlyDataHeaderName"]?.toString()
                                     ?: transportSettings["early_data_header_name"]?.toString())?.also {
@@ -1813,6 +1819,14 @@ object RawUpdater : GroupUpdater() {
                                 }
                                 transportSettings["host"]?.toString()?.also {
                                     v2rayBean.host = it
+                                }
+                                (transportSettings["maxEarlyData"]?.toString()?.toInt()
+                                    ?: transportSettings["max_early_data"]?.toString()?.toInt())?.also {
+                                    v2rayBean.maxEarlyData = it
+                                }
+                                (transportSettings["earlyDataHeaderName"]?.toString()
+                                    ?: transportSettings["early_data_header_name"]?.toString())?.also {
+                                    v2rayBean.earlyDataHeaderName = it
                                 }
                             }
                         }
@@ -2105,7 +2119,7 @@ object RawUpdater : GroupUpdater() {
                                         bean.path = wsOpt.value as? String
                                     }
                                     "max-early-data" -> {
-                                        bean.wsMaxEarlyData = wsOpt.value as? Int
+                                        bean.maxEarlyData = wsOpt.value as? Int
                                     }
                                     "early-data-header-name" -> {
                                         bean.earlyDataHeaderName = wsOpt.value as? String

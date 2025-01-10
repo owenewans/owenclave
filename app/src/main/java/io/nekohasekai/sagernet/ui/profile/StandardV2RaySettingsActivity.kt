@@ -125,7 +125,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         }
         DataStore.serverPinnedCertificateChain = pinnedPeerCertificateChainSha256
         DataStore.serverQuicSecurity = quicSecurity
-        DataStore.serverWsMaxEarlyData = wsMaxEarlyData
+        DataStore.serverWsMaxEarlyData = maxEarlyData
         DataStore.serverEarlyDataHeaderName = earlyDataHeaderName
         DataStore.serverSplithttpMode = splithttpMode
         DataStore.serverSplithttpExtra = splithttpExtra
@@ -211,7 +211,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             is SOCKSBean -> protocol = DataStore.serverProtocolVersion
         }
         quicSecurity = DataStore.serverQuicSecurity
-        wsMaxEarlyData = DataStore.serverWsMaxEarlyData
+        maxEarlyData = DataStore.serverWsMaxEarlyData
         earlyDataHeaderName = DataStore.serverEarlyDataHeaderName
         splithttpMode = DataStore.serverSplithttpMode
         splithttpExtra = DataStore.serverSplithttpExtra
@@ -283,6 +283,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var passwordUUID: EditTextPreference
 
     lateinit var wsCategory: PreferenceCategory
+    lateinit var wsUseBrowserForwarder: SwitchPreference
     lateinit var splithttpCategory: PreferenceCategory
     lateinit var splithttpMode: SimpleMenuPreference
     lateinit var ssExperimentsCategory: PreferenceCategory
@@ -359,6 +360,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         mekyaUrl = findPreference(Key.SERVER_MEKYA_URL)!!
 
         wsCategory = findPreference(Key.SERVER_WS_CATEGORY)!!
+        wsUseBrowserForwarder = findPreference(Key.SERVER_WS_BROWSER_FORWARDING)!!
         splithttpCategory = findPreference(Key.SERVER_SH_CATEGORY)!!
         splithttpMode = findPreference(Key.SERVER_SPLITHTTP_MODE)!!
 
@@ -550,7 +552,10 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             }
         }
 
-        wsCategory.isVisible = isWS
+        wsCategory.isVisible = isWS || isHTTPUpgrade
+        if (isWS) wsCategory.setTitle(R.string.cag_ws)
+        if (isHTTPUpgrade) wsCategory.setTitle(R.string.cag_httpupgrade)
+        wsUseBrowserForwarder.isVisible = isWS
         splithttpCategory.isVisible = isSplitHTTP
         if (splithttpMode.value !in resources.getStringArray(R.array.splithttp_mode_value)) {
             splithttpMode.value = resources.getStringArray(R.array.splithttp_mode_value)[0]

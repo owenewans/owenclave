@@ -803,8 +803,8 @@ fun buildV2RayConfig(
 
                                                 path = bean.path.takeIf { it.isNotEmpty() } ?: "/"
 
-                                                if (bean.wsMaxEarlyData > 0) {
-                                                    maxEarlyData = bean.wsMaxEarlyData
+                                                if (bean.maxEarlyData > 0) {
+                                                    maxEarlyData = bean.maxEarlyData
                                                 }
 
                                                 if (bean.earlyDataHeaderName.isNotEmpty()) {
@@ -858,6 +858,12 @@ fun buildV2RayConfig(
                                                 }
                                                 if (bean.path.isNotEmpty()) {
                                                     path = bean.path
+                                                }
+                                                if (bean.maxEarlyData > 0) {
+                                                    maxEarlyData = bean.maxEarlyData
+                                                }
+                                                if (bean.earlyDataHeaderName.isNotEmpty()) {
+                                                    earlyDataHeaderName = bean.earlyDataHeaderName
                                                 }
                                             }
                                         }

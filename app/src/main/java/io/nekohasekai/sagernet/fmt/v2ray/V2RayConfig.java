@@ -1189,7 +1189,16 @@ public class V2RayConfig {
 
         public String host;
         public String path;
-        public Map<String, String> headers;
+        public Integer maxEarlyData;
+        public String earlyDataHeaderName;
+        public List<HTTPUpgradeHeaderObject> header;
+
+        public static class HTTPUpgradeHeaderObject {
+
+            public String key;
+            public String value;
+
+        }
 
     }
 

@@ -250,6 +250,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                         bean.path = u.string
                     }
                 }
+                url.queryParameter("eh")?.let {
+                    bean.earlyDataHeaderName = it // non-standard, invented by SagerNet and adopted by some other software
+                }
+                url.queryParameter("ed")?.toIntOrNull()?.let {
+                    bean.maxEarlyData = it // non-standard, invented by SagerNet and adopted by some other software
+                }
             }
             "ws" -> {
                 url.queryParameter("host")?.let {
@@ -264,7 +270,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     u.queryParameter("ed")?.let { ed ->
                         u.deleteQueryParameter("ed")
                         bean.path = u.string
-                        bean.wsMaxEarlyData = ed.toIntOrNull()
+                        bean.maxEarlyData = ed.toIntOrNull()
                         bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
                     }
                 }
@@ -272,7 +278,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.earlyDataHeaderName = it // non-standard, invented by SagerNet and adopted by some other software
                 }
                 url.queryParameter("ed")?.toIntOrNull()?.let {
-                    bean.wsMaxEarlyData = it // non-standard, invented by SagerNet and adopted by some other software
+                    bean.maxEarlyData = it // non-standard, invented by SagerNet and adopted by some other software
                 }
             }
             "quic" -> {
@@ -366,7 +372,7 @@ fun parseV2RayN(link: String): VMessBean {
             u.queryParameter("ed")?.let { ed ->
                 u.deleteQueryParameter("ed")
                 bean.path = u.string
-                bean.wsMaxEarlyData = ed.toIntOrNull()
+                bean.maxEarlyData = ed.toIntOrNull()
                 bean.earlyDataHeaderName = "Sec-WebSocket-Protocol"
             }
         }
@@ -555,17 +561,33 @@ fun StandardV2RayBean.toUri(): String? {
                 // non-standard, invented by SagerNet and adopted by some other software
                 builder.addQueryParameter("eh", earlyDataHeaderName)
             }
-            if (wsMaxEarlyData > 0) {
+            if (maxEarlyData > 0) {
                 // non-standard, invented by SagerNet and adopted by some other software
-                builder.addQueryParameter("ed", wsMaxEarlyData.toString())
+                builder.addQueryParameter("ed", maxEarlyData.toString())
             }
         }
-        "http", "httpupgrade" -> {
+        "http" -> {
             if (host.isNotEmpty()) {
                 builder.addQueryParameter("host", host)
             }
             if (path.isNotEmpty()) {
                 builder.addQueryParameter("path", path)
+            }
+        }
+        "httpupgrade" -> {
+            if (host.isNotEmpty()) {
+                builder.addQueryParameter("host", host)
+            }
+            if (path.isNotEmpty()) {
+                builder.addQueryParameter("path", path)
+            }
+            if (earlyDataHeaderName.isNotEmpty()) {
+                // non-standard, invented by SagerNet and adopted by some other software
+                builder.addQueryParameter("eh", earlyDataHeaderName)
+            }
+            if (maxEarlyData > 0) {
+                // non-standard, invented by SagerNet and adopted by some other software
+                builder.addQueryParameter("ed", maxEarlyData.toString())
             }
         }
         "splithttp" -> {

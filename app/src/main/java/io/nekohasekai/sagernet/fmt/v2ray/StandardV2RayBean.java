@@ -42,7 +42,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String alpn;
 
     public String grpcServiceName;
-    public Integer wsMaxEarlyData;
+    public Integer maxEarlyData;
     public String earlyDataHeaderName;
     public String meekUrl;
     public String splithttpMode;
@@ -100,7 +100,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (alpn == null) alpn = "";
 
         if (grpcServiceName == null) grpcServiceName = "";
-        if (wsMaxEarlyData == null) wsMaxEarlyData = 0;
+        if (maxEarlyData == null) maxEarlyData = 0;
         if (wsUseBrowserForwarder == null) wsUseBrowserForwarder = false;
         if (shUseBrowserForwarder == null) shUseBrowserForwarder = false;
         if (certificates == null) certificates = "";
@@ -134,7 +134,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(24);
+        output.writeInt(25);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -156,14 +156,21 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "ws": {
                 output.writeString(host);
                 output.writeString(path);
-                output.writeInt(wsMaxEarlyData);
+                output.writeInt(maxEarlyData);
                 output.writeBoolean(wsUseBrowserForwarder);
                 output.writeString(earlyDataHeaderName);
                 break;
             }
-            case "http", "httpupgrade": {
+            case "http": {
                 output.writeString(host);
                 output.writeString(path);
+                break;
+            }
+            case "httpupgrade": {
+                output.writeString(host);
+                output.writeString(path);
+                output.writeInt(maxEarlyData);
+                output.writeString(earlyDataHeaderName);
                 break;
             }
             case "splithttp": {
@@ -266,7 +273,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "ws": {
                 host = input.readString();
                 path = input.readString();
-                wsMaxEarlyData = input.readInt();
+                maxEarlyData = input.readInt();
                 wsUseBrowserForwarder = input.readBoolean();
                 if (version >= 2) {
                     earlyDataHeaderName = input.readString();
@@ -307,6 +314,10 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (version >= 12) {
                     host = input.readString();
                     path = input.readString();
+                }
+                if (version >= 25) {
+                    maxEarlyData = input.readInt();
+                    earlyDataHeaderName = input.readString();
                 }
                 if (version >= 16) {
                     break;
@@ -439,7 +450,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (allowInsecure) {
             bean.allowInsecure = true;
         }
-        bean.wsMaxEarlyData = wsMaxEarlyData;
+        bean.maxEarlyData = maxEarlyData;
         bean.earlyDataHeaderName = earlyDataHeaderName;
         bean.wsUseBrowserForwarder = wsUseBrowserForwarder;
         bean.shUseBrowserForwarder = shUseBrowserForwarder;
