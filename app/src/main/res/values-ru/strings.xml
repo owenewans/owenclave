@@ -292,8 +292,8 @@
     <string name="early_data_header_name">Имя заголовка ранних данных</string>
     <string name="pinned_peer_certificate_chain_sha256">Хэш цепочки закрепленного сертификата</string>
     <string name="certificates">Сертификаты</string>
-    <string name="alpn">Согласование протокола уровня приложений</string>
-    <string name="sni">Server Name Indication (SNI)</string>
+    <string name="alpn">Согласование протокола прикладного уровня (ALPN)</string>
+    <string name="sni">Индикация имени сервера (SNI)</string>
     <string name="grpc_service_name">Имя службы gRPC</string>
     <string name="kcp_seed">mKCP Seed</string>
     <string name="quic_key">Ключ QUIC</string>
@@ -518,4 +518,5 @@
     <string name="route_asset_settings">Данные георесурса</string>
     <string name="browser_forwarder_hint">Загрузите v2ray-extra.zip из релиза v2ray-core и поместите index.html и index.js в Android/data/%s/files или импортируйте index.html и index.js в качестве ресурсов маршрута.</string>
     <string name="hijack_dns_message">Перехват DNS-запросов, не отправленных на DNS-адрес TUN с помощью DNS-сниффера</string>
+    <string name="cag_httpupgrade">Настройки HTTPUpgrade</string>
 </resources>
