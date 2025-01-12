@@ -43,8 +43,10 @@ public class VLESSBean extends StandardV2RayBean {
     public void applyFeatureSettings(AbstractBean other) {
         super.applyFeatureSettings(other);
         if (!(other instanceof VLESSBean bean)) return;
-        if (flow.endsWith("-udp443") && !bean.flow.isEmpty() && !bean.flow.endsWith("-udp443")) {
-            bean.flow = flow; // keep -udp443
+        if (flow.equals("xtls-rprx-vision-udp443") && bean.flow.equals("xtls-rprx-vision")) {
+            bean.flow = flow;
+        } else if (flow.equals("xtls-rprx-vision") && bean.flow.equals("xtls-rprx-vision-udp443")) {
+            bean.flow = flow;
         }
     }
 

@@ -141,7 +141,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 }
                 if (bean is VLESSBean && bean.security == "tls") {
                     url.queryParameter("flow")?.let {
-                        bean.flow = it
+                        bean.flow = if (it == "xtls-rprx-vision") "xtls-rprx-vision-udp443" else it
                         bean.packetEncoding = "xudp"
                     }
                 }
@@ -175,7 +175,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 }
                 if (bean is VLESSBean) {
                     url.queryParameter("flow")?.let {
-                        bean.flow = it
+                        bean.flow = if (it == "xtls-rprx-vision") "xtls-rprx-vision-udp443" else it
                         bean.packetEncoding = "xudp"
                     }
                 }
@@ -418,11 +418,11 @@ fun parseV2RayN(link: String): VMessBean {
     bean.sni = json.getStr("sni")?.takeIf { it.isNotEmpty() } ?: bean.host
     bean.alpn = json.getStr("alpn")?.takeIf { it.isNotEmpty() }?.split(",")?.joinToString("\n")
     // bad format from where?
-    json.getStr("allowInsecure")?.let {
+    json.getStr("allowInsecure")?.let { // Boolean or Int or String
         if (it == "1" || it.lowercase() == "true") {
             bean.allowInsecure = true // non-standard
         }
-    } ?: json.getStr("insecure")?.let {
+    } ?: json.getStr("insecure")?.let { // Boolean or Int or String
         if (it == "1" || it.lowercase() == "true") {
             bean.allowInsecure = true // non-standard
         }

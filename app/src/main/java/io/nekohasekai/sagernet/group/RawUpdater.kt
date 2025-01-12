@@ -792,7 +792,7 @@ object RawUpdater : GroupUpdater() {
                                         v2rayBean.encryption = it.lowercase()
                                     }
                                     user.getString("flow")?.also {
-                                        v2rayBean.flow = it
+                                        v2rayBean.flow = if (it == "xtls-rprx-vision") "xtls-rprx-vision-udp443" else it
                                         v2rayBean.packetEncoding = "xudp"
                                     }
                                 }
@@ -1332,7 +1332,7 @@ object RawUpdater : GroupUpdater() {
                             v2rayBean.uuid = it
                         }
                         outbound.getString("flow")?.also {
-                            v2rayBean.flow = it
+                            v2rayBean.flow = if (it == "xtls-rprx-vision") "xtls-rprx-vision-udp443" else it
                         }
                         v2rayBean.packetEncoding = when (outbound.getString("packet_encoding")) {
                             "packetaddr" -> "packet"
@@ -2076,7 +2076,9 @@ object RawUpdater : GroupUpdater() {
                         "uuid" -> if (bean is VMessBean || bean is VLESSBean) bean.uuid = opt.value as? String
                         "alterId" -> if (bean is VMessBean) bean.alterId = opt.value as? Int
                         "cipher" -> if (bean is VMessBean) bean.encryption = (opt.value as? String)?.lowercase()
-                        "flow" -> if (bean is VLESSBean) bean.flow = (opt.value as? String)?.lowercase()
+                        "flow" -> if (bean is VLESSBean) bean.flow = (opt.value as? String)?.lowercase()?.let {
+                            if (it == "xtls-rprx-vision") "xtls-rprx-vision-udp443" else it
+                        }
                         "packet-encoding" -> if (bean is VMessBean || bean is VLESSBean) {
                             bean.packetEncoding = when ((opt.value as? String)?.lowercase()) {
                                 "packetaddr" -> "packet"
