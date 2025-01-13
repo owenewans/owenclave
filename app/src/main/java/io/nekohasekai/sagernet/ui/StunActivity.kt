@@ -93,7 +93,8 @@ class StunActivity : ThemedActivity() {
                         .setTitle(R.string.error_title)
                         .setMessage(result.error)
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
-                        .show()
+                        .setOnCancelListener { finish() }
+                        .runCatching { show() }
                 }
                 binding.waitLayout.isVisible = false
                 binding.resultLayout.isVisible = true

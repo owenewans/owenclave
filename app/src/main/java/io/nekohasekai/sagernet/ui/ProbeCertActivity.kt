@@ -102,6 +102,7 @@ class ProbeCertActivity : ThemedActivity() {
                         .setTitle(R.string.error_title)
                         .setMessage(e.toString())
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .setOnCancelListener { finish() }
                         .runCatching { show() }
                 }
             }
