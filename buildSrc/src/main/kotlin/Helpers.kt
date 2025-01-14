@@ -90,7 +90,7 @@ fun Project.setupCommon() {
 
 fun Project.setupCommon(projectName: String) {
     android.apply {
-        buildToolsVersion = "35.0.0"
+        buildToolsVersion = "35.0.1"
         compileSdk = 35
         defaultConfig {
             minSdk = if (projectName.lowercase(Locale.ROOT) == "naive") 24 else 21
