@@ -741,9 +741,6 @@ fun buildV2RayConfig(
                                                 if (bean.realityShortId.isNotEmpty()) {
                                                     shortId = bean.realityShortId
                                                 }
-                                                if (bean.realitySpiderX.isNotEmpty()) {
-                                                    spiderX = bean.realitySpiderX
-                                                }
                                                 if (bean.realityFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.realityFingerprint
                                                 }
@@ -920,12 +917,6 @@ fun buildV2RayConfig(
                                                     down_mbps = bean.hy2DownMbps
                                                     up_mbps = bean.hy2UpMbps
                                                 }
-                                                /* if (bean.hy2ObfsPassword.isNotEmpty()) {
-                                                    obfs = Hysteria2Object.OBFSObject().apply {
-                                                        type = "salamander"
-                                                        password = bean.hy2ObfsPassword
-                                                    }
-                                                } */
                                             }
                                         }
                                         "mekya" -> {

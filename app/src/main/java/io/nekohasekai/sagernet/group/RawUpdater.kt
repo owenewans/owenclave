@@ -474,9 +474,6 @@ object RawUpdater : GroupUpdater() {
                                 realitySettings.getString("shortId")?.also {
                                     v2rayBean.realityShortId = it
                                 }
-                                realitySettings.getString("spiderX")?.also {
-                                    v2rayBean.realitySpiderX = it
-                                }
                             }
                         }
                     }
@@ -710,15 +707,6 @@ object RawUpdater : GroupUpdater() {
                                         v2rayBean.hy2DownMbps = it
                                     }
                                 }
-                                /* hy2Settings.getObject("obfs")?.also { obfs ->
-                                    obfs.getString("type")?.also { type ->
-                                        if (type == "salamander") {
-                                            obfs.getString("password")?.also {
-                                                v2rayBean.hy2ObfsPassword = it
-                                            }
-                                        }
-                                    }
-                                } */
                             }
                         }
                         else -> return proxies

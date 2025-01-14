@@ -135,7 +135,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         DataStore.serverRealityPublicKey = realityPublicKey
         DataStore.serverRealityShortId = realityShortId
-        DataStore.serverRealitySpiderX = realitySpiderX
         DataStore.serverRealityFingerprint = realityFingerprint
 
         DataStore.serverUploadSpeed = hy2UpMbps
@@ -221,7 +220,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         realityPublicKey = DataStore.serverRealityPublicKey
         realityShortId = DataStore.serverRealityShortId
-        realitySpiderX = DataStore.serverRealitySpiderX
         realityFingerprint = DataStore.serverRealityFingerprint
 
         hy2UpMbps = DataStore.serverUploadSpeed
@@ -265,7 +263,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
     lateinit var realityPublicKey: EditTextPreference
     lateinit var realityShortId: EditTextPreference
-    lateinit var realitySpiderX: EditTextPreference
     lateinit var realityFingerprint: SimpleMenuPreference
 
     lateinit var packetEncoding: SimpleMenuPreference
@@ -329,7 +326,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
-        realitySpiderX = findPreference(Key.SERVER_REALITY_SPIDER_X)!!
         realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
 
         realityPublicKey.apply {
@@ -695,7 +691,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         alpn.isVisible = isTLS
         realityPublicKey.isVisible = isReality
         realityShortId.isVisible = isReality
-        realitySpiderX.isVisible = isReality
         utlsFingerprint.isVisible = isTLS && (network.value == "tcp" || network.value == "ws"
                 || network.value == "http" || network.value == "meek" || network.value == "httpupgrade"
                 || network.value == "grpc" || network.value == "splithttp" || network.value == "mekya")

@@ -1063,7 +1063,6 @@ public class V2RayConfig {
         public String serverName;
         public String publicKey;
         public String shortId;
-        public String spiderX;
         public String fingerprint;
         public String version;
 

@@ -167,9 +167,6 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 url.queryParameter("sid")?.let {
                     bean.realityShortId = it
                 }
-                url.queryParameter("spx")?.let {
-                    bean.realitySpiderX = it
-                }
                 url.queryParameter("fp")?.let {
                     bean.realityFingerprint = it
                 }
@@ -668,9 +665,6 @@ fun StandardV2RayBean.toUri(): String? {
             }
             if (realityShortId.isNotEmpty()) {
                 builder.addQueryParameter("sid", realityShortId)
-            }
-            if (realitySpiderX.isNotEmpty()) {
-                builder.addQueryParameter("spx", realitySpiderX)
             }
             if (realityFingerprint.isNotEmpty()) {
                 builder.addQueryParameter("fp", realityFingerprint)

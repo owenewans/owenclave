@@ -61,13 +61,13 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     public String realityPublicKey;
     public String realityShortId;
-    public String realitySpiderX;
+    public String realitySpiderX; // TODO: remove this on next bean version bump
     public String realityFingerprint;
 
     public Integer hy2DownMbps;
     public Integer hy2UpMbps;
     public String hy2Password;
-    public String hy2ObfsPassword;
+    public String hy2ObfsPassword; // TODO: remove this on next bean version bump
 
     public String mekyaKcpSeed;
     public String mekyaKcpHeaderType;
@@ -114,13 +114,13 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (realityPublicKey == null) realityPublicKey = "";
         if (realityShortId == null) realityShortId = "";
-        if (realitySpiderX == null) realitySpiderX = "";
+        if (realitySpiderX == null) realitySpiderX = ""; // TODO: remove this on next bean version bump
         if (realityFingerprint == null) realityFingerprint = "chrome";
 
         if (hy2DownMbps == null) hy2DownMbps = 0;
         if (hy2UpMbps == null) hy2UpMbps = 0;
         if (hy2Password == null) hy2Password = "";
-        if (hy2ObfsPassword == null) hy2ObfsPassword = "";
+        if (hy2ObfsPassword == null) hy2ObfsPassword = ""; // TODO: remove this on next bean version bump
 
         if (mekyaKcpSeed == null) mekyaKcpSeed = "";
         if (mekyaKcpHeaderType == null) mekyaKcpHeaderType = "none";
@@ -198,7 +198,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
             case "hysteria2": {
                 output.writeInt(hy2DownMbps);
                 output.writeInt(hy2UpMbps);
-                output.writeString(hy2ObfsPassword);
+                output.writeString(hy2ObfsPassword); // TODO: remove this on next bean version bump
                 output.writeString(hy2Password);
                 break;
             }
@@ -228,7 +228,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 output.writeString(sni);
                 output.writeString(realityPublicKey);
                 output.writeString(realityShortId);
-                output.writeString(realitySpiderX);
+                output.writeString(realitySpiderX); // TODO: remove this on next bean version bump
                 output.writeString(realityFingerprint);
                 break;
             }
@@ -327,7 +327,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (version >= 14) {
                     hy2DownMbps = input.readInt();
                     hy2UpMbps = input.readInt();
-                    hy2ObfsPassword = input.readString();
+                    hy2ObfsPassword = input.readString(); // TODO: remove this on next bean version bump
                 }
                 if (version >= 15) {
                     hy2Password = input.readString();
@@ -397,7 +397,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                     sni = input.readString();
                     realityPublicKey = input.readString();
                     realityShortId = input.readString();
-                    realitySpiderX = input.readString();
+                    realitySpiderX = input.readString(); // TODO: remove this on next bean version bump
                     realityFingerprint = input.readString();
                 }
                 break;

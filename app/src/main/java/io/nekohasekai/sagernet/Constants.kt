@@ -143,7 +143,6 @@ object Key {
     const val SERVER_HOST = "serverHost"
     const val SERVER_PATH = "serverPath"
     const val SERVER_SNI = "serverSNI"
-    const val SERVER_TLS = "serverTLS"
     const val SERVER_ENCRYPTION = "serverEncryption"
     const val SERVER_ALPN = "serverALPN"
     const val SERVER_CERTIFICATES = "serverCertificates"
@@ -164,7 +163,6 @@ object Key {
 
     const val SERVER_REALITY_PUBLIC_KEY = "serverRealityPublicKey"
     const val SERVER_REALITY_SHORT_ID = "serverRealityShortId"
-    const val SERVER_REALITY_SPIDER_X = "serverRealitySpiderX"
     const val SERVER_REALITY_FINGERPRINT = "serverRealityFingerprint"
 
     const val SERVER_MEKYA_KCP_SEED = "serverMekyaKcpSeed"
@@ -282,15 +280,9 @@ object TunImplementation {
     const val SYSTEM = 1
 }
 
-object TrojanProvider {
-    const val V2RAY = 0
-    const val TROJAN = 1
-    const val TROJAN_GO = 2
-}
-
-object Hysteria2Provider {
-    const val HYSTERIA2_PLUGIN = 0
-    const val V2RAY = 1
+object ProtocolProvider {
+    const val PLUGIN = 0
+    const val CORE = 1
 }
 
 object Shadowsocks2022Implementation {
@@ -308,12 +300,6 @@ object IPv6Mode {
     const val ENABLE = 1
     const val PREFER = 2
     const val ONLY = 3
-}
-
-object PacketStrategy {
-    const val DIRECT = 0
-    const val DROP = 1
-    const val REPLY = 2
 }
 
 object GroupType {
