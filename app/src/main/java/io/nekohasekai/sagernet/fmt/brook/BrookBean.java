@@ -152,6 +152,9 @@ public class BrookBean extends AbstractBean {
         if (protocol.equals("quic")) {
             return "udp";
         }
+        if (protocol.isEmpty() && !udpovertcp) {
+            return "tcp,udp";
+        }
         return "tcp";
     }
 
