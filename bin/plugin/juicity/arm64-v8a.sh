@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "bin/init/env.sh"
-source "bin/plugin/juicity/build.sh"
+source "bin/plugin/juicity/init.sh"
 
 DIR="$ROOT/arm64-v8a"
 mkdir -p $DIR

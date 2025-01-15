@@ -201,7 +201,6 @@ fun Project.setupAppCommon(projectName: String) {
 
 fun Project.setupPlugin(projectName: String) {
     val propPrefix = projectName.uppercase(Locale.ROOT)
-    val projName = projectName.lowercase(Locale.ROOT)
     val verName = requireMetadata().getProperty("${propPrefix}_VERSION_NAME").trim()
     val verCode = requireMetadata().getProperty("${propPrefix}_VERSION").trim().toInt()
     androidApp.defaultConfig {
@@ -223,15 +222,6 @@ fun Project.setupPlugin(projectName: String) {
 
         this as AbstractAppExtension
 
-        buildTypes {
-            getByName("release") {
-                proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    project(":plugin:api").file("proguard-rules.pro")
-                )
-            }
-        }
-
         splits.abi {
             isEnable = true
             isUniversalApk = false
@@ -248,45 +238,6 @@ fun Project.setupPlugin(projectName: String) {
         flavorDimensions.add("vendor")
         productFlavors {
             create("oss")
-        }
-
-        if (System.getenv("SKIP_BUILD") != "on" && System.getProperty("SKIP_BUILD_$propPrefix") != "on") {
-            if (targetAbi.isBlank()) {
-                tasks.register<Exec>("externalBuild") {
-                    executable(rootProject.file("run"))
-                    args("plugin", projName)
-                    workingDir(rootProject.projectDir)
-                }
-
-                tasks.configureEach {
-                    if (name.startsWith("merge") && name.endsWith("JniLibFolders")) {
-                        dependsOn("externalBuild")
-                    }
-                }
-            } else {
-                tasks.register<Exec>("externalBuildInit") {
-                    executable(rootProject.file("run"))
-                    args("plugin", projName, "init")
-                    workingDir(rootProject.projectDir)
-                }
-                tasks.register<Exec>("externalBuild") {
-                    executable(rootProject.file("run"))
-                    args("plugin", projName, targetAbi)
-                    workingDir(rootProject.projectDir)
-                    dependsOn("externalBuildInit")
-                }
-                tasks.register<Exec>("externalBuildEnd") {
-                    executable(rootProject.file("run"))
-                    args("plugin", projName, "end")
-                    workingDir(rootProject.projectDir)
-                    dependsOn("externalBuild")
-                }
-                tasks.configureEach {
-                    if (name.startsWith("merge") && name.endsWith("JniLibFolders")) {
-                        dependsOn("externalBuildEnd")
-                    }
-                }
-            }
         }
 
         applicationVariants.all {

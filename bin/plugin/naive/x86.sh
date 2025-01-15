@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "bin/init/env.sh"
-source "bin/plugin/naive/build.sh"
+source "bin/plugin/naive/init.sh"
 
 mv -f out/ReleaseX86 out/Release || true
 export EXTRA_FLAGS='target_os="android" target_cpu="x86"'

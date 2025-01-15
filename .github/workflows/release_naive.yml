@@ -17,7 +17,7 @@ on:
 jobs:
   native:
     runs-on: ubuntu-latest
-    name: Native Build (NaïveProxy)
+    name: Native Build
     strategy:
       fail-fast: false
       matrix:
@@ -25,7 +25,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Naive Cache
+      - name: Checkout Submodule
+        run: |
+          git submodule update --init plugin/naive/src/main/jni/naiveproxy
+          pushd plugin/naive/src/main/jni/naiveproxy
+          git fetch origin ${{ github.event.inputs.COMMIT_HASH }}
+          git checkout ${{ github.event.inputs.COMMIT_HASH }}
+          popd
+      - name: Native Cache
         id: cache
         uses: actions/cache@v4
         with:
@@ -36,53 +43,44 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           ./run init action naive
-          pushd plugin/naive/src/main/jni/naiveproxy
-          git fetch origin ${{ github.event.inputs.COMMIT_HASH }}
-          git checkout ${{ github.event.inputs.COMMIT_HASH }}
-          popd
           ./run plugin naive init
           ./run plugin naive ${{ matrix.arch }}
-      - name: Calculate SHA256
+      - name: Calculate Checksum
         run: |
           openssl sha256 plugin/naive/src/main/jniLibs/${{ matrix.arch }}/libnaive.so > sha256sum.txt
           echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
-      - uses: actions/upload-artifact@v4
+      - name: Upload Checksum
+        uses: actions/upload-artifact@v4
         with:
           name: "NAIVE-SHA256-${{ matrix.arch }}-${{ github.event.inputs.COMMIT_HASH }} ${{ env.SHA256SUM }}"
           path: sha256sum.txt
   build:
-    name: Gradle Build (NaïveProxy)
+    name: Gradle Build
     runs-on: ubuntu-latest
     needs:
       - native
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          distribution: 'temurin'
-          java-version: 21
-      - name: Naive Cache (armeabi-v7a)
+      - name: Native Cache (armeabi-v7a)
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/armeabi-v7a
           key: naive-armeabi-v7a-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
-      - name: Naive Cache (arm64-v8a)
+      - name: Native Cache (arm64-v8a)
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/arm64-v8a
           key: naive-arm64-v8a-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
-      - name: Naive Cache (x86)
+      - name: Native Cache (x86)
         uses: actions/cache@v4
         with:
           path: |
             plugin/naive/src/main/jniLibs/x86
           key: naive-x86-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
-      - name: Naive Cache (x86_64)
+      - name: Native Cache (x86_64)
         uses: actions/cache@v4
         with:
           path: |
@@ -93,10 +91,13 @@ jobs:
         with:
           path: ~/.gradle
           key: native-${{ hashFiles('**/*.gradle.kts') }}
-      - name: Release Build
-        env:
-          SKIP_BUILD: on
-          BUILD_PLUGIN: naive
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: 'gradle'
+      - name: Gradle Build
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
@@ -106,7 +107,8 @@ jobs:
           APK=$(find plugin/naive/build/outputs/apk -name '*arm64-v8a*.apk')
           APK=$(dirname "$APK")
           echo "APK=$APK" >> $GITHUB_ENV
-      - uses: actions/upload-artifact@v4
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: APKs
           path: ${{ env.APK }}
@@ -118,12 +120,12 @@ jobs:
 #    steps:
 #      - name: Checkout
 #        uses: actions/checkout@v4
-#      - name: Donwload Artifacts
+#      - name: Download Artifacts
 #        uses: actions/download-artifact@v4
 #        with:
 #          name: APKs
 #          path: artifacts
-#      - name: Release
+#      - name: Publish Release
 #        run: |
 #          wget -O ghr.tar.gz https://github.com/tcnksm/ghr/releases/download/v0.17.0/ghr_v0.17.0_linux_amd64.tar.gz
 #          tar -xvf ghr.tar.gz

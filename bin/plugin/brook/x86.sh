@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "bin/init/env.sh"
-source "bin/plugin/brook/build.sh"
+source "bin/plugin/brook/init.sh"
 
 DIR="$ROOT/x86"
 mkdir -p $DIR

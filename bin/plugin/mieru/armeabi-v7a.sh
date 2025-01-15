@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "bin/init/env.sh"
-source "bin/plugin/mieru/build.sh"
+source "bin/plugin/mieru/init.sh"
 
 DIR="$ROOT/armeabi-v7a"
 mkdir -p $DIR

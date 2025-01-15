@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source "bin/init/env.sh"
-source "bin/plugin/hysteria2/build.sh"
+source "bin/plugin/hysteria2/init.sh"
 
 DIR="$ROOT/x86"
 mkdir -p $DIR
