@@ -57,11 +57,10 @@ public class BrookBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(7);
+        output.writeInt(8);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(password);
-        output.writeBoolean(udpovertcp); // FIXME: move it to the correct place on the next bean version bump
         switch (protocol) {
             case "ws":
                 output.writeString(wsPath);
@@ -84,6 +83,7 @@ public class BrookBean extends AbstractBean {
                 break;
             }
             default:
+                output.writeBoolean(udpovertcp);
                 break;
         }
     }
@@ -94,8 +94,12 @@ public class BrookBean extends AbstractBean {
         super.deserialize(input);
         protocol = input.readString();
         password = input.readString();
-        if (version >= 5) {
-            udpovertcp = input.readBoolean();
+        if (version >= 5 && version < 8) {
+            if (protocol.isEmpty()) {
+                udpovertcp = input.readBoolean();
+            } else {
+                input.readBoolean();
+            }
         }
         if (version >= 1) switch (protocol) {
             case "ws":
@@ -135,6 +139,9 @@ public class BrookBean extends AbstractBean {
             default:
                 if (version == 2) {
                     input.readBoolean(); // uot, removed
+                }
+                if (version >= 8) {
+                    udpovertcp = input.readBoolean();
                 }
                 break;
         }
