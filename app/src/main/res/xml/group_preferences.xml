@@ -68,7 +68,13 @@
             app:key="subscriptionDeduplication"
             app:summary="@string/deduplication_sum"
             app:title="@string/deduplication" />
-        
+
+        <EditTextPreference
+            app:icon="@drawable/ic_action_delete"
+            app:key="subscriptionNameFilter"
+            app:title="@string/regular_expression_filter"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

@@ -120,6 +120,7 @@ object OpenOnlineConfigUpdater : GroupUpdater() {
 
         var profiles = mutableListOf<AbstractBean>()
 
+        val pattern = Regex(subscription.nameFilter)
         for (protocol in subscription.protocols) {
             val profilesInProtocol = oocResponse.getJSONArray(protocol)
                 .filterIsInstance<JSONObject>()
@@ -148,7 +149,10 @@ object OpenOnlineConfigUpdater : GroupUpdater() {
 
                 appendExtraInfo(profile, bean)
 
-                profiles.add(bean.applyDefaultValues())
+                bean.applyDefaultValues()
+                if (subscription.nameFilter.isEmpty() || !pattern.containsMatchIn(bean.name)) {
+                    profiles.add(bean)
+                }
             }
         }
 

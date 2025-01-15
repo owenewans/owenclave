@@ -49,6 +49,8 @@ public class SubscriptionBean extends Serializable {
     public Long bytesRemaining;
     public Long expiryDate;
 
+    public String nameFilter;
+
     // Open Online Config
     public String username;
     public List<String> protocols;
@@ -62,7 +64,7 @@ public class SubscriptionBean extends Serializable {
 
     @Override
     public void serializeToBuffer(ByteBufferOutput output) {
-        output.writeInt(4);
+        output.writeInt(5);
 
         output.writeInt(type);
 
@@ -82,6 +84,7 @@ public class SubscriptionBean extends Serializable {
         output.writeLong(bytesUsed);
         output.writeLong(bytesRemaining);
         output.writeLong(expiryDate);
+        output.writeString(nameFilter);
 
         if (type == SubscriptionType.OOCv1) {
             output.writeString(username);
@@ -94,7 +97,7 @@ public class SubscriptionBean extends Serializable {
     }
 
     public void serializeForShare(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
 
         output.writeInt(type);
 
@@ -111,6 +114,7 @@ public class SubscriptionBean extends Serializable {
         output.writeLong(bytesUsed);
         output.writeLong(bytesRemaining);
         output.writeLong(expiryDate);
+        output.writeString(nameFilter);
 
         if (type == SubscriptionType.OOCv1) {
             output.writeString(username);
@@ -154,6 +158,10 @@ public class SubscriptionBean extends Serializable {
 
         if (version >= 4) {
             expiryDate = input.readLong();
+        }
+
+        if (version >= 5) {
+            nameFilter = input.readString();
         }
 
         if (type == SubscriptionType.OOCv1) {
@@ -200,6 +208,10 @@ public class SubscriptionBean extends Serializable {
             expiryDate = input.readLong();
         }
 
+        if (version >= 4) {
+            nameFilter = input.readString();
+        }
+
         if (type == SubscriptionType.OOCv1) {
             username = input.readString();
             if (version <= 2) {
@@ -224,6 +236,7 @@ public class SubscriptionBean extends Serializable {
 
         if (bytesUsed == null) bytesUsed = 0L;
         if (bytesRemaining == null) bytesRemaining = 0L;
+        if (nameFilter == null) nameFilter = "";
 
         if (username == null) username = "";
         if (expiryDate == null) expiryDate = 0L;

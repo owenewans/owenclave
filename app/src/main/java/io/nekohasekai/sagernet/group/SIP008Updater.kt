@@ -78,10 +78,14 @@ object SIP008Updater : GroupUpdater() {
 
         var profiles = mutableListOf<AbstractBean>()
 
+        val pattern = Regex(subscription.nameFilter)
         for (profile in servers) {
             val bean = profile.parseShadowsocks()
             appendExtraInfo(profile, bean)
-            profiles.add(bean.applyDefaultValues())
+            bean.applyDefaultValues()
+            if (subscription.nameFilter.isEmpty() || !pattern.containsMatchIn(bean.name)) {
+                profiles.add(bean)
+            }
         }
 
         if (subscription.forceResolve) forceResolve(profiles, proxyGroup.id)

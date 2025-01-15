@@ -131,6 +131,11 @@ object RawUpdater : GroupUpdater() {
 
         }
 
+        if (subscription.nameFilter.isNotEmpty()) {
+            val pattern = Regex(subscription.nameFilter)
+            proxies = proxies.filter { !pattern.containsMatchIn(it.name) }
+        }
+
         val proxiesMap = LinkedHashMap<String, AbstractBean>()
         for (proxy in proxies) {
             var index = 0

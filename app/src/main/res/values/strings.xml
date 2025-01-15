@@ -555,4 +555,5 @@
     <string name="route_asset_settings">Asset settings</string>
     <string name="core">core</string>
     <string name="cag_httpupgrade">HTTPUpgrade settings</string>
+    <string name="regular_expression_filter">Name exclusion (regular expression)</string>
 </resources>
