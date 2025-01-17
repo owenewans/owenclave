@@ -32,10 +32,12 @@ jobs:
           go-version: 1.23.4
           cache-dependency-path: "library/core/go.sum"
       - name: Setup Go Mobile
+        # `gomobile init` will force install `gobind@latest`. Install `gobind` again after `gomobile init` to pin its version.
+        # https://github.com/golang/mobile/blob/c31d5b91ecc32c0d598b8fe8457d244ca0b4e815/cmd/gomobile/init.go#L83
         run: |
-          CGO_ENABLED=0 go install -v -trimpath -ldflags="-w -s" github.com/sagernet/gomobile/cmd/gobind@v0.1.4
-          CGO_ENABLED=0 go install -v -trimpath -ldflags="-w -s" github.com/sagernet/gomobile/cmd/gomobile@v0.1.4
+          go install github.com/sagernet/gomobile/cmd/gomobile@v0.1.4
           gomobile init
+          go install github.com/sagernet/gomobile/cmd/gobind@v0.1.4
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -43,6 +45,8 @@ jobs:
           java-version: 21
           cache: 'gradle'
       - name: Setup Android NDK
+        # Pin NDK version for `gomobile`.
+        # For `libtermux.so`, NDK version is defined in `library/termux/terminal-emulator/build.gradle.kts`. Always keep them identical.
         id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
