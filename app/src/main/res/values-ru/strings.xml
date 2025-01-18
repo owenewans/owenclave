@@ -289,7 +289,7 @@
     <string name="edit_config">Изменить конфигурацию</string>
     <string name="config_type">Тип конфигурации</string>
     <string name="extra_headers">Дополнительные заголовки</string>
-    <string name="early_data_header_name">Имя заголовка ранних данных</string>
+    <string name="early_data_header_name">Заголовок запроса ранних данных</string>
     <string name="pinned_peer_certificate_chain_sha256">Хэш цепочки закрепленного сертификата</string>
     <string name="certificates">Сертификаты</string>
     <string name="alpn">Согласование протокола прикладного уровня (ALPN)</string>
@@ -519,4 +519,5 @@
     <string name="browser_forwarder_hint">Загрузите v2ray-extra.zip из релиза v2ray-core и поместите index.html и index.js в Android/data/%s/files или импортируйте index.html и index.js в качестве ресурсов маршрута.</string>
     <string name="hijack_dns_message">Перехват DNS-запросов, не отправленных на DNS-адрес TUN с помощью DNS-сниффера</string>
     <string name="cag_httpupgrade">Настройки HTTPUpgrade</string>
+    <string name="regular_expression_filter">Исключение имени (регулярное выражение)</string>
 </resources>
