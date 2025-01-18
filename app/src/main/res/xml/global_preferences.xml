@@ -217,9 +217,9 @@
             app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             android:icon="@drawable/ic_baseline_push_pin_24"
-            app:defaultValue="0"
+            app:defaultValue="1"
             app:entries="@array/root_ca_provider_entry"
-            app:entryValues="@array/int_array_2"
+            app:entryValues="@array/int_array_3"
             app:key="providerRootCA"
             app:title="@string/root_ca_provider"
             app:useSimpleSummaryProvider="true" />

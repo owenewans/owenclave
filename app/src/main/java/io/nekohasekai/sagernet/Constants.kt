@@ -294,6 +294,7 @@ object Shadowsocks2022Implementation {
 object RootCAProvider {
     const val MOZILLA = 0
     const val SYSTEM = 1
+    const val SYSTEM_AND_USER = 2 // for https://github.com/golang/go/issues/71258
 }
 
 object IPv6Mode {

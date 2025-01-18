@@ -192,20 +192,23 @@ abstract class V2RayInstance(
     @SuppressLint("SetJavaScriptEnabled")
     override fun launch() {
         val context = if (Build.VERSION.SDK_INT < 24 || SagerNet.user.isUserUnlocked) SagerNet.application else SagerNet.deviceStorage
-        val useSystemCACerts = DataStore.providerRootCA == RootCAProvider.SYSTEM
-        val rootCaPem by lazy {
-            (File(app.externalAssets, "mozilla_included.pem").takeIf { it.isFile }
-                ?: File(app.filesDir, "mozilla_included.pem")).canonicalPath
-        }
-
 
         for ((_, chain) in config.index) {
             chain.entries.forEachIndexed { _, (port, profile) ->
                 val bean = profile.requireBean()
                 val (_, config) = pluginConfigs[port] ?: (0 to "")
                 val env = mutableMapOf<String, String>()
-                if (!useSystemCACerts) {
-                    env["SSL_CERT_FILE"] = rootCaPem
+                if (DataStore.providerRootCA != RootCAProvider.SYSTEM) {
+                    env["SSL_CERT_FILE"] = when (DataStore.providerRootCA) {
+                        RootCAProvider.MOZILLA -> {
+                            (File(app.externalAssets, "mozilla_included.pem").takeIf { it.isFile }
+                                ?: File(app.filesDir, "mozilla_included.pem")).canonicalPath
+                        }
+                        RootCAProvider.SYSTEM_AND_USER -> {
+                            File(app.filesDir, "android_included.pem").canonicalPath
+                        }
+                        else -> error("impossible")
+                    }
                     // disable system directories
                     env["SSL_CERT_DIR"] = "/not_exists"
                 }

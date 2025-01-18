@@ -530,4 +530,5 @@
     <string name="core">核心</string>
     <string name="cag_httpupgrade">HTTPUpgrade 设置</string>
     <string name="regular_expression_filter">名称排除（正则表达式）</string>
+    <string name="root_ca_system_and_user">系统和用户</string>
 </resources>

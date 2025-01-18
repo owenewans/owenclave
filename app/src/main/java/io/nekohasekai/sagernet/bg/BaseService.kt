@@ -368,10 +368,6 @@ class BaseService {
             return (data?.proxy?.service as? VpnService)?.tun?.trafficStatsEnabled ?: false
         }
 
-        override fun updateSystemRoots(useSystem: Boolean) {
-            Libcore.updateSystemRoots(useSystem)
-        }
-
         override fun close() {
             callbacks.kill()
             cancel()

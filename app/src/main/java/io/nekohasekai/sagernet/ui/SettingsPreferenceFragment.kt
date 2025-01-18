@@ -263,9 +263,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val providerRootCA = findPreference<SimpleMenuPreference>(Key.PROVIDER_ROOT_CA)!!
 
         providerRootCA.setOnPreferenceChangeListener { _, newValue ->
-            val useSystem = (newValue as String) == "${RootCAProvider.SYSTEM}"
-            Libcore.updateSystemRoots(useSystem)
-            (requireActivity() as? MainActivity)?.connection?.service?.updateSystemRoots(useSystem)
+            Libcore.updateSystemRoots((newValue as String).toInt())
             needReload()
             true
         }
