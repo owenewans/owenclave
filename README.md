@@ -57,9 +57,7 @@ ALIAS_PASS=your_alias_pass
 ```
 - Build the app:
   - Build libcore: `/run lib core`
-  - Download assets: `./gradlew :app:downloadAssets`
-     - Because of compliance issues, a [DB-IP based geoip.dat](https://github.com/dyhkwong/v2ray-geoip) is used instead of [the MaxMind one](https://github.com/v2fly/geoip).
-  - Update assets version (optional): `./gradlew :app:updateAssets`
+  - Download assets `./gradlew :app:downloadAssets` or update assets `./gradlew :app:updateAssets`
   - Build app: `./gradlew :app:assembleOssRelease`
   - APK files are located in `app/build/outputs/apk/`.
 - Build a plugin:
