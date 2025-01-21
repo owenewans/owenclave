@@ -9,9 +9,6 @@ plugins {
 setupApp()
 
 android {
-    androidResources {
-        generateLocaleConfig = true
-    }
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }
