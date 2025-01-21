@@ -69,8 +69,11 @@ fun parseMieru(link: String): MieruBean {
 fun MieruBean.toUri(): String {
     val builder = Libcore.newURL("mierus").apply {
         host = serverAddress
-        username = username
-        password = password
+    }
+    builder.username = username
+    builder.password = password
+    if (name.isNotEmpty()) {
+        builder.addQueryParameter("profile", name)
     }
     builder.addQueryParameter("port", serverPort.toString())
     when (protocol) {
