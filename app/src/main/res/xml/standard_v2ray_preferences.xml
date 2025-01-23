@@ -24,10 +24,10 @@
             app:title="@string/username"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_baseline_person_24"
             app:key="serverUserId"
-            app:title="@string/uuid" />
+            app:title="@string/uuid"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_maps_360"
             app:key="serverAlterId"
@@ -106,15 +106,10 @@
             app:title="@string/hysteria_download_mbps"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_settings_password"
             app:key="serverPassword"
-            app:title="@string/password" />
-        <!--EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
-            app:icon="@drawable/ic_baseline_texture_24"
-            app:key="serverObfs"
-            app:title="@string/hysteria_obfs" /-->
+            app:title="@string/password"
+            app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_baseline_format_align_left_24"
             app:key="serverMekyaKcpSeed"
@@ -188,7 +183,6 @@
             app:title="@string/ech_doh_server"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_baseline_vpn_key_24"
             app:key="serverRealityPublicKey"
             app:title="@string/reality_public_key"

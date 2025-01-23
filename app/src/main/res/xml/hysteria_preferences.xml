@@ -18,12 +18,6 @@
             app:key="serverPorts"
             app:title="@string/server_port"
             app:useSimpleSummaryProvider="true" />
-        <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
-            app:icon="@drawable/ic_baseline_texture_24"
-            app:key="serverObfs"
-            app:title="@string/hysteria_obfs"
-            app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/hysteria_auth_type"
             app:entryValues="@array/int_array_3"
@@ -32,12 +26,17 @@
             app:title="@string/hysteria_auth_type"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_settings_password"
             app:key="serverPassword"
-            app:title="@string/hysteria_auth_payload" />
+            app:title="@string/hysteria_auth_payload"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverObfs"
+            app:title="@string/hysteria_obfs"
+            app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
-            app:defaultValue="https"
+            app:defaultValue="0"
             app:entries="@array/hysteria_protocol"
             app:entryValues="@array/int_array_3"
             app:icon="@drawable/ic_baseline_layers_24"

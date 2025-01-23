@@ -105,12 +105,6 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         findPreference<EditTextPreference>(Key.SERVER_BROOK_TOKEN)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
-        findPreference<EditTextPreference>(Key.SERVER_BROOK_CLIENT_HKDF_INFO)!!.apply {
-            summaryProvider = PasswordSummaryProvider
-        }
-        findPreference<EditTextPreference>(Key.SERVER_BROOK_SERVER_HKDF_INFO)!!.apply {
-            summaryProvider = PasswordSummaryProvider
-        }
 
         protocol = findPreference(Key.SERVER_PROTOCOL)!!
         insecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!

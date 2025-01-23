@@ -105,8 +105,10 @@ class HysteriaSettingsActivity : ProfileSettingsActivity<HysteriaBean>() {
         findPreference<EditTextPreference>(Key.SERVER_CONNECTION_RECEIVE_WINDOW)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
         }
-
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
+        findPreference<EditTextPreference>(Key.SERVER_OBFS)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
     }

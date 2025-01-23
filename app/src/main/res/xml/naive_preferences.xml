@@ -25,10 +25,10 @@
             app:title="@string/username"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
-            app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_settings_password"
             app:key="serverPassword"
-            app:title="@string/password" />
+            app:title="@string/password"
+            app:useSimpleSummaryProvider="true"/>
         <com.takisoft.preferencex.SimpleMenuPreference
             android:layout_height="match_parent"
             app:defaultValue="https"
