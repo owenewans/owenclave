@@ -182,14 +182,11 @@ fun parseV2Ray(link: String): StandardV2RayBean {
         when (bean.type) {
             "tcp" -> {
                 url.queryParameter("headerType")?.let { headerType ->
-                    // invented by v2rayNG
+                    // invented by v2rayN(G)
                     if (headerType == "http") {
                         bean.headerType = headerType
                         url.queryParameter("host")?.let {
-                            bean.host = it
-                        }
-                        url.queryParameter("path")?.let {
-                            bean.path = it
+                            bean.host = it.split(",").joinToString("\n")
                         }
                     }
                 }
@@ -205,9 +202,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             "http" -> {
                 url.queryParameter("host")?.let {
                     // The proposal says "省略时复用 remote-host", but this is not correct except for the breaking change below.
-                    // will not follow the breaking change in
-                    // https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
-                    bean.host = it
+                    // will not follow the breaking change in https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
+                    // "若有多个域名，可使用英文逗号隔开，但中间及前后不可有空格。"
+                    bean.host = it.split(",").joinToString("\n")
                 }
                 url.queryParameter("path")?.let {
                     bean.path = it
@@ -325,6 +322,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
 }
 
 fun parseV2RayN(link: String): VMessBean {
+    // https://github.com/2dust/v2rayN/wiki/%E5%88%86%E4%BA%AB%E9%93%BE%E6%8E%A5%E6%A0%BC%E5%BC%8F%E8%AF%B4%E6%98%8E(ver-2)
     val result = link.substringAfter("vmess://").decodeBase64UrlSafe()
     if (result.contains("= vmess")) {
         return parseCsvVMess(result)
@@ -333,7 +331,7 @@ fun parseV2RayN(link: String): VMessBean {
     val json = JSONObject(result)
 
     bean.serverAddress = json.getStr("add")?.takeIf { it.isNotEmpty() }
-    bean.serverPort = json.getInt("port")?.takeIf { it > 0 }
+    bean.serverPort = json.getInt("port")
     bean.encryption = json.getStr("scy")?.takeIf { it.isNotEmpty() }
     bean.uuid = json.getStr("id")?.takeIf { it.isNotEmpty() }
     bean.alterId = json.getInt("aid")?.takeIf { it > 0 }
@@ -349,8 +347,8 @@ fun parseV2RayN(link: String): VMessBean {
 
     when (bean.type) {
         "tcp" -> {
-            bean.host = host
-            bean.path = path
+            bean.host = host?.split(",")?.joinToString("\n") // "http(tcp)->host中间逗号(,)隔开"
+            bean.path = path?.split(",")?.joinToString("\n") // see v2rayN(G) source code
             type?.also {
                 bean.headerType = type
             }
@@ -384,7 +382,7 @@ fun parseV2RayN(link: String): VMessBean {
             }
         }
         "http" -> {
-            bean.host = host
+            bean.host = host?.split(",")?.joinToString("\n") // "http(tcp)->host中间逗号(,)隔开"
             bean.path = path
         }
         "quic" -> {
@@ -431,35 +429,20 @@ fun parseV2RayN(link: String): VMessBean {
     bean.realityFingerprint = json.getStr("fp")?.takeIf { it.isNotEmpty() }
     // bean.utlsFingerprint = ? // do not support this intentionally
 
-    if (json.getInt("v", 2) < 2) {
+    // https://github.com/2dust/v2rayN/blob/737d563ebb66d44504c3a9f51b7dcbb382991dfd/v2rayN/v2rayN/Handler/ConfigHandler.cs#L701-L743
+    if (json.getStr("v").isNullOrEmpty() || json.getStr("v").toInt() < 2) {
         when (bean.type) {
-            "ws" -> {
-                var path = ""
-                var host = ""
-                val lstParameter = bean.host.split(";")
-                if (lstParameter.isNotEmpty()) {
-                    path = lstParameter[0].trim()
+            "ws", "h2" -> {
+                bean.host?.replace(" ", "")?.split(";")?.let {
+                    if (it.isNotEmpty()) {
+                        bean.path = it[0]
+                        bean.host = ""
+                    }
+                    if (it.size > 1) {
+                        bean.path = it[0]
+                        bean.host = it[1]
+                    }
                 }
-                if (lstParameter.size > 1) {
-                    path = lstParameter[0].trim()
-                    host = lstParameter[1].trim()
-                }
-                bean.path = path
-                bean.host = host
-            }
-            "h2" -> {
-                var path = ""
-                var host = ""
-                val lstParameter = bean.host.split(";")
-                if (lstParameter.isNotEmpty()) {
-                    path = lstParameter[0].trim()
-                }
-                if (lstParameter.size > 1) {
-                    path = lstParameter[0].trim()
-                    host = lstParameter[1].trim()
-                }
-                bean.path = path
-                bean.host = host
             }
         }
     }
@@ -504,7 +487,6 @@ private fun parseCsvVMess(csv: String): VMessBean {
 }
 
 fun StandardV2RayBean.toUri(): String? {
-
     val builder = Libcore.newURL(
         if (this is VMessBean) "vmess" else if (this is VLESSBean) "vless" else "trojan"
     )
@@ -532,10 +514,7 @@ fun StandardV2RayBean.toUri(): String? {
                 // invented by v2rayNG
                 builder.addQueryParameter("headerType", headerType)
                 if (host.isNotEmpty()) {
-                    builder.addQueryParameter("host", host)
-                }
-                if (path.isNotEmpty()) {
-                    builder.addQueryParameter("path", path)
+                    builder.addQueryParameter("host", host.listByLineOrComma().joinToString(","))
                 }
             }
         }
@@ -565,7 +544,7 @@ fun StandardV2RayBean.toUri(): String? {
         }
         "http" -> {
             if (host.isNotEmpty()) {
-                builder.addQueryParameter("host", host)
+                builder.addQueryParameter("host", host.listByLineOrComma().joinToString(","))
             }
             if (path.isNotEmpty()) {
                 builder.addQueryParameter("path", path)

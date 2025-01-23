@@ -821,8 +821,9 @@ fun buildV2RayConfig(
                                                 if (bean.host.isNotEmpty()) {
                                                     host = bean.host.listByLineOrComma()
                                                 }
-
-                                                path = bean.path.takeIf { it.isNotEmpty() } ?: "/"
+                                                if (bean.path.isNotEmpty()) {
+                                                    path = bean.path
+                                                }
                                             }
                                         }
                                         "quic" -> {
