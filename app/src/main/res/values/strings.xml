@@ -557,4 +557,7 @@
     <string name="cag_httpupgrade">HTTPUpgrade settings</string>
     <string name="regular_expression_filter">Name exclusion (regular expression)</string>
     <string name="root_ca_system_and_user">System and user</string>
+    <string name="brook_token" translatable="false">Token</string>
+    <string name="brook_client_hkdf_info" translatable="false">Client HKDF info</string>
+    <string name="brook_server_hkdf_info" translatable="false">Server HKDF info</string>
 </resources>

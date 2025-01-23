@@ -207,6 +207,9 @@ object Key {
     const val SERVER_BROOK_TLS_FINGERPRINT = "serverBrookTlsFingerprint"
     const val SERVER_BROOK_FRAGMENT = "serverBrookFragment"
     const val SERVER_BROOK_UDP_OVER_STREAM = "serverBrookUdpOverStream"
+    const val SERVER_BROOK_CLIENT_HKDF_INFO = "serverBrookClientHkdfInfo"
+    const val SERVER_BROOK_SERVER_HKDF_INFO = "serverBrookServerHkdfInfo"
+    const val SERVER_BROOK_TOKEN = "serverBrookToken"
 
     const val SERVER_UDP_RELAY_MODE = "serverUDPRelayMode"
     const val SERVER_CONGESTION_CONTROLLER = "serverCongestionController"

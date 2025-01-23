@@ -311,6 +311,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverBrookTlsFingerprint by profileCacheStore.string(Key.SERVER_BROOK_TLS_FINGERPRINT)
     var serverBrookFragment by profileCacheStore.string(Key.SERVER_BROOK_FRAGMENT)
     var serverBrookUdpOverStream by profileCacheStore.boolean(Key.SERVER_BROOK_UDP_OVER_STREAM)
+    var serverBrookClientHkdfInfo by profileCacheStore.string(Key.SERVER_BROOK_CLIENT_HKDF_INFO)
+    var serverBrookServerHkdfInfo by profileCacheStore.string(Key.SERVER_BROOK_SERVER_HKDF_INFO)
+    var serverBrookToken by profileCacheStore.string(Key.SERVER_BROOK_TOKEN)
 
     var serverUDPRelayMode by profileCacheStore.string(Key.SERVER_UDP_RELAY_MODE)
     var serverCongestionController by profileCacheStore.string(Key.SERVER_CONGESTION_CONTROLLER)

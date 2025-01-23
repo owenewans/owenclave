@@ -50,6 +50,10 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         DataStore.serverBrookFragment = fragment
         DataStore.serverSNI = sni
         DataStore.serverBrookUdpOverStream = udpoverstream
+        DataStore.serverBrookClientHkdfInfo = clientHKDFInfo
+        DataStore.serverBrookServerHkdfInfo = serverHKDFInfo
+        DataStore.serverBrookToken = token
+        DataStore.serverCertificates = ca
     }
 
     override fun BrookBean.serialize() {
@@ -66,6 +70,10 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         fragment = DataStore.serverBrookFragment
         sni = DataStore.serverSNI
         udpoverstream = DataStore.serverBrookUdpOverStream
+        clientHKDFInfo = DataStore.serverBrookClientHkdfInfo
+        serverHKDFInfo = DataStore.serverBrookServerHkdfInfo
+        token = DataStore.serverBrookToken
+        ca = DataStore.serverCertificates
     }
 
     lateinit var protocol: SimpleMenuPreference
@@ -79,6 +87,8 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
     lateinit var udpovertcp: SwitchPreference
     lateinit var udpoverstream: SwitchPreference
     lateinit var withoutBrookProtocol: SwitchPreference
+    lateinit var ca: EditTextPreference
+    lateinit var token: EditTextPreference
 
     override fun PreferenceFragmentCompat.createPreferences(
         savedInstanceState: Bundle?,
@@ -92,8 +102,16 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
+        findPreference<EditTextPreference>(Key.SERVER_BROOK_TOKEN)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
+        findPreference<EditTextPreference>(Key.SERVER_BROOK_CLIENT_HKDF_INFO)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
+        findPreference<EditTextPreference>(Key.SERVER_BROOK_SERVER_HKDF_INFO)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
 
-        category = findPreference(Key.SERVER_WS_CATEGORY)!!
         protocol = findPreference(Key.SERVER_PROTOCOL)!!
         insecure = findPreference(Key.SERVER_ALLOW_INSECURE)!!
         wsPath = findPreference(Key.SERVER_PATH)!!
@@ -103,6 +121,7 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         udpovertcp = findPreference(Key.SERVER_BROOK_UDP_OVER_TCP)!!
         udpoverstream = findPreference(Key.SERVER_BROOK_UDP_OVER_STREAM)!!
         withoutBrookProtocol = findPreference(Key.SERVER_WITHOUT_BROOK_PROTOCOL)!!
+        ca = findPreference(Key.SERVER_CERTIFICATES)!!
 
         if (protocol.value !in protocolValue) {
             protocol.value = protocolValue[0]
@@ -115,7 +134,6 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
     }
 
     fun updateProtocol(value: String) {
-        category.isVisible = value.startsWith("ws") || value == "quic"
         insecure.isVisible = value == "wss" || value == "quic"
         wsPath.isVisible = value.startsWith("ws")
         tlsfingerprint.isVisible = value == "wss"
@@ -124,6 +142,7 @@ class BrookSettingsActivity : ProfileSettingsActivity<BrookBean>() {
         udpovertcp.isVisible = value == ""
         udpoverstream.isVisible = value == "quic"
         withoutBrookProtocol.isVisible = value == "ws" || value == "wss" || value == "quic"
+        ca.isVisible = value == "wss" || value == "quic"
     }
 
 }

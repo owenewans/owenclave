@@ -30,6 +30,18 @@ fun parseBrook(text: String): AbstractBean {
     link.queryParameter("name")?.let {
         bean.name = it
     }
+    if (link.host != "socks5") {
+        bean as BrookBean
+        link.queryParameter("clientHKDFInfo")?.let {
+            bean.clientHKDFInfo = it
+        }
+        link.queryParameter("serverHKDFInfo")?.let {
+            bean.serverHKDFInfo = it
+        }
+        link.queryParameter("token")?.let {
+            bean.token = it
+        }
+    }
     // "Do not omit the port under any circumstances"
     when (link.host) {
         "server" -> {
@@ -109,6 +121,9 @@ fun parseBrook(text: String): AbstractBean {
             link.queryParameter("fragment")?.let {
                 bean.fragment = it
             }
+            link.queryParameter("ca")?.let {
+                bean.ca = it
+            }
         }
         "quicserver" -> {
             bean as BrookBean
@@ -141,6 +156,9 @@ fun parseBrook(text: String): AbstractBean {
             link.queryParameter("udpoverstream")?.let {
                 bean.udpoverstream = it == "true"
             }
+            link.queryParameter("ca")?.let {
+                bean.ca = it
+            }
         }
         "socks5" -> {
             bean as SOCKSBean
@@ -166,6 +184,15 @@ fun parseBrook(text: String): AbstractBean {
 
 fun BrookBean.toUri(): String {
     val builder = Libcore.newURL("brook")
+    if (clientHKDFInfo.isNotEmpty()) {
+        builder.addQueryParameter("clientHKDFInfo", clientHKDFInfo)
+    }
+    if (serverHKDFInfo.isNotEmpty()) {
+        builder.addQueryParameter("serverHKDFInfo", serverHKDFInfo)
+    }
+    if (token.isNotEmpty()) {
+        builder.addQueryParameter("token", token)
+    }
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
@@ -204,6 +231,9 @@ fun BrookBean.toUri(): String {
             if (fragment.isNotEmpty()) {
                 builder.addQueryParameter("fragment", fragment)
             }
+            if (ca.isNotEmpty()) {
+                builder.addQueryParameter("ca", ca)
+            }
         }
         "quic" -> {
             builder.host = "quicserver"
@@ -225,6 +255,9 @@ fun BrookBean.toUri(): String {
             if (udpoverstream) {
                 builder.addQueryParameter("udpoverstream", "true")
             }
+            if (ca.isNotEmpty()) {
+                builder.addQueryParameter("ca", ca)
+            }
         }
         else -> {
             builder.host = "server"
@@ -245,6 +278,16 @@ fun BrookBean.toUri(): String {
 
 fun BrookBean.toInternalUri(): String {
     val builder = Libcore.newURL("brook")
+    builder.addQueryParameter("password", password)
+    if (clientHKDFInfo.isNotEmpty()) {
+        builder.addQueryParameter("clientHKDFInfo", clientHKDFInfo)
+    }
+    if (serverHKDFInfo.isNotEmpty()) {
+        builder.addQueryParameter("serverHKDFInfo", serverHKDFInfo)
+    }
+    if (token.isNotEmpty()) {
+        builder.addQueryParameter("token", token)
+    }
     when (protocol) {
         "ws" -> {
             builder.host = "wsserver"
@@ -280,6 +323,9 @@ fun BrookBean.toInternalUri(): String {
             if (fragment.isNotEmpty()) {
                 builder.addQueryParameter("fragment", fragment)
             }
+            if (ca.isNotEmpty()) {
+                builder.addQueryParameter("ca", ca)
+            }
             builder.addQueryParameter("address", joinHostPort(finalAddress, finalPort))
         }
         "quic" -> {
@@ -297,6 +343,9 @@ fun BrookBean.toInternalUri(): String {
             if (udpoverstream) {
                 builder.addQueryParameter("udpoverstream", "true")
             }
+            if (ca.isNotEmpty()) {
+                builder.addQueryParameter("ca", ca)
+            }
             builder.addQueryParameter("address", joinHostPort(finalAddress, finalPort))
         }
         else -> {
@@ -307,6 +356,5 @@ fun BrookBean.toInternalUri(): String {
             }
         }
     }
-    builder.addQueryParameter("password", password)
     return builder.string
 }
