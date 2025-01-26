@@ -453,6 +453,8 @@ object RawUpdater : GroupUpdater() {
                                 }
                                 (tlsSettings.getAny("alpn") as? List<String>)?.also {
                                     v2rayBean.alpn = it.joinToString("\n")
+                                } ?: tlsSettings.getString("alpn")?.also {
+                                    v2rayBean.alpn = it.split(",").joinToString("\n")
                                 }
                                 tlsSettings.getBoolean("allowInsecure")?.also {
                                     v2rayBean.allowInsecure = it
@@ -491,14 +493,16 @@ object RawUpdater : GroupUpdater() {
                                         "http" -> {
                                             v2rayBean.headerType = "http"
                                             header.getObject("request")?.also { request ->
-                                                request.getString("path")?.also {
-                                                    v2rayBean.path = it
+                                                (request.getAny("path") as? List<String>)?.also {
+                                                    v2rayBean.path = it.joinToString("\n")
+                                                } ?: request.getString("path")?.also {
+                                                    v2rayBean.path = it.split(",").joinToString("\n")
                                                 }
                                                 request.getObject("headers")?.also { headers ->
                                                     (headers.getAny("Host") as? List<String>)?.also {
-                                                        v2rayBean.host = it.joinToString(",")
+                                                        v2rayBean.host = it.joinToString("\n")
                                                     } ?: headers.getString("Host")?.also {
-                                                        v2rayBean.host = it
+                                                        v2rayBean.host = it.split(",").joinToString("\n")
                                                     }
                                                 }
                                             }
@@ -562,8 +566,10 @@ object RawUpdater : GroupUpdater() {
                             streamSettings.getObject("httpSettings")?.also { httpSettings ->
                                 // will not follow the breaking change in
                                 // https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
-                                httpSettings.getString("host")?.also {
-                                    v2rayBean.host = it
+                                (httpSettings.getAny("host") as? List<String>)?.also {
+                                    v2rayBean.host = it.joinToString("\n")
+                                } ?: httpSettings.getString("host")?.also {
+                                    v2rayBean.host = it.split(",").joinToString("\n")
                                 }
                                 httpSettings.getString("path")?.also {
                                     v2rayBean.path = it
@@ -642,7 +648,7 @@ object RawUpdater : GroupUpdater() {
                                     }
                                     kcp.getObject("header")?.also { header ->
                                         header.getString("type")?.also {
-                                            v2rayBean.headerType = it.lowercase()
+                                            v2rayBean.mekyaKcpHeaderType = it.lowercase()
                                         }
                                     }
                                 }
@@ -1189,15 +1195,25 @@ object RawUpdater : GroupUpdater() {
                                     }
                                 }
                                 "http" -> {
-                                    v2rayBean.type = "http"
+                                    v2rayBean.type = "tcp"
+                                    v2rayBean.headerType = "http"
+                                    // Difference from v2ray-core
+                                    // TLS is not enforced. If TLS is not configured, plain HTTP 1.1 is used.
+                                    outbound.getObject("tls")?.also {
+                                        if (it.getBoolean("enabled") == true) {
+                                            v2rayBean.type = "http"
+                                            v2rayBean.headerType = null
+                                        }
+                                    }
                                     transport.getString("path")?.also {
                                         v2rayBean.path = it
                                     }
                                     (transport.getAny("host") as? (List<String>))?.also {
-                                        v2rayBean.host = it.joinToString(",")
+                                        v2rayBean.host = it.joinToString("\n")
                                     } ?: transport.getString("host")?.also {
                                         v2rayBean.host = it
                                     }
+
                                 }
                                 "quic" -> {
                                     v2rayBean.type = "quic"
@@ -1738,14 +1754,46 @@ object RawUpdater : GroupUpdater() {
                         else -> return proxies
                     }
                     when (streamSettings.getString("transport")) {
-                        null, "tcp" -> {}
+                        null -> {}
+                        "tcp" -> {
+                            v2rayBean.type = "tcp"
+                            streamSettings.getObject("transportSettings")?.also { transportSettings ->
+                                (transportSettings["headerSettings"] as? JSONObject)
+                                    ?: (transportSettings["header_settings"] as? JSONObject)?.also { headerSettings ->
+                                    when (headerSettings["@type"] as? String) {
+                                        "v2ray.core.transport.internet.headers.http.Config" -> {
+                                            v2rayBean.headerType = "http"
+                                            (headerSettings["request"] as? JSONObject)?.also { request ->
+                                                (request["uri"] as? List<String>)?.also {
+                                                    v2rayBean.path = it.joinToString("\n")
+                                                }
+                                                (request.getAny("header") as? Map<String, List<String>>)?.forEach { (key, value) ->
+                                                    when (key.lowercase()) {
+                                                        "host" -> {
+                                                            v2rayBean.host = value.joinToString("\n")
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         "kcp" -> {
                             v2rayBean.type = "kcp"
                             streamSettings.getObject("transportSettings")?.also { transportSettings ->
                                 transportSettings["seed"]?.toString()?.also {
                                     v2rayBean.mKcpSeed = it
                                 }
-                                // v2rayBean.headerType
+                                when ((transportSettings["headerConfig"] as? JSONObject)?.get("@type") as? String
+                                    ?: (transportSettings["header_config"] as? JSONObject)?.get("@type") as? String) {
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.srtp.Config" -> v2rayBean.headerType = "srtp"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.utp.Config" -> v2rayBean.headerType = "utp"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.wechat.VideoConfig" -> v2rayBean.headerType = "wechat-video"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.tls.PacketConfig" -> v2rayBean.headerType = "dtls"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.wireguard.WireguardConfig" -> v2rayBean.headerType = "wireguard"
+                                }
                             }
                         }
                         "ws" -> {
@@ -1791,7 +1839,13 @@ object RawUpdater : GroupUpdater() {
                                 transportSettings["key"]?.toString()?.also {
                                     v2rayBean.quicKey = it
                                 }
-                                // v2rayBean.headerType
+                                when ((transportSettings["header"] as? JSONObject)?.get("@type") as? String) {
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.srtp.Config" -> v2rayBean.headerType = "srtp"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.utp.Config" -> v2rayBean.headerType = "utp"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.wechat.VideoConfig" -> v2rayBean.headerType = "wechat-video"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.tls.PacketConfig" -> v2rayBean.headerType = "dtls"
+                                    "types.v2fly.org/v2ray.core.transport.internet.headers.wireguard.WireguardConfig" -> v2rayBean.headerType = "wireguard"
+                                }
                             }
                         }
                         "grpc" -> {
@@ -1801,7 +1855,6 @@ object RawUpdater : GroupUpdater() {
                                     ?: transportSettings["service_name"]?.toString())?.also {
                                     v2rayBean.grpcServiceName = it
                                 }
-                                // v2rayBean.headerType
                             }
                         }
                         "httpupgrade" -> {
@@ -1841,7 +1894,14 @@ object RawUpdater : GroupUpdater() {
                                     kcp["seed"]?.toString()?.also {
                                         v2rayBean.mekyaKcpSeed = it
                                     }
-                                    // v2rayBean.mekyaKcpHeaderType
+                                    when ((kcp["headerConfig"] as? JSONObject)?.get("@type") as? String
+                                        ?: (kcp["header_config"] as? JSONObject)?.get("@type") as? String) {
+                                        "types.v2fly.org/v2ray.core.transport.internet.headers.srtp.Config" -> v2rayBean.mekyaKcpHeaderType = "srtp"
+                                        "types.v2fly.org/v2ray.core.transport.internet.headers.utp.Config" -> v2rayBean.mekyaKcpHeaderType = "utp"
+                                        "types.v2fly.org/v2ray.core.transport.internet.headers.wechat.VideoConfig" -> v2rayBean.mekyaKcpHeaderType = "wechat-video"
+                                        "types.v2fly.org/v2ray.core.transport.internet.headers.tls.PacketConfig" -> v2rayBean.mekyaKcpHeaderType = "dtls"
+                                        "types.v2fly.org/v2ray.core.transport.internet.headers.wireguard.WireguardConfig" -> v2rayBean.mekyaKcpHeaderType = "wireguard"
+                                    }
                                 }
                             }
                         }
@@ -2097,16 +2157,20 @@ object RawUpdater : GroupUpdater() {
                         "network" -> {
                             when (opt.value) {
                                 "h2" -> bean.type = "http"
-                                "ws", "grpc", "http" -> bean.type = opt.value as String
+                                "http" -> {
+                                    bean.type = "tcp"
+                                    bean.headerType = "http"
+                                }
+                                "ws", "grpc" -> bean.type = opt.value as String
                             }
                         }
                         "ws-opts" -> (opt.value as? Map<String, Any>)?.also {
                             for (wsOpt in it) {
                                 when (wsOpt.key) {
-                                    "headers" -> (opt.value as? Map<String, Any>)?.also {
-                                        for (wsHeader in it) {
-                                            when (wsHeader.key.lowercase()) {
-                                                "host" -> bean.host = wsHeader.value as? String
+                                    "headers" -> (wsOpt.value as? Map<String, String>)?.forEach { (key, value) ->
+                                        when (key.lowercase()) {
+                                            "host" -> {
+                                                bean.host = value
                                             }
                                         }
                                     }
@@ -2130,7 +2194,7 @@ object RawUpdater : GroupUpdater() {
                         "h2-opts" -> (opt.value as? Map<String, Any>)?.also {
                             for (h2Opt in it) {
                                 when (h2Opt.key) {
-                                    "host" -> bean.host = (h2Opt.value as? List<String>)?.first()
+                                    "host" -> bean.host = (h2Opt.value as? List<String>)?.joinToString("\n")
                                     "path" -> bean.path = h2Opt.value as? String
                                 }
                             }
@@ -2138,7 +2202,16 @@ object RawUpdater : GroupUpdater() {
                         "http-opts" -> (opt.value as? Map<String, Any>)?.also {
                             for (httpOpt in it) {
                                 when (httpOpt.key) {
-                                    "path" -> bean.path = (httpOpt.value as? List<String>)?.first()
+                                    "path" -> bean.path = (httpOpt.value as? List<String>)?.joinToString("\n")
+                                    "headers" -> {
+                                        (httpOpt.value as? Map<String, List<String>>)?.forEach { (key, value) ->
+                                            when (key.lowercase()) {
+                                                "host" -> {
+                                                    bean.host = value.joinToString("\n")
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
