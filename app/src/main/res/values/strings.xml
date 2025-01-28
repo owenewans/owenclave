@@ -560,4 +560,7 @@
     <string name="brook_token" translatable="false">Token</string>
     <string name="brook_client_hkdf_info" translatable="false">Client HKDF info</string>
     <string name="brook_server_hkdf_info" translatable="false">Server HKDF info</string>
+    <string name="one_per_line">One per line.</string>
+    <string name="edns_client_ip_sum">Please input an IP address. IPv4 uses a subnet of /24 and IPv6 uses a subnet of /96.</string>
+    <string name="bootstrap_dns_sum">If the address of direct DNS is a domain name and "resolve destination" is enabled, use bootstrap DNS to resolve it. Please input a DNS server with IP address or with "+local".</string>
 </resources>

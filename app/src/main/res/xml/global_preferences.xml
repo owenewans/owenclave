@@ -241,6 +241,7 @@
             app:title="@string/remote_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="@string/edns_client_ip_sum"
             app:icon="@drawable/ic_baseline_push_pin_24"
             app:key="ednsClientIp"
             app:title="@string/edns_client_ip"
@@ -268,6 +269,7 @@
             app:key="useLocalDnsAsBootstrapDns"
             app:title="@string/use_local_dns_as_bootstrap_dns" />
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+            app:dialogMessage="@string/bootstrap_dns_sum"
             app:icon="@drawable/ic_action_dns"
             app:key="bootstrapDns"
             app:title="@string/bootstrap_dns"
@@ -317,6 +319,7 @@
             app:summary="@string/append_http_proxy_sum"
             app:title="@string/append_http_proxy" />
         <EditTextPreference
+            app:dialogMessage="@string/one_per_line"
             app:icon="@drawable/ic_baseline_domain_24"
             app:key="httpProxyException"
             app:title="@string/http_proxy_exception_list" />
