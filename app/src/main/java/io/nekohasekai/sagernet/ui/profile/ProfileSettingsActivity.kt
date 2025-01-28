@@ -25,6 +25,7 @@ import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.addCallback
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
@@ -164,9 +165,16 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
                 }
             }
 
-
         }
 
+        onBackPressedDispatcher.addCallback {
+            if (DataStore.dirty) UnsavedChangesDialogFragment().apply {
+                key()
+            }.show(supportFragmentManager, null)
+            else {
+                finish()
+            }
+        }
     }
 
     open suspend fun saveAndExit() {
@@ -198,12 +206,25 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem) = child.onOptionsItemSelected(item)
-
-    override fun onBackPressed() {
-        if (DataStore.dirty) UnsavedChangesDialogFragment()
-            .apply { key() }
-            .show(supportFragmentManager, null) else super.onBackPressed()
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_delete -> {
+            if (DataStore.editingId == 0L) {
+                finish()
+            } else {
+                DeleteConfirmationDialogFragment().apply {
+                    arg(ProfileIdArg(DataStore.editingId, DataStore.editingGroup))
+                    key()
+                }.show(supportFragmentManager, null)
+            }
+            true
+        }
+        R.id.action_apply -> {
+            runOnDefaultDispatcher {
+                saveAndExit()
+            }
+            true
+        }
+        else -> false
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -257,31 +278,6 @@ abstract class ProfileSettingsActivity<T : AbstractBean>(
                 DataStore.dirty = false
                 DataStore.profileCacheStore.registerChangeListener(this)
             }
-        }
-
-        override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-            R.id.action_delete -> {
-                if (DataStore.editingId == 0L) {
-                    requireActivity().finish()
-                } else {
-                    DeleteConfirmationDialogFragment().apply {
-                        arg(
-                            ProfileIdArg(
-                                DataStore.editingId, DataStore.editingGroup
-                            )
-                        )
-                        key()
-                    }.show(parentFragmentManager, null)
-                }
-                true
-            }
-            R.id.action_apply -> {
-                runOnDefaultDispatcher {
-                    activity?.saveAndExit()
-                }
-                true
-            }
-            else -> false
         }
 
         override fun onDisplayPreferenceDialog(preference: Preference) {

@@ -23,6 +23,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.addCallback
 import androidx.activity.result.component1
 import androidx.activity.result.component2
 import androidx.activity.result.contract.ActivityResultContracts
@@ -86,6 +87,10 @@ class TaskerActivity : ThemedActivity(R.layout.layout_config_settings),
 
         DataStore.dirty = false
         DataStore.profileCacheStore.registerChangeListener(this)
+
+        onBackPressedDispatcher.addCallback {
+            if (needSave()) saveAndExit() else finish()
+        }
     }
 
     lateinit var profile: TaskerProfilePreference
@@ -163,10 +168,6 @@ class TaskerActivity : ThemedActivity(R.layout.layout_config_settings),
             true
         }
         else -> false
-    }
-
-    override fun onBackPressed() {
-        if (needSave()) saveAndExit() else super.onBackPressed()
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -25,6 +25,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.addCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -121,6 +122,15 @@ class ConfigEditActivity : ThemedActivity() {
                 binding.editor.setTextContent(config)
             }
         }
+
+        onBackPressedDispatcher.addCallback {
+            if (dirty) UnsavedChangesDialogFragment().apply {
+                key()
+            }.show(supportFragmentManager, null)
+            else {
+                finish()
+            }
+        }
     }
 
     fun saveAndExit() {
@@ -135,12 +145,6 @@ class ConfigEditActivity : ThemedActivity() {
         DataStore.serverConfig = config
         finish()
     }
-
-    override fun onBackPressed() {
-        if (dirty) UnsavedChangesDialogFragment().apply { key() }
-            .show(supportFragmentManager, null) else super.onBackPressed()
-    }
-
 
     override fun onSupportNavigateUp(): Boolean {
         if (!super.onSupportNavigateUp()) finish()
