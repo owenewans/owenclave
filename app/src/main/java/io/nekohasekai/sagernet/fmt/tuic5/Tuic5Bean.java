@@ -110,7 +110,9 @@ public class Tuic5Bean extends AbstractBean {
         bean.caText = caText;
         bean.zeroRTTHandshake = zeroRTTHandshake;
         bean.mtu = mtu;
-        bean.allowInsecure = allowInsecure;
+        if (allowInsecure) {
+            bean.allowInsecure = true;
+        }
     }
 
     @NotNull
