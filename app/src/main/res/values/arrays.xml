@@ -705,7 +705,7 @@
     </string-array>
 
     <string-array name="utls_entry">
-        <item>Disabled</item>
+        <item>@string/disable</item>
         <item>Chrome_Auto</item>
         <item>Firefox_Auto</item>
         <item>Safari_Auto</item>
@@ -899,7 +899,7 @@
     </string-array>
 
     <string-array name="trojan_go_utls_entry">
-        <item>Disabled</item>
+        <item>@string/disable</item>
         <item>Chrome</item>
         <item>Firefox</item>
         <item>iOS</item>
