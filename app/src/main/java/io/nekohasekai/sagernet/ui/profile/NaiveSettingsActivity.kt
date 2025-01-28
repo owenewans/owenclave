@@ -52,7 +52,7 @@ class NaiveSettingsActivity : ProfileSettingsActivity<NaiveBean>() {
         username = DataStore.serverUsername
         password = DataStore.serverPassword
         proto = DataStore.serverProtocol
-        extraHeaders = DataStore.serverHeaders.replace("\r\n", "\n")
+        extraHeaders = DataStore.serverHeaders
         insecureConcurrency = DataStore.serverInsecureConcurrency
         noPostQuantum = DataStore.serverNaiveNoPostQuantum
         sni = DataStore.serverSNI

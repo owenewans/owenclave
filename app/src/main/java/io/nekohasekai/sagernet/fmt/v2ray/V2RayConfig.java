@@ -58,7 +58,13 @@ public class V2RayConfig {
 
     public static class DnsObject {
 
-        public Map<String, String> hosts;
+        public static class StringOrListObject extends JsonOr<String, List<String>> {
+            public StringOrListObject() {
+                super(JsonToken.STRING, JsonToken.BEGIN_ARRAY);
+            }
+        }
+
+        public Map<String, StringOrListObject> hosts;
 
         public List<StringOrServerObject> servers;
 

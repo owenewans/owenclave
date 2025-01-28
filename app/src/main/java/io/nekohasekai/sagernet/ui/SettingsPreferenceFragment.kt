@@ -206,6 +206,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         portSocks5.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         portHttp.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         dnsHosts.setOnBindEditTextListener(EditTextPreferenceModifiers.Hosts)
+        dnsHosts.dialogMessage = getString(R.string.one_per_line_format, "example.com 127.0.0.1\nwww.example.com 127.0.0.1 127.0.0.2")
 
         val metedNetwork = findPreference<Preference>(Key.METERED_NETWORK)!!
         if (Build.VERSION.SDK_INT < 28) {

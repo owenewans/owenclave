@@ -24,6 +24,7 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.joinHostPort
+import io.nekohasekai.sagernet.ktx.listByLine
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.unUrlSafe
 import io.nekohasekai.sagernet.ktx.urlSafe
@@ -39,7 +40,7 @@ fun parseNaive(link: String): NaiveBean {
         serverPort = url.port.takeIf { it > 0 } ?: 443
         username = url.username
         password = url.password
-        extraHeaders = url.queryParameter("extra-headers")?.unUrlSafe()?.replace("\r\n", "\n")
+        extraHeaders = url.queryParameter("extra-headers")?.replace("\r\n", "\n")
         insecureConcurrency = url.queryParameter("insecure-concurrency")?.toIntOrNull()
         name = url.fragment
         initializeDefaultValues()
@@ -66,7 +67,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     }
     if (!proxyOnly) {
         if (extraHeaders.isNotEmpty()) {
-            builder.addQueryParameter("extra-headers", extraHeaders)
+            builder.addQueryParameter("extra-headers", extraHeaders.listByLine().joinToString("\r\n"))
         }
         if (name.isNotEmpty()) {
             builder.setRawFragment(name.urlSafe())
@@ -90,7 +91,7 @@ fun NaiveBean.buildNaiveConfig(port: Int): String {
         // It must be percent-encoded in other URL components.
         it["proxy"] = toUri(true).replace(",", "%2C")
         if (extraHeaders.isNotEmpty()) {
-            it["extra-headers"] = extraHeaders.split("\n").joinToString("\r\n")
+            it["extra-headers"] = extraHeaders.listByLine().joinToString("\r\n")
         }
         if (sni.isNotEmpty()) {
             if (!sni.isIpAddress()) {

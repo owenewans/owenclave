@@ -532,6 +532,7 @@
     <string name="regular_expression_filter">名称排除（正则表达式）</string>
     <string name="root_ca_system_and_user">系统和用户</string>
     <string name="one_per_line">每行一个。</string>
+    <string name="one_per_line_format">每行一个。格式：\n%s</string>
     <string name="edns_client_ip_sum">请输入一个 IP 地址。 IPv4 使用 /24 的子网，IPv6 使用 /96 的子网。</string>
     <string name="bootstrap_dns_sum">如果直连 DNS 的地址是一个域名且“解析目标地址”启用，使用 bootstrap DNS 解析此域名。 请输入一个地址为 IP 或者带“+local”的 DNS 服务器。</string>
 </resources>

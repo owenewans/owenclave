@@ -111,6 +111,7 @@ import io.nekohasekai.sagernet.ktx.getString
 import io.nekohasekai.sagernet.ktx.isIpAddress
 import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.joinHostPort
+import io.nekohasekai.sagernet.ktx.listByLine
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.mkPort
 import io.nekohasekai.sagernet.ktx.toHysteriaPort
@@ -255,10 +256,25 @@ fun buildV2RayConfig(
     V2RayConfig().apply {
 
         dns = DnsObject().apply {
-            hosts = DataStore.hosts.split("\n")
-                .filter { it.isNotBlank() }
-                .associate { it.substringBefore(" ") to it.substringAfter(" ") }
-                .toMutableMap()
+            if (DataStore.hosts.isNotEmpty()) {
+                hosts = mutableMapOf()
+                for (singleLine in DataStore.hosts.listByLine()) {
+                    val key = singleLine.substringBefore(" ")
+                    val values = singleLine.substringAfter(" ").split("\\s+".toRegex()).toMutableList()
+                    if (hosts.contains(key) && hosts[key] != null) {
+                        if (hosts[key]!!.valueX.isNotEmpty()) {
+                            values.add(hosts[key]!!.valueX)
+                        } else if (hosts[key]!!.valueY.size > 0) {
+                            values.addAll(hosts[key]!!.valueY)
+                        }
+                    }
+                    if (values.size > 1) {
+                        hosts[key] = DnsObject.StringOrListObject().apply { valueY = values }
+                    } else if (values.size == 1) {
+                        hosts[key] = DnsObject.StringOrListObject().apply { valueX = values[0] }
+                    }
+                }
+            }
             servers = mutableListOf()
             fallbackStrategy = "disabledIfAnyMatch"
         }

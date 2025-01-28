@@ -75,6 +75,10 @@ fun mkPort(): Int {
     return port
 }
 
+fun String.listByLine(): List<String> {
+    return this.split("\n").map { it.trim() }.filter { it.isNotEmpty() }
+}
+
 fun String.listByLineOrComma(): List<String> {
     return this.split(",", "\n").map { it.trim() }.filter { it.isNotEmpty() }
 }
