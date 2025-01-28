@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.devtools.ksp") version "2.1.0-1.0.29"
+    id("com.google.devtools.ksp") version "2.1.10-1.0.29"
     id("kotlin-parcelize")
     id("com.google.protobuf")
 }
@@ -39,7 +39,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.1")
     implementation("androidx.core:core-ktx:1.15.0")
-    implementation("androidx.activity:activity-ktx:1.9.3")
+    implementation("androidx.activity:activity-ktx:1.10.0")
     implementation("androidx.fragment:fragment-ktx:1.8.5")
     implementation("androidx.browser:browser:1.8.0")
     implementation("androidx.camera:camera-view:1.4.1")
@@ -59,7 +59,7 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("cn.hutool:hutool-core:5.8.35")
     implementation("cn.hutool:hutool-json:5.8.35")
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation("com.google.code.gson:gson:2.12.0")
     implementation("com.google.zxing:core:3.5.3")
 
     implementation("org.yaml:snakeyaml:2.2") // Do not update until version 2.4. See https://bitbucket.org/snakeyaml/snakeyaml/issues/1098.
