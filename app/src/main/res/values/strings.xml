@@ -562,4 +562,5 @@
     <string name="one_per_line_format">One per line. Format:\n%s</string>
     <string name="edns_client_ip_sum">Please input an IP address. IPv4 uses a subnet of /24 and IPv6 uses a subnet of /96.</string>
     <string name="bootstrap_dns_sum">If the address of direct DNS is a domain name and "resolve destination" is enabled, use bootstrap DNS to resolve it. Please input a DNS server with IP address or with "+local".</string>
+    <string name="more">More</string>
 </resources>
