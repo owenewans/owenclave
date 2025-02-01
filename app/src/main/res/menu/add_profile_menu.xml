@@ -81,6 +81,9 @@
                         android:id="@+id/action_new_wg"
                         android:title="@string/action_wireguard" />
                     <item
+                        android:id="@+id/action_new_http3"
+                        android:title="@string/action_http3" />
+                    <item
                         android:id="@+id/action_new_config"
                         android:title="@string/custom_config" />
                     <item

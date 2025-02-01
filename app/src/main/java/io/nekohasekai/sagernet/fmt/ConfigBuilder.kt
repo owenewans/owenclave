@@ -41,6 +41,7 @@ import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult.IndexEntity
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.HttpBean
+import io.nekohasekai.sagernet.fmt.http3.Http3Bean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
@@ -1118,6 +1119,43 @@ fun buildV2RayConfig(
                                         }
                                         if (bean.disableSNI) disableSNI = bean.disableSNI
                                         if (bean.allowInsecure) allowInsecure = bean.allowInsecure
+                                    }
+                                )
+                            } else if (bean is Http3Bean) {
+                                protocol = "http3"
+                                settings = LazyOutboundConfigurationObject(this,
+                                    V2RayConfig.HTTP3OutboundConfigurationObject().apply {
+                                        address = bean.serverAddress
+                                        port = bean.serverPort
+                                        if (bean.username.isNotEmpty()) username = bean.username
+                                        if (bean.password.isNotEmpty()) password = bean.password
+                                        tlsSettings = TLSObject().apply {
+                                            if (bean.sni.isNotEmpty()) {
+                                                serverName = bean.sni
+                                            }
+                                            if (bean.certificates.isNotEmpty()) {
+                                                disableSystemRoot = true
+                                                certificates = listOf(TLSObject.CertificateObject()
+                                                    .apply {
+                                                        usage = "verify"
+                                                        certificate = bean.certificates.split(
+                                                            "\n"
+                                                        ).filter { it.isNotEmpty() }
+                                                    })
+                                            }
+                                            if (bean.pinnedPeerCertificateChainSha256.isNotEmpty()) {
+                                                pinnedPeerCertificateChainSha256 = bean.pinnedPeerCertificateChainSha256.listByLineOrComma()
+                                            }
+                                            if (bean.allowInsecure) {
+                                                allowInsecure = true
+                                            }
+                                            if (bean.echConfig.isNotEmpty()) {
+                                                echConfig = bean.echConfig
+                                            }
+                                            if (bean.echDohServer.isNotEmpty()) {
+                                                echDohServer = bean.echDohServer
+                                            }
+                                        }
                                     }
                                 )
                             }

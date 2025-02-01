@@ -661,6 +661,8 @@ public class V2RayConfig {
                     return Hysteria2OutboundConfigurationObject.class;
                 case "tuic":
                     return TUICOutboundConfigurationObject.class;
+                case "http3":
+                    return HTTP3OutboundConfigurationObject.class;
             }
             return null;
         }
@@ -712,6 +714,18 @@ public class V2RayConfig {
             public List<HTTPInboundConfigurationObject.AccountObject> users;
 
         }
+
+    }
+
+    public static class HTTP3OutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public Integer level;
+        public String username;
+        public String password;
+        public Map<String, String> headers;
+        public TLSObject tlsSettings;
 
     }
 

@@ -28,6 +28,7 @@ import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
+import io.nekohasekai.sagernet.fmt.http3.Http3Bean
 import io.nekohasekai.sagernet.fmt.hysteria.HysteriaBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
@@ -1141,6 +1142,41 @@ object RawUpdater : GroupUpdater() {
                         tuic5Bean.disableSNI = it
                     }
                     proxies.add(tuic5Bean)
+                }
+            }
+            "http3" -> {
+                val http3Bean = Http3Bean().applyDefaultValues()
+                outbound.getObject("settings")?.also { settings ->
+                    outbound.getString("tag")?.also {
+                        http3Bean.name = it
+                    }
+                    settings.getString("address")?.also {
+                        http3Bean.serverAddress = it
+                    }
+                    settings.getIntFromStringOrInt("port")?.also {
+                        http3Bean.serverPort = it
+                    }
+                    settings.getString("username")?.also {
+                        http3Bean.username = it
+                    }
+                    settings.getString("password")?.also {
+                        http3Bean.password = it
+                    }
+                    settings.getObject("tlsSettings")?.also { tlsSettings ->
+                        tlsSettings.getString("serverName")?.also {
+                            http3Bean.sni = it
+                        }
+                        tlsSettings.getBoolean("allowInsecure")?.also {
+                            http3Bean.allowInsecure = it
+                        }
+                        (tlsSettings.getObject("pinnedPeerCertificateChainSha256") as? List<String>)?.also {
+                            http3Bean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
+                            tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                                http3Bean.allowInsecure = allowInsecure
+                            }
+                        }
+                    }
+                    proxies.add(http3Bean)
                 }
             }
         }

@@ -427,6 +427,9 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_new_juicity -> {
                 startActivity(Intent(requireActivity(), JuicitySettingsActivity::class.java))
             }
+            R.id.action_new_http3 -> {
+                startActivity(Intent(requireActivity(), Http3SettingsActivity::class.java))
+            }
             R.id.action_new_config -> {
                 startActivity(Intent(requireActivity(), ConfigSettingsActivity::class.java))
             }

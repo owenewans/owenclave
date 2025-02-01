@@ -140,6 +140,7 @@
                 <data android:scheme="tuic" />
                 <data android:scheme="wireguard" />
                 <data android:scheme="mierus" />
+                <data android:scheme="quic" />
 
             </intent-filter>
 
@@ -189,6 +190,8 @@
             android:name="io.nekohasekai.sagernet.ui.profile.ShadowTLSSettingsActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.JuicitySettingsActivity" />
+        <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.Http3SettingsActivity" />
         <activity
             android:name="io.nekohasekai.sagernet.ui.profile.ConfigSettingsActivity" />
         <activity

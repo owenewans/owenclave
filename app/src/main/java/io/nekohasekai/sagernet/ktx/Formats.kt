@@ -26,6 +26,7 @@ import io.nekohasekai.sagernet.fmt.Serializable
 import io.nekohasekai.sagernet.fmt.brook.parseBrook
 import io.nekohasekai.sagernet.fmt.gson.gson
 import io.nekohasekai.sagernet.fmt.http.parseHttp
+import io.nekohasekai.sagernet.fmt.http3.parseHttp3
 import io.nekohasekai.sagernet.fmt.hysteria.parseHysteria
 import io.nekohasekai.sagernet.fmt.hysteria2.parseHysteria2
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
@@ -167,6 +168,13 @@ fun parseProxies(text: String): List<AbstractBean> {
             Logs.d("Try parse mieru link: $this")
             runCatching {
                 entities.add(parseMieru(this))
+            }.onFailure {
+                Logs.w(it)
+            }
+        } else if (startsWith("quic://")) {
+            Logs.d("Try parse http3 link: $this")
+            runCatching {
+                entities.add(parseHttp3(this))
             }.onFailure {
                 Logs.w(it)
             }
