@@ -388,10 +388,10 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
             deleteButton.setOnClickListener {
                 MaterialAlertDialogBuilder(this@BalancerSettingsActivity)
                     .setTitle(getString(R.string.delete_confirm_prompt))
-                    .setPositiveButton(R.string.yes) { _, _ ->
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
                         configurationAdapter.remove(adapterPosition)
                     }
-                    .setNegativeButton(R.string.no, null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .show()
             }
             shareLayout.isVisible = false

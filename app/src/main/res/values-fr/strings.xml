@@ -11,8 +11,6 @@
     <string name="ignore_battery_optimizations">Ignorer l\'optimisation de la batterie</string>
     <string name="donate_info">J\'adore l\'argent</string>
     <string name="apply">Appliquer</string>
-    <string name="no">Non</string>
-    <string name="yes">Oui</string>
     <string name="license">Licence</string>
     <string name="follow_system">Selon le système</string>
     <string name="night_mode">Mode nuit</string>

@@ -14,8 +14,6 @@
     <string name="night_mode">Nattmodus</string>
     <string name="license">Lisens</string>
     <string name="apply">Bruk</string>
-    <string name="no">Nei</string>
-    <string name="yes">Ja</string>
     <string name="proxy_cat">Tjenerinnstillinger</string>
     <string name="plugin_configure">Sett opp …</string>
     <string name="ignore_battery_optimizations_sum">Fjern noen begrensninger</string>

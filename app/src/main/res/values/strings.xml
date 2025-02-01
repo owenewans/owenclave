@@ -267,8 +267,6 @@
     <string name="proxy_cat">Server settings</string>
     <string name="ss_cat">Shadowsocks settings</string>
     <string name="unsaved_changes_prompt">Changes are not saved. Do you want to save?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
     <string name="apply">Apply</string>
     <string name="restart">Reload proxy service to apply changes</string>
     <string name="license">License</string>
@@ -482,7 +480,6 @@
     <string name="shadowtls_v3">ShadowTLS v3</string>
     <string name="wireguard_reserved">Reserved</string>
     <string name="shadowsocks_2022_implementation">Shadowsocks 2022 implementation</string>
-    <string name="action_copy">Copy</string>
     <string name="action_open">Open</string>
     <string name="bootstrap_dns">Bootstrap DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Use system DNS as Bootstrap DNS</string>

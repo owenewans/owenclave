@@ -340,10 +340,10 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
             deleteButton.setOnClickListener {
                 MaterialAlertDialogBuilder(this@ChainSettingsActivity)
                     .setTitle(getString(R.string.delete_confirm_prompt))
-                    .setPositiveButton(R.string.yes) { _, _ ->
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
                         configurationAdapter.remove(adapterPosition)
                     }
-                    .setNegativeButton(R.string.no, null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .show()
             }
 

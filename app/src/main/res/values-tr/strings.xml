@@ -240,8 +240,6 @@
     <string name="license">Lisans</string>
     <string name="restart">Değişiklikleri uygulamak için vekil sunucu servisini yeniden başlatın</string>
     <string name="apply">Uygula</string>
-    <string name="no">Hayır</string>
-    <string name="yes">Evet</string>
     <string name="unsaved_changes_prompt">Değişiklikler kaydedilmedi. Kaydetmek ister misiniz\?</string>
     <string name="ss_cat">Shadowsocks Ayarları</string>
     <string name="proxy_cat">Sunucu Ayarları</string>

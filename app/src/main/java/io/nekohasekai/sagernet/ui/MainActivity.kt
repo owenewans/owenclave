@@ -220,7 +220,7 @@ class MainActivity : ThemedActivity(),
 
             MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.subscription_import)
                 .setMessage(getString(R.string.subscription_import_message, name))
-                .setPositiveButton(R.string.yes) { _, _ ->
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     runOnDefaultDispatcher {
                         finishImportSubscription(group)
                     }
@@ -250,7 +250,7 @@ class MainActivity : ThemedActivity(),
         onMainDispatcher {
             MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.profile_import)
                 .setMessage(getString(R.string.profile_import_message, profile.displayName()))
-                .setPositiveButton(R.string.yes) { _, _ ->
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     runOnDefaultDispatcher {
                         finishImportProfile(profile)
                     }

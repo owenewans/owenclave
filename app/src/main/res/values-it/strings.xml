@@ -41,7 +41,6 @@
     <string name="plugin_untrusted">Attenzione: Questo plugin non sembra provenire da una fonte affidabile.</string>
     <string name="proxy_cat">Impostazioni del server</string>
     <string name="unsaved_changes_prompt">Modifiche non salvate. Vuoi salvare\?</string>
-    <string name="no">No</string>
     <string name="restart">Ricarica il servizio proxy per applicare le modifiche</string>
     <string name="license">Licenza</string>
     <string name="probe_interval">Intervallo Osservazione Balancer</string>
@@ -94,7 +93,6 @@
     <string name="cleartext_http_warning">Il traffico Cleartext HTTP non è sicuro</string>
     <string name="no_proxies_found">Nessun proxy trovato nel link</string>
     <string name="ss_cat">Impostazioni Shadowsocks</string>
-    <string name="yes">Sì</string>
     <string name="plugin_auto_connect_unlock_only">Questo plugin potrebbe non funzionare con Auto Connect</string>
     <string name="route_warn">Assicuratevi di aver letto la documentazione prima di aggiungere regole personalizzate, altrimenti potreste non essere in grado di connettervi a Internet.</string>
     <string name="lines">%d Linee</string>

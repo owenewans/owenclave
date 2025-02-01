@@ -321,7 +321,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             group.name = "Group"
             MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.subscription_import)
                 .setMessage(getString(R.string.subscription_import_message, text))
-                .setPositiveButton(R.string.yes) { _, _ ->
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     runOnDefaultDispatcher {
                         GroupManager.createGroup(group)
                         GroupUpdater.startUpdate(group, true)
@@ -498,7 +498,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                                 }
                                             }.joinToString("\n")
                                 )
-                                .setPositiveButton(R.string.yes) { _, _ ->
+                                .setPositiveButton(android.R.string.ok) { _, _ ->
                                     for (profile in toClear) {
                                         adapter.groupFragments[DataStore.selectedGroup]?.adapter?.apply {
                                             val index = configurationIdList.indexOf(profile.id)
@@ -517,7 +517,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                         }
                                     }
                                 }
-                                .setNegativeButton(R.string.no, null)
+                                .setNegativeButton(android.R.string.cancel, null)
                                 .show()
                         }
                     }
@@ -536,7 +536,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         onMainDispatcher {
                             MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.confirm)
                                 .setMessage(R.string.delete_confirm_prompt)
-                                .setPositiveButton(R.string.yes) { _, _ ->
+                                .setPositiveButton(android.R.string.ok) { _, _ ->
                                     for (profile in toClear) {
                                         adapter.groupFragments[DataStore.selectedGroup]?.adapter?.apply {
                                             val index = configurationIdList.indexOf(profile.id)
@@ -555,7 +555,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                         }
                                     }
                                 }
-                                .setNegativeButton(R.string.no, null)
+                                .setNegativeButton(android.R.string.cancel, null)
                                 .show()
                         }
                     }

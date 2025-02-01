@@ -211,15 +211,14 @@ class GroupSettingsActivity(
     class UnsavedChangesDialogFragment : AlertDialogFragment<Empty, Empty>() {
         override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
             setTitle(R.string.unsaved_changes_prompt)
-            setPositiveButton(R.string.yes) { _, _ ->
+            setPositiveButton(android.R.string.ok) { _, _ ->
                 runOnDefaultDispatcher {
                     (requireActivity() as GroupSettingsActivity).saveAndExit()
                 }
             }
-            setNegativeButton(R.string.no) { _, _ ->
+            setNegativeButton(android.R.string.cancel) { _, _ ->
                 requireActivity().finish()
             }
-            setNeutralButton(android.R.string.cancel, null)
         }
     }
 
@@ -228,13 +227,13 @@ class GroupSettingsActivity(
     class DeleteConfirmationDialogFragment : AlertDialogFragment<GroupIdArg, Empty>() {
         override fun AlertDialog.Builder.prepare(listener: DialogInterface.OnClickListener) {
             setTitle(R.string.delete_group_prompt)
-            setPositiveButton(R.string.yes) { _, _ ->
+            setPositiveButton(android.R.string.ok) { _, _ ->
                 runOnDefaultDispatcher {
                     GroupManager.deleteGroup(arg.groupId)
                 }
                 requireActivity().finish()
             }
-            setNegativeButton(R.string.no, null)
+            setNegativeButton(android.R.string.cancel, null)
         }
     }
 

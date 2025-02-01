@@ -12,8 +12,6 @@
     <string name="night_mode">Modo nocturno</string>
     <string name="route_warn">Asegúrese de haber leído la documentación antes de agregar reglas personalizadas; de lo contrario, es posible que no pueda conectarse a Internet.</string>
     <string name="restart">Vuelva a cargar el servicio de proxy para aplicar cambios</string>
-    <string name="no">No</string>
-    <string name="yes">sí</string>
     <string name="ss_cat">Configuración de Shadowsocks</string>
     <string name="proxy_cat">Configuración del servidor</string>
     <string name="plugin_auto_connect_unlock_only">Es posible que este complemento no funcione con Auto Connect</string>
@@ -453,7 +451,6 @@
     <string name="shadowtls_v3">ShadowTLS versión 3</string>
     <string name="wireguard_reserved">Reservado</string>
     <string name="shadowsocks_2022_implementation">Implementación de Shadowsocks 2022</string>
-    <string name="action_copy">Copiar</string>
     <string name="action_open">Abrir</string>
     <string name="bootstrap_dns">Bootstrap DNS</string>
     <string name="brook_fragment">Fragmento</string>

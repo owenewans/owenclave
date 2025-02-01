@@ -224,7 +224,6 @@
     <string name="connecting">Menyambungkan…</string>
     <string name="random">Acak</string>
     <string name="route_play_store">Aturan Play Store untuk %s</string>
-    <string name="yes">Ya</string>
     <string name="enable_log">Aktifkan Log</string>
     <string name="raw">Mentah</string>
     <string name="subscription_user_agent">Agen pengguna</string>
@@ -235,7 +234,6 @@
     <string name="connection_test_domain_not_found">Domain tidak ditemukan</string>
     <string name="append_http_proxy">Menambahkan Proksi HTTP ke VPN</string>
     <string name="append_http_proxy_sum">HTTP proksi akan digunakan secara langsung dari (browser/ beberapa aplikasi yang didukung), tanpa melalui perangkat NIC virtual (Android 10+)</string>
-    <string name="no">Tidak</string>
     <string name="connection_test_refused">Koneksi ditolak</string>
     <string name="connection_test_timeout">Waktu habis</string>
     <string name="subscription_traffic">%s Digunakan / %s Sisa</string>

@@ -171,8 +171,6 @@
     <string name="license">Лицензия</string>
     <string name="restart">Перезагрузите прокси-сервис для изменений</string>
     <string name="apply">Применить</string>
-    <string name="no">Нет</string>
-    <string name="yes">Да</string>
     <string name="unsaved_changes_prompt">Есть несохранённые изменения. Сохранить\?</string>
     <string name="ss_cat">Настройки Shadowsocks</string>
     <string name="proxy_cat">Настройки сервера</string>
@@ -478,7 +476,6 @@
     <string name="route_need_location_enabled">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **включенное местоположение**</string>
     <string name="route_need_fine_location">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **разрешение на точное определение местоположения**</string>
     <string name="shadowsocks_2022_implementation">Реализация Shadowsocks 2022</string>
-    <string name="action_copy">Копировать</string>
     <string name="action_open">Открыть</string>
     <string name="bootstrap_dns">Загрузочный DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Использовать системный DNS как DNS начальной загрузки</string>

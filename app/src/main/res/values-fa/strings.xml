@@ -150,8 +150,6 @@
     <string name="license">مجوز</string>
     <string name="restart">سرویس پروکسی را دوباره راه اندازی کنید تا تغییرات اعمال شوند</string>
     <string name="apply">اعمال کردن</string>
-    <string name="no">نه</string>
-    <string name="yes">بله</string>
     <string name="unsaved_changes_prompt">تغییرات ذخیره نشد. آیا می خواهید ذخیره کنید؟</string>
     <string name="ss_cat">تنظیمات شادوساکس</string>
     <string name="proxy_cat">تنظیمات سرور</string>

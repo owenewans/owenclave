@@ -160,14 +160,14 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             R.id.action_update_all_subscriptions -> {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.update_all_subscriptions)
-                    .setPositiveButton(R.string.yes) { _, _ ->
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
                         SagerDatabase.groupDao.allGroups()
                             .filter { it.type == GroupType.SUBSCRIPTION }
                             .forEach {
                                 GroupUpdater.startUpdate(it, true)
                             }
                     }
-                    .setNegativeButton(R.string.no, null)
+                    .setNegativeButton(android.R.string.cancel, null)
                     .show()
             }
         }
@@ -475,7 +475,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 R.id.action_clear -> {
                     MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.confirm)
                         .setMessage(R.string.clear_profiles_message)
-                        .setPositiveButton(R.string.yes) { _, _ ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             runOnDefaultDispatcher {
                                 GroupManager.clearGroup(proxyGroup.id)
                             }
