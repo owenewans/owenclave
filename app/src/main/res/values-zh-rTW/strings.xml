@@ -346,6 +346,7 @@
     <string name="group_order">順序</string>
     <string name="hysteria_disable_mtu_discovery">停用路徑 MTU 探索</string>
     <string name="hysteria_connection_receive_window">QUIC 連線接收視窗</string>
+    <string name="utls_fingerprint">uTLS 指紋</string>
     <string name="hysteria_stream_receive_window">QUIC 串流接收視窗</string>
     <string name="experimental_no_termination_signal">不在使用 VMess 傳輸時為 TCP 連線傳送單雙工中止訊號。此選項和一些應用程式不相容。</string>
     <string name="experimental_authenticated_length">使每個認證承載的長度不再具有延展性。此實驗要求伺服器和客戶端使用相同版本的 v2ray-core。此實驗預期會有更多破壞性更新。</string>
@@ -421,4 +422,18 @@
     <string name="root_ca_system">系統</string>
     <string name="packet_encoding">包編碼</string>
     <string name="use_local_dns_as_direct_dns">使用本地 DNS 作為直連 DNS</string>
+    <string name="action_switch">切換</string>
+    <string name="action_flash_on">開啟閃光燈</string>
+    <string name="action_camera_switch">切換相機</string>
+    <string name="action_flash_off">關閉閃光燈</string>
+    <string name="hysteria_hop_interval">連接埠跳頻間隔</string>
+    <string name="connection_test_delete_unavailable">清理不可用配置</string>
+    <string name="nat_stun_server_hint">STUN 伺服器</string>
+    <string name="naive_no_post_quantum">禁用後量子密鑰協商</string>
+    <string name="hysteria2_password">Hysteria 2 密碼</string>
+    <string name="front_proxy">前端代理</string>
+    <string name="landing_proxy">登陸代理</string>
+    <string name="allow_apps_bypass_vpn">允許應用程式繞過 VPN</string>
+    <string name="update_all_subscriptions">更新全部訂閱</string>
+    <string name="action_open">打開</string>
 </resources>

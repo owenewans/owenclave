@@ -335,6 +335,7 @@
     <string name="group_order_by_name">بر اساس نام</string>
     <string name="hysteria_disable_mtu_discovery">غیر فعال کردن مسیر کشف MTU</string>
     <string name="hysteria_connection_receive_window">پنجره دریافت اتصال سریع</string>
+    <string name="utls_fingerprint">اثر انگشت uTLS</string>
     <string name="hysteria_stream_receive_window">پنجره دریافت جریان QUIC</string>
     <string name="menu_traffic">ترافیک</string>
     <string name="no_statistics">هنوز آماری در دسترس نیست</string>
@@ -419,4 +420,14 @@
     <string name="tuic_congestion_controller">کنترل کننده ازدحام</string>
     <string name="tuic_disable_sni">غیر فعال کردن SNI</string>
     <string name="tuic_reduce_rtt">کاهش RTT</string>
+    <string name="action_flash_on">روشن کردن فلاش</string>
+    <string name="action_camera_switch">عوض کردن دوربین</string>
+    <string name="action_flash_off">خاموش کردن فلاش</string>
+    <string name="action_open">باز کردن</string>
+    <string name="connection_test_delete_unavailable">پاک‌سازی غیرقابل دسترس‌ها</string>
+    <string name="hysteria2_provider">ارائه دهنده Hysteria2</string>
+    <string name="front_proxy">پروکسی فرانت</string>
+    <string name="landing_proxy">پروکسی فرود آمدن</string>
+    <string name="allow_apps_bypass_vpn">اجازه دادن به برنامه‌ها برای دور زدن وی‌پی‌ان</string>
+    <string name="update_all_subscriptions">به‌روزرسانی تمام اشتراک ها</string>
 </resources>
