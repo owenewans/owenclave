@@ -196,15 +196,17 @@ fun buildV2RayConfig(
         }
 
         val list = mutableListOf(this)
-
-        val groupId = SagerDatabase.groupDao.getById(groupId)
-        val frontProxy = groupId?.frontProxy?.let { SagerDatabase.proxyDao.getById(it) }
-        val landingProxy = groupId?.landingProxy?.let { SagerDatabase.proxyDao.getById(it) }
-        if (frontProxy != null) {
-            list.add(frontProxy)
-        }
-        if (landingProxy != null) {
-            list.add(0, landingProxy)
+        SagerDatabase.groupDao.getById(groupId)?.let { group ->
+            group.frontProxy.takeIf { it > 0L }?.let { id ->
+                SagerDatabase.proxyDao.getById(id)?.let {
+                    list.add(it)
+                } ?: error("front proxy set but not found for group ${group.displayName()}")
+            }
+            group.landingProxy.takeIf { it > 0L }?.let { id ->
+                SagerDatabase.proxyDao.getById(id)?.let {
+                    list.add(0, it)
+                } ?: error("landing proxy set but not found for group ${group.displayName()}")
+            }
         }
         return list
     }
@@ -1447,7 +1449,9 @@ fun buildV2RayConfig(
                             0L -> tagProxy
                             -1L -> TAG_BYPASS
                             -2L -> TAG_BLOCK
-                            else -> if (outId == proxy.id) tagProxy else tagMap[outId]
+                            else -> if (outId == proxy.id) tagProxy else {
+                                tagMap[outId] ?: error("outbound not found in rule ${rule.displayName()}")
+                            }
                         }
                     }
                 }
