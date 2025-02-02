@@ -143,7 +143,7 @@ fun Hysteria2Bean.toUri(): String? {
     return url
 }
 
-fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): String {
+fun Hysteria2Bean.buildHysteria2Config(port: Int, isVpn: Boolean, cacheFile: (() -> File)?): String {
     if (!serverPorts.isValidHysteriaPort()) {
         error("invalid port: $serverPorts")
     }
@@ -225,7 +225,7 @@ fun Hysteria2Bean.buildHysteria2Config(port: Int, cacheFile: (() -> File)?): Str
     if (maxConnReceiveWindow > 0) {
         quicObject["maxConnReceiveWindow"] = maxConnReceiveWindow
     }
-    if (!canMapping() && DataStore.tunImplementation == TunImplementation.SYSTEM && DataStore.serviceMode == Key.MODE_VPN) {
+    if (!canMapping() && DataStore.tunImplementation == TunImplementation.SYSTEM && DataStore.serviceMode == Key.MODE_VPN && isVpn) {
         val sockoptsObject: MutableMap<String, Any> = HashMap()
         sockoptsObject["fdControlUnixSocket"] = "protect_path"
         quicObject["sockopts"] = sockoptsObject

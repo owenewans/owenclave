@@ -396,8 +396,6 @@ class BaseService {
             }
         }
 
-        val isVpnService get() = false
-
         suspend fun startProcesses() {
             data.proxy!!.launch()
         }
@@ -495,7 +493,7 @@ class BaseService {
                     Executable.killAll()    // clean up old processes
                     preInit()
                     try {
-                        proxy.init()
+                        proxy.init(data.proxy?.service is VpnService)
                     } catch (jsonEx: JSONException) {
                         error(jsonEx.readableMessage.replace("cn.hutool.json.", ""))
                     }

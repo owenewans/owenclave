@@ -382,7 +382,7 @@ data class ProxyEntity(
                             }
                             is Hysteria2Bean -> {
                                 append("\n\n")
-                                append(bean.buildHysteria2Config(port, null).also {
+                                append(bean.buildHysteria2Config(port, false, null).also {
                                     Logs.d(it)
                                 })
                             }

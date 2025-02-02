@@ -45,7 +45,7 @@ class V2RayTestInstance(profile: ProxyEntity, val link: String, val timeout: Int
             }
             runOnDefaultDispatcher {
                 try {
-                    init()
+                    init(false)
                     launch()
                     Logs.d(config.config)
                     pluginConfigs.forEach { (_, plugin) ->

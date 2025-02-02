@@ -28,8 +28,8 @@ class ExternalInstance(
     profile: ProxyEntity, val port: Int
 ) : V2RayInstance(profile) {
 
-    override fun init() {
-        super.init()
+    override fun init(isVpn: Boolean) {
+        super.init(isVpn)
 
         Logs.d(config.config)
         pluginConfigs.forEach { (_, plugin) ->

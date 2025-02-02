@@ -94,7 +94,7 @@ abstract class V2RayInstance(
         v2rayPoint.loadConfig(config.config)
     }
 
-    open fun init() {
+    open fun init(isVpn: Boolean) {
         v2rayPoint = V2RayInstance()
         buildConfig()
         for ((_, chain) in config.index) {
@@ -125,7 +125,7 @@ abstract class V2RayInstance(
                     }
                     is Hysteria2Bean -> {
                         initPlugin("hysteria2-plugin")
-                        pluginConfigs[port] = profile.type to bean.buildHysteria2Config(port) {
+                        pluginConfigs[port] = profile.type to bean.buildHysteria2Config(port, isVpn) {
                             File(
                                 app.noBackupFilesDir,
                                 "hysteria2_" + SystemClock.elapsedRealtime() + ".ca"
@@ -178,7 +178,7 @@ abstract class V2RayInstance(
                                 externalInstances[port] = ExternalInstance(
                                     profile, port
                                 ).apply {
-                                    init()
+                                    init(isVpn)
                                 }
                             }
                         }

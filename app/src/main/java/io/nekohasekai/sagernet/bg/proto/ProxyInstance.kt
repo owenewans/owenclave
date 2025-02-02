@@ -44,8 +44,8 @@ class ProxyInstance(profile: ProxyEntity, val service: BaseService.Interface) : 
 
     lateinit var observatoryJob: Job
 
-    override fun init() {
-        super.init()
+    override fun init(isVpn: Boolean) {
+        super.init(isVpn)
 
         Logs.d(config.config)
         pluginConfigs.forEach { (_, plugin) ->
