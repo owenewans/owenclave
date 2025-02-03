@@ -366,7 +366,7 @@
     <string name="probe_url">Пользовательский URL-адрес проверки подключения</string>
     <string name="wireguard_public_key">Открытый ключ сервера</string>
     <string name="wireguard_psk">Пароль сервера</string>
-    <string name="naive_insecure_concurrency">Небезопасный параллелизм</string>
+    <string name="naive_insecure_concurrency">Число параллельных соединений</string>
     <string name="naive_insecure_concurrency_summary">Использовать N параллельных соединений для повышения отказоустойчивости в условиях ненадёжной сети. Большее число соединений увеличивает риск обнаружения туннелей и снижает безопасность. Этот проект стремится к максимальной защите от анализа трафика, следовательно, использование его небезопасным образом противоречит данной цели.
 \n
 \nЕсли придётся использовать данную функцию, попробуйте N=2, чтобы проверить, решит ли это проблему. Настоятельно не рекомендуется использовать более 4 соединений.</string>
@@ -517,4 +517,10 @@
     <string name="hijack_dns_message">Перехват DNS-запросов, не отправленных на DNS-адрес TUN с помощью DNS-сниффера</string>
     <string name="cag_httpupgrade">Настройки HTTPUpgrade</string>
     <string name="regular_expression_filter">Исключение имени (регулярное выражение)</string>
+    <string name="one_per_line_format">По одному на строку. Формат:\n%s</string>
+    <string name="edns_client_ip_sum">Введите IP-адрес. В IPv4 используется подсеть /24, а в IPv6 - подсеть /96.</string>
+    <string name="one_per_line">По одному в каждой строке.</string>
+    <string name="bootstrap_dns_sum">Если адрес прямого DNS является доменным именем и резолвинг адреса назначения включен, используйте Загрузочный DNS для его резолвинга. Пожалуйста, введите DNS-сервер с IP-адресом или с +local.</string>
+    <string name="root_ca_system_and_user">Система и пользователь</string>
+    <string name="more">Другие</string>
 </resources>
