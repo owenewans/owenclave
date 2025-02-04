@@ -84,7 +84,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
             pinSHA256 = it
         }
         link.queryParameter("obfs")?.also { it ->
-            if (it == "salamander") {
+            if (it.lowercase() == "salamander") {
                 link.queryParameter("obfs-password")?.also {
                     obfs = it
                 }
@@ -106,11 +106,10 @@ fun Hysteria2Bean.toUri(): String? {
     }
 
     if (auth.isNotEmpty()) {
-        val a = auth.split(":")
-        if (a.size == 2) {
+        if (auth.contains(":")) {
             // https://github.com/apernet/hysteria/blob/c7545cc870e5cc62a187ad03a083920e6bef049f/app/cmd/client.go#L308-L316
-            builder.username = a[0]
-            builder.password = a[1]
+            builder.username = auth.substringBefore(":")
+            builder.password = auth.substringAfter(":")
         } else {
             builder.username = auth
         }
