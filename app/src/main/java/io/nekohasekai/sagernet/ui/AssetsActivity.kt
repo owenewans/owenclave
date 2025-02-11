@@ -20,6 +20,7 @@
 package io.nekohasekai.sagernet.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.format.DateFormat
@@ -28,6 +29,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -62,6 +64,9 @@ class AssetsActivity : ThemedActivity() {
         layout = binding
         setContentView(binding.root)
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Build.VERSION.SDK_INT <= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+        }
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbar)) { v, insets ->
             val bars = insets.getInsets(
                 WindowInsetsCompat.Type.systemBars()
