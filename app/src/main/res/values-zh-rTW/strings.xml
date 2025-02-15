@@ -436,4 +436,5 @@
     <string name="allow_apps_bypass_vpn">允許應用程式繞過 VPN</string>
     <string name="update_all_subscriptions">更新全部訂閱</string>
     <string name="action_open">打開</string>
+    <string name="acquire_wake_lock">取得喚醒鎖定</string>
 </resources>

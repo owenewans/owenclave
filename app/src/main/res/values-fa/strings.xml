@@ -430,4 +430,5 @@
     <string name="landing_proxy">پروکسی فرود آمدن</string>
     <string name="allow_apps_bypass_vpn">اجازه دادن به برنامه‌ها برای دور زدن وی‌پی‌ان</string>
     <string name="update_all_subscriptions">به‌روزرسانی تمام اشتراک ها</string>
+    <string name="acquire_wake_lock">به‌دست آوردن WakeLock</string>
 </resources>

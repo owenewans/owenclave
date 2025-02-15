@@ -523,4 +523,5 @@
     <string name="bootstrap_dns_sum">Если адрес прямого DNS является доменным именем и резолвинг адреса назначения включен, используйте Загрузочный DNS для его резолвинга. Пожалуйста, введите DNS-сервер с IP-адресом или с +local.</string>
     <string name="root_ca_system_and_user">Система и пользователь</string>
     <string name="more">Другие</string>
+    <string name="acquire_wake_lock">Включить WakeLock</string>
 </resources>

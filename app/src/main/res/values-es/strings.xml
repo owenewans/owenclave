@@ -499,4 +499,5 @@
     <string name="ech_doh_server">Servidor ECH DoH</string>
     <string name="tuic_v5_provider">Proveedor TUIC v5</string>
     <string name="backup_all_profiles">Copia de seguridad de todos los perfiles</string>
+    <string name="acquire_wake_lock">Adquirir WakeLock</string>
 </resources>

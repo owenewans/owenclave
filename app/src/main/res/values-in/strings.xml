@@ -417,4 +417,5 @@
     <string name="naive_insecure_concurrency_summary">Gunakan koneksi terowongan konkuren N agar lebih kuat dalam kondisi jaringan yang buruk. Lebih banyak koneksi membuat tunneling lebih mudah dideteksi dan kurang aman. Proyek ini mengupayakan keamanan terkuat terhadap analisis lalu lintas. Menggunakannya dengan cara yang tidak aman mengalahkan tujuannya.
 \n
 \nJika Anda harus menggunakan ini, coba N = 2 terlebih dahulu untuk melihat apakah itu menyelesaikan masalah Anda. Sangat menyarankan untuk tidak menggunakan lebih dari 4 koneksi di sini.</string>
+    <string name="acquire_wake_lock">Mengakuisisi WakeLock</string>
 </resources>
