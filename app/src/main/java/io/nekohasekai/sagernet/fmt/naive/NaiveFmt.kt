@@ -94,20 +94,9 @@ fun NaiveBean.buildNaiveConfig(port: Int): String {
             it["extra-headers"] = extraHeaders.listByLine().joinToString("\r\n")
         }
         if (sni.isNotEmpty()) {
-            if (!sni.isIpAddress()) {
-                it["host-resolver-rules"] = "MAP $sni $finalAddress"
-            } else {
-                // do nothing
-            }
+            it["host-resolver-rules"] = "MAP $sni $finalAddress"
         } else {
-            if (!serverAddress.isIpAddress()) {
-                it["host-resolver-rules"] = "MAP $serverAddress $finalAddress"
-            } else {
-                // https://github.com/MatsuriDayo/NekoBoxForAndroid/blob/1b022eb2f1d6a939531d8ccdc5b3fa5495f1a2ee/app/src/main/java/io/nekohasekai/sagernet/fmt/naive/NaiveFmt.kt#L69-L71
-                // for naive, using IP as SNI name hardly happens
-                // and host-resolver-rules cannot resolve the SNI problem
-                // so do nothing
-            }
+            it["host-resolver-rules"] = "MAP $serverAddress $finalAddress"
         }
         if (DataStore.enableLog) {
             it["log"] = ""

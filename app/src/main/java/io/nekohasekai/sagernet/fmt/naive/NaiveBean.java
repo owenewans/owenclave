@@ -44,11 +44,6 @@ public class NaiveBean extends AbstractBean {
     public String sni;
 
     @Override
-    public boolean canMapping() {
-        return !NetsKt.isIpAddress(serverAddress) || (!sni.isEmpty() && !NetsKt.isIpAddress(sni));
-    }
-
-    @Override
     public void initializeDefaultValues() {
         if (serverPort == null) serverPort = 443;
         super.initializeDefaultValues();
