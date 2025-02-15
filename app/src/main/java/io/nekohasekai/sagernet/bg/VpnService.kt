@@ -293,7 +293,7 @@ class VpnService : BaseVpnService(),
             sniffing = DataStore.trafficSniffing
             overrideDestination = DataStore.destinationOverride
             fakeDNS = DataStore.enableFakeDns
-            debug = DataStore.enableLog
+            debug = DataStore.logLevel == LogLevel.DEBUG
             dumpUID = data.proxy!!.config.dumpUid
             trafficStats = DataStore.appTrafficStatistics
             pCap = DataStore.enablePcap

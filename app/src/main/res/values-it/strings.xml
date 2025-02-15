@@ -11,7 +11,6 @@
     <string name="no_proxies_found_in_clipboard">Nessun proxy trovato nella clipboard</string>
     <string name="no_proxies_found_in_subscription">Nessun proxy trovato nella sottoscrizione</string>
     <string name="list">Lista</string>
-    <string name="enable_log_sum">Per scopi di debug</string>
     <string name="circular_reference">Riferimento Circolare</string>
     <string name="clear_profiles">Cancella</string>
     <string name="action_export_file">Esporta in un file</string>
@@ -99,7 +98,6 @@
     <string name="auto">Automatico</string>
     <string name="username">Nome Utente</string>
     <string name="enable_mux">Abilità Multiplexer</string>
-    <string name="enable_log">Attiva Log</string>
     <string name="ws_browser_forwarding_sum">Trasferisci i corrispondenti WebSockets tramite il browser.</string>
     <string name="add_profile_methods_manual_settings">Impostazioni manuali</string>
     <string name="balancer_strategy">Strategia</string>

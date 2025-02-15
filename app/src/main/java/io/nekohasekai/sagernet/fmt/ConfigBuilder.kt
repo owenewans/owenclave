@@ -32,6 +32,7 @@ import com.github.shadowsocks.plugin.PluginManager
 import com.google.gson.JsonSyntaxException
 import io.nekohasekai.sagernet.IPv6Mode
 import io.nekohasekai.sagernet.Key
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.Shadowsocks2022Implementation
 import io.nekohasekai.sagernet.bg.VpnService
@@ -283,7 +284,13 @@ fun buildV2RayConfig(
         }
 
         log = LogObject().apply {
-            loglevel = if (DataStore.enableLog) "debug" else "error"
+            loglevel = when (DataStore.logLevel) {
+                LogLevel.DEBUG -> "debug"
+                LogLevel.INFO -> "info"
+                LogLevel.WARNING -> "warning"
+                LogLevel.ERROR -> "error"
+                else -> "none"
+            }
         }
 
         policy = PolicyObject().apply {

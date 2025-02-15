@@ -20,6 +20,7 @@ package io.nekohasekai.sagernet.fmt.mieru
 
 import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libcore.Libcore
@@ -108,7 +109,13 @@ fun MieruBean.buildMieruConfig(port: Int): String {
     return JSONObject().also {
         it["activeProfile"] = "default"
         it["socks5Port"] = port
-        it["loggingLevel"] = if (DataStore.enableLog) "DEBUG" else "WARN"
+        it["loggingLevel"] = when (DataStore.logLevel) {
+            LogLevel.DEBUG -> "TRACE"
+            LogLevel.INFO -> "INFO"
+            LogLevel.WARNING -> "WARN"
+            LogLevel.ERROR -> "ERROR"
+            else -> "FATAL"
+        }
         it["profiles"] = JSONArray().apply {
             put(JSONObject().also {
                 it["profileName"] = "default"

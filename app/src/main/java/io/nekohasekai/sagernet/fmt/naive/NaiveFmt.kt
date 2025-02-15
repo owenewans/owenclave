@@ -20,6 +20,7 @@
 package io.nekohasekai.sagernet.fmt.naive
 
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
@@ -98,7 +99,7 @@ fun NaiveBean.buildNaiveConfig(port: Int): String {
         } else {
             it["host-resolver-rules"] = "MAP $serverAddress $finalAddress"
         }
-        if (DataStore.enableLog) {
+        if (DataStore.logLevel != LogLevel.NONE) {
             it["log"] = ""
         }
         if (insecureConcurrency > 0) {

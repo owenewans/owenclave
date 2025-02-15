@@ -224,7 +224,6 @@
     <string name="connecting">Menyambungkan…</string>
     <string name="random">Acak</string>
     <string name="route_play_store">Aturan Play Store untuk %s</string>
-    <string name="enable_log">Aktifkan Log</string>
     <string name="raw">Mentah</string>
     <string name="subscription_user_agent">Agen pengguna</string>
     <string name="ooc_missing_protocol">Langganan memerlukan dukungan untuk protokol %s, tetapi tidak dapat ditemukan. Profil yang tidak didukung akan diabaikan.</string>
@@ -269,7 +268,6 @@
     <string name="enable">Aktifkan</string>
     <string name="disable">Matikan</string>
     <string name="auto">Otomatis</string>
-    <string name="enable_log_sum">Untuk tujuan debugging</string>
     <string name="list">Lis</string>
     <string name="always_show_address">Selalu Tampilkan Alamat</string>
     <string name="unavailable">Tidak tersedia</string>

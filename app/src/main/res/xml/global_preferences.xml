@@ -95,11 +95,14 @@
             app:key="allowAccess"
             app:summary="@string/allow_access_sum"
             app:title="@string/allow_access" />
-        <SwitchPreference
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:defaultValue="2"
             app:icon="@drawable/ic_baseline_bug_report_24"
-            app:key="enableLog"
-            app:summary="@string/enable_log_sum"
-            app:title="@string/enable_log" />
+            app:entries="@array/log_level_entry"
+            app:entryValues="@array/log_level_value"
+            app:key="logLevel"
+            app:title="@string/log_level"
+            app:useSimpleSummaryProvider="true"/>
         <EditTextPreference
             app:defaultValue="127.0.0.1:6060"
             app:key="pprofServer"

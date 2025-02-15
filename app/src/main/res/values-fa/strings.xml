@@ -138,8 +138,6 @@
     <string name="probe_interval">فاصله مشاهده بالانس</string>
     <string name="random">تصادفی</string>
     <string name="list">لیست</string>
-    <string name="enable_log_sum">به منظور رفع اشکال</string>
-    <string name="enable_log">فعال کردن گزارش</string>
     <string name="auto">خودکار</string>
     <string name="disable">غیرفعال کردن</string>
     <string name="enable">فعال کردن</string>
@@ -431,4 +429,5 @@
     <string name="allow_apps_bypass_vpn">اجازه دادن به برنامه‌ها برای دور زدن وی‌پی‌ان</string>
     <string name="update_all_subscriptions">به‌روزرسانی تمام اشتراک ها</string>
     <string name="acquire_wake_lock">به‌دست آوردن WakeLock</string>
+    <string name="log_level">سطح گزارش</string>
 </resources>

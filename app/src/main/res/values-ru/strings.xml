@@ -159,8 +159,6 @@
     <string name="probe_interval">Интервал наблюдения балансировщика</string>
     <string name="random">Случайно</string>
     <string name="list">Список</string>
-    <string name="enable_log_sum">В целях отладки</string>
-    <string name="enable_log">Включить журнал</string>
     <string name="auto">Авто</string>
     <string name="disable">Отключен</string>
     <string name="enable">Включить</string>
@@ -524,4 +522,5 @@
     <string name="root_ca_system_and_user">Система и пользователь</string>
     <string name="more">Другие</string>
     <string name="acquire_wake_lock">Включить WakeLock</string>
+    <string name="log_level">Тип журнала</string>
 </resources>

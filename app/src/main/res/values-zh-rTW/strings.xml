@@ -246,8 +246,6 @@
     <string name="enable">啟用</string>
     <string name="disable">停用</string>
     <string name="auto">自動</string>
-    <string name="enable_log">啟用記錄檔</string>
-    <string name="enable_log_sum">用於除錯用途</string>
     <string name="list">列表</string>
     <string name="random">隨機</string>
     <string name="probe_interval">負載平衡器觀測間隔</string>
@@ -437,4 +435,5 @@
     <string name="update_all_subscriptions">更新全部訂閱</string>
     <string name="action_open">打開</string>
     <string name="acquire_wake_lock">取得喚醒鎖定</string>
+    <string name="log_level">日誌等級</string>
 </resources>

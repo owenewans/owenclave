@@ -180,7 +180,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val requireTransproxy = findPreference<SwitchPreference>(Key.REQUIRE_TRANSPROXY)!!
         val transproxyPort = findPreference<EditTextPreference>(Key.TRANSPROXY_PORT)!!
         val transproxyMode = findPreference<SimpleMenuPreference>(Key.TRANSPROXY_MODE)!!
-        val enableLog = findPreference<SwitchPreference>(Key.ENABLE_LOG)!!
+        val logLevel = findPreference<SimpleMenuPreference>(Key.LOG_LEVEL)!!
 
         findPreference<EditTextPreference>(Key.PPROF_SERVER)!!.apply {
             isVisible = DataStore.enableDebug
@@ -330,7 +330,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         transproxyPort.onPreferenceChangeListener = reloadListener
         transproxyMode.onPreferenceChangeListener = reloadListener
 
-        enableLog.onPreferenceChangeListener = reloadListener
+        logLevel.onPreferenceChangeListener = reloadListener
 
         shadowsocks2022Implementation.onPreferenceChangeListener = reloadListener
         providerHysteria2.onPreferenceChangeListener = reloadListener

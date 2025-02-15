@@ -87,7 +87,7 @@ object Key {
     const val RULES_PROVIDER = "rulesProvider"
     const val RULES_GEOSITE_URL = "rulesGeositeUrl"
     const val RULES_GEOIP_URL = "rulesGeoipUrl"
-    const val ENABLE_LOG = "enableLog"
+    const val LOG_LEVEL = "logLevel"
     const val ENABLE_DEBUG = "enableDebug"
     const val PPROF_SERVER = "pprofServer"
 
@@ -345,4 +345,12 @@ object NetworkType {
     const val WIFI = "wifi"
     const val BLUETOOTH = "bluetooth"
     const val ETHERNET = "ethernet"
+}
+
+object LogLevel {
+    const val NONE = 0
+    const val ERROR = 1
+    const val WARNING = 2
+    const val INFO = 3
+    const val DEBUG = 4
 }

@@ -1,6 +1,7 @@
 package io.nekohasekai.sagernet.fmt.juicity
 
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.*
@@ -72,10 +73,12 @@ fun JuicityBean.buildJuicityConfig(port: Int): String {
         if (pinnedCertChainSha256.isNotEmpty()) {
             it["pinned_certchain_sha256"] = pinnedCertChainSha256
         }
-        if (DataStore.enableLog) {
-            it["log_level"] = "debug"
-        } else {
-            it["log_level"] = "error"
+        it["log_level"] = when (DataStore.logLevel) {
+            LogLevel.DEBUG -> "trace"
+            LogLevel.INFO -> "info"
+            LogLevel.WARNING -> "warn"
+            LogLevel.ERROR -> "error"
+            else -> "panic"
         }
     }.toStringPretty()
 }

@@ -23,6 +23,7 @@ import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
 import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginManager
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.isIpAddress
@@ -119,7 +120,13 @@ fun TrojanGoBean.buildTrojanGoConfig(port: Int): String {
         conf["password"] = JSONArray().apply {
             add(password)
         }
-        conf["log_level"] = if (DataStore.enableLog) 0 else 2
+        conf["log_level"] = when (DataStore.logLevel) {
+            LogLevel.DEBUG -> 0
+            LogLevel.INFO -> 1
+            LogLevel.WARNING -> 2
+            LogLevel.ERROR -> 3
+            else -> 5
+        }
         if (mux) conf["mux"] = JSONObject().also {
             it["enabled"] = true
             it["concurrency"] = muxConcurrency

@@ -228,8 +228,6 @@
     <string name="standard">Standart</string>
     <string name="list">Liste</string>
     <string name="random">Rastgele</string>
-    <string name="enable_log_sum">Hata ayıklama amaçlıdır</string>
-    <string name="enable_log">Kayıtları Etkinleştir</string>
     <string name="auto">Otomatik</string>
     <string name="disable">Devre Dışı Bırak</string>
     <string name="enable">Etkinleştir</string>

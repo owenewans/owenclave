@@ -6,7 +6,6 @@
     <string name="version_x">Versión (%s)</string>
     <string name="app_version">Versión</string>
     <string name="always_show_address_sum">Mostrar siempre la dirección del servidor en la tarjeta de configuración</string>
-    <string name="enable_log">Activar registro</string>
     <string name="disable">Desactivar</string>
     <string name="enable">Permitir</string>
     <string name="night_mode">Modo nocturno</string>
@@ -300,7 +299,6 @@
     <string name="probe_interval">Intervalo de observación del equilibrador</string>
     <string name="random">Aleatorio</string>
     <string name="list">Lista</string>
-    <string name="enable_log_sum">Para fines de depuración</string>
     <string name="auto">Automático</string>
     <string name="follow_system">Seguir el sistema</string>
     <string name="lines">%d líneas</string>
@@ -500,4 +498,5 @@
     <string name="tuic_v5_provider">Proveedor TUIC v5</string>
     <string name="backup_all_profiles">Copia de seguridad de todos los perfiles</string>
     <string name="acquire_wake_lock">Adquirir WakeLock</string>
+    <string name="log_level">Nivel de registro</string>
 </resources>

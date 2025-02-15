@@ -26,9 +26,11 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.bg.AbstractInstance
+import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.bg.ExternalInstance
 import io.nekohasekai.sagernet.bg.GuardedProcessPool
 import io.nekohasekai.sagernet.database.DataStore
@@ -290,7 +292,13 @@ abstract class V2RayInstance(
                             "--config",
                             configFile.absolutePath,
                             "--log-level",
-                            if (DataStore.enableLog) "trace" else "warn",
+                            when (DataStore.logLevel) {
+                                LogLevel.DEBUG -> "trace"
+                                LogLevel.INFO -> "info"
+                                LogLevel.WARNING -> "warn"
+                                LogLevel.ERROR -> "error"
+                                else -> "panic"
+                            },
                             "client"
                         )
 
@@ -316,7 +324,13 @@ abstract class V2RayInstance(
                             "--config",
                             configFile.absolutePath,
                             "--log-level",
-                            if (DataStore.enableLog) "debug" else "warn",
+                            when (DataStore.logLevel) {
+                                LogLevel.DEBUG -> "debug"
+                                LogLevel.INFO -> "info"
+                                LogLevel.WARNING -> "warn"
+                                LogLevel.ERROR -> "error"
+                                else -> "error"
+                            },
                             "client"
                         )
 
@@ -377,6 +391,9 @@ abstract class V2RayInstance(
                         processes.start(commands, env)
                     }
                     bean is ShadowTLSBean -> {
+                        if (DataStore.logLevel == LogLevel.NONE) {
+                            env["RUST_LOG"] = "error"
+                        }
                         val commands = mutableListOf(initPlugin("shadowtls-plugin").path)
                         if (bean.v3) {
                             commands.add("--v3")

@@ -20,6 +20,7 @@ package io.nekohasekai.sagernet.fmt.tuic5
 
 import cn.hutool.json.JSONArray
 import cn.hutool.json.JSONObject
+import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.AbstractBean
@@ -181,6 +182,12 @@ fun Tuic5Bean.buildTuic5Config(port: Int, cacheFile: (() -> File)?): String {
             it["server"] = joinHostPort(LOCALHOST, port)
             it["max_packet_size"] = mtu
         }
-        it["log_level"] = if (DataStore.enableLog) "debug" else "info"
+        it["log_level"] = when (DataStore.logLevel) {
+            LogLevel.DEBUG -> "trace"
+            LogLevel.INFO -> "info"
+            LogLevel.WARNING -> "warn"
+            LogLevel.ERROR -> "error"
+            else -> "off"
+        }
     }.toStringPretty()
 }

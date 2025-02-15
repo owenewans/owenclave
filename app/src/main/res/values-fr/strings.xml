@@ -17,8 +17,6 @@
     <string name="lines">%d lignes</string>
     <string name="random">Aléatoire</string>
     <string name="list">Liste</string>
-    <string name="enable_log_sum">Pour le débogage</string>
-    <string name="enable_log">Activer la journalisation</string>
     <string name="delete_group_prompt">Êtes-vous sûr(e) de vouloir supprimer ce groupe \?</string>
     <string name="subscription">Abonnement</string>
     <string name="profile_requiring_plugin">%s nécessite l\'installation du greffon %s, mais il n\'a pas été trouvé.</string>
