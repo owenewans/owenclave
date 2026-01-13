@@ -1,0 +1,66 @@
+name: Debug Build
+on:
+  push:
+    branches:
+      - dev*
+    paths:
+      - "app/**"
+      - "buildSrc/**"
+      - "library/**"
+      - ".github/workflows/debug.yml"
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: 1.25.5
+          cache-dependency-path: "library/core/go.sum"
+      - name: Setup Go Mobile
+        # https://github.com/golang/mobile/blob/c31d5b91ecc32c0d598b8fe8457d244ca0b4e815/cmd/gomobile/init.go#L83
+        run: |
+          go install github.com/sagernet/gomobile/cmd/gomobile@v0.1.11
+          go install github.com/sagernet/gomobile/cmd/gobind@v0.1.11
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: 'gradle'
+      - name: Setup Android NDK
+        id: setup-ndk
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r29
+      - name: Native Build
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          ./run lib core debug
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          path: app/libs/libcore.aar
+          name: "LibCore"
+      - name: Gradle Cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.gradle
+          key: gradle-debug-${{ hashFiles('**/*.gradle.kts') }}
+      - name: Gradle Build
+        run: |
+          echo "sdk.dir=${ANDROID_HOME}" > local.properties
+          ./gradlew :app:downloadAssets
+          ./gradlew :app:assembleOssDebug
+          APK="app/build/outputs/apk/oss/debug"
+          echo "APK=$APK" >> $GITHUB_ENV
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v6
+        with:
+          name: APKs
+          path: ${{ env.APK }}

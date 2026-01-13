@@ -43,7 +43,6 @@ jobs:
           java-version: 21
           cache: 'gradle'
       - name: Setup Android NDK
-        # Pin NDK version for `gomobile`.
         id: setup-ndk
         uses: nttld/setup-ndk@v1
         with:
@@ -59,7 +58,7 @@ jobs:
           path: app/libs/libcore.aar
           name: "LibCore"
       - name: Gradle Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.gradle
           key: gradle-${{ hashFiles('**/*.gradle.kts') }}
@@ -69,8 +68,7 @@ jobs:
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           ./gradlew :app:downloadAssets
           ./gradlew :app:assembleOssRelease
-          APK=$(find app/build/outputs/apk -name '*arm64-v8a*.apk')
-          APK=$(dirname "$APK")
+          APK="app/build/outputs/apk/oss/release"
           echo "APK=$APK" >> $GITHUB_ENV
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
