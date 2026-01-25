@@ -26,7 +26,6 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
-import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean;
 
@@ -34,23 +33,21 @@ public class HttpBean extends StandardV2RayBean {
 
     public String username;
     public String password;
-    public Boolean trustTunnelUot; // Deprecated. Do not use.
 
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
         if (username == null) username = "";
         if (password == null) password = "";
-        if (trustTunnelUot == null) trustTunnelUot = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
         super.serialize(output);
         output.writeString(username);
         output.writeString(password);
-        output.writeBoolean(trustTunnelUot);
+        output.writeBoolean(false); // trustTunnelUot, removed
     }
 
     @Override
@@ -72,7 +69,7 @@ public class HttpBean extends StandardV2RayBean {
             utlsFingerprint = input.readString();
         }
         if (version >= 3) {
-            trustTunnelUot = input.readBoolean();
+            input.readBoolean(); // trustTunnelUot, removed
         }
     }
 
@@ -84,19 +81,13 @@ public class HttpBean extends StandardV2RayBean {
         }
     }
 
-    @Override
-    public void applyFeatureSettings(AbstractBean other) {
-        if (!(other instanceof HttpBean bean)) return;
-        bean.trustTunnelUot = trustTunnelUot;
-    }
-
     @NotNull
     @Override
     public HttpBean clone() {
         return KryoConverters.deserialize(new HttpBean(), KryoConverters.serialize(this));
     }
 
-    public static final Creator<HttpBean> CREATOR = new CREATOR<HttpBean>() {
+    public static final Creator<HttpBean> CREATOR = new CREATOR<>() {
         @NonNull
         @Override
         public HttpBean newInstance() {
