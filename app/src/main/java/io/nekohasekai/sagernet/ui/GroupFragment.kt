@@ -48,7 +48,6 @@ import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.utils.FormatFileSizeCompat
 import io.nekohasekai.sagernet.widget.QRCodeDialog
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
-import kotlinx.coroutines.delay
 import java.util.*
 
 class GroupFragment : ToolbarFragment(R.layout.layout_group),
@@ -316,8 +315,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
         override suspend fun groupAdd(group: ProxyGroup) {
             groupList.add(group)
-            delay(300L)
-
             onMainDispatcher {
                 undoManager.flush()
                 notifyItemInserted(groupList.size - 1)

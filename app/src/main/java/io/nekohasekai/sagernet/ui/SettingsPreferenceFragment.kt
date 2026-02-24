@@ -180,7 +180,6 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             if (SagerNet.started) {
                 SagerNet.stopService()
                 runOnMainDispatcher {
-                    delay(300)
                     SagerNet.startService()
                 }
             }

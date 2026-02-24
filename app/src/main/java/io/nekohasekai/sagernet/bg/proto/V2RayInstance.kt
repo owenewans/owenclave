@@ -122,7 +122,6 @@ abstract class V2RayInstance(
     @SuppressLint("SetJavaScriptEnabled")
     override fun launch() {
         val context = SagerNet.application
-
         for ((_, chain) in config.index) {
             chain.entries.forEachIndexed { _, (port, profile) ->
                 val bean = profile.requireBean()
@@ -141,10 +140,7 @@ abstract class V2RayInstance(
                         }
                         else -> error("impossible")
                     }
-                    // disable system directories
-                    // env["SSL_CERT_DIR"] = "/not_exists"
                 }
-
                 when {
                     externalInstances.containsKey(port) -> {
                         externalInstances[port]!!.launch()
@@ -154,11 +150,9 @@ abstract class V2RayInstance(
                             context.noBackupFilesDir,
                             "naive_" + SystemClock.elapsedRealtime() + ".json"
                         )
-
                         configFile.parentFile?.mkdirs()
                         configFile.writeText(config)
                         cacheFiles.add(configFile)
-
                         if (bean.certificate.isNotEmpty()) {
                             val caFile = File(
                                 context.noBackupFilesDir,
@@ -168,14 +162,10 @@ abstract class V2RayInstance(
                             caFile.writeText(bean.certificate)
                             cacheFiles.add(caFile)
                             env["SSL_CERT_FILE"] = caFile.absolutePath
-                            // disable system directories
-                            // env["SSL_CERT_DIR"] = "/not_exists"
                         }
-
                         val commands = mutableListOf(
                             initPlugin("naive-plugin").path, configFile.absolutePath
                         )
-
                         processes.start(commands, env)
                     }
                     bean is ShadowQUICBean -> {
@@ -196,9 +186,9 @@ abstract class V2RayInstance(
                 }
             }
         }
+        v2rayPoint.start()
         if (config.requireWs) {
             val url = "http://" + joinHostPort(LOCALHOST, config.wsPort) + "/"
-
             runOnMainDispatcher {
                 wsForwarder = WebView(context)
                 wsForwarder.settings.javaScriptEnabled = true
@@ -209,29 +199,22 @@ abstract class V2RayInstance(
                         error: WebResourceError?,
                     ) {
                         Logs.d("WebView load r: $error")
-
                         runOnMainDispatcher {
                             wsForwarder.loadUrl("about:blank")
-
                             delay(1000L)
                             wsForwarder.loadUrl(url)
                         }
                     }
-
                     override fun onPageFinished(view: WebView, url: String) {
                         super.onPageFinished(view, url)
-
                         Logs.d("WebView loaded: ${view.title}")
-
                     }
                 }
                 wsForwarder.loadUrl(url)
             }
         }
-
         if (config.requireSh) {
             val url = "http://" + joinHostPort(LOCALHOST, config.shPort) + "/"
-
             runOnMainDispatcher {
                 shForwarder = WebView(context)
                 shForwarder.settings.javaScriptEnabled = true
@@ -242,27 +225,20 @@ abstract class V2RayInstance(
                         error: WebResourceError?,
                     ) {
                         Logs.d("WebView load r: $error")
-
                         runOnMainDispatcher {
                             shForwarder.loadUrl("about:blank")
-
                             delay(1000L)
                             shForwarder.loadUrl(url)
                         }
                     }
-
                     override fun onPageFinished(view: WebView, url: String) {
                         super.onPageFinished(view, url)
-
                         Logs.d("WebView loaded: ${view.title}")
-
                     }
                 }
                 shForwarder.loadUrl(url)
             }
         }
-
-        v2rayPoint.start()
     }
 
     private var isClosed = false

@@ -758,13 +758,6 @@ class ConfigurationFragment @JvmOverloads constructor(
 
     }
 
-    suspend fun stopService() {
-        if (SagerNet.started) SagerNet.stopService()
-        while (SagerNet.started) {
-            delay(100L)
-        }
-    }
-
     @Suppress("EXPERIMENTAL_API_USAGE")
     fun urlTest() {
         val test = TestDialog()

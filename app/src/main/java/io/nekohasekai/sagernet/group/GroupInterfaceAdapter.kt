@@ -26,7 +26,6 @@ import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.nekohasekai.sagernet.ui.ThemedActivity
-import kotlinx.coroutines.delay
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -87,8 +86,6 @@ class GroupInterfaceAdapter(val context: ThemedActivity) : GroupManager.Interfac
             }
 
             onMainDispatcher {
-                delay(1000L)
-
                 MaterialAlertDialogBuilder(context).setTitle(
                         context.getString(
                                 R.string.group_diff, group.displayName()
