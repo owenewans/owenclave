@@ -26,19 +26,26 @@ import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.nekohasekai.sagernet.ui.ThemedActivity
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class GroupInterfaceAdapter(val context: ThemedActivity) : GroupManager.Interface {
 
     override suspend fun confirm(message: String): Boolean {
-        return suspendCoroutine {
+        return suspendCancellableCoroutine {
+            var resumed = false
+            fun tryResume(value: Boolean) {
+                if (!resumed) {
+                    resumed = true
+                    it.resume(value)
+                }
+            }
             runOnMainDispatcher {
                 MaterialAlertDialogBuilder(context).setTitle(R.string.confirm)
                     .setMessage(message)
-                    .setPositiveButton(android.R.string.ok) { _, _ -> it.resume(true) }
-                    .setNegativeButton(android.R.string.cancel) { _, _ -> it.resume(false) }
-                    .setOnCancelListener { _ -> it.resume(false) }
+                    .setPositiveButton(android.R.string.ok) { _, _ -> tryResume(true) }
+                    .setNegativeButton(android.R.string.cancel) { _, _ -> tryResume(false) }
+                    .setOnCancelListener { _ -> tryResume(false) }
                     .show()
             }
         }
