@@ -577,4 +577,5 @@
     <string name="insecure_warn">Советы по безопасности</string>
     <string name="insecure_warn_sum">Отображать предупреждения для профилей со слабой защитой, эквивалентной открытому тексту.</string>
     <string name="ech">ECH</string>
+    <string name="server_name_to_verify">ServerNameToVerify (имя сервера для проверки)</string>
 </resources>
