@@ -361,6 +361,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverAnyTLSIdleSessionCheckInterval by profileCacheStore.stringToInt(Key.SERVER_ANYTLS_IDLE_SESSION_CHECK_INTERVAL) { 30 }
     var serverAnyTLSIdleSessionTimeout by profileCacheStore.stringToInt(Key.SERVER_ANYTLS_IDLE_SESSION_TIMEOUT) { 30 }
     var serverAnyTLSMinIdleSession by profileCacheStore.stringToInt(Key.SERVER_ANYTLS_MIN_IDLE_SESSION)
+    var serverTrustTunnelServerNameToVerify by profileCacheStore.string(Key.SERVER_TRUSTTUNNEL_SERVER_NAME_TO_VERIFY)
 
     var serverNaiveNoPostQuantum by profileCacheStore.boolean(Key.SERVER_NAIVE_NO_POST_QUANTUM)
     var serverShadowQUICDisableALPN by profileCacheStore.boolean(Key.SERVER_SHADOWQUIC_DISABLE_ALPN)

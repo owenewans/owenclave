@@ -32,8 +32,8 @@ import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.v2ray.supportedQuicSecurity
+import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
-import io.nekohasekai.sagernet.ktx.getJsonArray
 import kotlin.io.encoding.Base64
 
 fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
@@ -417,6 +417,45 @@ fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
                 }
             } ?: return listOf()
             return listOf(hysteria2Bean)
+        }
+        "wireguard" -> {
+            val beanList = mutableListOf<WireGuardBean>()
+            val wireguardBean = WireGuardBean().apply {
+                outbound.getString("tag")?.also {
+                    name = it
+                }
+            }
+            outbound.getObject("settings")?.also { settings ->
+                settings.getObject("stack")?.also { stack ->
+                    val ips = mutableListOf<String>()
+                    stack.getArray("ips")?.forEach { ip ->
+                        val ipAddr = ip.getString("ip_addr") ?: ip.getString("ipAddr")
+                        val prefix = ip.getInt("prefix")
+                        if (!ipAddr.isNullOrEmpty() && prefix != null) {
+                            ips.add("$ipAddr/$prefix")
+                        }
+                    }
+                    if (ips.isEmpty()) return listOf()
+                    wireguardBean.localAddress = ips.joinToString("\n")
+                    wireguardBean.mtu = stack.getInt("mtu")
+
+                }
+                (settings.getObject("wg_device") ?: outbound.getObject("wgDevice"))?.also { wgDevice ->
+                    wireguardBean.privateKey = (wgDevice.getString("private_key") ?: wgDevice.getString("privateKey")) ?: return listOf()
+                    wgDevice.getArray("peers")?.forEach { peer ->
+                        beanList.add(wireguardBean.applyDefaultValues().clone().apply {
+                            peerPublicKey = peer.getString("public_key") ?: peer.getString("publicKey")
+                            peerPreSharedKey = peer.getString("preshared_key") ?: peer.getString("presharedKey")
+                            keepaliveInterval = peer.getInt("persistent_keepalive_interval") ?: peer.getInt("persistentKeepaliveInterval")
+                            peer.getString("endpoint")?.also {
+                                serverAddress = it.substringBeforeLast(":").removePrefix("[").removeSuffix("]")
+                                serverPort = it.substringAfterLast(":").toIntOrNull() ?: return listOf()
+                            }
+                        })
+                    }
+                }
+            } ?: return listOf()
+            return beanList
         }
         else -> return listOf()
     }

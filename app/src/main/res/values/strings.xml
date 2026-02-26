@@ -601,4 +601,5 @@
     <string name="insecure_warn">Security tips</string>
     <string name="insecure_warn_sum">Display warnings for profiles with equivalent security to cleartext.</string>
     <string name="ech">ECH</string>
+    <string name="server_name_to_verify">ServerNameToVerify</string>
 </resources>

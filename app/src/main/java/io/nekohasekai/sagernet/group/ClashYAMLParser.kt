@@ -35,6 +35,7 @@ import io.nekohasekai.sagernet.fmt.shadowsocksr.supportedShadowsocksRProtocol
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
+import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5CongestionControl
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5RelayMode
@@ -294,6 +295,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 }
                 bean.packetEncoding = when {
                     isPacket -> "packet"
+                    @Suppress("KotlinConstantConditions")
                     isXUDP -> "xudp"
                     else -> "xudp"
                 }
@@ -594,6 +596,36 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 name = proxy.getString("name")
             })
         }
+        "trusttunnel" -> {
+            return listOf(TrustTunnelBean().apply {
+                serverAddress = proxy.getString("server") ?: return listOf()
+                serverPort = proxy.getInt("port")?.takeIf { it > 0 } ?: return listOf()
+                username = proxy.getString("username")
+                password = proxy.getString("password")
+                sni = proxy.getString("sni")
+                allowInsecure = proxy.getBoolean("skip-cert-verify") == true
+                protocol = if (proxy.getBoolean("quic") == true) "quic" else "https"
+                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                    pinnedPeerCertificateSha256 = it
+                    allowInsecure = true
+                }
+                val cert = proxy.getString("certificate")?.takeIf {
+                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                }
+                val key = proxy.getString("private-key")?.takeIf {
+                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
+                }
+                if (cert != null && key != null) {
+                    mtlsCertificate = cert
+                    mtlsCertificatePrivateKey = key
+                }
+                /*proxy.getObject("ech-opts")?.also {
+                    echEnabled = it.getBoolean("enable")
+                    echConfig = it.getString("config")
+                }*/
+                name = proxy.getString("name")
+            })
+        }
         "wireguard" -> {
             proxy.getObject("amnezia-wg-option")?.also {
                 // unsupported
@@ -723,9 +755,9 @@ private fun Map<String, Any?>.getString(key: String): String? {
 private fun Map<String, Any?>.getInt(key: String): Int? {
     if (this.contains(key)) {
         return when (val value = this[key]) {
-            is Int -> return value
-            is String -> return value.convertClashStringToInt()
-            is Float -> return value.toInt()
+            is Int -> value
+            is String -> value.convertClashStringToInt()
+            is Float -> value.toInt()
             else -> null
         }
     }
@@ -734,7 +766,7 @@ private fun Map<String, Any?>.getInt(key: String): Int? {
             return when (val value = it.value) {
                 is Int -> value
                 is String -> value.convertClashStringToInt()
-                is Float -> return value.toInt()
+                is Float -> value.toInt()
                 else -> null
             }
         }
@@ -745,16 +777,16 @@ private fun Map<String, Any?>.getInt(key: String): Int? {
 private fun Map<String, Any?>.getBoolean(key: String): Boolean? {
     if (this.contains(key)) {
         return when (val value = this[key]) {
-            is Boolean -> return value
-            is Int -> return value != 0
+            is Boolean -> value
+            is Int -> value != 0
             else -> null
         }
     }
     for (it in this) {
         if (it.key.equals(key, ignoreCase = true)) {
             return when (val value = it.value) {
-                is Boolean -> return value
-                is Int -> return value != 0
+                is Boolean -> value
+                is Int -> value != 0
                 else -> null
             }
         }

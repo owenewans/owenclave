@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.ui.profile
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
+import androidx.preference.SwitchPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
 import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
@@ -45,6 +46,14 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         DataStore.serverCertificates = certificate
         DataStore.serverUTLSFingerprint = utlsFingerprint
         DataStore.serverAllowInsecure = allowInsecure
+        DataStore.serverPinnedCertificateChain = pinnedPeerCertificateChainSha256
+        DataStore.serverPinnedCertificatePublicKey = pinnedPeerCertificatePublicKeySha256
+        DataStore.serverPinnedCertificate = pinnedPeerCertificateSha256
+        DataStore.serverMtlsCertificate = mtlsCertificate
+        DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
+        DataStore.serverEchEnabled = echEnabled
+        DataStore.serverEchConfig = echConfig
+        DataStore.serverTrustTunnelServerNameToVerify = serverNameToVerify
     }
 
     override fun TrustTunnelBean.serialize() {
@@ -58,6 +67,14 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         certificate = DataStore.serverCertificates
         utlsFingerprint = DataStore.serverUTLSFingerprint
         allowInsecure = DataStore.serverAllowInsecure
+        pinnedPeerCertificateChainSha256 = DataStore.serverPinnedCertificateChain
+        pinnedPeerCertificatePublicKeySha256 = DataStore.serverPinnedCertificatePublicKey
+        pinnedPeerCertificateSha256 = DataStore.serverPinnedCertificate
+        mtlsCertificate = DataStore.serverMtlsCertificate
+        mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
+        echEnabled = DataStore.serverEchEnabled
+        echConfig = DataStore.serverEchConfig
+        serverNameToVerify = DataStore.serverTrustTunnelServerNameToVerify
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -77,6 +94,13 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         protocol.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
             utlsFingerprint.isVisible = newValue == "https"
+            true
+        }
+        val echEnabled = findPreference<SwitchPreference>(Key.SERVER_ECH_ENABLED)!!
+        val echConfig = findPreference<EditTextPreference>(Key.SERVER_ECH_CONFIG)!!
+        echConfig.isEnabled = echEnabled.isChecked
+        echEnabled.setOnPreferenceChangeListener { _, newValue ->
+            echConfig.isEnabled = newValue as Boolean
             true
         }
     }

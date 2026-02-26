@@ -226,6 +226,7 @@ object Key {
     const val SERVER_ANYTLS_IDLE_SESSION_CHECK_INTERVAL = "serverAnyTLSIdleSessionCheckInterval"
     const val SERVER_ANYTLS_IDLE_SESSION_TIMEOUT = "serverAnyTLSIdleSessionTimeout"
     const val SERVER_ANYTLS_MIN_IDLE_SESSION = "serverAnyTLSMinIdleSession"
+    const val SERVER_TRUSTTUNNEL_SERVER_NAME_TO_VERIFY = "serverTrustTunnelServerNameToVerify"
 
     const val SERVER_PORTS = "serverPorts"
     const val SERVER_HOP_INTERVAL = "serverHopInterval"

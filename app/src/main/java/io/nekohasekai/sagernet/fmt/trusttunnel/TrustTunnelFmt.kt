@@ -79,7 +79,12 @@ fun TrustTunnelBean.toUri(): String {
     require(protocol == "https" || protocol == "quic")
     val byteArrayBuilder = ArrayList<Byte>().apply {
         writeTLV(Tag.Addresses.code, joinHostPort(serverAddress, serverPort).toByteArray())
-        writeTLV(Tag.Hostname.code, sni.ifEmpty { serverAddress }.toByteArray())
+        if (serverNameToVerify.isNotEmpty()) {
+            writeTLV(Tag.Hostname.code, serverNameToVerify.toByteArray())
+            writeTLV(Tag.CustomSNI.code, sni.ifEmpty { serverAddress }.toByteArray())
+        } else {
+            writeTLV(Tag.Hostname.code, sni.ifEmpty { serverAddress }.toByteArray())
+        }
         writeTLV(Tag.Username.code, username.toByteArray())
         writeTLV(Tag.Password.code, password.toByteArray())
         if (allowInsecure) {
@@ -89,7 +94,6 @@ fun TrustTunnelBean.toUri(): String {
             "https" -> writeTLV(Tag.UpstreamProtocol.code, byteArrayOf(UpstreamProtocol.HTTP2.code))
             "quic" -> writeTLV(Tag.UpstreamProtocol.code, byteArrayOf(UpstreamProtocol.HTTP3.code))
         }
-
         if (certificate.isNotEmpty()) {
             val der = Libcore.pemToDer(certificate)
             require(der.isNotEmpty())
@@ -111,6 +115,8 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         var hasAddresses = false
         var hasUsername = false
         var hasPassword = false
+        var hostname = ""
+        var customSNI = ""
         var offset = 0
         while (offset < data.size) {
             val tlv = data.readTLV(offset)
@@ -134,7 +140,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 }
                 Tag.Hostname.code -> {
                     require(value.isNotEmpty())
-                    bean.sni = String(value)
+                    hostname = String(value)
                     hasHostName = true
                 }
                 Tag.Addresses.code -> {
@@ -143,6 +149,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 }
                 Tag.CustomSNI.code -> {
                     require(length > 0)
+                    customSNI = String(value)
                 }
                 Tag.HasIPv6.code -> {
                     require(length == 1)
@@ -187,6 +194,12 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         require(hasAddresses)
         require(hasUsername)
         require(hasPassword)
+        if (customSNI.isNotEmpty()) {
+            bean.sni = customSNI
+            bean.serverNameToVerify = hostname
+        } else {
+            bean.sni = hostname
+        }
         val beans = mutableListOf<TrustTunnelBean>()
         addresses.forEach {
             require(it.contains(":"))

@@ -38,6 +38,7 @@ import io.nekohasekai.sagernet.fmt.shadowsocks.supportedShadowsocksMethod
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
+import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5CongestionControl
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5RelayMode
@@ -1123,6 +1124,13 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
         }
         "tuic" -> {
             val tuic5Bean = Tuic5Bean()
+            var tlsSettingsObject: JsonObject? = null
+            outbound.getObject("streamSettings")?.also { streamSettings ->
+                if (streamSettings.getString("security") != "tls") return listOf()
+                streamSettings.getObject("tlsSettings")?.also {
+                    tlsSettingsObject = it
+                }
+            }
             outbound.getObject("settings")?.also { settings ->
                 outbound.getString("tag")?.also {
                     tuic5Bean.name = it
@@ -1148,77 +1156,88 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getBoolean("zeroRTTHandshake")?.also {
                     tuic5Bean.zeroRTTHandshake = it
                 }
-                settings.getObject("tlsSettings")?.also { tlsSettings ->
-                    tlsSettings.getString("serverName")?.also {
-                        tuic5Bean.sni = it
-                    }
-                    tlsSettings.getBoolean("allowInsecure")?.also {
-                        tuic5Bean.allowInsecure = it
-                    }
-                    tlsSettings.getStringArray("alpn")?.also {
-                        tuic5Bean.alpn = it.joinToString("\n")
-                    } ?: tlsSettings.getString("alpn")?.also {
-                        tuic5Bean.alpn = it.split(",").joinToString("\n")
-                    }
-                    tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
-                        when (certificate.getString("usage")?.lowercase()) {
-                            null, "", "encipherment" -> {
-                                if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
-                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
-                                    }
-                                    val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
-                                    }
-                                    if (cert != null && key != null) {
-                                        tuic5Bean.mtlsCertificate = cert
-                                        tuic5Bean.mtlsCertificatePrivateKey = key
-                                    }
-                                }
-                            }
-                            "verify" -> {
-                                if (!certificate.contains("certificateFile")) {
-                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
-                                    }
-                                    if (cert != null) {
-                                        tuic5Bean.certificates = cert
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
-                        tuic5Bean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            tuic5Bean.allowInsecure = allowInsecure
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
-                        tuic5Bean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            tuic5Bean.allowInsecure = allowInsecure
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
-                        tuic5Bean.pinnedPeerCertificateSha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            tuic5Bean.allowInsecure = allowInsecure
-                        }
-                    }
-                    /*tlsSettings.getObject("ech")?.also {
-                        tuic5Bean.echEnabled = it.getBoolean("enabled")
-                        tuic5Bean.echConfig = it.getString("config")
-                    }*/
+                settings.getObject("tlsSettings")?.also {
+                    // old version of Exclave compatibility
+                    tlsSettingsObject = it
                 }
                 settings.getBoolean("disableSNI")?.also {
                     tuic5Bean.disableSNI = it
                 }
             }
+            tlsSettingsObject?.also { tlsSettings ->
+                tlsSettings.getString("serverName")?.also {
+                    tuic5Bean.sni = it
+                }
+                tlsSettings.getBoolean("allowInsecure")?.also {
+                    tuic5Bean.allowInsecure = it
+                }
+                tlsSettings.getStringArray("alpn")?.also {
+                    tuic5Bean.alpn = it.joinToString("\n")
+                } ?: tlsSettings.getString("alpn")?.also {
+                    tuic5Bean.alpn = it.split(",").joinToString("\n")
+                }
+                tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
+                    when (certificate.getString("usage")?.lowercase()) {
+                        null, "", "encipherment" -> {
+                            if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
+                                val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                }
+                                val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
+                                }
+                                if (cert != null && key != null) {
+                                    tuic5Bean.mtlsCertificate = cert
+                                    tuic5Bean.mtlsCertificatePrivateKey = key
+                                }
+                            }
+                        }
+                        "verify" -> {
+                            if (!certificate.contains("certificateFile")) {
+                                val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                }
+                                if (cert != null) {
+                                    tuic5Bean.certificates = cert
+                                }
+                            }
+                        }
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
+                    tuic5Bean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        tuic5Bean.allowInsecure = allowInsecure
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
+                    tuic5Bean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        tuic5Bean.allowInsecure = allowInsecure
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
+                    tuic5Bean.pinnedPeerCertificateSha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        tuic5Bean.allowInsecure = allowInsecure
+                    }
+                }
+                /*tlsSettings.getObject("ech")?.also {
+                    tuic5Bean.echEnabled = it.getBoolean("enabled")
+                    tuic5Bean.echConfig = it.getString("config")
+                }*/
+            }
             return listOf(tuic5Bean)
         }
         "http3" -> {
             val http3Bean = Http3Bean()
+            var tlsSettingsObject: JsonObject? = null
+            outbound.getObject("streamSettings")?.also { streamSettings ->
+                if (streamSettings.getString("security") != "tls") return listOf()
+                streamSettings.getObject("tlsSettings")?.also {
+                    tlsSettingsObject = it
+                }
+            }
             outbound.getObject("settings")?.also { settings ->
                 outbound.getString("tag")?.also {
                     http3Bean.name = it
@@ -1235,64 +1254,68 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getString("password")?.also {
                     http3Bean.password = it
                 }
-                settings.getObject("tlsSettings")?.also { tlsSettings ->
-                    tlsSettings.getString("serverName")?.also {
-                        http3Bean.sni = it
-                    }
-                    tlsSettings.getBoolean("allowInsecure")?.also {
-                        http3Bean.allowInsecure = it
-                    }
-                    tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
-                        when (certificate.getString("usage")?.lowercase()) {
-                            null, "", "encipherment" -> {
-                                if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
-                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
-                                    }
-                                    val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
-                                    }
-                                    if (cert != null && key != null) {
-                                        http3Bean.mtlsCertificate = cert
-                                        http3Bean.mtlsCertificatePrivateKey = key
-                                    }
-                                }
-                            }
-                            "verify" -> {
-                                if (!certificate.contains("certificateFile")) {
-                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
-                                    }
-                                    if (cert != null) {
-                                        http3Bean.certificates = cert
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
-                        http3Bean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            http3Bean.allowInsecure = allowInsecure
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
-                        http3Bean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            http3Bean.allowInsecure = allowInsecure
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
-                        http3Bean.pinnedPeerCertificateSha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            http3Bean.allowInsecure = allowInsecure
-                        }
-                    }
-                    /*tlsSettings.getObject("ech")?.also {
-                        http3Bean.echEnabled = it.getBoolean("enabled")
-                        http3Bean.echConfig = it.getString("config")
-                    }*/
+                settings.getObject("tlsSettings")?.also {
+                    // old version of Exclave compatibility
+                    tlsSettingsObject = it
                 }
+            }
+            tlsSettingsObject?.also { tlsSettings ->
+                tlsSettings.getString("serverName")?.also {
+                    http3Bean.sni = it
+                }
+                tlsSettings.getBoolean("allowInsecure")?.also {
+                    http3Bean.allowInsecure = it
+                }
+                tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
+                    when (certificate.getString("usage")?.lowercase()) {
+                        null, "", "encipherment" -> {
+                            if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
+                                val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                }
+                                val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
+                                }
+                                if (cert != null && key != null) {
+                                    http3Bean.mtlsCertificate = cert
+                                    http3Bean.mtlsCertificatePrivateKey = key
+                                }
+                            }
+                        }
+                        "verify" -> {
+                            if (!certificate.contains("certificateFile")) {
+                                val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                }
+                                if (cert != null) {
+                                    http3Bean.certificates = cert
+                                }
+                            }
+                        }
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
+                    http3Bean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        http3Bean.allowInsecure = allowInsecure
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
+                    http3Bean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        http3Bean.allowInsecure = allowInsecure
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
+                    http3Bean.pinnedPeerCertificateSha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        http3Bean.allowInsecure = allowInsecure
+                    }
+                }
+                /*tlsSettings.getObject("ech")?.also {
+                    http3Bean.echEnabled = it.getBoolean("enabled")
+                    http3Bean.echConfig = it.getString("config")
+                }*/
             }
             return listOf(http3Bean)
         }
@@ -1412,6 +1435,13 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
         }
         "juicity" -> {
             val juicityBean = JuicityBean()
+            var tlsSettingsObject: JsonObject? = null
+            outbound.getObject("streamSettings")?.also { streamSettings ->
+                if (streamSettings.getString("security") != "tls") return listOf()
+                streamSettings.getObject("tlsSettings")?.also {
+                    tlsSettingsObject = it
+                }
+            }
             outbound.getObject("settings")?.also { settings ->
                 outbound.getString("tag")?.also {
                     juicityBean.name = it
@@ -1428,64 +1458,68 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getString("password")?.also {
                     juicityBean.password = it
                 }
-                settings.getObject("tlsSettings")?.also { tlsSettings ->
-                    tlsSettings.getString("serverName")?.also {
-                        juicityBean.sni = it
-                    }
-                    tlsSettings.getBoolean("allowInsecure")?.also {
-                        juicityBean.allowInsecure = it
-                    }
-                    tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
-                        when (certificate.getString("usage")?.lowercase()) {
-                            null, "", "encipherment" -> {
-                                if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
-                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
-                                    }
-                                    val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
-                                    }
-                                    if (cert != null && key != null) {
-                                        juicityBean.mtlsCertificate = cert
-                                        juicityBean.mtlsCertificatePrivateKey = key
-                                    }
-                                }
-                            }
-                            "verify" -> {
-                                if (!certificate.contains("certificateFile")) {
-                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
-                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
-                                    }
-                                    if (cert != null) {
-                                        juicityBean.certificates = cert
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
-                        juicityBean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
-                        // match Juicity's behavior
-                        // https://github.com/juicity/juicity/blob/412dbe43e091788c5464eb2d6e9c169bdf39f19c/cmd/client/run.go#L97
-                        juicityBean.allowInsecure = true
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
-                        juicityBean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            juicityBean.allowInsecure = allowInsecure
-                        }
-                    }
-                    tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
-                        juicityBean.pinnedPeerCertificateSha256 = it.joinToString("\n")
-                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
-                            juicityBean.allowInsecure = allowInsecure
-                        }
-                    }
-                    /*tlsSettings.getObject("ech")?.also {
-                        juicityBean.echEnabled = it.getBoolean("enabled")
-                        juicityBean.echConfig = it.getString("config")
-                    }*/
+                settings.getObject("tlsSettings")?.also {
+                    // old version of Exclave compatibility
+                    tlsSettingsObject = it
                 }
+            }
+            tlsSettingsObject?.also { tlsSettings ->
+                tlsSettings.getString("serverName")?.also {
+                    juicityBean.sni = it
+                }
+                tlsSettings.getBoolean("allowInsecure")?.also {
+                    juicityBean.allowInsecure = it
+                }
+                tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
+                    when (certificate.getString("usage")?.lowercase()) {
+                        null, "", "encipherment" -> {
+                            if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
+                                val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                }
+                                val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
+                                }
+                                if (cert != null && key != null) {
+                                    juicityBean.mtlsCertificate = cert
+                                    juicityBean.mtlsCertificatePrivateKey = key
+                                }
+                            }
+                        }
+                        "verify" -> {
+                            if (!certificate.contains("certificateFile")) {
+                                val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                }
+                                if (cert != null) {
+                                    juicityBean.certificates = cert
+                                }
+                            }
+                        }
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
+                    juicityBean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
+                    // match Juicity's behavior
+                    // https://github.com/juicity/juicity/blob/412dbe43e091788c5464eb2d6e9c169bdf39f19c/cmd/client/run.go#L97
+                    juicityBean.allowInsecure = true
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
+                    juicityBean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        juicityBean.allowInsecure = allowInsecure
+                    }
+                }
+                tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
+                    juicityBean.pinnedPeerCertificateSha256 = it.joinToString("\n")
+                    tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                        juicityBean.allowInsecure = allowInsecure
+                    }
+                }
+                /*tlsSettings.getObject("ech")?.also {
+                    juicityBean.echEnabled = it.getBoolean("enabled")
+                    juicityBean.echConfig = it.getString("config")
+                }*/
             }
             return listOf(juicityBean)
         }
@@ -1727,6 +1761,101 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 }
             }
             return listOf(hysteria2Bean)
+        }
+        "trusttunnel" -> {
+            val trusttunnelBean = TrustTunnelBean()
+            outbound.getObject("settings")?.also { settings ->
+                outbound.getString("tag")?.also {
+                    trusttunnelBean.name = it
+                }
+                settings.getString("address")?.also {
+                    trusttunnelBean.serverAddress = it
+                } ?: return listOf()
+                settings.getPort("port")?.also {
+                    trusttunnelBean.serverPort = it
+                } ?: return listOf()
+                settings.getString("username")?.also {
+                    trusttunnelBean.username = it
+                }
+                settings.getString("password")?.also {
+                    trusttunnelBean.password = it
+                }
+                settings.getString("serverNameToVerify")?.also {
+                    trusttunnelBean.serverNameToVerify = it
+                }
+                settings.getBoolean("http3")?.also {
+                    trusttunnelBean.protocol = if (it) "quic" else "https"
+                }
+            }
+            outbound.getObject("streamSettings")?.also { streamSettings ->
+                var tlsSettingsObject: JsonObject? = null
+                when (streamSettings.getString("security")) {
+                    "tls" -> tlsSettingsObject = streamSettings.getObject("tlsSettings")
+                    "utls" -> streamSettings.getObject("utlsSettings")?.also {
+                        tlsSettingsObject = it.getObject("tlsConfig")
+                    }
+                    else -> return listOf()
+                }
+                tlsSettingsObject?.also { tlsSettings ->
+                    tlsSettings.getString("serverName")?.also {
+                        trusttunnelBean.sni = it
+                    }
+                    tlsSettings.getBoolean("allowInsecure")?.also {
+                        trusttunnelBean.allowInsecure = it
+                    }
+                    tlsSettings.getArray("certificates")?.asReversed()?.forEach { certificate ->
+                        when (certificate.getString("usage")?.lowercase()) {
+                            null, "", "encipherment" -> {
+                                if (!certificate.contains("certificateFile") && !certificate.contains("keyFile")) {
+                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                    }
+                                    val key = certificate.getStringArray("key")?.joinToString("\n")?.takeIf {
+                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" PRIVATE KEY-----")
+                                    }
+                                    if (cert != null && key != null) {
+                                        trusttunnelBean.mtlsCertificate = cert
+                                        trusttunnelBean.mtlsCertificatePrivateKey = key
+                                    }
+                                }
+                            }
+                            "verify" -> {
+                                if (!certificate.contains("certificateFile")) {
+                                    val cert = certificate.getStringArray("certificate")?.joinToString("\n")?.takeIf {
+                                        it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                                    }
+                                    if (cert != null) {
+                                        trusttunnelBean.certificate = cert
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    tlsSettings.getStringArray("pinnedPeerCertificateChainSha256")?.also {
+                        trusttunnelBean.pinnedPeerCertificateChainSha256 = it.joinToString("\n")
+                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                            trusttunnelBean.allowInsecure = allowInsecure
+                        }
+                    }
+                    tlsSettings.getStringArray("pinnedPeerCertificatePublicKeySha256")?.also {
+                        trusttunnelBean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n")
+                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                            trusttunnelBean.allowInsecure = allowInsecure
+                        }
+                    }
+                    tlsSettings.getStringArray("pinnedPeerCertificateSha256")?.also {
+                        trusttunnelBean.pinnedPeerCertificateSha256 = it.joinToString("\n")
+                        tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
+                            trusttunnelBean.allowInsecure = allowInsecure
+                        }
+                    }
+                    /*tlsSettings.getObject("ech")?.also {
+                        trusttunnelBean.echEnabled = it.getBoolean("enabled")
+                        trusttunnelBean.echConfig = it.getString("config")
+                    }*/
+                }
+            }
+            return listOf(trusttunnelBean)
         }
         else -> return listOf()
     }

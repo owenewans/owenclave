@@ -701,6 +701,8 @@ public class V2RayConfig {
                     return JuicityOutboundConfigurationObject.class;
                 case "mieru":
                     return MieruOutboundConfigurationObject.class;
+                case "trusttunnel":
+                    return TrustTunnelOutboundConfigurationObject.class;
             }
             return null;
         }
@@ -744,8 +746,6 @@ public class V2RayConfig {
     public static class HTTPOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public List<ServerObject> servers;
-        public Boolean trustTunnelUDP;
-        public String domainStrategy;
 
         public static class ServerObject {
 
@@ -765,9 +765,6 @@ public class V2RayConfig {
         public String username;
         public String password;
         public Map<String, String> headers;
-        public TLSObject tlsSettings;
-        public Boolean trustTunnelUDP;
-        public String domainStrategy;
 
     }
 
@@ -982,7 +979,6 @@ public class V2RayConfig {
         public String udpRelayMode;
         public Integer heartbeat;
         public Boolean zeroRTTHandshake;
-        public TLSObject tlsSettings;
         public Boolean disableSNI;
         public Boolean udpOverStream;
 
@@ -996,7 +992,6 @@ public class V2RayConfig {
         public String password;
         public Integer version;
         public Integer idleSessionTimeout;
-        public TLSObject tlsSettings;
 
     }
 
@@ -1018,7 +1013,6 @@ public class V2RayConfig {
         public Integer port;
         public String uuid;
         public String password;
-        public TLSObject tlsSettings;
 
     }
 
@@ -1032,6 +1026,19 @@ public class V2RayConfig {
         public String protocol;
         public String multiplexing;
         public String handshakeMode;
+
+    }
+
+    public static class TrustTunnelOutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public Integer level;
+        public String username;
+        public String password;
+        public Boolean http3;
+        public String serverNameToVerify;
+        public String domainStrategy;
 
     }
 

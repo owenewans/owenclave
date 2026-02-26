@@ -39,6 +39,14 @@ public class TrustTunnelBean extends AbstractBean {
     public String certificate;
     public String utlsFingerprint;
     public Boolean allowInsecure;
+    public String pinnedPeerCertificateChainSha256;
+    public String pinnedPeerCertificatePublicKeySha256;
+    public String pinnedPeerCertificateSha256;
+    public Boolean echEnabled;
+    public String echConfig;
+    public String mtlsCertificate;
+    public String mtlsCertificatePrivateKey;
+    public String serverNameToVerify;
 
     @Override
     public void initializeDefaultValues() {
@@ -50,11 +58,19 @@ public class TrustTunnelBean extends AbstractBean {
         if (certificate == null) certificate = "";
         if (utlsFingerprint == null) utlsFingerprint = "";
         if (allowInsecure == null) allowInsecure = false;
+        if (pinnedPeerCertificateChainSha256 == null) pinnedPeerCertificateChainSha256 = "";
+        if (pinnedPeerCertificatePublicKeySha256 == null) pinnedPeerCertificatePublicKeySha256 = "";
+        if (pinnedPeerCertificateSha256 == null) pinnedPeerCertificateSha256 = "";
+        if (echEnabled == null) echEnabled = false;
+        if (echConfig == null) echConfig = "";
+        if (mtlsCertificate == null) mtlsCertificate = "";
+        if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
+        if (serverNameToVerify == null) serverNameToVerify = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(1);
+        output.writeInt(2);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(username);
@@ -63,6 +79,14 @@ public class TrustTunnelBean extends AbstractBean {
         output.writeString(certificate);
         output.writeString(utlsFingerprint);
         output.writeBoolean(allowInsecure);
+        output.writeString(pinnedPeerCertificateChainSha256);
+        output.writeString(pinnedPeerCertificatePublicKeySha256);
+        output.writeString(pinnedPeerCertificateSha256);
+        output.writeBoolean(echEnabled);
+        output.writeString(echConfig);
+        output.writeString(mtlsCertificate);
+        output.writeString(mtlsCertificatePrivateKey);
+        output.writeString(serverNameToVerify);
     }
 
     @Override
@@ -78,6 +102,16 @@ public class TrustTunnelBean extends AbstractBean {
         if (version >= 1) {
             allowInsecure = input.readBoolean();
         }
+        if (version >= 2) {
+            pinnedPeerCertificateChainSha256 = input.readString();
+            pinnedPeerCertificatePublicKeySha256 = input.readString();
+            pinnedPeerCertificateSha256 = input.readString();
+            echEnabled = input.readBoolean();
+            echConfig = input.readString();
+            mtlsCertificate = input.readString();
+            mtlsCertificatePrivateKey = input.readString();
+            serverNameToVerify = input.readString();
+        }
     }
 
     @Override
@@ -90,6 +124,20 @@ public class TrustTunnelBean extends AbstractBean {
             bean.certificate = certificate;
         }
         bean.utlsFingerprint = utlsFingerprint;
+        if (bean.pinnedPeerCertificateChainSha256 == null || bean.pinnedPeerCertificateChainSha256.isEmpty() &&
+                !pinnedPeerCertificateChainSha256.isEmpty()) {
+            bean.pinnedPeerCertificateChainSha256 = pinnedPeerCertificateChainSha256;
+        }
+        if (bean.pinnedPeerCertificatePublicKeySha256 == null || bean.pinnedPeerCertificatePublicKeySha256.isEmpty() &&
+                !pinnedPeerCertificatePublicKeySha256.isEmpty()) {
+            bean.pinnedPeerCertificatePublicKeySha256 = pinnedPeerCertificatePublicKeySha256;
+        }
+        if (bean.pinnedPeerCertificateSha256 == null || bean.pinnedPeerCertificateSha256.isEmpty() &&
+                !pinnedPeerCertificateSha256.isEmpty()) {
+            bean.pinnedPeerCertificateSha256 = pinnedPeerCertificateSha256;
+        }
+        bean.echEnabled = echEnabled;
+        bean.echConfig = echConfig;
     }
 
     @NotNull
