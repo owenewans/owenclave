@@ -52,7 +52,6 @@ import io.nekohasekai.sagernet.fmt.v2ray.supportedVmessMethod
 import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
-import io.nekohasekai.sagernet.ktx.getString
 import libcore.Libcore
 import java.util.Base64
 
