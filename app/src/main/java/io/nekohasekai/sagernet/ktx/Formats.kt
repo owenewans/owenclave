@@ -44,13 +44,16 @@ import kotlin.io.encoding.Base64
 import kotlin.io.use
 
 fun String.decodeBase64(): String {
+    if (this.lines().size > 1) {
+        return String(Base64.Mime.withPadding(Base64.PaddingOption.PRESENT_OPTIONAL).decode(this))
+    }
     if (this.contains("-") || this.contains("_")) {
-        return String(Base64.UrlSafe.withPadding(Base64.PaddingOption.PRESENT_OPTIONAL).decode(this))
+        return String(Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL).decode(this))
     }
     if (this.contains("+") || this.contains("/")) {
-        return String(Base64.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL).decode(this))
+        return String(Base64.withPadding(Base64.PaddingOption.PRESENT_OPTIONAL).decode(this))
     }
-    return String(Base64.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL).decode(this))
+    return String(Base64.withPadding(Base64.PaddingOption.PRESENT_OPTIONAL).decode(this))
 }
 
 fun parseShareLinks(text: String): List<AbstractBean> {
