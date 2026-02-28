@@ -573,4 +573,6 @@
     <string name="insecure_warn">Advertencias de seguridad</string>
     <string name="insecure_warn_sum">Muestra advertencias para perfiles con seguridad equivalente al texto sin cifrar.</string>
     <string name="ech">ECH</string>
+    <string name="mieru_traffic_pattern">Patrón de tráfico</string>
+    <string name="server_name_to_verify">ServerNameToVerify</string>
 </resources>
