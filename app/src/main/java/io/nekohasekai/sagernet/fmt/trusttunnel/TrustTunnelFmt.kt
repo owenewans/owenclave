@@ -111,10 +111,6 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         val data = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(url.substring("tt://".length))
         val bean = TrustTunnelBean()
         val addresses = mutableListOf<String>()
-        var hasHostName = false
-        var hasAddresses = false
-        var hasUsername = false
-        var hasPassword = false
         var hostname = ""
         var customSNI = ""
         var offset = 0
@@ -136,51 +132,49 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
             } + length
             when (tlv.tag) {
                 Tag.Version.code -> {
-                    require(length == 1 && value[0] == Version.Version0.code)
+                    // ignored
                 }
                 Tag.Hostname.code -> {
-                    require(value.isNotEmpty())
                     hostname = String(value)
-                    hasHostName = true
                 }
                 Tag.Addresses.code -> {
                     addresses.add(String(value))
-                    hasAddresses = true
                 }
                 Tag.CustomSNI.code -> {
-                    require(length > 0)
                     customSNI = String(value)
                 }
                 Tag.HasIPv6.code -> {
-                    require(length == 1)
-                    require(value[0] == HasIPv6.False.code || value[0] == HasIPv6.True.code)
+                    // ignored
                 }
                 Tag.Username.code -> {
-                    require(value.isNotEmpty())
                     bean.username = String(value)
-                    hasUsername = true
                 }
                 Tag.Password.code -> {
-                    require(value.isNotEmpty())
                     bean.password = String(value)
-                    hasPassword = true
                 }
                 Tag.SkipVerification.code -> {
-                    require(length == 1)
-                    require(value[0] == SkipVerification.False.code || value[0] == SkipVerification.True.code)
+                    if (value.isNotEmpty()) {
+                        bean.allowInsecure = value[0] != SkipVerification.False.code
+                    }
                 }
                 Tag.Certificate.code -> {
-                    val pem = Libcore.derToPem(value)
-                    require(pem.isNotEmpty())
-                    bean.certificate = pem
+                    if (value.isNotEmpty()) {
+                        val pem = Libcore.derToPem(value)
+                        require(pem.isNotEmpty())
+                        bean.certificate = pem
+                    }
                 }
                 Tag.UpstreamProtocol.code -> {
-                    require(length == 1)
-                    require(value[0] == UpstreamProtocol.HTTP2.code || value[0] == UpstreamProtocol.HTTP3.code)
+                    if (value.isNotEmpty()) {
+                        when (value[0]) {
+                            UpstreamProtocol.HTTP2.code -> bean.protocol = "https"
+                            UpstreamProtocol.HTTP3.code -> bean.protocol = "quic"
+                            else -> error("invalid")
+                        }
+                    }
                 }
                 Tag.AntiDPI.code -> {
-                    require(length == 1)
-                    require(value[0] == AntiDPI.False.code || value[0] == AntiDPI.True.code)
+                    // ignored
                 }
                 Tag.ClientRandomPrefix.code -> {
                     // ignored
@@ -190,10 +184,6 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 }
             }
         }
-        require(hasHostName)
-        require(hasAddresses)
-        require(hasUsername)
-        require(hasPassword)
         if (customSNI.isNotEmpty()) {
             bean.sni = customSNI
             bean.serverNameToVerify = hostname
