@@ -2341,6 +2341,11 @@ fun buildV2RayConfig(
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
+                        is TrustTunnelBean -> {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                                bypassDomainSkipFakeDns.add("full:${bean.sni}")
+                            }
+                        }
                     }
                 }
             }
