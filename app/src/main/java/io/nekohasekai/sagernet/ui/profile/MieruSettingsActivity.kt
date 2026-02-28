@@ -44,6 +44,7 @@ class MieruSettingsActivity : ProfileSettingsActivity<MieruBean>() {
         DataStore.serverMieruMuxLevel = multiplexingLevel
         DataStore.serverMieruHandshakeMode = handshakeMode
         DataStore.serverPorts = portRange
+        DataStore.serverMieruTrafficPattern = trafficPattern
     }
 
     override fun MieruBean.serialize() {
@@ -57,6 +58,7 @@ class MieruSettingsActivity : ProfileSettingsActivity<MieruBean>() {
         multiplexingLevel = DataStore.serverMieruMuxLevel
         handshakeMode = DataStore.serverMieruHandshakeMode
         portRange = DataStore.serverPorts
+        trafficPattern = DataStore.serverMieruTrafficPattern
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

@@ -52,6 +52,7 @@ public class MieruBean extends AbstractBean {
     public Integer multiplexingLevel;
     public Integer handshakeMode;
     public String portRange;
+    public String trafficPattern;
 
     @Override
     public void initializeDefaultValues() {
@@ -63,11 +64,12 @@ public class MieruBean extends AbstractBean {
         if (multiplexingLevel == null) multiplexingLevel = MULTIPLEXING_DEFAULT;
         if (handshakeMode == null) handshakeMode = HANDSHAKE_DEFAULT;
         if (portRange == null) portRange = "";
+        if (trafficPattern == null) trafficPattern = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(3);
+        output.writeInt(4);
         super.serialize(output);
         output.writeInt(protocol);
         output.writeString(username);
@@ -78,6 +80,7 @@ public class MieruBean extends AbstractBean {
         output.writeInt(multiplexingLevel);
         output.writeInt(handshakeMode);
         output.writeString(portRange);
+        output.writeString(trafficPattern);
     }
 
     @Override
@@ -99,6 +102,9 @@ public class MieruBean extends AbstractBean {
         if (version >= 3) {
             portRange = input.readString();
         }
+        if (version >= 4) {
+            trafficPattern = input.readString();
+        }
     }
 
     @Override
@@ -107,6 +113,7 @@ public class MieruBean extends AbstractBean {
         bean.multiplexingLevel = multiplexingLevel;
         bean.handshakeMode = handshakeMode;
         bean.mtu = mtu;
+        bean.trafficPattern = trafficPattern;
     }
 
     @Override
@@ -135,7 +142,7 @@ public class MieruBean extends AbstractBean {
         return KryoConverters.deserialize(new MieruBean(), KryoConverters.serialize(this));
     }
 
-    public static final Creator<MieruBean> CREATOR = new CREATOR<MieruBean>() {
+    public static final Creator<MieruBean> CREATOR = new CREATOR<>() {
         @NonNull
         @Override
         public MieruBean newInstance() {

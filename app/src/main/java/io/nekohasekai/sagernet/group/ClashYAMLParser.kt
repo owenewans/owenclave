@@ -563,6 +563,10 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         else -> MieruBean.HANDSHAKE_DEFAULT
                     }
                 }
+                /*proxy.getString("traffic-pattern")?.also {
+                    // How to validate its validity?
+                    trafficPattern = it
+                }*/
                 name = proxy.getString("name")
             })
         }

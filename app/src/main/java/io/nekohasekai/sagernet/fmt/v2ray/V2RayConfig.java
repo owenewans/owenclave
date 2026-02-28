@@ -1026,6 +1026,7 @@ public class V2RayConfig {
         public String protocol;
         public String multiplexing;
         public String handshakeMode;
+        public String trafficPattern;
 
     }
 

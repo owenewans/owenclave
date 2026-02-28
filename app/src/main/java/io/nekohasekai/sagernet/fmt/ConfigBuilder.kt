@@ -1781,6 +1781,9 @@ fun buildV2RayConfig(
                                             MieruBean.HANDSHAKE_STANDARD -> handshakeMode = "standard"
                                             MieruBean.HANDSHAKE_NO_WAIT -> handshakeMode = "nowait"
                                         }
+                                        if (bean.trafficPattern.isNotEmpty()) {
+                                            trafficPattern = bean.trafficPattern
+                                        }
                                     }
                                 )
                             } else if (bean is TrustTunnelBean) {

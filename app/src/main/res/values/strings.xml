@@ -602,4 +602,5 @@
     <string name="insecure_warn_sum">Display warnings for profiles with equivalent security to cleartext.</string>
     <string name="ech">ECH</string>
     <string name="server_name_to_verify">ServerNameToVerify</string>
+    <string name="mieru_traffic_pattern">Traffic pattern</string>
 </resources>
