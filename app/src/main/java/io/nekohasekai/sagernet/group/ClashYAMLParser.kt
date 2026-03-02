@@ -124,27 +124,39 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
             if (proxy.contains("plugin")) {
                 val opts = proxy.getObject("plugin-opts")
                 val pluginOpts = PluginOptions()
-                fun put(clash: String, origin: String = clash) {
-                    opts?.getString(clash)?.let {
-                        pluginOpts[origin] = it
-                    }
-                }
                 when (proxy.getString("plugin")) {
                     "obfs" -> {
                         pluginOpts.id = "obfs-local"
-                        put("mode", "obfs")
-                        put("host", "obfs-host")
+                        when (opts?.getString("mode")) {
+                            null, "http" -> pluginOpts["obfs"] = "http"
+                            "tls" -> pluginOpts["obfs"] = "tls"
+                            else -> return listOf()
+                        }
+                        when (val host = opts?.getString("host")) {
+                            // https://github.com/MetaCubeX/mihomo/blob/903371719021d74cbec9cd24efb66e386c8b7595/adapter/outbound/shadowsocks.go#L307
+                            null -> pluginOpts["obfs-host"] = "bing.com"
+                            else -> pluginOpts["obfs-host"] = host
+                        }
                     }
                     "v2ray-plugin" -> {
                         pluginOpts.id = "v2ray-plugin"
-                        put("mode")
+                        when (opts?.getString("mode")) {
+                            null, "websocket" -> {}
+                            else -> return listOf()
+                        }
                         if (opts?.getBoolean("tls") == true) {
                             pluginOpts["tls"] = null
                         }
-                        put("host")
-                        put("path")
+                        when (val host = opts?.getString("host")) {
+                            // https://github.com/MetaCubeX/mihomo/blob/903371719021d74cbec9cd24efb66e386c8b7595/adapter/outbound/shadowsocks.go#L318
+                            null -> pluginOpts["host"] = "bing.com"
+                            else -> pluginOpts["obfs-host"] = host
+                        }
+                        opts?.getString("path")?.let {
+                            pluginOpts["path"] = it
+                        }
                         if (opts?.getBoolean("mux") == true) {
-                            pluginOpts["mux"] = "8"
+                            pluginOpts["mux"] = "1"
                         }
                         if (opts?.getBoolean("v2ray-http-upgrade") == true) {
                             return listOf()
