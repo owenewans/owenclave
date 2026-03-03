@@ -78,16 +78,20 @@ class GroupSettingsActivity(
         DataStore.groupName = name ?: ""
         DataStore.groupType = type
         DataStore.groupOrder = order
-        val subscription = subscription ?: SubscriptionBean().applyDefaultValues()
-        DataStore.subscriptionType = subscription.type
-        DataStore.subscriptionLink = subscription.link
-        DataStore.subscriptionDeduplication = subscription.deduplication
-        DataStore.subscriptionUpdateWhenConnectedOnly = subscription.updateWhenConnectedOnly
-        DataStore.subscriptionUserAgent = subscription.customUserAgent
-        DataStore.subscriptionAutoUpdate = subscription.autoUpdate
-        DataStore.subscriptionAutoUpdateDelay = subscription.autoUpdateDelay
-        DataStore.subscriptionNameFilter = subscription.nameFilter
-        DataStore.subscriptionNameFilter1 = subscription.nameFilter1
+        val sub = if (type == GroupType.SUBSCRIPTION) {
+            subscription ?: SubscriptionBean().applyDefaultValues()
+        } else {
+            SubscriptionBean().applyDefaultValues()
+        }
+        DataStore.subscriptionType = sub.type
+        DataStore.subscriptionLink = sub.link
+        DataStore.subscriptionDeduplication = sub.deduplication
+        DataStore.subscriptionUpdateWhenConnectedOnly = sub.updateWhenConnectedOnly
+        DataStore.subscriptionUserAgent = sub.customUserAgent
+        DataStore.subscriptionAutoUpdate = sub.autoUpdate
+        DataStore.subscriptionAutoUpdateDelay = sub.autoUpdateDelay
+        DataStore.subscriptionNameFilter = sub.nameFilter
+        DataStore.subscriptionNameFilter1 = sub.nameFilter1
         DataStore.frontProxyOutbound = frontProxy
         DataStore.landingProxyOutbound = landingProxy
         DataStore.frontProxy = if (frontProxy >= 0) 1 else 0
@@ -106,10 +110,8 @@ class GroupSettingsActivity(
 
         frontProxy = if (DataStore.frontProxy == 1) DataStore.frontProxyOutbound else -1
         landingProxy = if (DataStore.landingProxy == 1) DataStore.landingProxyOutbound else -1
-
-        val isSubscription = type == GroupType.SUBSCRIPTION
-        if (isSubscription) {
-            subscription = (subscription ?: SubscriptionBean().applyDefaultValues()).apply {
+        if (type == GroupType.SUBSCRIPTION) {
+            subscription = SubscriptionBean().applyDefaultValues().apply {
                 type = DataStore.subscriptionType
                 link = DataStore.subscriptionLink
                 deduplication = DataStore.subscriptionDeduplication
@@ -120,6 +122,8 @@ class GroupSettingsActivity(
                 nameFilter = DataStore.subscriptionNameFilter
                 nameFilter1 = DataStore.subscriptionNameFilter1
             }
+        } else {
+            subscription = SubscriptionBean().applyDefaultValues()
         }
     }
 
