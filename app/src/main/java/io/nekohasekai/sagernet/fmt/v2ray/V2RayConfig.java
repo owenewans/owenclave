@@ -746,6 +746,7 @@ public class V2RayConfig {
     public static class HTTPOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public List<ServerObject> servers;
+        public Boolean h1SkipWaitForReply;
 
         public static class ServerObject {
 

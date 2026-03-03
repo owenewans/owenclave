@@ -7,7 +7,7 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/quic-go/quic-go v0.59.0
 	github.com/sagernet/gomobile v0.1.11
-	github.com/v2fly/v2ray-core/v5 v5.45.1
+	github.com/v2fly/v2ray-core/v5 v5.46.0
 	github.com/wzshiming/socks5 v0.7.0
 	golang.org/x/sys v0.41.0
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c
@@ -21,9 +21,9 @@ require (
 	github.com/apernet/quic-go v0.59.1-0.20260217092621-db4786c77a22 // indirect
 	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
-	github.com/dyhkwong/hysteria/core/v2 v2.7.0-2 // indirect
-	github.com/dyhkwong/hysteria/extras/v2 v2.7.0-2 // indirect
-	github.com/dyhkwong/sing-juicity v0.1.0-beta.6 // indirect
+	github.com/dyhkwong/hysteria/core/v2 v2.7.1-1 // indirect
+	github.com/dyhkwong/hysteria/extras/v2 v2.7.1-1 // indirect
+	github.com/dyhkwong/sing-juicity v0.1.1 // indirect
 	github.com/enfein/mieru/v3 v3.28.0 // indirect
 	github.com/gofrs/uuid/v5 v5.4.0 // indirect
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259 // indirect
@@ -40,10 +40,10 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/refraction-networking/utls v1.8.2 // indirect
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 // indirect
-	github.com/sagernet/quic-go v0.59.0-sing-box-mod.2 // indirect
-	github.com/sagernet/sing v0.8.0-beta.16 // indirect
+	github.com/sagernet/quic-go v0.59.0-sing-box-mod.4 // indirect
+	github.com/sagernet/sing v0.8.1 // indirect
 	github.com/sagernet/sing-mux v0.3.4 // indirect
-	github.com/sagernet/sing-quic v0.6.0-beta.13 // indirect
+	github.com/sagernet/sing-quic v0.6.0 // indirect
 	github.com/sagernet/sing-shadowsocks v0.2.9 // indirect
 	github.com/sagernet/sing-shadowsocks2 v0.2.2 // indirect
 	github.com/sagernet/sing-shadowtls v0.2.1-0.20250503051639-fcd445d33c11 // indirect
@@ -75,4 +75,4 @@ replace gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255
 
 //replace github.com/v2fly/v2ray-core/v5 => ../../../v2ray-core
 
-replace github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.45.2-0.20260228125058-b9ad500b01d3
+replace github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.46.1-0.20260303115707-f17862dadfaa
