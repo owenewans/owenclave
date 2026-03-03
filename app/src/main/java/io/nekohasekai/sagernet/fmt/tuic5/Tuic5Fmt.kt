@@ -117,8 +117,7 @@ fun parseTuic(server: String): AbstractBean {
 
 fun Tuic5Bean.toUri(): String? {
     val builder = Libcore.newURL("tuic").apply {
-        host = serverAddress.ifEmpty { error("empty server address") }
-        port = serverPort
+        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         username = uuid.ifEmpty { error("empty uuid") }
         if (name.isNotEmpty()) {
             fragment = name

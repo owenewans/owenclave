@@ -49,16 +49,17 @@ fun parseNaive(link: String): NaiveBean {
 
 fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     val builder = Libcore.newURL(if (proxyOnly) proto else "naive+$proto")
-    if (sni.isNotEmpty() && proxyOnly) {
-        builder.host = sni
+    val host = if (sni.isNotEmpty() && proxyOnly) {
+        sni
     } else {
-        builder.host = serverAddress.ifEmpty { error("empty server address") }
+        serverAddress.ifEmpty { error("empty server address") }
     }
-    if (proxyOnly) {
-        builder.port = finalPort
+    val port = if (proxyOnly) {
+        finalPort
     } else {
-        builder.port = serverPort
+        serverPort
     }
+    builder.setHostPort(host, port)
     if (username.isNotEmpty()) {
         builder.username = username
     }

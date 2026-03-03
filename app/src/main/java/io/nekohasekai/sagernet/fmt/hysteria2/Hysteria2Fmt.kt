@@ -35,9 +35,9 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
     var port = ""
     if (!hostPort.endsWith("]") && hostPort.lastIndexOf(":") > 0) {
         port = hostPort.substringAfterLast(":")
-    }
-    if (port.isNotEmpty() && port.isValidHysteriaMultiPort()) {
-        url = url.replace(":$port", ":0")
+        if (port.isNotEmpty() && port.isValidHysteriaMultiPort()) {
+            url = url.replaceFirst(":$port", ":0")
+        }
     }
 
     val link = Libcore.parseURL(url)
@@ -108,13 +108,16 @@ fun Hysteria2Bean.toUri(): String? {
     if (!serverPorts.isValidHysteriaPort()) {
         error("invalid port")
     }
+    if (serverAddress.isEmpty()) {
+        error("empty server address")
+    }
 
     val builder = Libcore.newURL("hysteria2").apply {
-        host = serverAddress.ifEmpty { error("empty server address") }
-        port = if (serverPorts.isValidHysteriaMultiPort()) {
-            0 // placeholder
+        // fuck port hopping URL
+        rawHost = if (serverAddress.contains(":")) {
+            "[$serverAddress]:$serverPorts"
         } else {
-            serverPorts.toInt()
+            "$serverAddress:$serverPorts"
         }
         if (auth.isNotEmpty()) {
             // No need to care about so-called broken "userpass" here.
@@ -144,12 +147,5 @@ fun Hysteria2Bean.toUri(): String? {
     }
     builder.rawPath = "/"
 
-    val url = builder.string
-    if (serverPorts.isValidHysteriaMultiPort()) {
-        // fuck port hopping URL
-        val port = url.substringAfter("://").substringAfter("@")
-            .substringBefore("/").substringAfterLast(":")
-        return url.replace(":$port/", ":$serverPorts/")
-    }
-    return url
+    return builder.string
 }

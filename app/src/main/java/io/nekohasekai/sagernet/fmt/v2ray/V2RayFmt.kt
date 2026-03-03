@@ -25,7 +25,6 @@ import com.google.gson.JsonObject
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.ktx.*
 import libcore.Libcore
-import java.util.Base64
 
 val supportedVmessMethod = arrayOf(
     "auto", "aes-128-gcm", "chacha20-poly1305", "none", "zero"
@@ -618,8 +617,7 @@ fun StandardV2RayBean.toUri(): String? {
             else -> error("impossible")
         }
     ).apply {
-        host = serverAddress.ifEmpty { error("empty server address") }
-        port = serverPort
+        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         if (name.isNotEmpty()) {
             fragment = name
         }

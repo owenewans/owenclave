@@ -99,8 +99,7 @@ fun SOCKSBean.toUri(): String? {
         error("SOCKS4 and SOCKS4A do not have password field")
     }
     val builder = Libcore.newURL("socks${protocolVersion()}").apply {
-        host = serverAddress.ifEmpty { error("empty server address") }
-        port = serverPort
+        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         if (name.isNotEmpty()) fragment = name
     }
     if (username.isNotEmpty()) {

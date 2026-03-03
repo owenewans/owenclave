@@ -21,6 +21,7 @@ import (
 	"net"
 	"net/url"
 	"strconv"
+	"strings"
 	_ "unsafe"
 )
 
@@ -36,7 +37,9 @@ type URL interface {
 	GetHost() string
 	SetHost(host string)
 	GetPort() int32
-	SetPort(port int32)
+	SetHostPort(host string, port int32)
+	SetRawHost(host string)
+	GetRawHost() string
 	GetPath() string
 	SetPath(path string)
 	GetRawPath() string
@@ -141,9 +144,9 @@ func (u *netURL) GetHost() string {
 }
 
 func (u *netURL) SetHost(host string) {
-	_, port, err := net.SplitHostPort(u.Host)
-	if err == nil {
-		u.Host = net.JoinHostPort(host, port)
+	// See net.JoinHostPort
+	if strings.IndexByte(host, ':') >= 0 {
+		u.Host = "[" + host + "]"
 	} else {
 		u.Host = host
 	}
@@ -158,13 +161,16 @@ func (u *netURL) GetPort() int32 {
 	return int32(port)
 }
 
-func (u *netURL) SetPort(port int32) {
-	host, _, err := net.SplitHostPort(u.Host)
-	if err == nil {
-		u.Host = net.JoinHostPort(host, strconv.Itoa(int(port)))
-	} else {
-		u.Host = net.JoinHostPort(u.Host, strconv.Itoa(int(port)))
-	}
+func (u *netURL) SetHostPort(host string, port int32) {
+	u.Host = net.JoinHostPort(host, strconv.Itoa(int(port)))
+}
+
+func (u *netURL) GetRawHost() string {
+	return u.Host
+}
+
+func (u *netURL) SetRawHost(host string) {
+	u.Host = host
 }
 
 func (u *netURL) GetPath() string {
