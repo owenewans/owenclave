@@ -45,7 +45,6 @@ import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
 import libcore.V2RayInstance
 import java.io.File
-import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class V2RayInstance(
     val profile: ProxyEntity,
@@ -61,7 +60,6 @@ abstract class V2RayInstance(
     val externalInstances = hashMapOf<Int, AbstractInstance>()
     open lateinit var processes: GuardedProcessPool
     private var cacheFiles = ArrayList<File>()
-    var closed by AtomicBoolean()
     fun isInitialized(): Boolean {
         return ::config.isInitialized
     }
@@ -176,6 +174,10 @@ abstract class V2RayInstance(
                         configFile.parentFile?.mkdirs()
                         configFile.writeText(config)
                         cacheFiles.add(configFile)
+                        if (DataStore.providerRootCA == RootCAProvider.SYSTEM) {
+                            // https://github.com/rustls/rustls-native-certs/issues/3
+                            env["SSL_CERT_DIR"] = "/system/etc/security/cacerts"
+                        }
                         val commands = mutableListOf(
                             initPlugin("shadowquic-plugin").path,
                             "-c",
