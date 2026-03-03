@@ -52,7 +52,7 @@ jobs:
           APK="plugin/shadowquic/build/outputs/apk/oss/release"
           echo "APK=$APK" >> $GITHUB_ENV
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: APKs
           path: ${{ env.APK }}
@@ -67,7 +67,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Download Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: APKs
           path: artifacts
