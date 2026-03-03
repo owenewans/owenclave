@@ -149,7 +149,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         when (val host = opts?.getString("host")) {
                             // https://github.com/MetaCubeX/mihomo/blob/903371719021d74cbec9cd24efb66e386c8b7595/adapter/outbound/shadowsocks.go#L318
                             null -> pluginOpts["host"] = "bing.com"
-                            else -> pluginOpts["obfs-host"] = host
+                            else -> pluginOpts["host"] = host
                         }
                         opts?.getString("path")?.let {
                             pluginOpts["path"] = it
