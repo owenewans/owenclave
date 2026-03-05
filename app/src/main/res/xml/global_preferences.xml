@@ -249,8 +249,9 @@
             app:key="enableFragmentForDirect"
             app:title="@string/enable_fragment_for_direct" />
         <SwitchPreference
+            app:defaultValue="true"
             app:icon="@drawable/ic_baseline_cached"
-            app:key="interruptReusedConnections"
+            app:key="interruptReusedConnections0"
             app:title="@string/interrupt_reused_connections" />
         <SwitchPreference
             app:defaultValue="true"

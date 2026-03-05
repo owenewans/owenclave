@@ -99,7 +99,7 @@ object Key {
     const val SHADOWSOCKS_2022_IMPLEMENTATION = "shadowsocks2022Implementation"
     const val PROVIDER_ROOT_CA = "providerRootCA"
 
-    const val INTERRUPT_REUSED_CONNECTIONS = "interruptReusedConnections"
+    const val INTERRUPT_REUSED_CONNECTIONS = "interruptReusedConnections0"
 
     const val TUN_IMPLEMENTATION = "tunImplementation"
     const val ENABLE_PCAP = "enablePcap"
