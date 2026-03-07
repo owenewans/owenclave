@@ -20,10 +20,10 @@
 package io.nekohasekai.sagernet.fmt.anytls
 
 import io.nekohasekai.sagernet.ktx.*
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 fun parseAnyTLS(url: String): AnyTLSBean {
-    val link = Libcore.parseURL(url)
+    val link = Libsagernetcore.parseURL(url)
     return AnyTLSBean().apply {
         name = link.fragment
         serverAddress = link.host
@@ -49,7 +49,7 @@ fun AnyTLSBean.toUri(): String? {
     if (security != "tls") {
         error("anytls must use tls")
     }
-    val builder = Libcore.newURL("anytls")
+    val builder = Libsagernetcore.newURL("anytls")
     builder.setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
     if (password.isNotEmpty()) {
         builder.username = password

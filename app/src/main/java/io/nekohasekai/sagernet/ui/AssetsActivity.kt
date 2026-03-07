@@ -43,7 +43,7 @@ import io.nekohasekai.sagernet.databinding.LayoutAssetItemBinding
 import io.nekohasekai.sagernet.databinding.LayoutAssetsBinding
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -327,7 +327,7 @@ class AssetsActivity : ThemedActivity() {
             else -> error("invalid asset provider")
         }
 
-        val client = Libcore.newHttpClient().apply {
+        val client = Libsagernetcore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
                 useSocks5(DataStore.socksPort)
@@ -388,7 +388,7 @@ class AssetsActivity : ThemedActivity() {
     }
 
     suspend fun updateCustomAsset(file: File, url: String) {
-        val client = Libcore.newHttpClient().apply {
+        val client = Libsagernetcore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
                 useSocks5(DataStore.socksPort)

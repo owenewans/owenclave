@@ -20,10 +20,10 @@
 package io.nekohasekai.sagernet.fmt.http
 
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 fun parseHttp(link: String): HttpBean {
-    val url = Libcore.parseURL(link)
+    val url = Libsagernetcore.parseURL(link)
     if (url.path != "/" && url.path != "") error("Not http proxy")
 
     return HttpBean().apply {
@@ -46,7 +46,7 @@ fun HttpBean.toUri(): String? {
     if (security != "tls" && security != "none") error("unsupported http with reality")
     if (type != "tcp" || headerType != "none") error("unsupported http with v2ray transport")
 
-    val builder = Libcore.newURL(if (security == "tls") "https" else "http").apply {
+    val builder = Libsagernetcore.newURL(if (security == "tls") "https" else "http").apply {
         setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         if (name.isNotEmpty()) {
             fragment = name

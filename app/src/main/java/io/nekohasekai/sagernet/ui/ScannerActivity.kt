@@ -53,7 +53,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import androidx.core.net.toUri
 import io.nekohasekai.sagernet.utils.ZxingQRCodeAnalyzer
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 class ScannerActivity : ThemedActivity() {
 
@@ -167,7 +167,7 @@ class ScannerActivity : ThemedActivity() {
                             data = value.toUri()
                         })
                     } else if (!value.contains("\n") && !value.contains("\r") && isHTTPorHTTPSURL(value)) {
-                        val builder = Libcore.newURL("exclave").apply {
+                        val builder = Libsagernetcore.newURL("exclave").apply {
                             host = "subscription"
                         }
                         builder.addQueryParameter("url", value)
@@ -266,7 +266,7 @@ class ScannerActivity : ThemedActivity() {
                                     })
                                     finish()
                                 } else if (!result.text.contains("\n") && !result.text.contains("\r") && isHTTPorHTTPSURL(result.text)) {
-                                    val builder = Libcore.newURL("exclave").apply {
+                                    val builder = Libsagernetcore.newURL("exclave").apply {
                                         host = "subscription"
                                     }
                                     builder.addQueryParameter("url", result.text)

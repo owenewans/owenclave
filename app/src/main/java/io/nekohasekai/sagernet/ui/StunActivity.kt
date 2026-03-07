@@ -37,7 +37,7 @@ import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.noties.markwon.Markwon
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 class StunActivity : ThemedActivity() {
 
@@ -114,7 +114,7 @@ class StunActivity : ThemedActivity() {
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = Libcore.stunTest(
+            val result = Libsagernetcore.stunTest(
                 binding.natStunServer.text.toString(),
                 SagerNet.started && DataStore.startedProfile > 0,
                 SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR,
@@ -145,7 +145,7 @@ class StunActivity : ThemedActivity() {
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = Libcore.stunLegacyTest(
+            val result = Libsagernetcore.stunLegacyTest(
                 binding.natStunServer.text.toString(),
                 SagerNet.started && DataStore.startedProfile > 0,
                 SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR,

@@ -25,11 +25,11 @@ import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.*
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 fun parseNaive(link: String): NaiveBean {
     // This format may be https://github.com/klzgrad/naiveproxy/issues/86.
-    val url = Libcore.parseURL(link)
+    val url = Libsagernetcore.parseURL(link)
     return NaiveBean().apply {
         proto = when (url.scheme) {
             "naive+https" -> "https"
@@ -48,7 +48,7 @@ fun parseNaive(link: String): NaiveBean {
 }
 
 fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
-    val builder = Libcore.newURL(if (proxyOnly) proto else "naive+$proto")
+    val builder = Libsagernetcore.newURL(if (proxyOnly) proto else "naive+$proto")
     val host = if (sni.isNotEmpty() && proxyOnly) {
         sni
     } else {

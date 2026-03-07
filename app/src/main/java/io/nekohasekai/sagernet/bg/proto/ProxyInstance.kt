@@ -30,7 +30,7 @@ import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import libcore.ObservatoryStatusUpdateListener
+import libsagernetcore.ObservatoryStatusUpdateListener
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap

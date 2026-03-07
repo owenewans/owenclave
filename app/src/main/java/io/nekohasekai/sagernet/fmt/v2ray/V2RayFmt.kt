@@ -24,7 +24,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.ktx.*
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 val supportedVmessMethod = arrayOf(
     "auto", "aes-128-gcm", "chacha20-poly1305", "none", "zero"
@@ -61,7 +61,7 @@ val nonRawTransportName = arrayOf(
 fun parseV2Ray(link: String): StandardV2RayBean {
     // https://github.com/XTLS/Xray-core/issues/91
     // https://github.com/XTLS/Xray-core/discussions/716
-    val url = Libcore.parseURL(link)
+    val url = Libsagernetcore.parseURL(link)
     val bean = when (url.scheme) {
         "vmess" -> VMessBean()
         "vless" -> VLESSBean()
@@ -325,7 +325,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 bean.path = path
                 try {
                     // RPRX's smart-assed invention. This of course will break under some conditions.
-                    val u = Libcore.parseURL(path)
+                    val u = Libsagernetcore.parseURL(path)
                     u.queryParameter("ed")?.let {
                         u.deleteQueryParameter("ed")
                         bean.path = u.string
@@ -349,7 +349,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 bean.path = path
                 try {
                     // RPRX's smart-assed invention. This of course will break under some conditions.
-                    val u = Libcore.parseURL(path)
+                    val u = Libsagernetcore.parseURL(path)
                     u.queryParameter("ed")?.let { ed ->
                         u.deleteQueryParameter("ed")
                         bean.path = u.string
@@ -510,7 +510,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             bean.path = path
             try {
                 // RPRX's smart-assed invention. This of course will break under some conditions.
-                val u = Libcore.parseURL(bean.path)
+                val u = Libsagernetcore.parseURL(bean.path)
                 u.queryParameter("ed")?.let { ed ->
                     u.deleteQueryParameter("ed")
                     bean.path = u.string
@@ -524,7 +524,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             bean.path = path
             try {
                 // RPRX's smart-assed invention. This of course will break under some conditions.
-                val u = Libcore.parseURL(bean.path)
+                val u = Libsagernetcore.parseURL(bean.path)
                 u.queryParameter("ed")?.let {
                     u.deleteQueryParameter("ed")
                     bean.path = u.string
@@ -609,7 +609,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
 }
 
 fun StandardV2RayBean.toUri(): String? {
-    val builder = Libcore.newURL(
+    val builder = Libsagernetcore.newURL(
         when (this) {
             is VMessBean -> "vmess"
             is VLESSBean -> "vless"

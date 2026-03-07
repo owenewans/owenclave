@@ -124,7 +124,7 @@ import io.nekohasekai.sagernet.ktx.unescapeLineFeed
 import io.nekohasekai.sagernet.ktx.uuidOrGenerate
 import io.nekohasekai.sagernet.utils.PackageCache
 import kotlin.io.encoding.Base64
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 const val TAG_SOCKS = "socks"
 const val TAG_HTTP = "http"
@@ -505,7 +505,7 @@ fun buildV2RayConfig(
                     // but this is not the main function of this software, just keep it broken
                     if (bean.security == "none" && bean.host.isNotEmpty()) {
                         val host = try {
-                            Libcore.parseURL("placeholder://" + bean.host).host
+                            Libsagernetcore.parseURL("placeholder://" + bean.host).host
                         } catch (_: Exception) {
                             bean.host
                         }
@@ -513,7 +513,7 @@ fun buildV2RayConfig(
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (Libcore.isIP(host)) {
+                            if (Libsagernetcore.isIP(host)) {
                                 ip = listOf(host)
                                 if (DataStore.domainStrategy != "AsIs") {
                                     skipDomain = true
@@ -529,7 +529,7 @@ fun buildV2RayConfig(
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (!Libcore.isIP(bean.sni)) {
+                            if (!Libsagernetcore.isIP(bean.sni)) {
                                 domains = listOf(bean.sni)
                             }
                         }
@@ -540,7 +540,7 @@ fun buildV2RayConfig(
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (Libcore.isIP(bean.serverAddress)) {
+                            if (Libsagernetcore.isIP(bean.serverAddress)) {
                                 ip = listOf(bean.serverAddress)
                                 if (DataStore.domainStrategy != "AsIs") {
                                     skipDomain = true
@@ -2301,48 +2301,48 @@ fun buildV2RayConfig(
                     bean.serverAddresses.listByLineOrComma().forEach {
                         when {
                             it.isEmpty() -> {}
-                            !Libcore.isIP(it) -> {
+                            !Libsagernetcore.isIP(it) -> {
                                 bypassDomainSkipFakeDns.add("full:$it")
                             }
                         }
                     }
                 } else {
-                    if (!Libcore.isIP(serverAddress)) {
+                    if (!Libsagernetcore.isIP(serverAddress)) {
                         bypassDomainSkipFakeDns.add("full:$serverAddress")
                     }
                     when (bean) {
                         is StandardV2RayBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is AnyTLSBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is Http3Bean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is Hysteria2Bean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is JuicityBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is Tuic5Bean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is TrustTunnelBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libcore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libsagernetcore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
@@ -2382,11 +2382,11 @@ fun buildV2RayConfig(
             try {
                 if (it.lowercase() != "localhost" && it.lowercase() != "fakedns") {
                     if (it.contains("://")) {
-                        val url = Libcore.parseURL(it)
-                        if (!Libcore.isIP(url.host)) {
+                        val url = Libsagernetcore.parseURL(it)
+                        if (!Libsagernetcore.isIP(url.host)) {
                             bypassDomainSkipFakeDns.add("full:${url.host}")
                         }
-                    } else if (!Libcore.isIP(it)) {
+                    } else if (!Libsagernetcore.isIP(it)) {
                         bypassDomainSkipFakeDns.add("full:$it")
                     }
                 }
@@ -2397,11 +2397,11 @@ fun buildV2RayConfig(
             try {
                 if (it.lowercase() != "localhost" && it.lowercase() != "fakedns") {
                     if (it.contains("://")) {
-                        val url = Libcore.parseURL(it)
-                        if (!Libcore.isIP(url.host)) {
+                        val url = Libsagernetcore.parseURL(it)
+                        if (!Libsagernetcore.isIP(url.host)) {
                             bootstrapDomain.add("full:${url.host}")
                         }
-                    } else if (!Libcore.isIP(it)) {
+                    } else if (!Libsagernetcore.isIP(it)) {
                         bootstrapDomain.add("full:$it")
                     }
                 }

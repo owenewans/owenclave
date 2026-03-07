@@ -19,11 +19,11 @@
 
 package io.nekohasekai.sagernet.fmt.ssh
 
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 fun parseSSH(link: String): SSHBean {
     // Warning: no public key pinning is insecure!
-    val url = Libcore.parseURL(link)
+    val url = Libsagernetcore.parseURL(link)
     return SSHBean().apply {
         serverAddress = url.host
         serverPort = url.port.takeIf { it > 0 } ?: 22

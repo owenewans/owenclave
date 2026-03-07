@@ -21,7 +21,7 @@ package io.nekohasekai.sagernet.fmt.trusttunnel
 
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.joinHostPort
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import kotlin.io.encoding.Base64
 
 // https://github.com/TrustTunnel/TrustTunnel/blob/8856e7ba83ae0c9faace78aaf9a95b1b291cd3ed/DEEP_LINK.md
@@ -95,12 +95,12 @@ fun TrustTunnelBean.toUri(): String {
             "quic" -> writeTLV(Tag.UpstreamProtocol.code, byteArrayOf(UpstreamProtocol.HTTP3.code))
         }
         if (certificate.isNotEmpty()) {
-            val der = Libcore.pemToDer(certificate)
+            val der = Libsagernetcore.pemToDer(certificate)
             require(der.isNotEmpty())
             writeTLV(Tag.Certificate.code, der)
         }
     }
-    val builder = Libcore.newURL("tt").apply {
+    val builder = Libsagernetcore.newURL("tt").apply {
         host = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayBuilder.toByteArray())
     }
     return builder.string
@@ -159,7 +159,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 }
                 Tag.Certificate.code -> {
                     if (value.isNotEmpty()) {
-                        val pem = Libcore.derToPem(value)
+                        val pem = Libsagernetcore.derToPem(value)
                         require(pem.isNotEmpty())
                         bean.certificate = pem
                     }
@@ -198,7 +198,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
             var host = it.substringBeforeLast(":")
             if (host.startsWith("[") && host.endsWith("]")) {
                 host = host.substringAfter("[").substringBeforeLast("]")
-                require(Libcore.isIPv6(host))
+                require(Libsagernetcore.isIPv6(host))
             }
             beans.add(bean.applyDefaultValues().clone().apply {
                 serverAddress = host

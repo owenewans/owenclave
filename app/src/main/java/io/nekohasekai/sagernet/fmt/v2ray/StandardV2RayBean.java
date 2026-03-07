@@ -27,7 +27,7 @@ import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean;
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean;
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean;
 import kotlin.io.encoding.Base64;
-import libcore.Libcore;
+import libsagernetcore.Libsagernetcore;
 
 public abstract class StandardV2RayBean extends AbstractBean {
 
@@ -618,7 +618,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libcore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libsagernetcore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         switch (security) {

@@ -59,8 +59,8 @@ import io.nekohasekai.sagernet.utils.PackageCache
 import io.nekohasekai.sagernet.utils.Theme
 import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
-import libcore.Libcore
-import libcore.UidDumper
+import libsagernetcore.Libsagernetcore
+import libsagernetcore.UidDumper
 import java.net.Inet6Address
 import java.net.InetSocketAddress
 import androidx.work.Configuration as WorkConfiguration
@@ -99,7 +99,7 @@ class SagerNet : Application(),
         val isMainProcess = processName == BuildConfig.APPLICATION_ID
 
         if (!isMainProcess) {
-            Libcore.setUidDumper(this, Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+            Libsagernetcore.setUidDumper(this, Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
             if (DataStore.enableDebug && DataStore.pprofServer.isNotEmpty()) {
                 DebugInstance().launch()
             }
@@ -111,16 +111,16 @@ class SagerNet : Application(),
             }
         }
 
-        Libcore.setenv("v2ray.conf.geoloader", "memconservative")
+        Libsagernetcore.setenv("v2ray.conf.geoloader", "memconservative")
         externalAssets.mkdirs()
-        Libcore.initializeV2Ray(
+        Libsagernetcore.initializeV2Ray(
             filesDir.absolutePath + "/",
             externalAssets.absolutePath + "/",
             "v2ray/",
         )
 
         try {
-            Libcore.updateSystemRoots(DataStore.providerRootCA)
+            Libsagernetcore.updateSystemRoots(DataStore.providerRootCA)
         } catch (e: Exception) {
             Toast.makeText(this, e.readableMessage, Toast.LENGTH_LONG).show()
         }
@@ -272,7 +272,7 @@ class SagerNet : Application(),
                 // capabilities.hasTransport(NetworkCapabilities.TRANSPORT_THREAD) -> "thread"
                 else -> ""
             }
-            Libcore.setNetworkType(networkType)
+            Libsagernetcore.setNetworkType(networkType)
             val ssid: String?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 ssid = DefaultNetworkListener.ssid
@@ -280,14 +280,14 @@ class SagerNet : Application(),
                 val wifiInfo = wifi.connectionInfo
                 ssid = wifiInfo?.ssid
             }
-            Libcore.setSSID(ssid?.trim { it == '"' } ?: "")
+            Libsagernetcore.setSSID(ssid?.trim { it == '"' } ?: "")
 
             if (DataStore.interruptReusedConnections && currentNetwork != null && currentNetwork != network) {
-                Libcore.interfaceUpdate()
+                Libsagernetcore.interfaceUpdate()
             }
             connectivity.getLinkProperties(network)?.let { linkProperties ->
                 val linkAddresses = linkProperties.linkAddresses.toList().map { it.address }
-                Libcore.setDiscardIPv6(!linkAddresses.any {
+                Libsagernetcore.setDiscardIPv6(!linkAddresses.any {
                     it is Inet6Address && !it.isLinkLocalAddress
                 })
             }

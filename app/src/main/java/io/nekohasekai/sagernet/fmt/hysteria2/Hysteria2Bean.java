@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 import io.nekohasekai.sagernet.ktx.NetsKt;
-import libcore.Libcore;
+import libsagernetcore.Libsagernetcore;
 
 public class Hysteria2Bean extends AbstractBean {
 
@@ -178,7 +178,7 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public String displayAddress() {
-        if (Libcore.isIPv6(serverAddress)) {
+        if (Libsagernetcore.isIPv6(serverAddress)) {
             return "[" + serverAddress + "]:" + serverPorts;
         } else {
             return NetsKt.wrapIDN(serverAddress) + ":" + serverPorts;
@@ -211,7 +211,7 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libcore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libsagernetcore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         if (echEnabled) {

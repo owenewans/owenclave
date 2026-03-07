@@ -19,7 +19,7 @@
 
 package io.nekohasekai.sagernet.fmt.shadowsocksr
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import java.util.Locale
 import kotlin.io.encoding.Base64
 
@@ -58,7 +58,7 @@ fun parseShadowsocksR(url: String): ShadowsocksRBean {
         password = String(Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(params[params.size - 1].substringBefore("/")))
     }
 
-    val httpUrl = Libcore.parseURL("https://localhost" + params[params.size - 1].substringAfter("/", ""))
+    val httpUrl = Libsagernetcore.parseURL("https://localhost" + params[params.size - 1].substringAfter("/", ""))
 
     httpUrl.queryParameter("obfsparam")?.let {
         bean.obfsParam = String(Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(it))

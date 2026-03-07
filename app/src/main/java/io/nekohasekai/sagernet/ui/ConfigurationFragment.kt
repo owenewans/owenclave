@@ -73,7 +73,7 @@ import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.zip.ZipInputStream
@@ -314,7 +314,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         && fileText.substring("exclave://".length).startsWith("subscription?")) {
                         (requireActivity() as? MainActivity)?.importSubscription(fileText.toUri())
                     } else if (!fileText.contains("\n") && !fileText.contains("\r") && isHTTPorHTTPSURL(fileText)) {
-                        val builder = Libcore.newURL("exclave").apply {
+                        val builder = Libsagernetcore.newURL("exclave").apply {
                             host = "subscription"
                         }
                         builder.addQueryParameter("url", fileText)
@@ -402,7 +402,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                     && text.substring("exclave://".length).startsWith("subscription?")) {
                                     (requireActivity() as? MainActivity)?.importSubscription(text.toUri())
                                 } else if (!text.contains("\n") && !text.contains("\r") && isHTTPorHTTPSURL(text)) {
-                                    val builder = Libcore.newURL("exclave").apply {
+                                    val builder = Libsagernetcore.newURL("exclave").apply {
                                         host = "subscription"
                                     }
                                     builder.addQueryParameter("url", text)

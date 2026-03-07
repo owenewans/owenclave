@@ -23,7 +23,7 @@ import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginOptions
 import com.google.gson.JsonObject
 import io.nekohasekai.sagernet.ktx.*
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import kotlin.io.encoding.Base64
 
 val supportedShadowsocksMethod = arrayOf(
@@ -58,7 +58,7 @@ fun ShadowsocksBean.fixInvalidParams() {
 }
 
 fun parseShadowsocks(url: String): ShadowsocksBean {
-    val link = Libcore.parseURL(url)
+    val link = Libsagernetcore.parseURL(url)
     if (link.port == 0 && link.username.isEmpty() && link.password.isEmpty()) {
         // pre-SIP002, https://shadowsocks.org/doc/configs.html#uri-and-qr-code
         // example: ss://YmYtY2ZiOnRlc3QvIUAjOkAxOTIuMTY4LjEwMC4xOjg4ODg#example-server
@@ -125,7 +125,7 @@ fun ShadowsocksBean.toUri(): String? {
     if (security != "none") error("unsupported ss with tls")
     if (type != "tcp" || headerType != "none") error("unsupported ss with v2ray transport")
 
-    val builder = Libcore.newURL("ss")
+    val builder = Libsagernetcore.newURL("ss")
     builder.setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
     if (method in supportedShadowsocks2022Method) {
         builder.username = method

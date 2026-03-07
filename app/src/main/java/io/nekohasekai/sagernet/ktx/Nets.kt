@@ -20,8 +20,8 @@
 package io.nekohasekai.sagernet.ktx
 
 import io.nekohasekai.sagernet.BuildConfig
-import libcore.Libcore
-import libcore.URL
+import libsagernetcore.Libsagernetcore
+import libsagernetcore.URL
 import java.net.IDN
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -45,14 +45,14 @@ fun URL.addPathSegments(vararg segments: String) {
 }
 
 fun String.wrapIDN(): String {
-    if (Libcore.isIP(this)) {
+    if (Libsagernetcore.isIP(this)) {
         return this
     }
     return IDN.toUnicode(this, IDN.ALLOW_UNASSIGNED)
 }
 
 fun String.unwrapIDN(): String {
-    if (Libcore.isIP(this) || this.all { it.code < 128 }) {
+    if (Libsagernetcore.isIP(this) || this.all { it.code < 128 }) {
         return this
     }
     return try {
@@ -63,7 +63,7 @@ fun String.unwrapIDN(): String {
 }
 
 fun joinHostPort(host: String, port: Int): String {
-    if (Libcore.isIPv6(host)) {
+    if (Libsagernetcore.isIPv6(host)) {
         return "[$host]:$port"
     }
     return "$host:$port"
@@ -78,7 +78,7 @@ fun String.unwrapHost(): String {
 
 fun isHTTPorHTTPSURL(url: String): Boolean {
     try {
-        val u = Libcore.parseURL(url)
+        val u = Libsagernetcore.parseURL(url)
         return (u.scheme == "http" || u.scheme == "https")
     } catch (_: Exception) {
         return false

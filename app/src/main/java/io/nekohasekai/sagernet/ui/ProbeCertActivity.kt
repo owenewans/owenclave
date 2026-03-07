@@ -43,7 +43,7 @@ import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.dp2px
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 class ProbeCertActivity : ThemedActivity() {
 
@@ -110,9 +110,9 @@ class ProbeCertActivity : ThemedActivity() {
         binding.certificate.doAfterTextChanged { text ->
             try {
                 binding.certHash.text = when (binding.certHashType.selectedItemPosition) {
-                    0 -> Libcore.calculatePEMCertSHA256Hash(text.toString())
-                    1 -> Libcore.calculatePEMCertPublicKeySHA256Hash(text.toString())
-                    2 -> Libcore.calculatePEMCertChainSHA256Hash(text.toString())
+                    0 -> Libsagernetcore.calculatePEMCertSHA256Hash(text.toString())
+                    1 -> Libsagernetcore.calculatePEMCertPublicKeySHA256Hash(text.toString())
+                    2 -> Libsagernetcore.calculatePEMCertChainSHA256Hash(text.toString())
                     else -> error("impossible")
                 }
                 binding.showCertInfo.isVisible = true
@@ -128,9 +128,9 @@ class ProbeCertActivity : ThemedActivity() {
                 try {
                     val certificate = binding.certificate.text.toString()
                     val certHash = when (position) {
-                        0 -> Libcore.calculatePEMCertSHA256Hash(certificate)
-                        1 -> Libcore.calculatePEMCertPublicKeySHA256Hash(certificate)
-                        2 -> Libcore.calculatePEMCertChainSHA256Hash(certificate)
+                        0 -> Libsagernetcore.calculatePEMCertSHA256Hash(certificate)
+                        1 -> Libsagernetcore.calculatePEMCertPublicKeySHA256Hash(certificate)
+                        2 -> Libsagernetcore.calculatePEMCertChainSHA256Hash(certificate)
                         else -> error("impossible")
                     }
                     binding.certHash.text = certHash
@@ -159,7 +159,7 @@ class ProbeCertActivity : ThemedActivity() {
                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                         addView( HorizontalScrollView(this@ProbeCertActivity).apply {
                             addView(TextView(this@ProbeCertActivity).apply {
-                                text = Libcore.certificateToPrettyInfo(binding.certificate.text.toString())
+                                text = Libsagernetcore.certificateToPrettyInfo(binding.certificate.text.toString())
                                 isSingleLine = false
                                 typeface = Typeface.MONOSPACE
                                 setTextIsSelectable(true)
@@ -195,7 +195,7 @@ class ProbeCertActivity : ThemedActivity() {
             return
         }
         runOnDefaultDispatcher {
-            val result = Libcore.probeCert(
+            val result = Libsagernetcore.probeCert(
                 binding.probeCertServer.text.toString(),
                 port,
                 binding.probeCertServerName.text.toString(),

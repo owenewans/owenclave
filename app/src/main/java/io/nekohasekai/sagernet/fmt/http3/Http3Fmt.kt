@@ -20,10 +20,10 @@
 package io.nekohasekai.sagernet.fmt.http3
 
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 fun parseHttp3(link: String): Http3Bean {
-    val url = Libcore.parseURL(link)
+    val url = Libsagernetcore.parseURL(link)
     if (url.path != "/" && url.path != "") error("Not http3 proxy")
 
     return Http3Bean().apply {
@@ -39,7 +39,7 @@ fun parseHttp3(link: String): Http3Bean {
 }
 
 fun Http3Bean.toUri(): String {
-    val builder = Libcore.newURL("quic").apply {
+    val builder = Libsagernetcore.newURL("quic").apply {
         setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         if (name.isNotEmpty()) {
             fragment = name

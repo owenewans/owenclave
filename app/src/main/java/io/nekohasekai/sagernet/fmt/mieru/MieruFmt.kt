@@ -20,11 +20,11 @@ package io.nekohasekai.sagernet.fmt.mieru
 
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 fun parseMieru(link: String): List<MieruBean> {
     val beans = mutableListOf<MieruBean>()
-    val url = Libcore.parseURL(link)
+    val url = Libsagernetcore.parseURL(link)
     if (url.username.isNullOrEmpty() || url.password.isNullOrEmpty()) {
         error("empty username or password")
     }
@@ -100,7 +100,7 @@ fun parseMieru(link: String): List<MieruBean> {
 }
 
 fun MieruBean.toUri(): String? {
-    val builder = Libcore.newURL("mierus").apply {
+    val builder = Libsagernetcore.newURL("mierus").apply {
         host = serverAddress.ifEmpty { error("empty server address") }
     }
     if (username.isNotEmpty()) {

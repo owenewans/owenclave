@@ -1,11 +1,10 @@
 #!/bin/bash
 
-# -buildvcs=false: github.com/sagernet/gomobile is used for reproducible build
-CGO_LDFLAGS="-Wl,-z,max-page-size=16384" gomobile bind -v -androidapi 21 -trimpath -buildvcs=false -ldflags='-s -buildid=' -tags='with_clash' . || exit 1
-rm -r libcore-sources.jar
+CGO_LDFLAGS="-Wl,-z,max-page-size=16384" gomobile bind -v -androidapi 21 -trimpath -ldflags='-s -buildid=' -tags='with_clash' "github.com/dyhkwong/libsagernetcore" || exit 1
+rm -r libsagernetcore-sources.jar
 
 proj=../../app/libs
 if [ -d $proj ]; then
-  cp -f libcore.aar $proj
-  echo ">> install $(realpath $proj)/libcore.aar"
+  cp -f libsagernetcore.aar $proj
+  echo ">> install $(realpath $proj)/libsagernetcore.aar"
 fi

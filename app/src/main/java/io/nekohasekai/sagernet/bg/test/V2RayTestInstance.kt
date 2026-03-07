@@ -31,7 +31,7 @@ import io.nekohasekai.sagernet.ktx.tryResume
 import io.nekohasekai.sagernet.ktx.tryResumeWithException
 import io.nekohasekai.sagernet.utils.DefaultNetworkListener
 import kotlinx.coroutines.delay
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.suspendCoroutine
 
@@ -53,7 +53,7 @@ class V2RayTestInstance(profile: ProxyEntity, val link: String, val timeout: Int
                     if (pluginConfigs.isNotEmpty()) {
                         delay(500L)
                     }
-                    c.tryResume(Libcore.urlTest(v2rayPoint, "", link, timeout))
+                    c.tryResume(Libsagernetcore.urlTest(v2rayPoint, "", link, timeout))
                 } catch (e: Exception) {
                     c.tryResumeWithException(e)
                 }

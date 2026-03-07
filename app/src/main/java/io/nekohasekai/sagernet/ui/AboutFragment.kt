@@ -54,7 +54,7 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.dp2px
 import io.nekohasekai.sagernet.ktx.dp2pxf
 import io.nekohasekai.sagernet.ktx.snackbar
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 
 class AboutFragment : ToolbarFragment(R.layout.layout_about) {
 
@@ -141,7 +141,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .addItem(MaterialAboutActionItem.Builder()
                             .icon(R.drawable.ic_baseline_airplanemode_active_24)
                             .text(getString(R.string.version_x, "v2ray-core"))
-                            .subText(Libcore.getV2RayVersion() + "-fork")
+                            .subText(Libsagernetcore.getV2RayVersion() + "-fork")
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
@@ -152,14 +152,14 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                         .addItem(MaterialAboutActionItem.Builder()
                             .icon(R.drawable.ic_baseline_info_24)
                             .text(getString(R.string.version_x, "Go"))
-                            .subText(Libcore.getGoVersion())
+                            .subText(Libsagernetcore.getGoVersion())
                             .setOnLongClickAction {
                                 AlertDialog.Builder(activityContext).apply {
                                     setView(NestedScrollView(activityContext).apply {
                                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                                         addView( HorizontalScrollView(activityContext).apply {
                                             addView(TextView(activityContext).apply {
-                                                text = Libcore.getDepInfo()
+                                                text = Libsagernetcore.getDepInfo()
                                                 textSize = dp2pxf(4)
                                                 typeface = Typeface.MONOSPACE
                                                 isSingleLine = false
@@ -224,7 +224,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                         TextView(activityContext).apply {
                                             setPadding(dp2px(16))
                                             text = getString(
-                                                if (Libcore.buildWithClash()) {
+                                                if (Libsagernetcore.buildWithClash()) {
                                                     R.string.license_gpl_v3_only
                                                 } else {
                                                     R.string.license_gpl_v3_or_later

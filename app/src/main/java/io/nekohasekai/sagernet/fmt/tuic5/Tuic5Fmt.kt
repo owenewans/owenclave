@@ -23,7 +23,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.queryParameterNotBlank
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -32,7 +32,7 @@ val supportedTuic5RelayMode = arrayOf("native", "quic")
 
 @OptIn(ExperimentalUuidApi::class)
 fun parseTuic(server: String): AbstractBean {
-    var link = Libcore.parseURL(server)
+    var link = Libsagernetcore.parseURL(server)
     if (link.queryParameter("version") == "4") {
         error("unsupported")
     }
@@ -54,7 +54,7 @@ fun parseTuic(server: String): AbstractBean {
         } && server.substring(43, 46) == "%3A"
     ) {
         // v2rayN broken format
-        link = Libcore.parseURL(server.take(43) + ":" + server.substring(46, server.length))
+        link = Libsagernetcore.parseURL(server.take(43) + ":" + server.substring(46, server.length))
     }
 
     try {
@@ -116,7 +116,7 @@ fun parseTuic(server: String): AbstractBean {
 }
 
 fun Tuic5Bean.toUri(): String? {
-    val builder = Libcore.newURL("tuic").apply {
+    val builder = Libsagernetcore.newURL("tuic").apply {
         setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         username = uuid.ifEmpty { error("empty uuid") }
         if (name.isNotEmpty()) {

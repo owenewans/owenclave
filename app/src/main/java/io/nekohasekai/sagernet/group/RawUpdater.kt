@@ -33,7 +33,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocksConfig
 import io.nekohasekai.sagernet.fmt.wireguard.parseWireGuardConfig
 import io.nekohasekai.sagernet.ktx.*
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
@@ -67,7 +67,7 @@ object RawUpdater : GroupUpdater() {
             proxies = contentText?.let { parseRaw(contentText) }
                 ?: error(app.getString(R.string.no_proxies_found_in_subscription))
         } else {
-            val response = Libcore.newHttpClient().apply {
+            val response = Libsagernetcore.newHttpClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
                     useSocks5(DataStore.socksPort)
                 }

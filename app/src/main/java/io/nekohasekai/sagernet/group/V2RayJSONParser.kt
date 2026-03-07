@@ -53,7 +53,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.supportedVmessMethod
 import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import java.util.Base64
 
 fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
@@ -288,7 +288,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.path = path
                                     try {
                                         // RPRX's smart-assed invention. This of course will break under some conditions.
-                                        val u = Libcore.parseURL(path)
+                                        val u = Libsagernetcore.parseURL(path)
                                         u.queryParameter("ed")?.also { ed ->
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string
@@ -360,7 +360,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.path = it
                                     try {
                                         // RPRX's smart-assed invention. This of course will break under some conditions.
-                                        val u = Libcore.parseURL(it)
+                                        val u = Libsagernetcore.parseURL(it)
                                         u.queryParameter("ed")?.also {
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string

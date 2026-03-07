@@ -67,7 +67,7 @@ import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.utils.PackageCache
 import io.noties.markwon.Markwon
-import libcore.Libcore
+import libsagernetcore.Libsagernetcore
 import kotlin.io.encoding.Base64
 
 class MainActivity : ThemedActivity(),
@@ -167,7 +167,7 @@ class MainActivity : ThemedActivity(),
         }
 
         if (DataStore.configurationStore.getBoolean(
-                if (Libcore.buildWithClash()) "gplv3OnlyAccepted"
+                if (Libsagernetcore.buildWithClash()) "gplv3OnlyAccepted"
                 else "gplv3OrLaterAccepted") != true) {
             runOnMainDispatcher {
                 AlertDialog.Builder(this@MainActivity).apply {
@@ -176,7 +176,7 @@ class MainActivity : ThemedActivity(),
                         TextView(this@MainActivity).apply {
                             setPadding(dp2px(16))
                             text = getString(
-                                if (Libcore.buildWithClash()) {
+                                if (Libsagernetcore.buildWithClash()) {
                                     R.string.license_gpl_v3_only
                                 } else {
                                     R.string.license_gpl_v3_or_later
@@ -188,7 +188,7 @@ class MainActivity : ThemedActivity(),
                     )
                     setPositiveButton(android.R.string.ok) { _, _ ->
                         DataStore.configurationStore.putBoolean(
-                            if (Libcore.buildWithClash()) "gplv3OnlyAccepted"
+                            if (Libsagernetcore.buildWithClash()) "gplv3OnlyAccepted"
                             else "gplv3OrLaterAccepted", true)
                         if (DataStore.configurationStore.getBoolean("permissionRequested") != true) {
                             DataStore.configurationStore.putBoolean("permissionRequested", true)
@@ -202,7 +202,7 @@ class MainActivity : ThemedActivity(),
                     }
                     setOnCancelListener { _ ->
                         DataStore.configurationStore.putBoolean(
-                            if (Libcore.buildWithClash()) "gplv3OnlyAccepted"
+                            if (Libsagernetcore.buildWithClash()) "gplv3OnlyAccepted"
                             else "gplv3OrLaterAccepted", true)
                         if (DataStore.configurationStore.getBoolean("permissionRequested") != true) {
                             DataStore.configurationStore.putBoolean("permissionRequested", true)
