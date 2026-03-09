@@ -1,4 +1,5 @@
 *.aar
+*.jar
 *.iml
 .gradle
 .idea
@@ -13,3 +14,5 @@ local.properties
 /app/src/main/assets/v2ray/*.dat
 /service_account_credentials.json
 jniLibs/
+go.work
+go.work.sum

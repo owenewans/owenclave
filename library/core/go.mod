@@ -4,13 +4,6 @@ go 1.25.0
 
 require github.com/dyhkwong/libsagernetcore v0.0.0-20260307030613-86f3abb5969f
 
-replace gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
-
-replace github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.46.1-0.20260305101043-7806afca743d
-
-//replace github.com/v2fly/v2ray-core/v5 => ../../../v2ray-core
-//replace github.com/dyhkwong/libsagernetcore => ../../../LibSagerNetCore
-
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
@@ -74,4 +67,9 @@ require (
 	google.golang.org/protobuf v1.36.11 // indirect
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c // indirect
 	lukechampine.com/blake3 v1.4.1 // indirect
+)
+
+replace (
+	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.46.1-0.20260305101043-7806afca743d
+	gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
 )
