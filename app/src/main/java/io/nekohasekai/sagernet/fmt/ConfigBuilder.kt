@@ -1183,6 +1183,8 @@ fun buildV2RayConfig(
                                                                 uplinkDataKey = it
                                                             }
                                                             extra.getInt("uplinkChunkSize", ignoreCase = true)?.also {
+                                                                uplinkChunkSize = it.toString()
+                                                            } ?: extra.getString("uplinkChunkSize", ignoreCase = true)?.also {
                                                                 uplinkChunkSize = it
                                                             }
                                                         }

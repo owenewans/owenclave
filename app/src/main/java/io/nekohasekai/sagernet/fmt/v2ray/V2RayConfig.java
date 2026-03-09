@@ -1356,7 +1356,7 @@ public class V2RayConfig {
         public String seqKey;
         public String uplinkDataPlacement;
         public String uplinkDataKey;
-        public Integer uplinkChunkSize;
+        public String uplinkChunkSize;
         public Boolean noGRPCHeader;
         public XmuxObject xmux;
         public DownloadSettingsObject downloadSettings;

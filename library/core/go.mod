@@ -16,7 +16,7 @@ require (
 	github.com/dyhkwong/hysteria/core/v2 v2.7.1-1 // indirect
 	github.com/dyhkwong/hysteria/extras/v2 v2.7.1-1 // indirect
 	github.com/dyhkwong/sing-juicity v0.1.1 // indirect
-	github.com/enfein/mieru/v3 v3.28.0 // indirect
+	github.com/enfein/mieru/v3 v3.29.0 // indirect
 	github.com/gofrs/uuid/v5 v5.4.0 // indirect
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
@@ -35,7 +35,7 @@ require (
 	github.com/refraction-networking/utls v1.8.2 // indirect
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 // indirect
 	github.com/sagernet/quic-go v0.59.0-sing-box-mod.4 // indirect
-	github.com/sagernet/sing v0.8.1 // indirect
+	github.com/sagernet/sing v0.8.2 // indirect
 	github.com/sagernet/sing-mux v0.3.4 // indirect
 	github.com/sagernet/sing-quic v0.6.0 // indirect
 	github.com/sagernet/sing-shadowsocks v0.2.9 // indirect
@@ -55,21 +55,21 @@ require (
 	golang.org/x/mobile v0.0.0-20260217195705-b56b3793a9c4 // indirect
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/net v0.51.0 // indirect
-	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/sync v0.20.0 // indirect
+	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
 	golang.org/x/tools v0.42.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20250521234502-f333402bd9cb // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
-	google.golang.org/grpc v1.79.1 // indirect
+	google.golang.org/grpc v1.79.2 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c // indirect
 	lukechampine.com/blake3 v1.4.1 // indirect
 )
 
 replace (
-	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.46.1-0.20260305101043-7806afca743d
+	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.46.1-0.20260309091906-714ca36adace
 	gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
 )

@@ -522,6 +522,8 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 if (!extra.contains("uplinkChunkSize")) {
                                     splithttpSettings.getInt("uplinkChunkSize")?.also {
                                         extra.addProperty("uplinkChunkSize", it)
+                                    } ?: splithttpSettings.getString("uplinkChunkSize")?.also {
+                                        extra.addProperty("uplinkChunkSize", it)
                                     }
                                 }
                                 if (!extra.isEmpty) {
