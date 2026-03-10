@@ -530,6 +530,31 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(extra)
                                 }
                             }
+                            streamSettings.getObject("finalmask")?.also { finalmask ->
+                                if (v2rayBean.alpn != "h3") {
+                                    // ban Xray TCP finalmask
+                                    finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
+                                        return listOf()
+                                    }
+                                } else {
+                                    // ban Xray UDP finalmask
+                                    finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also {
+                                        return listOf()
+                                    }
+                                    // ban Xray QUIC port hopping
+                                    finalmask.getObject("quicParams")?.also { quicParams ->
+                                        quicParams.getObject("udphop")?.also { udphop ->
+                                            udphop.getInt("ports")?.also {
+                                                return listOf()
+                                            } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
+                                                it.split(",").joinToString(",") { it.trim() }
+                                                    .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
+                                                    ?.also { return listOf() }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                         "hysteria2", "hy2" -> {
                             v2rayBean.type = "hysteria2"
@@ -555,16 +580,22 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 hysteriaSettings.getString("auth")?.also {
                                     v2rayBean.hy2Password = it
                                 }
-                                hysteriaSettings.getObject("udphop")?.also { udphop ->
-                                    udphop.getInt("port")?.also {
-                                        if (it > 0) return listOf()
-                                    } ?: udphop.getString("port")?.takeIf { it.isNotEmpty() }?.also {
-                                        // invalid port is ignored
-                                        (it.split(",").joinToString(",") { it.trim() })
-                                            .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
-                                            ?.let {
-                                                return listOf()
-                                            }
+                            }
+                            streamSettings.getObject("finalmask")?.also { finalmask ->
+                                // ban Xray UDP finalmask
+                                finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also {
+                                    return listOf()
+                                }
+                                // ban Xray QUIC port hopping
+                                finalmask.getObject("quicParams")?.also { quicParams ->
+                                    quicParams.getObject("udphop")?.also { udphop ->
+                                        udphop.getInt("ports")?.also {
+                                            return listOf()
+                                        } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
+                                            it.split(",").joinToString(",") { it.trim() }
+                                                .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
+                                                ?.also { return listOf() }
+                                        }
                                     }
                                 }
                             }
@@ -572,9 +603,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         else -> return listOf()
                     }
                     when (v2rayBean.type) {
-                        "tcp", "ws", "grpc", "httpupgrade", "splithttp" -> {
+                        "tcp", "ws", "grpc", "httpupgrade" -> {
                             streamSettings.getObject("finalmask")?.also { finalmask ->
-                                // ban Xray TCP finalmask in advance
+                                // ban Xray TCP finalmask
                                 finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
                                     return listOf()
                                 }
@@ -789,6 +820,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 v2rayBean.password = it
                             }
                         }
+                    }
+                    if (v2rayBean.plugin == "shadowsocksr") {
+                        return listOf()
                     }
                 }
                 "shadowsocks2022" -> {
@@ -1698,6 +1732,20 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         udpmask.getObject("settings")?.also { settings ->
                             settings.getString("password")?.also {
                                 hysteria2Bean.obfs = it
+                            }
+                        }
+                    }
+                    finalmask.getObject("quicParams")?.also { quicParams ->
+                        quicParams.getObject("udphop")?.also { udphop ->
+                            udphop.getInt("ports")?.also {
+                                if (it > 0) hysteria2Bean.serverPorts = it.toString()
+                            } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
+                                // invalid port is ignored
+                                hysteria2Bean.serverPorts = (it.split(",").joinToString(",") { it.trim() })
+                                    .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
+                            }
+                            udphop.getLong("interval")?.also {
+                                hysteria2Bean.hopInterval = it.takeIf { it > 0 }
                             }
                         }
                     }

@@ -409,7 +409,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 bean.mekyaUrl = it
             }
         }
-        "hysteria2" -> error("unsupported")
+        "hysteria2", "hysteria" -> error("unsupported")
         else -> bean.type = "tcp"
     }
 
@@ -419,8 +419,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             val json = parseJson(finalmask).asJsonObject
             if (!json.isEmpty) {
                 when (bean.type) {
-                    "tcp", "ws", "grpc", "httpupgrade", "splithttp" -> {
-                        // ban Xray TCP finalmask in advance
+                    "tcp", "ws", "grpc", "httpupgrade" -> {
+                        // ban Xray TCP finalmask
                         json.getArray("tcp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
                             error("unsupported")
                         }
@@ -449,6 +449,31 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                                     "header-wechat" -> bean.headerType = "wechat-video"
                                     "header-wireguard" -> bean.headerType = "wireguard"
                                     else -> error("unsupported")
+                                }
+                            }
+                        }
+                    }
+                    "splithttp" -> {
+                        if (bean.alpn != "h3") {
+                            // ban Xray TCP finalmask
+                            json.getArray("tcp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
+                                error("unsupported")
+                            }
+                        } else {
+                            // ban Xray UDP finalmask
+                            json.getArray("udp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
+                                error("unsupported")
+                            }
+                            // ban Xray QUIC port hopping
+                            json.getObject("quicParams")?.also { quicParams ->
+                                quicParams.getObject("udphop")?.also { udphop ->
+                                    udphop.getInt("ports")?.also {
+                                        error("unsupported")
+                                    } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
+                                        it.split(",").joinToString(",") { it.trim() }
+                                            .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
+                                            ?.also { error("unsupported") }
+                                    }
                                 }
                             }
                         }
