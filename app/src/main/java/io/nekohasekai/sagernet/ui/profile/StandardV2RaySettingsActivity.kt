@@ -571,7 +571,6 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         singMuxMinStreams = findPreference(Key.SERVER_SING_MUX_MIN_STREAMS)!!
         singMuxMaxStreams = findPreference(Key.SERVER_SING_MUX_MAX_STREAMS)!!
         singMuxPadding = findPreference(Key.SERVER_SING_MUX_PADDING)!!
-        muxConcurrency.isVisible = singMux.isChecked
         singMuxProtocol.isVisible = singMux.isChecked
         singMuxMaxConnections.isVisible = singMux.isChecked
         singMuxMinStreams.isVisible = singMux.isChecked
