@@ -136,6 +136,7 @@ fun WireGuardBean.toConf(): String {
     val conf = StringWriter()
     INIWriter.Builder()
         .withIndent(0)
+        .withStringQuoteMode(INIWriter.StringQuoteMode.NEVER)
         .build()
         .write(ini, conf)
     return conf.toString()
