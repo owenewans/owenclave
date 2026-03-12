@@ -100,6 +100,12 @@ public class WireGuardBean extends AbstractBean {
         }
     }
 
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof WireGuardBean bean)) return;
+        bean.mtu = mtu;
+    }
+
     @NotNull
     @Override
     public WireGuardBean clone() {
