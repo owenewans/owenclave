@@ -50,7 +50,7 @@ It is a fork of the archived Android proxy client SagerNet and uses a custom ove
 
   It is distributed and signed by the upstream author.
 
-Starting in September 2026, Google will [block apps from "sideloading"](https://developer.android.com/developer-verification) on [certified Android devices](https://www.android.com/certified/partners/). If you are a user who values digital freedom, we need your voice to express opposition. Your support will not only help save this app, but also help defend software freedom and open distribution.
+Starting in September 2026, Google will [block apps from "sideloading"](https://developer.android.com/developer-verification) on [certified Android devices](https://www.android.com/certified/partners/). If you are a user who values digital freedom, we need your voice to [express opposition](https://keepandroidopen.org/). Your support will not only help save this app, but also help defend software freedom and open distribution.
 
 ## License
 
@@ -69,6 +69,10 @@ Starting in September 2026, Google will [block apps from "sideloading"](https://
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+## Notice
+
+Exclave is licensed under the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. However, Exclave optionally incorporates code that is covered by the GNU General Public License as published by the Free Software Foundation, version 3. If `github.com/dyhkwong/libsagernetcore` is compiled with `with_clash` tag, the GNU General Public License as published by the Free Software Foundation, version 3, applies to all of Exclave.
 
 ## Translation
 
