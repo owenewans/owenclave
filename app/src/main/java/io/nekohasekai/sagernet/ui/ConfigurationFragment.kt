@@ -311,7 +311,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                 if (proxies.isEmpty()) {
                     if (!fileText.contains("\n") && !fileText.contains("\r")
                         && fileText.startsWith("exclave://", ignoreCase = true)
-                        && fileText.substring("exclave://".length).startsWith("subscription?")) {
+                        && fileText.substring("exclave://".length).startsWith("subscription?", ignoreCase = true)) {
                         (requireActivity() as? MainActivity)?.importSubscription(fileText.toUri())
                     } else if (!fileText.contains("\n") && !fileText.contains("\r") && isHTTPorHTTPSURL(fileText)) {
                         val builder = Libsagernetcore.newURL("exclave").apply {
@@ -399,7 +399,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                             if (proxies.isNullOrEmpty()) {
                                 if (!text.contains("\n") && !text.contains("\r")
                                     && text.startsWith("exclave://", ignoreCase = true)
-                                    && text.substring("exclave://".length).startsWith("subscription?")) {
+                                    && text.substring("exclave://".length).startsWith("subscription?", ignoreCase = true)) {
                                     (requireActivity() as? MainActivity)?.importSubscription(text.toUri())
                                 } else if (!text.contains("\n") && !text.contains("\r") && isHTTPorHTTPSURL(text)) {
                                     val builder = Libsagernetcore.newURL("exclave").apply {

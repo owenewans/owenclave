@@ -161,7 +161,7 @@ class ScannerActivity : ThemedActivity() {
                 if (results.isNullOrEmpty()) {
                     if (!value.contains("\n") && !value.contains("\r")
                         && value.startsWith("exclave://", ignoreCase = true)
-                        && value.substring("exclave://".length).startsWith("subscription?")) {
+                        && value.substring("exclave://".length).startsWith("subscription?", ignoreCase = true)) {
                         startActivity(Intent(this@ScannerActivity, MainActivity::class.java).apply {
                             action = Intent.ACTION_VIEW
                             data = value.toUri()
@@ -259,7 +259,7 @@ class ScannerActivity : ThemedActivity() {
                             } else {
                                 if (!result.text.contains("\n") && !result.text.contains("\r")
                                     && result.text.startsWith("exclave://", ignoreCase = true)
-                                    && result.text.substring("exclave://".length).startsWith("subscription?")) {
+                                    && result.text.substring("exclave://".length).startsWith("subscription?", ignoreCase = true)) {
                                     startActivity(Intent(this@ScannerActivity, MainActivity::class.java).apply {
                                         action = Intent.ACTION_VIEW
                                         data = result.text.toUri()

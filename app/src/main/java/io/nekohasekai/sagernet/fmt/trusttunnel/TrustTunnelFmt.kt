@@ -107,7 +107,7 @@ fun TrustTunnelBean.toUri(): String {
 fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
     try {
         val data = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(
-            if (url.startsWith("tt://?", ignoreCase = true)) url.substring("tt://?".length) else url.substring("tt://".length)
+            if (url.startsWith("tt://?")) url.substring("tt://?".length) else url.substring("tt://".length)
         )
         val bean = TrustTunnelBean()
         val addresses = mutableListOf<String>()

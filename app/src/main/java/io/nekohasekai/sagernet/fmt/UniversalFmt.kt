@@ -26,17 +26,10 @@ import io.nekohasekai.sagernet.ktx.zlibDecompress
 import kotlin.io.encoding.Base64
 
 fun parseBackupLink(link: String): AbstractBean {
-    return if (link.contains("?")) {
-        val type = link.substring("exclave://".length).substringBefore("?")
-        ProxyEntity(type = TypeMap[type] ?: error("Type $type not found")).apply {
-            putByteArray(Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(link.substringAfter("?")).zlibDecompress())
-        }.requireBean()
-    } else {
-        val type = link.substring("exclave://".length).substringBefore(":")
-        ProxyEntity(type = TypeMap[type] ?: error("Type $type not found")).apply {
-            putByteArray(Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(link.substringAfter(":").substringAfter(":")))
-        }.requireBean()
-    }
+    val type = link.substring("exclave://".length).substringBefore("?")
+    return ProxyEntity(type = TypeMap[type.lowercase()] ?: error("Type $type not found")).apply {
+        putByteArray(Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(link.substringAfter("?")).zlibDecompress())
+    }.requireBean()
 }
 
 fun AbstractBean.exportBackup(): String {
