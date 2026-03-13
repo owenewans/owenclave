@@ -146,11 +146,20 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.update_all_subscriptions)
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        SagerDatabase.groupDao.allGroups()
-                            .filter { it.type == GroupType.SUBSCRIPTION }
-                            .forEach {
-                                GroupUpdater.startUpdate(it, true)
-                            }
+                        val subscriptions = SagerDatabase.groupDao.allGroups().filter { it.type == GroupType.SUBSCRIPTION }
+                        val connected = DataStore.startedProfile > 0
+                        if (!connected && subscriptions.any { it.subscription!!.link.startsWith("http://", ignoreCase = true) == true || it.subscription!!.updateWhenConnectedOnly }) {
+                            MaterialAlertDialogBuilder(requireContext())
+                                .setTitle(R.string.confirm)
+                                .setMessage(getString(R.string.update_subscription_warning))
+                                .setPositiveButton(android.R.string.ok) { _, _ ->
+                                    subscriptions.forEach { GroupUpdater.startUpdate(it, true, parallel = true) }
+                                }
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .show()
+                        } else {
+                            subscriptions.forEach { GroupUpdater.startUpdate(it, true, parallel = true) }
+                        }
                     }
                     .setNegativeButton(android.R.string.cancel, null)
                     .show()
@@ -319,9 +328,9 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 undoManager.flush()
                 notifyItemInserted(groupList.size - 1)
 
-                if (group.type == GroupType.SUBSCRIPTION) {
+                /*if (group.type == GroupType.SUBSCRIPTION) {
                     GroupUpdater.startUpdate(group, true)
-                }
+                }*/
             }
         }
 

@@ -307,7 +307,7 @@ class MainActivity : ThemedActivity(),
 
     private suspend fun finishImportSubscription(subscription: ProxyGroup) {
         GroupManager.createGroup(subscription)
-        GroupUpdater.startUpdate(subscription, true)
+        // GroupUpdater.startUpdate(subscription, true)
     }
 
     suspend fun importProfile(uri: Uri) {

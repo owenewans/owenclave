@@ -51,27 +51,25 @@ abstract class GroupUpdater {
         val updating = Collections.synchronizedSet<Long>(mutableSetOf())
         val progress = Collections.synchronizedMap<Long, Progress>(mutableMapOf())
 
-        fun startUpdate(proxyGroup: ProxyGroup, byUser: Boolean) {
+        fun startUpdate(proxyGroup: ProxyGroup, byUser: Boolean, parallel: Boolean = false) {
             runOnDefaultDispatcher {
-                executeUpdate(proxyGroup, byUser)
+                executeUpdate(proxyGroup, byUser, parallel)
             }
         }
 
-        suspend fun executeUpdate(proxyGroup: ProxyGroup, byUser: Boolean): Boolean {
+        suspend fun executeUpdate(proxyGroup: ProxyGroup, byUser: Boolean, parallel: Boolean = false): Boolean {
             return coroutineScope {
                 if (!updating.add(proxyGroup.id)) cancel()
                 GroupManager.postReload(proxyGroup.id)
 
                 val subscription = proxyGroup.subscription!!
                 val connected = DataStore.startedProfile > 0
-                val userInterface = GroupManager.userInterface
+                val userInterface = GroupManager.userInterface!!
 
-                if (userInterface != null) {
-                    if ((subscription.link?.startsWith("http://", ignoreCase = true) == true || subscription.updateWhenConnectedOnly) && !connected) {
-                        if (!userInterface.confirm(app.getString(R.string.update_subscription_warning))) {
-                            finishUpdate(proxyGroup)
-                            cancel()
-                        }
+                if (!parallel && (subscription.link?.startsWith("http://", ignoreCase = true) == true || subscription.updateWhenConnectedOnly) && !connected) {
+                    if (!userInterface.confirm(app.getString(R.string.update_subscription_warning))) {
+                        finishUpdate(proxyGroup)
+                        cancel()
                     }
                 }
 
@@ -84,7 +82,7 @@ abstract class GroupUpdater {
                     true
                 } catch (e: Throwable) {
                     Logs.w(e)
-                    userInterface?.onUpdateFailure(proxyGroup, e.readableMessage)
+                    userInterface.onUpdateFailure(proxyGroup, e.readableMessage)
                     finishUpdate(proxyGroup)
                     false
                 }
