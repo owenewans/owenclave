@@ -25,6 +25,7 @@ import libsagernetcore.Libsagernetcore
 import kotlin.io.encoding.Base64
 
 // https://github.com/TrustTunnel/TrustTunnel/blob/8856e7ba83ae0c9faace78aaf9a95b1b291cd3ed/DEEP_LINK.md
+// https://github.com/TrustTunnel/TrustTunnel/blob/8ba8f34da84b54ff49c248ec8c940c38010b511e/DEEP_LINK.md
 
 private enum class Tag(val code: Long) {
     Version(0x00),
@@ -100,15 +101,14 @@ fun TrustTunnelBean.toUri(): String {
             writeTLV(Tag.Certificate.code, der)
         }
     }
-    val builder = Libsagernetcore.newURL("tt").apply {
-        host = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayBuilder.toByteArray())
-    }
-    return builder.string
+    return "tt://?" + Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayBuilder.toByteArray())
 }
 
 fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
     try {
-        val data = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(url.substring("tt://".length))
+        val data = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(
+            if (url.startsWith("tt://?", ignoreCase = true)) url.substring("tt://?".length) else url.substring("tt://".length)
+        )
         val bean = TrustTunnelBean()
         val addresses = mutableListOf<String>()
         var hostname = ""
