@@ -20,6 +20,7 @@
 package io.nekohasekai.sagernet.group
 
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.GroupManager
@@ -37,7 +38,8 @@ abstract class GroupUpdater {
         proxyGroup: ProxyGroup,
         subscription: SubscriptionBean,
         userInterface: GroupManager.Interface?,
-        byUser: Boolean
+        byUser: Boolean,
+        parallel: Boolean = false,
     )
 
     data class Progress(
@@ -63,7 +65,7 @@ abstract class GroupUpdater {
                 GroupManager.postReload(proxyGroup.id)
 
                 val subscription = proxyGroup.subscription!!
-                val connected = DataStore.startedProfile > 0
+                val connected = SagerNet.started && DataStore.startedProfile > 0
                 val userInterface = GroupManager.userInterface!!
 
                 if (!parallel && (subscription.link?.startsWith("http://", ignoreCase = true) == true || subscription.updateWhenConnectedOnly) && !connected) {
@@ -78,11 +80,13 @@ abstract class GroupUpdater {
                         SubscriptionType.RAW -> RawUpdater
                         SubscriptionType.SIP008 -> SIP008Updater
                         else -> error("unsupported")
-                    }.doUpdate(proxyGroup, subscription, userInterface, byUser)
+                    }.doUpdate(proxyGroup, subscription, userInterface, byUser, parallel)
                     true
                 } catch (e: Throwable) {
                     Logs.w(e)
-                    userInterface.onUpdateFailure(proxyGroup, e.readableMessage)
+                    if (!parallel) {
+                        userInterface.onUpdateFailure(proxyGroup, e.readableMessage)
+                    }
                     finishUpdate(proxyGroup)
                     false
                 }

@@ -147,7 +147,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     .setTitle(R.string.update_all_subscriptions)
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         val subscriptions = SagerDatabase.groupDao.allGroups().filter { it.type == GroupType.SUBSCRIPTION }
-                        val connected = DataStore.startedProfile > 0
+                        val connected = SagerNet.started && DataStore.startedProfile > 0
                         if (!connected && subscriptions.any { it.subscription!!.link.startsWith("http://", ignoreCase = true) == true || it.subscription!!.updateWhenConnectedOnly }) {
                             MaterialAlertDialogBuilder(requireContext())
                                 .setTitle(R.string.confirm)
@@ -182,9 +182,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     }
                 }.joinToString("\n")
                 try {
-                    context!!.contentResolver.openOutputStream(
-                        data
-                    )!!.bufferedWriter().use {
+                    (requireActivity() as MainActivity).contentResolver.openOutputStream(data)!!.bufferedWriter().use {
                         it.write(links)
                     }
                     onMainDispatcher {
@@ -211,9 +209,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     } else null
                 }.joinToString("\n")
                 try {
-                    context!!.contentResolver.openOutputStream(
-                        data
-                    )!!.bufferedWriter().use {
+                    (requireActivity() as MainActivity).contentResolver.openOutputStream(data)!!.bufferedWriter().use {
                         it.write(links)
                     }
                     onMainDispatcher {
