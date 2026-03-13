@@ -436,9 +436,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 R.id.action_file -> {
                     startFilesForResult(exportProfiles, "profiles_${proxyGroup.displayName()}.txt")
                 }
-                R.id.action_export_backup_qr -> {
-                    showCode(proxyGroup.exportBackup())
-                }
                 R.id.action_export_backup_clipboard -> {
                     export(proxyGroup.exportBackup())
                 }

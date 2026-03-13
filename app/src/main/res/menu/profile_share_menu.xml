@@ -25,9 +25,6 @@
         android:title="@string/backup">
         <menu>
             <item
-                android:id="@+id/action_export_backup_qr"
-                android:title="@string/share_qr_nfc" />
-            <item
                 android:id="@+id/action_export_backup_clipboard"
                 android:title="@string/action_export_clipboard" />
         </menu>

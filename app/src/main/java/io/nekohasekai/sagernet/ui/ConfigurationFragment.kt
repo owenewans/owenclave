@@ -1640,7 +1640,6 @@ class ConfigurationFragment @JvmOverloads constructor(
                                 (parentFragment as ConfigurationFragment).exportConfig, cfg.second
                             )
                         }
-                        R.id.action_export_backup_qr -> showCode(entity.requireBean().exportBackup())
                         R.id.action_export_backup_clipboard -> export(entity.requireBean().exportBackup())
                     }
                 } catch (e: Exception) {
