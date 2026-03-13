@@ -360,7 +360,6 @@
     <string name="traffic_holder">Turn on VPN to record traffic statistics</string>
     <string name="copy_label">Copy app name</string>
     <string name="copy_package_name">Copy package name</string>
-    <string name="open_app">Open app</string>
     <string name="open_settings">Open in Settings</string>
     <string name="create_rule">Create a rule</string>
     <string name="copy_success">Successfully copy!</string>
@@ -448,7 +447,6 @@
     <string name="reality_fingerprint">REALITY uTLS fingerprint</string>
     <string name="wireguard_reserved">Reserved</string>
     <string name="shadowsocks_2022_implementation">Shadowsocks 2022 implementation</string>
-    <string name="action_open">Open</string>
     <string name="bootstrap_dns">Bootstrap DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Use system DNS as Bootstrap DNS</string>
     <string name="brook_fragment">Fragment</string>

@@ -230,7 +230,6 @@
     <string name="traffic_stats">Estadísticas</string>
     <string name="copy_label">Copiar nombre de la app</string>
     <string name="copy_package_name">Copiar nombre del paquete</string>
-    <string name="open_app">Abrir app</string>
     <string name="open_settings">Abrir en ajustes</string>
     <string name="create_rule">Crear una regla</string>
     <string name="copy_failed">No se pudo copiar.</string>
@@ -427,7 +426,6 @@
     <string name="mux_settings">Ajustes de Mux</string>
     <string name="wireguard_reserved">Reservado</string>
     <string name="shadowsocks_2022_implementation">Implementación Shadowsocks 2022</string>
-    <string name="action_open">Abrir</string>
     <string name="bootstrap_dns">DNS de arranque</string>
     <string name="brook_fragment">Fragmento</string>
     <string name="remote_dns_query_strategy">Estrategia de consulta de DNS remoto</string>

@@ -21,9 +21,7 @@ package io.nekohasekai.sagernet.ui
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -158,35 +156,6 @@ class TrafficFragment : ToolbarFragment(R.layout.layout_traffic),
                     packageName?.let {
                         val success = SagerNet.trySetPrimaryClip(it)
                         snackbar(if (success) R.string.copy_success else R.string.copy_failed).show()
-                    }
-                }
-
-                R.id.open_app -> {
-                    try {
-                        packageName?.let {
-                            val launch = app.packageManager.getLaunchIntentForPackage(it)
-                            if (launch == null) {
-                                snackbar(R.string.app_no_launcher).show()
-                            } else {
-                                startActivity(launch)
-                            }
-                        }
-                    } catch (e: Exception) {
-                        snackbar(e.readableMessage).show()
-                    }
-                }
-                R.id.open_settings -> {
-                    try {
-                        packageName?.let {
-                            startActivity(Intent().apply {
-                                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                                data = Uri.fromParts(
-                                    "package", it, null
-                                )
-                            })
-                        }
-                    } catch (e: Exception) {
-                        snackbar(e.readableMessage).show()
                     }
                 }
                 R.id.create_rule -> {

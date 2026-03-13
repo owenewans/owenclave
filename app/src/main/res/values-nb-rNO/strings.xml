@@ -331,7 +331,6 @@
     <string name="copy_success">Kopiert.</string>
     <string name="create_rule">Opprett regel</string>
     <string name="open_settings">Åpne innstillinger</string>
-    <string name="open_app">Åpne program</string>
     <string name="copy_package_name">Kopier pakkenavn</string>
     <string name="copy_label">Kopier navn</string>
     <plurals name="udp_connections">

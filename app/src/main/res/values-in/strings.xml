@@ -311,7 +311,6 @@
     </plurals>
     <string name="traffic_holder">Nyalakan VPN untuk merekam statistik lalu lintas</string>
     <string name="copy_package_name">Salin Nama Paket</string>
-    <string name="open_app">Buka Aplikasi</string>
     <string name="copy_success">Berhasil disalin!</string>
     <string name="copy_failed">Gagal menyalin.</string>
     <string name="ssh_private_key_passphrase">Passphrase(Frasa) Kunci Pribadi</string>

@@ -317,7 +317,6 @@
     <string name="traffic_holder">VPNを有効にしてトラフィック統計を記録</string>
     <string name="copy_label">アプリ名をコピー</string>
     <string name="copy_package_name">パッケージ名をコピー</string>
-    <string name="open_app">アプリを開く</string>
     <string name="open_settings">設定で開く</string>
     <string name="create_rule">ルールを作成</string>
     <string name="copy_success">コピー成功！</string>
@@ -403,7 +402,6 @@
     <string name="reality_fingerprint">REALITY uTLS 指紋</string>
     <string name="wireguard_reserved">予約済</string>
     <string name="shadowsocks_2022_implementation">Shadowsocks 2022 導入</string>
-    <string name="action_open">オープン</string>
     <string name="bootstrap_dns">最初のDNS</string>
     <string name="use_local_dns_as_bootstrap_dns">システムDNSをブートストラップDNSとして使う</string>
     <string name="brook_fragment">断片</string>

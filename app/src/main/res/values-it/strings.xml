@@ -335,7 +335,6 @@
     <string name="experimental_authenticated_length">Rendi la lunghezza di ogni segmento di payload non più malleabile. Questa funzione richiede che il server e il client utilizzino la stessa versione di v2ray-core. Si attendono ulteriori aggiornamenti su questa funzione sperimentale.</string>
     <string name="traffic_active">Attivato</string>
     <string name="traffic_holder">Apri la VPN per registrare le statistiche del traffico</string>
-    <string name="open_app">Apri l\'App</string>
     <string name="language">Lingua</string>
     <string name="language_system_default">Predefinita di sistema</string>
     <string name="fileSize_byte">B</string>

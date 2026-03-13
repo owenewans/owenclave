@@ -230,7 +230,6 @@
     <string name="config_settings">Préférences de la configuration</string>
     <string name="custom_config">Configuration personnalisée</string>
     <string name="connection_test_refused">Connexion refusée</string>
-    <string name="open_app">Ouvrir l\'appli</string>
     <string name="open_settings">Ouvrir les préférences</string>
     <string name="header_type">Type d\'entête</string>
     <string name="group_settings">Préférences de groupe</string>

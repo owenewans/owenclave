@@ -312,7 +312,6 @@
     <string name="copy_success">Копировано успешно!</string>
     <string name="create_rule">Создать правило</string>
     <string name="open_settings">Открыть настройки</string>
-    <string name="open_app">Открыть приложение</string>
     <string name="copy_package_name">Копировать имя пакета</string>
     <string name="copy_label">Копировать имя</string>
     <string name="traffic_holder">Включите VPN для записи статистики трафика</string>
@@ -449,7 +448,6 @@
     <string name="route_need_location_enabled">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **включенное местоположение**</string>
     <string name="route_need_fine_location">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **разрешение на точное определение местоположения**</string>
     <string name="shadowsocks_2022_implementation">Реализация Shadowsocks 2022</string>
-    <string name="action_open">Открыть</string>
     <string name="bootstrap_dns">Загрузочный DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Использовать системный DNS как DNS начальной загрузки</string>
     <string name="brook_fragment">Фрагмент</string>
