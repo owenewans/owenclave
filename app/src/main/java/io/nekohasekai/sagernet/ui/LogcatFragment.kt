@@ -156,16 +156,6 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                     }
                 }
             }
-            R.id.action_copy_logcat -> {
-                val text = binding.logsTextView.text.toString()
-                if (text.isNotEmpty()) {
-                    runOnDefaultDispatcher {
-                        onMainDispatcher {
-                            SagerNet.trySetPrimaryClip(text)
-                        }
-                    }
-                }
-            }
             R.id.action_send_logcat -> {
                 val context = requireContext()
                 runOnDefaultDispatcher {
