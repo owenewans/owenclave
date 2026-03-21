@@ -547,8 +547,8 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             }
 
             if (group.type == GroupType.SUBSCRIPTION) {
-                val subscription = proxyGroup.subscription
-                if (subscription != null && (subscription.bytesUsed > 0L || subscription.bytesRemaining > 0L)) {
+                val subscription = proxyGroup.subscription!!
+                if (subscription.bytesUsed > 0L || subscription.bytesRemaining > 0L) {
                     var text = if (subscription.bytesRemaining > 0L) {
                         getString(
                             R.string.subscription_traffic, FormatFileSizeCompat.formatFileSize(

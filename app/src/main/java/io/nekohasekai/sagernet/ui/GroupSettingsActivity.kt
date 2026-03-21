@@ -90,6 +90,10 @@ class GroupSettingsActivity(
         DataStore.subscriptionUserAgent = sub.customUserAgent
         DataStore.subscriptionAutoUpdate = sub.autoUpdate
         DataStore.subscriptionAutoUpdateDelay = sub.autoUpdateDelay
+        DataStore.subscriptionLastUpdated = sub.lastUpdated
+        DataStore.subscriptionBytesUsed = sub.bytesUsed
+        DataStore.subscriptionBytesRemaining = sub.bytesRemaining
+        DataStore.subscriptionExpiryDate = sub.expiryDate
         DataStore.subscriptionNameFilter = sub.nameFilter
         DataStore.subscriptionNameFilter1 = sub.nameFilter1
         DataStore.frontProxyOutbound = frontProxy
@@ -119,6 +123,10 @@ class GroupSettingsActivity(
                 customUserAgent = DataStore.subscriptionUserAgent
                 autoUpdate = DataStore.subscriptionAutoUpdate
                 autoUpdateDelay = DataStore.subscriptionAutoUpdateDelay
+                lastUpdated = DataStore.subscriptionLastUpdated
+                bytesUsed = DataStore.subscriptionBytesUsed
+                bytesRemaining = DataStore.subscriptionBytesRemaining
+                expiryDate = DataStore.subscriptionExpiryDate
                 nameFilter = DataStore.subscriptionNameFilter
                 nameFilter1 = DataStore.subscriptionNameFilter1
             }

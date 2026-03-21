@@ -421,6 +421,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var subscriptionUserAgent by profileCacheStore.string(Key.SUBSCRIPTION_USER_AGENT)
     var subscriptionAutoUpdate by profileCacheStore.boolean(Key.SUBSCRIPTION_AUTO_UPDATE)
     var subscriptionAutoUpdateDelay by profileCacheStore.stringToInt(Key.SUBSCRIPTION_AUTO_UPDATE_DELAY) { 1440 }
+    var subscriptionLastUpdated by profileCacheStore.long(Key.SUBSCRIPTION_LAST_UPDATED)
+    var subscriptionBytesUsed by profileCacheStore.long(Key.SUBSCRIPTION_BYTES_USED)
+    var subscriptionBytesRemaining by profileCacheStore.long(Key.SUBSCRIPTION_BYTES_REMAINING)
+    var subscriptionExpiryDate by profileCacheStore.long(Key.SUBSCRIPTION_EXPIRY_DATE)
     var subscriptionNameFilter by profileCacheStore.string(Key.SUBSCRIPTION_NAME_FILTER)
     var subscriptionNameFilter1 by profileCacheStore.string(Key.SUBSCRIPTION_NAME_FILTER1)
 
