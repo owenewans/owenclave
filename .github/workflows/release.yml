@@ -34,8 +34,8 @@ jobs:
       - name: Setup Go Mobile
         # https://github.com/golang/mobile/blob/c31d5b91ecc32c0d598b8fe8457d244ca0b4e815/cmd/gomobile/init.go#L83
         run: |
-          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260217195705-b56b3793a9c4
-          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260217195705-b56b3793a9c4
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260312152759-81488f6aeb60
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260312152759-81488f6aeb60
       - name: Setup Java
         uses: actions/setup-java@v5
         with:

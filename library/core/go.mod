@@ -2,7 +2,7 @@ module libsagernetcore
 
 go 1.25.0
 
-require github.com/dyhkwong/libsagernetcore v0.0.0-20260318120827-a0db50f80da6
+require github.com/dyhkwong/libsagernetcore v0.0.0-20260321173225-2da62dab9fed
 
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
@@ -52,24 +52,24 @@ require (
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.49.0 // indirect
 	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
-	golang.org/x/mobile v0.0.0-20260217195705-b56b3793a9c4 // indirect
-	golang.org/x/mod v0.33.0 // indirect
+	golang.org/x/mobile v0.0.0-20260312152759-81488f6aeb60 // indirect
+	golang.org/x/mod v0.34.0 // indirect
 	golang.org/x/net v0.52.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.42.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
 	golang.org/x/time v0.12.0 // indirect
-	golang.org/x/tools v0.42.0 // indirect
+	golang.org/x/tools v0.43.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20250521234502-f333402bd9cb // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
-	google.golang.org/grpc v1.79.2 // indirect
+	google.golang.org/grpc v1.79.3 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c // indirect
 	lukechampine.com/blake3 v1.4.1 // indirect
 )
 
 replace (
-	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.47.1-0.20260312174207-db166008b9ca
+	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.47.1-0.20260321173046-ad698d01402c
 	gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
 )

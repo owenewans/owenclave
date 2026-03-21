@@ -287,6 +287,7 @@ fun buildV2RayConfig(
     val destinationOverride = DataStore.destinationOverride
     val trafficStatistics = !forTest && DataStore.profileTrafficStatistics
     var hasTagDirect = false
+    var directNeedsInterruption = false
 
     val shouldDumpUID = extraRules.any { it.packages.isNotEmpty() }
     val alerts = mutableListOf<Pair<Int, String>>()
@@ -496,6 +497,7 @@ fun buildV2RayConfig(
                     else -> false
                 }
                 if (needBrowserForwarder) {
+                    hasTagDirect = true
                     bean as StandardV2RayBean
                     // dirty hack to exclude browser forwarder traffic from VpnService
                     // this will not work on all cases,
@@ -519,7 +521,6 @@ fun buildV2RayConfig(
                                 domains = listOf(host)
                             }
                         }
-                        hasTagDirect = true
                     }
                     if (bean.security != "none" && bean.sni.isNotEmpty()) {
                         wsRules[bean.sni] = RoutingObject.RuleObject().apply {
@@ -530,7 +531,6 @@ fun buildV2RayConfig(
                                 domains = listOf(bean.sni)
                             }
                         }
-                        hasTagDirect = true
                     }
                     if (bean.serverAddress.isNotEmpty()) {
                         wsRules[bean.serverAddress] = RoutingObject.RuleObject().apply {
@@ -545,7 +545,6 @@ fun buildV2RayConfig(
                             } else {
                                 domains = listOf(bean.serverAddress)
                             }
-                            hasTagDirect = true
                         }
                     }
                 }
@@ -630,6 +629,12 @@ fun buildV2RayConfig(
                                         proxyEntity.naiveBean?.singUoT?.takeIf { it }?.let {
                                             uot = true
                                         }
+                                    }
+                                    proxyEntity.naiveBean?.let {
+                                        directNeedsInterruption = true
+                                    }
+                                    proxyEntity.shadowquicBean?.let {
+                                        directNeedsInterruption = true
                                     }
                                 })
                         }
@@ -2217,6 +2222,13 @@ fun buildV2RayConfig(
             outbounds.add(OutboundObject().apply {
                 tag = TAG_DIRECT
                 protocol = "freedom"
+                if (!forExport && DataStore.interruptReusedConnections && directNeedsInterruption) {
+                    settings = LazyOutboundConfigurationObject(this,
+                        FreedomOutboundConfigurationObject().apply {
+                            interruptConnections = true
+                        }
+                    )
+                }
             })
         }
 

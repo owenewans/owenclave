@@ -740,6 +740,8 @@ public class V2RayConfig {
         public String timeout;
         public String redirect;
         public Integer userLevel;
+        // SagerNet private
+        public Boolean interruptConnections;
 
     }
 
