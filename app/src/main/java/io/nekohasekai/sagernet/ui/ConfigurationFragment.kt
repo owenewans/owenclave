@@ -79,6 +79,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.zip.ZipInputStream
 import kotlin.concurrent.timerTask
 import androidx.core.net.toUri
+import io.nekohasekai.sagernet.database.SagerDatabase
+import io.nekohasekai.sagernet.fmt.internal.BalancerBean
+import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.utils.FormatFileSizeCompat
 
 class ConfigurationFragment @JvmOverloads constructor(
@@ -758,6 +761,29 @@ class ConfigurationFragment @JvmOverloads constructor(
 
     }
 
+    private fun ProxyEntity.useBrowserForwarder(): Boolean {
+        return when (val bean = requireBean()) {
+            is StandardV2RayBean -> {
+                when (bean.type) {
+                    "ws" -> bean.wsUseBrowserForwarder
+                    "splithttp" -> bean.shUseBrowserForwarder
+                    else -> false
+                }
+            }
+            is ChainBean -> {
+                SagerDatabase.proxyDao.getEntities(bean.proxies).any {
+                    it.useBrowserForwarder()
+                }
+            }
+            is BalancerBean -> {
+                SagerDatabase.proxyDao.getEntities(bean.proxies).any {
+                    it.useBrowserForwarder()
+                }
+            }
+            else -> false
+        }
+    }
+
     @Suppress("EXPERIMENTAL_API_USAGE")
     fun urlTest() {
         val test = TestDialog()
@@ -769,13 +795,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             val group = DataStore.currentGroup()
             var profilesUnfiltered = SagerDatabase.proxyDao.getByGroup(group.id)
             profilesUnfiltered = profilesUnfiltered.filter {
-                when (val bean = it.requireBean()) {
-                    is StandardV2RayBean -> {
-                        !(bean.type == "ws" && bean.wsUseBrowserForwarder) &&
-                                !(bean.type == "splithttp" && bean.shUseBrowserForwarder)
-                    }
-                    else -> true
-                }
+                !it.useBrowserForwarder()
             }
             val profiles = ConcurrentLinkedQueue(profilesUnfiltered)
 
