@@ -58,18 +58,13 @@ class GroupInterfaceAdapter(val context: ThemedActivity) : GroupManager.Interfac
         updated: Map<String, String>,
         deleted: List<String>,
         duplicate: List<String>,
-        byUser: Boolean
     ) {
         if (changed == 0 && duplicate.isEmpty()) {
-            if (byUser) context.snackbar(
-                    context.getString(
-                            R.string.group_no_difference, group.displayName()
-                    )
-            ).show()
+            onMainDispatcher {
+                context.snackbar(context.getString(R.string.group_no_difference, group.displayName())).show()
+            }
         } else {
-            context.snackbar(context.resources.getQuantityString(R.plurals.group_updated, changed, group.name, changed)).show()
-
-            var status = ""
+            var status = context.resources.getQuantityString(R.plurals.group_updated, changed, group.name, changed) + "\n\n"
             if (added.isNotEmpty()) {
                 status += context.getString(
                         R.string.group_added, added.joinToString("\n", postfix = "\n\n")
@@ -99,9 +94,7 @@ class GroupInterfaceAdapter(val context: ThemedActivity) : GroupManager.Interfac
                         )
                 ).setMessage(status.trim()).setPositiveButton(android.R.string.ok, null).show()
             }
-
         }
-
     }
 
     override suspend fun onUpdateFailure(group: ProxyGroup, message: String) {

@@ -143,13 +143,15 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 startActivity(Intent(context, GroupSettingsActivity::class.java))
             }
             R.id.action_update_all_subscriptions -> {
+                val connected = SagerNet.started && DataStore.startedProfile > 0
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.update_all_subscriptions)
                     .setPositiveButton(android.R.string.ok) { _, _ ->
                         SagerDatabase.groupDao.allGroups()
                             .filter { it.type == GroupType.SUBSCRIPTION }
+                            .filter { if (connected) true else !it.subscription!!.updateWhenConnectedOnly }
                             .forEach {
-                                GroupUpdater.startUpdate(it, true)
+                                GroupUpdater.startUpdate(it, byUser = false) // Do not display changelog or error message
                             }
                     }
                     .setNegativeButton(android.R.string.cancel, null)

@@ -67,8 +67,11 @@ abstract class GroupUpdater {
                 val connected = SagerNet.started && DataStore.startedProfile > 0
                 val userInterface = GroupManager.userInterface
 
-                if (userInterface != null) {
-                    if ((subscription.link?.startsWith("http://", ignoreCase = true) == true || subscription.updateWhenConnectedOnly) && !connected) {
+                if (subscription.updateWhenConnectedOnly && !connected) {
+                    if (!byUser || userInterface == null) {
+                        finishUpdate(proxyGroup)
+                        cancel()
+                    } else {
                         if (!userInterface.confirm(app.getString(R.string.update_subscription_warning))) {
                             finishUpdate(proxyGroup)
                             cancel()
@@ -85,7 +88,9 @@ abstract class GroupUpdater {
                     true
                 } catch (e: Throwable) {
                     Logs.w(e)
-                    userInterface?.onUpdateFailure(proxyGroup, e.readableMessage)
+                    if (byUser && userInterface != null) {
+                        userInterface.onUpdateFailure(proxyGroup, e.readableMessage)
+                    }
                     finishUpdate(proxyGroup)
                     false
                 }

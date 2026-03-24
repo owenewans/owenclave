@@ -230,9 +230,9 @@ object RawUpdater : GroupUpdater() {
         SagerDatabase.groupDao.updateGroup(proxyGroup)
         finishUpdate(proxyGroup)
 
-        userInterface?.onUpdateSuccess(
-            proxyGroup, changed, added, updated, deleted, duplicate, byUser
-        )
+        if (byUser && userInterface != null) {
+            userInterface.onUpdateSuccess(proxyGroup, changed, added, updated, deleted, duplicate)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

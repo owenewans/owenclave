@@ -177,9 +177,9 @@ object SIP008Updater : GroupUpdater() {
         SagerDatabase.groupDao.updateGroup(proxyGroup)
         finishUpdate(proxyGroup)
 
-        userInterface?.onUpdateSuccess(
-            proxyGroup, changed, added, updated, deleted, duplicate, byUser
-        )
+        if (byUser && userInterface != null) {
+            userInterface.onUpdateSuccess(proxyGroup, changed, added, updated, deleted, duplicate)
+        }
     }
 
     fun appendExtraInfo(profile: JsonObject, bean: AbstractBean) {
