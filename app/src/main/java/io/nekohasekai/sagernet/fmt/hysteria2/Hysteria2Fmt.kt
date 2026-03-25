@@ -43,7 +43,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
     val link = Libsagernetcore.parseURL(url)
     return Hysteria2Bean().apply {
         name = link.fragment
-        serverAddress = link.host
+        serverAddress = link.host.ifEmpty { error("empty host") }
         serverPorts = if (port.isNotEmpty() && port.isValidHysteriaMultiPort()) {
             port
         } else if (link.port > 0) {

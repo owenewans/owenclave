@@ -27,7 +27,7 @@ fun parseJuicity(url: String): JuicityBean {
     val link = Libsagernetcore.parseURL(url)
     return JuicityBean().apply {
         name = link.fragment
-        serverAddress = link.host
+        serverAddress = link.host.ifEmpty { error("empty host") }
         serverPort = link.port
         uuid = link.username
         password = link.password

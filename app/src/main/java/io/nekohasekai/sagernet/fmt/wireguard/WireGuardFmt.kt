@@ -34,7 +34,7 @@ import kotlin.jvm.optionals.getOrNull
 fun parseWireGuard(server: String): WireGuardBean {
     val link = Libsagernetcore.parseURL(server)
     return WireGuardBean().apply {
-        serverAddress = link.host
+        serverAddress = link.host.ifEmpty { error("empty host") }
         serverPort = link.port.takeIf { it > 0 } ?: 51820
         if (link.username.isNotEmpty()) {
             // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L126-L148
@@ -106,7 +106,7 @@ fun parseWireGuardConfig(conf: String): List<WireGuardBean> {
             continue
         }
         beans.add(wgBean.applyDefaultValues().clone().apply {
-            serverAddress = endpoint.substringBeforeLast(":").removePrefix("[").removeSuffix("]")
+            serverAddress = endpoint.substringBeforeLast(":").removePrefix("[").removeSuffix("]").ifEmpty { error("empty host") }
             serverPort = endpoint.substringAfterLast(":").toIntOrNull() ?: continue
             peerPublicKey = peer.getOr("PublicKey").getOrNull() ?: continue
             peerPreSharedKey = peer.getOr("PreSharedKey").getOrNull()

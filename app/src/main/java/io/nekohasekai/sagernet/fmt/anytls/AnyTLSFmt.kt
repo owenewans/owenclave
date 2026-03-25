@@ -26,7 +26,7 @@ fun parseAnyTLS(url: String): AnyTLSBean {
     val link = Libsagernetcore.parseURL(url)
     return AnyTLSBean().apply {
         name = link.fragment
-        serverAddress = link.host
+        serverAddress = link.host.ifEmpty { error("empty host") }
         serverPort = link.port.takeIf { it > 0 } ?: 443
         password = link.username
         security = "tls"

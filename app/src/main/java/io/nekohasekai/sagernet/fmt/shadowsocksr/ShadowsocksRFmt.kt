@@ -47,7 +47,7 @@ fun parseShadowsocksR(url: String): ShadowsocksRBean {
     if (params.size < 6) error("invalid url")
 
     val bean = ShadowsocksRBean().apply {
-        serverAddress = params.subList(0, params.size - 5).joinToString(":") // serverAddress contains `:` if it is IPv6
+        serverAddress = params.subList(0, params.size - 5).joinToString(":").ifEmpty { error("empty host") } // serverAddress contains `:` if it is IPv6
         serverPort = params[params.size - 5].toIntOrNull() ?: error("invalid port")
         protocol = params[params.size - 4].takeIf { it in supportedShadowsocksRProtocol } ?: error("unsupported protocol")
         method = params[params.size - 3].takeIf { it in supportedShadowsocksRMethod } ?: error("unsupported method")

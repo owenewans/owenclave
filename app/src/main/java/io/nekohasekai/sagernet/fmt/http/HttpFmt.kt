@@ -27,7 +27,7 @@ fun parseHttp(link: String): HttpBean {
     if (url.path != "/" && url.path != "") error("Not http proxy")
 
     return HttpBean().apply {
-        serverAddress = url.host
+        serverAddress = url.host.ifEmpty { error("empty host") }
         serverPort = url.port.takeIf { it > 0 } ?: if (url.scheme == "https") 443 else 80
         username = url.username
         password = url.password

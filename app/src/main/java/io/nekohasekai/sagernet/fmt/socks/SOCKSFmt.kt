@@ -31,7 +31,7 @@ fun parseSOCKS(link: String): SOCKSBean {
         val plainUri = link.substring("socks://".length).substringBefore("#").decodeBase64()
         return SOCKSBean().apply {
             protocol = SOCKSBean.PROTOCOL_SOCKS5
-            serverAddress = plainUri.substringAfterLast("@").substringBeforeLast(":").removePrefix("[").removeSuffix("]")
+            serverAddress = plainUri.substringAfterLast("@").substringBeforeLast(":").removePrefix("[").removeSuffix("]").ifEmpty { error("empty host") }
             serverPort = plainUri.substringAfterLast("@").substringAfterLast(":").toIntOrNull()
             username = plainUri.substringBeforeLast("@").substringBefore(":")
             password = plainUri.substringBeforeLast("@").substringAfter(":")
@@ -43,7 +43,7 @@ fun parseSOCKS(link: String): SOCKSBean {
         // This format is broken if username and/or password contains ":".
         return SOCKSBean().apply {
             protocol = SOCKSBean.PROTOCOL_SOCKS5
-            serverAddress = url.host
+            serverAddress = url.host.ifEmpty { error("empty host") }
             serverPort = url.port
             username = url.username.decodeBase64().substringBefore(":")
             password = url.username.decodeBase64().substringAfter(":")
@@ -58,7 +58,7 @@ fun parseSOCKS(link: String): SOCKSBean {
             "socks+tls" -> SOCKSBean.PROTOCOL_SOCKS5 // Who TF invent this?
             else -> error("impossible")
         }
-        serverAddress = url.host
+        serverAddress = url.host.ifEmpty { error("empty host") }
         serverPort = url.port.takeIf { it > 0 } ?: 1080
         username = url.username
         password = url.password

@@ -36,7 +36,7 @@ fun parseNaive(link: String): NaiveBean {
             "naive+quic" -> "quic"
             else -> error("impossible")
         }
-        serverAddress = url.host
+        serverAddress = url.host.ifEmpty { error("empty host") }
         serverPort = url.port.takeIf { it > 0 } ?: 443
         username = url.username
         password = url.password

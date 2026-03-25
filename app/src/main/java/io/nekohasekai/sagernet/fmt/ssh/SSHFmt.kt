@@ -25,7 +25,7 @@ fun parseSSH(link: String): SSHBean {
     // Warning: no public key pinning is insecure!
     val url = Libsagernetcore.parseURL(link)
     return SSHBean().apply {
-        serverAddress = url.host
+        serverAddress = url.host.ifEmpty { error("empty host") }
         serverPort = url.port.takeIf { it > 0 } ?: 22
         username = url.username
         password = url.password

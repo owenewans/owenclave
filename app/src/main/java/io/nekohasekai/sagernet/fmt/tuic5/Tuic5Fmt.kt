@@ -64,7 +64,7 @@ fun parseTuic(server: String): AbstractBean {
     }
 
     return Tuic5Bean().apply {
-        serverAddress = link.host
+        serverAddress = link.host.ifEmpty { error("empty host") }
         serverPort = link.port
         if (link.port == 0) {
             serverPort = 443

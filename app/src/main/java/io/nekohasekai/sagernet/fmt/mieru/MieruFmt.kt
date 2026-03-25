@@ -63,7 +63,7 @@ fun parseMieru(link: String): List<MieruBean> {
     }
     if (tcpPorts.isNotEmpty()) {
         beans.add(MieruBean().apply {
-            serverAddress = url.host
+            serverAddress = url.host.ifEmpty { error("empty host") }
             serverPort = if (tcpPorts.size == 1 && tcpPorts[0].toIntOrNull() != null) {
                 tcpPorts[0].toInt()
             } else 0
@@ -80,7 +80,7 @@ fun parseMieru(link: String): List<MieruBean> {
     }
     if (udpPorts.isNotEmpty()) {
         beans.add(MieruBean().apply {
-            serverAddress = url.host
+            serverAddress = url.host.ifEmpty { error("empty host") }
             serverPort = if (udpPorts.size == 1 && udpPorts[0].toIntOrNull() != null) {
                 udpPorts[0].toInt()
             } else 0

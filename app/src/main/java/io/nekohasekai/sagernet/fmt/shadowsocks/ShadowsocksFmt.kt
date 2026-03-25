@@ -66,7 +66,7 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
 
         return ShadowsocksBean().apply {
             serverAddress = plainUri.substringAfterLast("@").substringBeforeLast(":")
-                .removePrefix("[").removeSuffix("]")
+                .removePrefix("[").removeSuffix("]").ifEmpty { error("empty host") }
             serverPort = plainUri.substringAfterLast("@").substringAfterLast(":")
                 .toIntOrNull() ?: error("invalid port")
             method = when (val m = plainUri.substringBeforeLast("@").substringBefore(":").lowercase()) {
@@ -87,7 +87,7 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
         // example: ss://2022-blake3-aes-256-gcm:YctPZ6U7xPPcU%2Bgp3u%2B0tx%2FtRizJN9K8y%2BuKlW2qjlI%3D@192.168.100.1:8888#Example3
         // example: ss://none:@192.168.100.1:8888#example
         return ShadowsocksBean().apply {
-            serverAddress = link.host
+            serverAddress = link.host.ifEmpty { error("empty host") }
             serverPort = link.port
             method = when (val m = link.username?.lowercase()) {
                 in supportedShadowsocksMethod -> m
@@ -105,7 +105,7 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
     return ShadowsocksBean().apply {
         // SIP002, user info encoded with Base64URL
         // example: ss://YWVzLTEyOC1nY206dGVzdA@127.0.0.1:8888#Example1
-        serverAddress = link.host
+        serverAddress = link.host.ifEmpty { error("empty host") }
         serverPort = link.port
         method = when (val m = link.username?.decodeBase64()?.substringBefore(":")?.lowercase()) {
             in supportedShadowsocksMethod -> m
@@ -158,7 +158,7 @@ fun ShadowsocksBean.toUri(): String? {
 
 fun parseShadowsocksConfig(config: JsonObject): ShadowsocksBean? {
     return ShadowsocksBean().apply {
-        serverAddress = config.getString("server") ?: return null
+        serverAddress = config.getString("server")?.ifEmpty { error("empty host") } ?: return null
         serverPort = config.getInt("server_port") ?: return null
         password = config.getString("password")
 
