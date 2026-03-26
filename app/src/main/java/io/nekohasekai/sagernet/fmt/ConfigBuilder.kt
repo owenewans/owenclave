@@ -504,7 +504,10 @@ fun buildV2RayConfig(
                     // but this is not the main function of this software, just keep it broken
                     if (bean.security == "none" && bean.host.isNotEmpty()) {
                         val host = try {
-                            Libsagernetcore.parseURL("placeholder://" + bean.host).host
+                            val u = Libsagernetcore.newURL("placeholder").apply {
+                                rawHost = if (Libsagernetcore.isIPv6(bean.host)) "[${bean.host}]" else bean.host
+                            }.string
+                            Libsagernetcore.parseURL(u).host
                         } catch (_: Exception) {
                             bean.host
                         }
