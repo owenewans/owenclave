@@ -21,6 +21,8 @@
 package io.nekohasekai.sagernet.group
 
 import com.github.shadowsocks.plugin.PluginOptions
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.anytls.AnyTLSBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
@@ -42,6 +44,7 @@ import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5RelayMode
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.v2ray.supportedVmessMethod
+import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
 import kotlin.io.encoding.Base64
@@ -209,6 +212,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         bean.headerType = "http"
                     }
                     "ws", "grpc" -> bean.type = network
+                    "xhttp" -> if (bean is VLESSBean) bean.type = "splithttp"
                     else -> bean.type = "tcp"
                 }
             }
@@ -388,6 +392,35 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
             if (bean.type == "grpc") {
                 proxy.getObject("grpc-opts")?.also {
                     bean.grpcServiceName = it.getString("grpc-service-name")
+                }
+            }
+            if (bean.type == "splithttp") {
+                proxy.getObject("xhttp-opts")?.also { opts ->
+                    bean.path = opts.getString("path")
+                    bean.host = opts.getString("host")
+                    opts.getString("mode")?.also {
+                        bean.splithttpMode = when (it) {
+                            in supportedXhttpMode -> it
+                            "" -> "auto"
+                            else -> return listOf()
+                        }
+                    }
+                    JsonObject().apply {
+                        /*opts.getInt("sc-max-each-post-bytes")?.also {
+                            addProperty("scMaxEachPostBytes", it)
+                        }
+                        opts.getInt("sc-min-posts-interval-ms")?.also {
+                            addProperty("scMinPostsIntervalMs", it)
+                        }*/
+                        opts.getBoolean("no-grpc-header")?.also {
+                            addProperty("noGRPCHeader", it)
+                        }
+                        opts.getString("x-padding-bytes")?.also {
+                            addProperty("xPaddingBytes", it)
+                        }
+                    }.takeIf { !it.isEmpty }?.also {
+                        bean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(it)
+                    }
                 }
             }
 
