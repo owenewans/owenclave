@@ -79,7 +79,7 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
             ProcessBuilder(
                 listOf("logcat",
                     "-T", "2048",
-                    "-v", if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) "tag,color" else "tag",
+                    "-v", if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) "tag,color" else "tag",
                     "-s", arrayOf(
                         "AndroidRuntime:D",
                         "ProxyInstance:D",
@@ -125,7 +125,7 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                         }
                     }
                     binding.logsTextView.append(
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             ColorUtils.ansiEscapeToSpannable(binding.root.context,
                                 bufferedLogLines.joinToString(separator = "\n", postfix = "\n")
                             )
