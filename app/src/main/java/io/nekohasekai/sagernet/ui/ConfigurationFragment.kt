@@ -343,7 +343,7 @@ class ConfigurationFragment @JvmOverloads constructor(
         } else {
             val name = SagerDatabase.groupDao.getById(DataStore.selectedGroupForImport())!!.displayName()
             onMainDispatcher {
-                MaterialAlertDialogBuilder(requireContext()).setTitle(R.string.subscription_import)
+                MaterialAlertDialogBuilder(requireContext())
                     .setTitle(R.string.profile_import)
                     .setMessage(resources.getQuantityString(R.plurals.profile_multi_import_message, proxies.size, proxies.size, name))
                     .setPositiveButton(android.R.string.ok) { _, _ ->
@@ -1616,9 +1616,22 @@ class ConfigurationFragment @JvmOverloads constructor(
 
                             }
                             shareButton.isVisible = true
-                            shareLayout.setOnClickListener {
-                                showShare(it)
+                            if (isInsecure) {
+                                shareLayout.setOnClickListener {
+                                    MaterialAlertDialogBuilder(requireContext())
+                                        .setTitle(R.string.insecure_warn)
+                                        .setMessage(R.string.insecure_warn_sum)
+                                        .setPositiveButton(android.R.string.ok) { _, _ ->
+                                            showShare(it)
+                                        }
+                                        .show()
+                                }
+                            } else {
+                                shareLayout.setOnClickListener {
+                                    showShare(it)
+                                }
                             }
+
                         }
                     }
                 }
