@@ -1326,11 +1326,14 @@ public class V2RayConfig {
         public List<String> passwords;
         public String hopPorts;
         public Long hopInterval;
+        public Long hopIntervalMin;
+        public Long hopIntervalMax;
 
         public static class CongestionObject {
-            public String type; // invalid option
+            public String type;
             public Long up_mbps;
             public Long down_mbps;
+            public String bbrProfile;
         }
 
         public static class OBFSObject {

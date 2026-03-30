@@ -61,6 +61,30 @@
             app:title="@string/hysteria_hop_interval"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:icon="@drawable/ic_baseline_flip_camera_android_24"
+            app:key="serverHopIntervalMin"
+            app:title="@string/hysteria_hop_interval_min"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_flip_camera_android_24"
+            app:key="serverHopIntervalMax"
+            app:title="@string/hysteria_hop_interval_max"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/hysteria2_congestion_control"
+            app:entryValues="@array/hysteria2_congestion_control"
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverCongestionController"
+            app:title="@string/congestion_control"
+            app:useSimpleSummaryProvider="true" />
+        <com.takisoft.preferencex.SimpleMenuPreference
+            app:entries="@array/hysteria2_bbr_profile"
+            app:entryValues="@array/hysteria2_bbr_profile"
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverHysteria2BBRProfile"
+            app:title="@string/hysteria_bbr_profile"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             app:dialogMessage="@string/pinned_peer_certificate_sha256_hex_dialog_message"
             app:icon="@drawable/ic_baseline_push_pin_24"
             app:key="serverPinnedCertificate"

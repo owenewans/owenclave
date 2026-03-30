@@ -359,10 +359,20 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                 if (!serverPorts.isValidHysteriaPort()) {
                     return listOf()
                 }
+                outbound.getString("hop_interval_max")?.also { interval ->
+                    try {
+                        val duration = Duration.parse(interval)
+                        hopIntervalMax = duration.toLong(DurationUnit.SECONDS).takeIf { it > 0 }
+                    } catch (_: Exception) {}
+                }
                 outbound.getString("hop_interval")?.also { interval ->
                     try {
                         val duration = Duration.parse(interval)
-                        hopInterval = duration.toLong(DurationUnit.SECONDS).takeIf { it > 0 }
+                        if (hopIntervalMax != null) {
+                            hopIntervalMin = duration.toLong(DurationUnit.SECONDS).takeIf { it > 0 }
+                        } else {
+                            hopInterval = duration.toLong(DurationUnit.SECONDS).takeIf { it > 0 }
+                        }
                     } catch (_: Exception) {}
                 }
                 outbound.getString("password")?.also {

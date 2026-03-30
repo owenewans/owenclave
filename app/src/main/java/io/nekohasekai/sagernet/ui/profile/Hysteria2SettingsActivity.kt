@@ -23,11 +23,13 @@ import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.SwitchPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
+import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
+import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.unwrapIDN
 
 class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
@@ -50,10 +52,14 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.serverDownloadSpeed = downloadMbps
         DataStore.serverPorts = serverPorts
         DataStore.serverHopInterval = hopInterval
+        DataStore.serverHopIntervalMin = hopIntervalMin
+        DataStore.serverHopIntervalMax = hopIntervalMax
         DataStore.serverEchEnabled = echEnabled
         DataStore.serverEchConfig = echConfig
         DataStore.serverMtlsCertificate = mtlsCertificate
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
+        DataStore.serverCongestionController = congestionControl
+        DataStore.serverHysteria2BBRProfile = bbrProfile
     }
 
     override fun Hysteria2Bean.serialize() {
@@ -72,10 +78,14 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         downloadMbps = DataStore.serverDownloadSpeed
         serverPorts = DataStore.serverPorts
         hopInterval = DataStore.serverHopInterval
+        hopIntervalMin = DataStore.serverHopIntervalMin
+        hopIntervalMax = DataStore.serverHopIntervalMax
         echEnabled = DataStore.serverEchEnabled
         echConfig = DataStore.serverEchConfig
         mtlsCertificate = DataStore.serverMtlsCertificate
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
+        congestionControl = DataStore.serverCongestionController
+        bbrProfile = DataStore.serverHysteria2BBRProfile
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -107,6 +117,49 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         echConfig.isEnabled = echEnabled.isChecked
         echEnabled.setOnPreferenceChangeListener { _, newValue ->
             echConfig.isEnabled = newValue as Boolean
+            true
+        }
+
+        val serverPorts = findPreference<EditTextPreference>(Key.SERVER_PORTS)!!
+        val isValidHysteriaMultiPort = serverPorts.text.isValidHysteriaMultiPort()
+        val hopInterval = findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL)!!
+        val hopIntervalMin = findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL_MIN)!!
+        val hopIntervalMax = findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL_MAX)!!
+        hopInterval.isVisible = isValidHysteriaMultiPort && (hopIntervalMin.text.isEmpty() || hopIntervalMin.text.toIntOrNull() == 0) && (hopIntervalMax.text.isEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
+        hopIntervalMin.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
+        hopIntervalMax.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
+        hopInterval.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            val isValidHysteriaMultiPort = serverPorts.text.isValidHysteriaMultiPort()
+            hopIntervalMin.isVisible = isValidHysteriaMultiPort && (newValue.isEmpty() || newValue.toIntOrNull() == 0)
+            hopIntervalMax.isVisible = isValidHysteriaMultiPort && (newValue.isEmpty() || newValue.toIntOrNull() == 0)
+            true
+        }
+        hopIntervalMin.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            hopInterval.isVisible = serverPorts.text.isValidHysteriaMultiPort() && (newValue.isEmpty() || newValue.toIntOrNull() == 0) && (hopIntervalMax.text.isEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
+            true
+        }
+        hopIntervalMax.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            hopInterval.isVisible = serverPorts.text.isValidHysteriaMultiPort() && (newValue.isEmpty() || newValue.toIntOrNull() == 0) && (hopIntervalMin.text.isEmpty() || hopIntervalMin.text.toIntOrNull() == 0)
+            true
+        }
+        serverPorts.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            val isValidHysteriaMultiPort = newValue.isValidHysteriaMultiPort()
+            hopInterval.isVisible = isValidHysteriaMultiPort && (hopIntervalMin.text.isEmpty() || hopIntervalMin.text.toIntOrNull() == 0) && (hopIntervalMax.text.isEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
+            hopIntervalMin.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
+            hopIntervalMax.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
+            true
+        }
+
+        val congestionControl = findPreference<SimpleMenuPreference>(Key.SERVER_CONGESTION_CONTROLLER)!!
+        val bbrProfile = findPreference<SimpleMenuPreference>(Key.SERVER_HYSTERIA2_BBR_PROFILE)!!
+        bbrProfile.isVisible = congestionControl.isEnabled && congestionControl.value == "bbr"
+        congestionControl.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            bbrProfile.isVisible = newValue == "bbr"
             true
         }
     }

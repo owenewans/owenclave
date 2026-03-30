@@ -45,10 +45,14 @@ public class Hysteria2Bean extends AbstractBean {
     public Long downloadMbps;
     public String serverPorts;
     public Long hopInterval;
+    public Long hopIntervalMin;
+    public Long hopIntervalMax;
     public Boolean echEnabled;
     public String echConfig;
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
+    public String congestionControl;
+    public String bbrProfile;
 
     @Override
     public void initializeDefaultValues() {
@@ -65,15 +69,19 @@ public class Hysteria2Bean extends AbstractBean {
         if (downloadMbps == null) downloadMbps = 0L;
         if (serverPorts == null) serverPorts = "1080";
         if (hopInterval == null) hopInterval = 0L;
+        if (hopIntervalMin == null) hopIntervalMin = 0L;
+        if (hopIntervalMax == null) hopIntervalMax = 0L;
         if (echEnabled == null) echEnabled = false;
         if (echConfig == null) echConfig = "";
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
+        if (congestionControl == null) congestionControl = "bbr";
+        if (bbrProfile == null) bbrProfile = "standard";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(6);
+        output.writeInt(7);
         super.serialize(output);
         output.writeString(auth);
         output.writeString(obfs);
@@ -92,6 +100,10 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeString(mtlsCertificatePrivateKey);
 
         output.writeBoolean(echEnabled);
+        output.writeLong(hopIntervalMin);
+        output.writeLong(hopIntervalMax);
+        output.writeString(congestionControl);
+        output.writeString(bbrProfile);
     }
 
     @Override
@@ -147,6 +159,12 @@ public class Hysteria2Bean extends AbstractBean {
         if (version >= 6) {
             echEnabled = input.readBoolean();
         }
+        if (version >= 7) {
+            hopIntervalMin = input.readLong();
+            hopIntervalMax = input.readLong();
+            congestionControl = input.readString();
+            bbrProfile = input.readString();
+        }
     }
 
     @Override
@@ -174,6 +192,10 @@ public class Hysteria2Bean extends AbstractBean {
         bean.echEnabled = echEnabled;
         bean.echConfig = echConfig;
         bean.hopInterval = hopInterval;
+        bean.hopIntervalMin = hopIntervalMin;
+        bean.hopIntervalMax = hopIntervalMax;
+        bean.congestionControl = congestionControl;
+        bean.bbrProfile = bbrProfile;
     }
 
     @Override

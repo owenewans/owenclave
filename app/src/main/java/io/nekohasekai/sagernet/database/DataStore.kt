@@ -329,6 +329,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var serverPorts by profileCacheStore.string(Key.SERVER_PORTS)
     var serverHopInterval by profileCacheStore.stringToLong(Key.SERVER_HOP_INTERVAL)
+    var serverHopIntervalMin by profileCacheStore.stringToLong(Key.SERVER_HOP_INTERVAL_MIN)
+    var serverHopIntervalMax by profileCacheStore.stringToLong(Key.SERVER_HOP_INTERVAL_MAX)
+    var serverHysteria2BBRProfile by profileCacheStore.string(Key.SERVER_HYSTERIA2_BBR_PROFILE)
 
     var serverVMessExperimentalAuthenticatedLength by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH)
     var serverVMessExperimentalNoTerminationSignal by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL)

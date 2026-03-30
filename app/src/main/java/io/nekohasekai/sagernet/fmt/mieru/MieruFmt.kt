@@ -61,6 +61,7 @@ fun parseMieru(link: String): List<MieruBean> {
             else -> MieruBean.HANDSHAKE_DEFAULT
         }
     }
+    val trafficpattern = url.queryParameter("traffic-pattern")
     if (tcpPorts.isNotEmpty()) {
         beans.add(MieruBean().apply {
             serverAddress = url.host.ifEmpty { error("empty host") }
@@ -75,6 +76,7 @@ fun parseMieru(link: String): List<MieruBean> {
             name = profileName
             multiplexingLevel = multiplexing
             handshakeMode = handshakemode
+            trafficPattern = trafficpattern
             protocol = MieruBean.PROTOCOL_TCP
         })
     }
@@ -92,6 +94,7 @@ fun parseMieru(link: String): List<MieruBean> {
             name = profileName
             multiplexingLevel = multiplexing
             handshakeMode = handshakemode
+            trafficPattern = trafficpattern
             protocol = MieruBean.PROTOCOL_UDP
             // mtu = url.queryParameter("mtu")?.toIntOrNull() ?: 1400
         })
@@ -157,6 +160,9 @@ fun MieruBean.toUri(): String? {
         MieruBean.HANDSHAKE_NO_WAIT -> {
             builder.addQueryParameter("handshake-mode", "HANDSHAKE_NO_WAIT")
         }
+    }
+    if (trafficPattern.isNotEmpty()) {
+        builder.addQueryParameter("traffic-pattern", trafficPattern)
     }
     return builder.string
 }

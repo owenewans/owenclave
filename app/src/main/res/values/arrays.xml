@@ -473,6 +473,7 @@
         <item>Firefox_102</item>
         <item>Firefox_105</item>
         <item>Firefox_120</item>
+        <item>Firefox_148</item>
         <item>Chrome_58</item>
         <item>Chrome_62</item>
         <item>Chrome_70</item>
@@ -495,6 +496,7 @@
         <item>Edge_85</item>
         <item>Edge_106</item>
         <item>Safari_16_0</item>
+        <item>Safari_26_3</item>
         <item>360_7_5</item>
         <item>360_11_0</item>
     </string-array>
@@ -521,6 +523,7 @@
         <item>hellofirefox_102</item>
         <item>hellofirefox_105</item>
         <item>hellofirefox_120</item>
+        <item>hellofirefox_148</item>
         <item>hellochrome_58</item>
         <item>hellochrome_62</item>
         <item>hellochrome_70</item>
@@ -543,6 +546,7 @@
         <item>helloedge_85</item>
         <item>helloedge_106</item>
         <item>hellosafari_16_0</item>
+        <item>hellosafari_26_3</item>
         <item>hello360_7_5</item>
         <item>hello360_11_0</item>
     </string-array>
@@ -562,6 +566,7 @@
         <item>hellofirefox_102</item>
         <item>hellofirefox_105</item>
         <item>hellofirefox_120</item>
+        <item>hellofirefox_148</item>
         <item>hellochrome_83</item>
         <item>hellochrome_87</item>
         <item>hellochrome_96</item>
@@ -578,6 +583,7 @@
         <item>helloedge_85</item>
         <item>helloedge_106</item>
         <item>hellosafari_16_0</item>
+        <item>hellosafari_26_3</item>
         <item>hello360_11_0</item>
         <item>helloqq_11_1</item>
         <item>hellorandomized</item>
@@ -856,6 +862,7 @@
         <item>http</item>
         <item>tls</item>
     </string-array>
+
     <string-array name="v2ray_plugin_mode">
         <item>websocket-http</item>
         <item>websocket-tls</item>
@@ -863,6 +870,7 @@
         <item>grpc</item>
         <item>grpc-tls</item>
     </string-array>
+
     <string-array name="v2ray_plugin_log_level">
         <item>debug</item>
         <item>info</item>
@@ -870,4 +878,16 @@
         <item>error</item>
         <item>none</item>
     </string-array>
+
+    <string-array name="hysteria2_congestion_control">
+        <item>bbr</item>
+        <item>reno</item>
+    </string-array>
+
+    <string-array name="hysteria2_bbr_profile">
+        <item>standard</item>
+        <item>conservative</item>
+        <item>aggressive</item>
+    </string-array>
+
 </resources>

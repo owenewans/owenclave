@@ -231,6 +231,9 @@ object Key {
 
     const val SERVER_PORTS = "serverPorts"
     const val SERVER_HOP_INTERVAL = "serverHopInterval"
+    const val SERVER_HOP_INTERVAL_MIN = "serverHopIntervalMin"
+    const val SERVER_HOP_INTERVAL_MAX = "serverHopIntervalMax"
+    const val SERVER_HYSTERIA2_BBR_PROFILE = "serverHysteria2BBRProfile"
 
     const val SERVER_NAIVE_NO_POST_QUANTUM = "serverNaiveNoPostQuantum"
     const val SERVER_SHADOWQUIC_DISABLE_ALPN = "serverShadowQUICDisableALPN"
