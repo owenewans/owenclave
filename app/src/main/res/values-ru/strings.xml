@@ -287,7 +287,7 @@
     <string name="sni">SNI (индикация имени сервера)</string>
     <string name="grpc_service_name">Имя службы gRPC</string>
     <string name="kcp_seed">mKCP Seed</string>
-    <string name="quic_key">Ключ QUIC</string>
+    <string name="quic_key">Ключ Quic</string>
     <string name="quic_security">Защита протокола QUIC</string>
     <string name="http_path">HTTP-путь</string>
     <string name="http_host">HTTP-хост</string>
@@ -577,4 +577,8 @@
     <string name="ech">ECH</string>
     <string name="server_name_to_verify">ServerNameToVerify (имя сервера для проверки)</string>
     <string name="mieru_traffic_pattern">Паттерн трафика</string>
+    <string name="insecure_warning_detail">Безопасность этого профиля эквивалентна открытому тексту.\n\nЭто предупреждение отображается, поскольку включена функция \"Советы по безопасности\".</string>
+    <string name="hysteria_hop_interval_min">Минимальный интервал переключения портов (с)</string>
+    <string name="hysteria_hop_interval_max">Максимальный интервал переключения портов (с)</string>
+    <string name="hysteria_bbr_profile">Профиль BBR</string>
 </resources>
