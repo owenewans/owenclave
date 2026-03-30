@@ -89,7 +89,7 @@
     <string name="dns_routing_message">Doğrudan DNS ile geçiş yollarındaki etki alanlarını çözümleyin</string>
     <string name="certificates">Sertifikalar</string>
     <string name="sni">Görünecek Sunucu Adı</string>
-    <string name="quic_key">Quic Anahtarı</string>
+    <string name="quic_key">QUIC Anahtarı</string>
     <string name="quic_security">QUIC Güvenliği</string>
     <string name="http_path">HTTP Konumu</string>
     <string name="http_host">HTTP Sunucu</string>

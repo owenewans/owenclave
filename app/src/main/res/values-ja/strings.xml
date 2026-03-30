@@ -101,7 +101,7 @@
     <string name="http_host">HTTPホスト</string>
     <string name="http_path">HTTPパス</string>
     <string name="quic_security">QUICセキュリティ</string>
-    <string name="quic_key">Quic キー</string>
+    <string name="quic_key">QUIC キー</string>
     <string name="kcp_seed">mKCPシード</string>
     <string name="grpc_service_name">gRPCサービス名</string>
     <string name="url">URL</string>

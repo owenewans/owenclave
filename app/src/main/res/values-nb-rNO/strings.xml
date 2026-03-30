@@ -227,7 +227,7 @@
     <string name="sni">Servernavn indikasjon</string>
     <string name="grpc_service_name">gRPC -tjenestenavn</string>
     <string name="kcp_seed">mKCP frø</string>
-    <string name="quic_key">Quic NØKKEL</string>
+    <string name="quic_key">QUIC NØKKEL</string>
     <string name="quic_security">QUIC Sikkerhet</string>
     <string name="ws_path">WebSocket -bane</string>
     <string name="ws_host">WebSocket -vert</string>

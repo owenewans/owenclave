@@ -110,7 +110,7 @@
     <string name="http_host">HTTP host</string>
     <string name="http_path">HTTP path</string>
     <string name="quic_security">QUIC Security</string>
-    <string name="quic_key">Quic key</string>
+    <string name="quic_key">QUIC key</string>
     <string name="kcp_seed">mKCP seed</string>
     <string name="grpc_service_name">gRPC service name</string>
     <string name="url">URL</string>

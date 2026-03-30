@@ -62,7 +62,7 @@
     <string name="group_no_difference">%s: لا فرق</string>
     <string name="grpc_service_name">اسم خدمة gRPC</string>
     <string name="kcp_seed">mKCP بذور(Seed)</string>
-    <string name="quic_key">مفتاح Quic</string>
+    <string name="quic_key">مفتاح QUIC</string>
     <string name="quic_security">أمن QUIC</string>
     <string name="http_path">مسار HTTP</string>
     <string name="http_host">مضيف HTTP</string>

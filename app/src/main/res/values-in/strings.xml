@@ -175,7 +175,7 @@
     <string name="alpn">Negosiasi Protokol Lapisan Aplikasi</string>
     <string name="sni">Indikasi Nama Server</string>
     <string name="grpc_service_name">Nama Layanan gRPC</string>
-    <string name="quic_key">KUNCI Quic</string>
+    <string name="quic_key">KUNCI QUIC</string>
     <string name="quic_security">Keamanan QUIC</string>
     <string name="http_path">Jalur HTTP</string>
     <string name="http_host">HTTP Host</string>
