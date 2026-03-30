@@ -601,7 +601,7 @@
     <string name="ech">ECH</string>
     <string name="server_name_to_verify">ServerNameToVerify</string>
     <string name="mieru_traffic_pattern">Traffic pattern</string>
-    <string name="insecure_warning_detail">The security of this profile is equivalent to cleartext.\n\nThis warning is displayed because "security tips" is enabled.</string>
+    <string name="insecure_warning_detail">The security of this profile is equivalent to cleartext.\n\nThis warning is displayed because \"security tips\" is enabled.</string>
     <string name="hysteria_hop_interval_min">Minimum Port hopping interval (s)</string>
     <string name="hysteria_hop_interval_max">Maximum Port hopping interval (s)</string>
     <string name="hysteria_bbr_profile">BBR profile</string>
