@@ -406,7 +406,7 @@
     <string name="flow">Алгоритм управления потоком</string>
     <string name="udp_over_tcp">UDP поверх TCP</string>
     <string name="tuic_disable_sni">Выключить SNI</string>
-    <string name="tuic_congestion_controller">Контроллер перегрузки</string>
+    <string name="congestion_control">Контроллер перегрузки</string>
     <string name="tuic_udp_relay_mode">Режим UDP-ретранслятора</string>
     <string name="route_need_background_location">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **разрешение на фоновое определение местоположения**</string>
     <string name="route_need_coarse_location">Правило маршрутизации `%s` требует доступа к вашему **Wi-Fi SSID**, но для этого требуется **грубое разрешение на определение местоположения**</string>

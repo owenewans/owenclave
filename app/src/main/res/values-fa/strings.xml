@@ -399,7 +399,7 @@
     <string name="action_switch">سوئیچ</string>
     <string name="udp_over_tcp">UDP بیش از TCP</string>
     <string name="tuic_udp_relay_mode">حالت رله UDP</string>
-    <string name="tuic_congestion_controller">کنترل کننده ازدحام</string>
+    <string name="congestion_control">کنترل کننده ازدحام</string>
     <string name="tuic_disable_sni">غیر فعال کردن SNI</string>
     <string name="action_flash_on">روشن کردن فلاش</string>
     <string name="action_camera_switch">عوض کردن دوربین</string>

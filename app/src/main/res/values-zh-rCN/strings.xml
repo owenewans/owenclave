@@ -407,7 +407,7 @@
     <string name="udp_over_tcp">UDP over TCP</string>
     <string name="flow">Flow</string>
     <string name="tuic_disable_sni">禁用 SNI</string>
-    <string name="tuic_congestion_controller">拥塞控制</string>
+    <string name="congestion_control">拥塞控制</string>
     <string name="tuic_udp_relay_mode">UDP 转发模式</string>
     <string name="connection_test_url_test">URL 测试</string>
     <string name="utls_fingerprint">uTLS 指纹</string>
@@ -570,4 +570,8 @@
     <string name="ech">ECH</string>
     <string name="server_name_to_verify">ServerNameToVerify</string>
     <string name="mieru_traffic_pattern">流量模式</string>
+    <string name="insecure_warning_detail">此配置的安全性相当于明文。\n\n该警告被显示是因为“安全建议”被启用。</string>
+    <string name="hysteria_hop_interval_min">最小端口跳跃间隔（秒）</string>
+    <string name="hysteria_hop_interval_max">最大端口跳跃间隔（秒）</string>
+    <string name="hysteria_bbr_profile">BBR 配置</string>
 </resources>

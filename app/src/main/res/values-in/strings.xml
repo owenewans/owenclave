@@ -353,7 +353,7 @@
     <string name="udp_over_tcp">UDP Melalui TCP</string>
     <string name="tuic_udp_relay_mode">Mode Relai UDP</string>
     <string name="tuic_disable_sni">Nonaktifkan SNI</string>
-    <string name="tuic_congestion_controller">Congestion Controller</string>
+    <string name="congestion_control">Congestion Controller</string>
     <string name="route_for">Aturan untuk %s</string>
     <string name="tasker_settings">Pengaturan Tugas</string>
     <string name="tasker_action">Tindakan</string>

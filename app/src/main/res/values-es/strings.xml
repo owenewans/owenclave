@@ -399,7 +399,7 @@
     <string name="action_switch">Cambiar</string>
     <string name="udp_over_tcp">UDP sobre TCP</string>
     <string name="tuic_udp_relay_mode">Modo de retransmisión UDP</string>
-    <string name="tuic_congestion_controller">Controlador de congestión</string>
+    <string name="congestion_control">Controlador de congestión</string>
     <string name="tuic_disable_sni">Desactivar SNI</string>
     <string name="flow">Flow</string>
     <string name="ws_max_early_data">Datos iniciales máximos</string>

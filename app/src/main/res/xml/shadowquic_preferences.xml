@@ -50,7 +50,7 @@
             app:entryValues="@array/tuic_congestion_controller_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverCongestionController"
-            app:title="@string/tuic_congestion_controller"
+            app:title="@string/congestion_control"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/baseline_flight_takeoff_24"

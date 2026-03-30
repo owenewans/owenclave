@@ -1620,7 +1620,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                                 shareLayout.setOnClickListener {
                                     MaterialAlertDialogBuilder(requireContext())
                                         .setTitle(R.string.insecure_warn)
-                                        .setMessage(R.string.insecure_warn_sum)
+                                        .setMessage(R.string.insecure_warning_detail)
                                         .setPositiveButton(android.R.string.ok) { _, _ ->
                                             showShare(it)
                                         }
