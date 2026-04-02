@@ -101,6 +101,9 @@ public class ChainBean extends InternalBean {
     @Override
     public boolean isInsecure() {
         List<ProxyEntity> proxyEntities = SagerDatabase.Companion.getProxyDao().getEntities(proxies);
+        if (proxyEntities.isEmpty()) {
+            return false;
+        }
         try {
             for (ProxyEntity proxyEntity: proxyEntities) {
                 if (!proxyEntity.requireBean().isInsecure()) {
