@@ -230,7 +230,6 @@
     <string name="vpn_permission_denied">Отказано в разрешении на создание службы VPN</string>
     <string name="stopping">Выключение…</string>
     <string name="stop">Стоп</string>
-    <string name="service_failed">Не удалось:</string>
     <string name="invalid_server">Неверное имя сервера</string>
     <string name="forward_success">Прокси запущен.</string>
     <string name="service_proxy">Прокси-сервис</string>

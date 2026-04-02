@@ -160,7 +160,6 @@
     <string name="service_proxy">プロキシ設定</string>
     <string name="forward_success">プロキシ開始。</string>
     <string name="invalid_server">サーバのアドレスがおかしい</string>
-    <string name="service_failed">失敗:</string>
     <string name="stop">停止</string>
     <string name="stopping">停止中…</string>
     <string name="vpn_permission_denied">VPN権限が拒否された</string>

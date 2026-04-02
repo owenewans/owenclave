@@ -532,7 +532,7 @@ class BaseService {
                 } catch (exc: Throwable) {
                     if (exc is ExpectedException) Logs.d(exc.readableMessage) else Logs.w(exc)
                     stopRunner(
-                        false, "${getString(R.string.service_failed)}: ${exc.readableMessage}"
+                        false, exc.readableMessage
                     )
                 } finally {
                     data.connectingJob = null

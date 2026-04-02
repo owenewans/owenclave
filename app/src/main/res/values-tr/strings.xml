@@ -292,7 +292,6 @@
     <string name="vpn_permission_denied">VPN servisi oluşturabilmek için gereken izin isteği reddedildi</string>
     <string name="stopping">Kapatılıyor…</string>
     <string name="stop">Durdur</string>
-    <string name="service_failed">Başarısız:</string>
     <string name="invalid_server">Geçersiz sunucu adı</string>
     <string name="forward_success">Vekil sunucu başlatıldı.</string>
     <string name="service_proxy">Vekil Sunucu Servisi</string>

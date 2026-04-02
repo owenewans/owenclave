@@ -216,7 +216,6 @@
     <string name="traffic_sniffing">啟用流量嗅探</string>
     <string name="enable_mux">啟用多工器</string>
     <string name="mux_concurrency">多工器同時連線數目</string>
-    <string name="service_failed">失敗：</string>
     <string name="select_profile">選擇設定檔</string>
     <string name="proxy_chain">代理鏈結</string>
     <string name="custom_config">客製化設定檔</string>

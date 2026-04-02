@@ -222,7 +222,6 @@
     <string name="service_proxy">Servizio Proxy</string>
     <string name="forward_success">Proxy avviato.</string>
     <string name="invalid_server">Nome server non valido</string>
-    <string name="service_failed">Non riuscito:</string>
     <string name="stopping">Spegnimento…</string>
     <string name="vpn_permission_denied">Permesso negato per la creazione del servizio VPN</string>
     <string name="reboot_required">Avvio del servizio VPN non riuscito. Dovresti riavviare il sistema.</string>

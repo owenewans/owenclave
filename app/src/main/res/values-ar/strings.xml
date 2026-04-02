@@ -190,7 +190,6 @@
     <string name="vpn_permission_denied">تم رفض الإذن لإنشاء خدمة VPN</string>
     <string name="stopping">جارٍ إيقاف التشغيل…</string>
     <string name="stop">قف</string>
-    <string name="service_failed">باءت بالفشل:</string>
     <string name="invalid_server">اسم الخادم غير صالح</string>
     <string name="forward_success">بدأت البروکسی.</string>
     <string name="service_proxy">خدمة البروکسی</string>

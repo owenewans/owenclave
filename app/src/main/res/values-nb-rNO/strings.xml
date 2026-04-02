@@ -182,7 +182,6 @@
     <string name="vpn_permission_denied">Tillatelse nektet å opprette en VPN -tjeneste</string>
     <string name="stopping">Slår av…</string>
     <string name="stop">Stoppe</string>
-    <string name="service_failed">Mislyktes:</string>
     <string name="forward_success">Mellomtjener startet.</string>
     <string name="auto_connect_summary">Aktiver mellomtjener ved oppstart/programoppgradering hvis den kjørte før</string>
     <string name="auto_connect">Automatisk tilkobling</string>

@@ -171,7 +171,6 @@
     <string name="service_proxy">Proxy Service</string>
     <string name="forward_success">Proxy started.</string>
     <string name="invalid_server">Invalid server address</string>
-    <string name="service_failed">Failed: </string>
     <string name="stop">Stop</string>
     <string name="stopping">Stopping…</string>
     <string name="vpn_permission_denied">VPN permission denied</string>

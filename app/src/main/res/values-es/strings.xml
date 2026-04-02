@@ -324,7 +324,6 @@
     <string name="proxy_chain">Cadena de proxy</string>
     <string name="stopping">Deteniendo…</string>
     <string name="stop">Detener</string>
-    <string name="service_failed">Error:</string>
     <string name="invalid_server">Dirección de servidor no válido</string>
     <string name="forward_success">Proxy iniciado.</string>
     <string name="service_proxy">Servicio Proxy</string>

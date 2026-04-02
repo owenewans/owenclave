@@ -218,7 +218,6 @@
     <string name="vpn_permission_denied">اجازه ایجاد سرویس VPN رد شد</string>
     <string name="stopping">در حال خاموش شدن…</string>
     <string name="stop">متوقف کردن</string>
-    <string name="service_failed">ناموفق:</string>
     <string name="invalid_server">نام سرور معتبر نیست</string>
     <string name="forward_success">پروکسی راه اندازی شد.</string>
     <string name="service_proxy">سرویس پروکسی</string>
