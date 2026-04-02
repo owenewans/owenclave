@@ -238,6 +238,10 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
     }
 
     fun testProfileAllowed(profile: ProxyEntity): Boolean {
+        return profile.id != DataStore.editingId
+    }
+
+    /*fun testProfileAllowed(profile: ProxyEntity): Boolean {
         if (profile.id == DataStore.editingId) return false
 
         for (entity in proxyList) {
@@ -248,7 +252,7 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
     }
 
     fun testProfileContains(profile: ProxyEntity, anotherProfile: ProxyEntity): Boolean {
-        if (profile.type != 8 || anotherProfile.type != 8) return false
+        if (profile.type != ProxyEntity.TYPE_CHAIN || anotherProfile.type != ProxyEntity.TYPE_CHAIN) return false
         if (profile.id == anotherProfile.id) return true
         val proxies = profile.chainBean!!.proxies
         if (proxies.contains(anotherProfile.id)) return true
@@ -260,7 +264,7 @@ class ChainSettingsActivity : ProfileSettingsActivity<ChainBean>(R.layout.layout
             }
         }
         return false
-    }
+    }*/
 
     var replacing = 0
 

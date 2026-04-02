@@ -304,6 +304,10 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
     }
 
     fun testProfileAllowed(profile: ProxyEntity): Boolean {
+        return profile.id != DataStore.editingId
+    }
+
+    /*fun testProfileAllowed(profile: ProxyEntity): Boolean {
         if (profile.id == DataStore.editingId) return false
 
         for (entity in proxyList) {
@@ -314,9 +318,9 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
     }
 
     fun testProfileContains(profile: ProxyEntity, anotherProfile: ProxyEntity): Boolean {
-        if (profile.type != 8 || anotherProfile.type != 8) return false
+        if (profile.type != ProxyEntity.TYPE_BALANCER || anotherProfile.type != ProxyEntity.TYPE_BALANCER) return false
         if (profile.id == anotherProfile.id) return true
-        val proxies = profile.chainBean!!.proxies
+        val proxies = profile.balancerBean!!.proxies
         if (proxies.contains(anotherProfile.id)) return true
         if (proxies.isNotEmpty()) {
             for (entity in ProfileManager.getProfiles(proxies)) {
@@ -326,7 +330,7 @@ class BalancerSettingsActivity : ProfileSettingsActivity<BalancerBean>(R.layout.
             }
         }
         return false
-    }
+    }*/
 
     var replacing = 0
 
