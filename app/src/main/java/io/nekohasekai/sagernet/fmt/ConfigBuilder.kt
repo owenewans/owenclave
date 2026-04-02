@@ -175,7 +175,7 @@ fun buildV2RayConfig(
     fun ProxyEntity.resolveChainRecursively(): MutableList<ProxyEntity> {
         val bean = requireBean()
         if (bean is BalancerBean) {
-            error("Chain is incompatible with balancer")
+            error("proxy chain is incompatible with balancer")
         }
         if (bean is ChainBean) {
             val beans = SagerDatabase.proxyDao.getEntities(bean.proxies)
@@ -184,7 +184,7 @@ fun buildV2RayConfig(
             for ((index, proxyId) in bean.proxies.withIndex()) {
                 val item = beansMap[proxyId] ?: continue
                 if (!item.requireBean().canMapping() && index != 0) {
-                    error("Configuration ${item.displayName()} can be the front proxy only.")
+                    error("${item.displayName()} can be the front proxy only")
                 }
                 beanList.addAll(item.resolveChainRecursively())
             }
@@ -200,20 +200,8 @@ fun buildV2RayConfig(
                 SagerDatabase.proxyDao.getEntities(bean.proxies)
             } else {
                 SagerDatabase.proxyDao.getByGroup(bean.groupId)
-                    .filter {
-                        if (bean.nameFilter.isEmpty()) {
-                            true
-                        } else {
-                            !Regex(bean.nameFilter).containsMatchIn(it.requireBean().name)
-                        }
-                    }
-                    .filter {
-                        if (bean.nameFilter1.isEmpty()) {
-                            true
-                        } else {
-                            Regex(bean.nameFilter1).containsMatchIn(it.requireBean().name)
-                        }
-                    }
+                    .filter { if (bean.nameFilter.isEmpty()) { true } else { !Regex(bean.nameFilter).containsMatchIn(it.requireBean().name) } }
+                    .filter { if (bean.nameFilter1.isEmpty()) { true } else { Regex(bean.nameFilter1).containsMatchIn(it.requireBean().name) } }
             }
             val beansMap = beans.associateBy { it.id }
             val beanList = ArrayList<ProxyEntity>()
@@ -221,8 +209,8 @@ fun buildV2RayConfig(
                 val item = beansMap[proxyId] ?: continue
                 if (item.id == id) continue
                 when (item.type) {
-                    ProxyEntity.TYPE_BALANCER -> error("Nested balancers are not supported")
-                    ProxyEntity.TYPE_CHAIN -> error("Chain is incompatible with balancer")
+                    ProxyEntity.TYPE_BALANCER -> error("nested balancers are not supported")
+                    ProxyEntity.TYPE_CHAIN -> error("proxy chain is incompatible with balancer")
                 }
                 beanList.add(item)
             }
@@ -233,20 +221,25 @@ fun buildV2RayConfig(
             group.frontProxy.takeIf { it > 0L }?.let { id ->
                 SagerDatabase.proxyDao.getById(id)?.let {
                     when (it.requireBean()) {
-                        is BalancerBean -> error("Front proxy is incompatible with balancer")
-                        is ChainBean -> error("Front proxy is incompatible with chain")
+                        is BalancerBean -> error("balancer can not be the front proxy")
+                        is ChainBean -> error("proxy chain can not be the front proxy")
                         else -> list.add(it)
                     }
-                } ?: error("front proxy set but not found for group ${group.displayName()}")
+                } ?: error("front proxy not found for ${group.displayName()}")
             }
             group.landingProxy.takeIf { it > 0L }?.let { id ->
                 SagerDatabase.proxyDao.getById(id)?.let {
-                    when (it.requireBean()) {
-                        is BalancerBean -> error("Landing proxy is incompatible with balancer")
-                        is ChainBean -> error("Landing proxy is incompatible with chain")
-                        else -> list.add(0, it)
+                    when (val bean = it.requireBean()) {
+                        is BalancerBean -> error("balancer can not be the landing proxy")
+                        is ChainBean -> error("proxy chain can not be the landing proxy")
+                        else -> {
+                            if (!bean.canMapping()) {
+                                error("${bean.displayName()} can be the front proxy only and can not be the landing proxy")
+                            }
+                            list.add(0, it)
+                        }
                     }
-                } ?: error("landing proxy set but not found for group ${group.displayName()}")
+                } ?: error("landing proxy not found for ${group.displayName()}")
             }
         }
         return list
