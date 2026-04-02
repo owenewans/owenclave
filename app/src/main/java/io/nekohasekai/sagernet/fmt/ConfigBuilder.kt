@@ -173,35 +173,32 @@ fun buildV2RayConfig(
     val globalOutbounds = ArrayList<String>()
 
     fun ProxyEntity.resolveChainRecursively(): MutableList<ProxyEntity> {
-        val bean = requireBean()
-        if (bean is BalancerBean) {
-            error("proxy chain is incompatible with balancer")
-        }
-        if (bean is ChainBean) {
-            val beans = SagerDatabase.proxyDao.getEntities(bean.proxies)
-            val beansMap = beans.associateBy { it.id }
-            val beanList = ArrayList<ProxyEntity>()
-            for ((index, proxyId) in bean.proxies.withIndex()) {
-                val item = beansMap[proxyId] ?: continue
-                if (!item.requireBean().canMapping() && index != 0) {
-                    error("${item.displayName()} can be the front proxy only")
+        when (type) {
+            ProxyEntity.TYPE_BALANCER -> error("balancer in proxy chain is not supported")
+            ProxyEntity.TYPE_CHAIN -> {
+                val beans = SagerDatabase.proxyDao.getEntities(chainBean!!.proxies)
+                val beansMap = beans.associateBy { it.id }
+                val beanList = ArrayList<ProxyEntity>()
+                for ((index, proxyId) in chainBean!!.proxies.withIndex()) {
+                    val item = beansMap[proxyId] ?: continue
+                    if (!item.requireBean().canMapping() && index != 0) error("${item.displayName()} can be the front proxy only")
+                    if (item.type == ProxyEntity.TYPE_CONFIG && item.configBean!!.type == "v2ray") error("custom config in proxy chain is not supported")
+                    beanList.addAll(item.resolveChainRecursively())
                 }
-                beanList.addAll(item.resolveChainRecursively())
+                return beanList
             }
-            return beanList
+            else -> return mutableListOf(this)
         }
-        return mutableListOf(this)
     }
 
     fun ProxyEntity.resolveChain(): MutableList<ProxyEntity> {
-        val bean = requireBean()
-        if (bean is BalancerBean) {
-            val beans = if (bean.type == BalancerBean.TYPE_LIST) {
-                SagerDatabase.proxyDao.getEntities(bean.proxies)
+        if (type == ProxyEntity.TYPE_BALANCER) {
+            val beans = if (balancerBean!!.type == BalancerBean.TYPE_LIST) {
+                SagerDatabase.proxyDao.getEntities(balancerBean!!.proxies)
             } else {
-                SagerDatabase.proxyDao.getByGroup(bean.groupId)
-                    .filter { if (bean.nameFilter.isEmpty()) { true } else { !Regex(bean.nameFilter).containsMatchIn(it.requireBean().name) } }
-                    .filter { if (bean.nameFilter1.isEmpty()) { true } else { Regex(bean.nameFilter1).containsMatchIn(it.requireBean().name) } }
+                SagerDatabase.proxyDao.getByGroup(balancerBean!!.groupId)
+                    .filter { if (balancerBean!!.nameFilter.isEmpty()) { true } else { !Regex(balancerBean!!.nameFilter).containsMatchIn(it.requireBean().name) } }
+                    .filter { if (balancerBean!!.nameFilter1.isEmpty()) { true } else { Regex(balancerBean!!.nameFilter1).containsMatchIn(it.requireBean().name) } }
             }
             val beansMap = beans.associateBy { it.id }
             val beanList = ArrayList<ProxyEntity>()
@@ -209,33 +206,38 @@ fun buildV2RayConfig(
                 val item = beansMap[proxyId] ?: continue
                 if (item.id == id) continue
                 when (item.type) {
-                    ProxyEntity.TYPE_BALANCER -> error("nested balancers are not supported")
-                    ProxyEntity.TYPE_CHAIN -> error("proxy chain is incompatible with balancer")
+                    ProxyEntity.TYPE_BALANCER -> error("balancer in balancer is not supported")
+                    ProxyEntity.TYPE_CHAIN -> error("proxy chain in balancer is not supported")
+                    ProxyEntity.TYPE_CONFIG -> if (item.configBean!!.type == "v2ray") error("custom config in balancer is not supported")
                 }
                 beanList.add(item)
             }
             return beanList
         }
         val list = resolveChainRecursively().asReversed()
+        if (type == ProxyEntity.TYPE_CHAIN) return list
+        if (type == ProxyEntity.TYPE_CONFIG && configBean!!.type == "v2ray") return list
         SagerDatabase.groupDao.getById(groupId)?.let { group ->
             group.frontProxy.takeIf { it > 0L }?.let { id ->
                 SagerDatabase.proxyDao.getById(id)?.let {
-                    when (it.requireBean()) {
-                        is BalancerBean -> error("balancer can not be the front proxy")
-                        is ChainBean -> error("proxy chain can not be the front proxy")
-                        else -> list.add(it)
+                    when (it.type) {
+                        ProxyEntity.TYPE_BALANCER -> error("balancer can not be the front proxy")
+                        ProxyEntity.TYPE_CHAIN -> list.addAll(it.resolveChainRecursively().asReversed())
+                        else -> {
+                            if (it.type == ProxyEntity.TYPE_CONFIG && it.configBean!!.type == "v2ray") error("custom config can not be the front proxy")
+                            list.add(it)
+                        }
                     }
                 } ?: error("front proxy not found for ${group.displayName()}")
             }
             group.landingProxy.takeIf { it > 0L }?.let { id ->
                 SagerDatabase.proxyDao.getById(id)?.let {
-                    when (val bean = it.requireBean()) {
-                        is BalancerBean -> error("balancer can not be the landing proxy")
-                        is ChainBean -> error("proxy chain can not be the landing proxy")
+                    when (it.type) {
+                        ProxyEntity.TYPE_BALANCER -> error("balancer can not be the landing proxy")
+                        ProxyEntity.TYPE_CHAIN -> list.addAll(0, it.resolveChainRecursively().asReversed())
                         else -> {
-                            if (!bean.canMapping()) {
-                                error("${bean.displayName()} can be the front proxy only and can not be the landing proxy")
-                            }
+                            if (it.type == ProxyEntity.TYPE_CONFIG && it.configBean!!.type == "v2ray") error("custom config can not be the landing proxy")
+                            if (!it.requireBean().canMapping()) error("${it.displayName()} can be the front proxy only and can not be the landing proxy")
                             list.add(0, it)
                         }
                     }
