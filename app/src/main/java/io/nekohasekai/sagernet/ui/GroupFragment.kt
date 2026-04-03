@@ -533,6 +533,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
                 updateButton.isInvisible = true
                 editButton.isGone = true
+                optionsButton.isGone = true
             } else {
                 (groupName.parent as LinearLayout).apply {
                     setPadding(paddingLeft, dp2px(15), paddingRight, paddingBottom)
