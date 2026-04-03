@@ -416,7 +416,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 }
                 R.id.action_clipboard -> {
                     runOnDefaultDispatcher {
-                        val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                        val profiles = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
                         val links = profiles.mapNotNull {
                             try {
                                 it.toLink()
@@ -438,7 +438,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 }
                 R.id.action_export_backup_of_all_profiles_clipboard -> {
                     runOnDefaultDispatcher {
-                        val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                        val profiles = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
                         val links = profiles.mapNotNull {
                             if (it.canExportBackup()) {
                                 it.requireBean().exportBackup()
@@ -452,7 +452,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 }
                 R.id.action_export_backup_of_all_profiles_file -> {
                     runOnDefaultDispatcher {
-                        val profiles = SagerDatabase.proxyDao.getByGroup(selectedGroup.id)
+                        val profiles = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
                         val links = profiles.map {
                             if (it.canExportBackup()) {
                                 it.requireBean().exportBackup()
@@ -484,11 +484,11 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
         fun bind(group: ProxyGroup) {
             proxyGroup = group
 
-            itemView.setOnClickListener { }
+            itemView.setOnClickListener(null)
 
-            editButton.isGone = proxyGroup.ungrouped
-            updateButton.isInvisible = proxyGroup.type != GroupType.SUBSCRIPTION
-            groupName.text = proxyGroup.displayName()
+            editButton.isGone = group.ungrouped
+            updateButton.isVisible = group.type == GroupType.SUBSCRIPTION
+            groupName.text = group.displayName()
 
             editButton.setOnClickListener {
                 startActivity(Intent(it.context, GroupSettingsActivity::class.java).apply {
@@ -497,16 +497,16 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
             }
 
             updateButton.setOnClickListener {
-                GroupUpdater.startUpdate(proxyGroup, true)
+                GroupUpdater.startUpdate(group, true)
             }
 
             optionsButton.setOnClickListener {
-                selectedGroup = proxyGroup
+                selectedGroup = group
 
                 val popup = PopupMenu(requireContext(), it)
                 popup.menuInflater.inflate(R.menu.group_action_menu, popup.menu)
 
-                if (proxyGroup.type != GroupType.SUBSCRIPTION) {
+                if (group.type != GroupType.SUBSCRIPTION) {
                     popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_export_backup)
                     popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_subscription_link)
                 }
@@ -515,18 +515,18 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 popup.show()
             }
 
-            if (proxyGroup.id in GroupUpdater.updating) {
+            if (group.id in GroupUpdater.updating) {
                 (groupName.parent as LinearLayout).apply {
                     setPadding(paddingLeft, dp2px(11), paddingRight, paddingBottom)
                 }
 
                 subscriptionUpdateProgress.isVisible = true
 
-                if (!GroupUpdater.progress.containsKey(proxyGroup.id)) {
+                if (!GroupUpdater.progress.containsKey(group.id)) {
                     subscriptionUpdateProgress.isIndeterminate = true
                 } else {
                     subscriptionUpdateProgress.isIndeterminate = false
-                    val progress = GroupUpdater.progress[proxyGroup.id]!!
+                    val progress = GroupUpdater.progress[group.id]!!
                     subscriptionUpdateProgress.max = progress.max
                     subscriptionUpdateProgress.progress = progress.progress
                 }
@@ -539,12 +539,12 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 }
 
                 subscriptionUpdateProgress.isVisible = false
-                updateButton.isInvisible = proxyGroup.type != GroupType.SUBSCRIPTION
-                editButton.isGone = proxyGroup.ungrouped
+                updateButton.isVisible = group.type == GroupType.SUBSCRIPTION
+                editButton.isGone = group.ungrouped
             }
 
             if (group.type == GroupType.SUBSCRIPTION) {
-                val subscription = proxyGroup.subscription!!
+                val subscription = group.subscription!!
                 if (subscription.bytesUsed > 0L || subscription.bytesRemaining > 0L) {
                     var text = if (subscription.bytesRemaining > 0L) {
                         getString(
