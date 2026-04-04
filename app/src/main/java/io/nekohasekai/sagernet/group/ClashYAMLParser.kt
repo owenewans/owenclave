@@ -406,17 +406,32 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         }
                     }
                     JsonObject().apply {
-                        /*opts.getInt("sc-max-each-post-bytes")?.also {
-                            addProperty("scMaxEachPostBytes", it)
-                        }
-                        opts.getInt("sc-min-posts-interval-ms")?.also {
-                            addProperty("scMinPostsIntervalMs", it)
-                        }*/
                         opts.getBoolean("no-grpc-header")?.also {
                             addProperty("noGRPCHeader", it)
                         }
                         opts.getString("x-padding-bytes")?.also {
                             addProperty("xPaddingBytes", it)
+                        }
+                        opts.getObject("reuse-settings")?.also { xmux ->
+                            JsonObject().apply {
+                                xmux.getString("max-connections")?.also {
+                                    addProperty("maxConnections", it)
+                                }
+                                xmux.getString("max-concurrency")?.also {
+                                    addProperty("maxConcurrency", it)
+                                }
+                                xmux.getString("c-max-reuse-times")?.also {
+                                    addProperty("cMaxReuseTimes", it)
+                                }
+                                xmux.getString("h-max-request-times")?.also {
+                                    addProperty("hMaxRequestTimes", it)
+                                }
+                                xmux.getString("h-max-reusable-secs")?.also {
+                                    addProperty("hMaxReusableSecs", it)
+                                }
+                            }.takeIf { !it.isEmpty }?.also {
+                                add("xmux", it)
+                            }
                         }
                     }.takeIf { !it.isEmpty }?.also {
                         bean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(it)
