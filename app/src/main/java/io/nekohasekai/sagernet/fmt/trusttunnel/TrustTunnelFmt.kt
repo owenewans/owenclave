@@ -192,6 +192,13 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         }
         val beans = mutableListOf<TrustTunnelBean>()
         addresses.forEach {
+            if (Libsagernetcore.isIP(it)) {
+                beans.add(bean.applyDefaultValues().clone().apply {
+                    serverAddress = it
+                    serverPort = 443
+                })
+                return@forEach
+            }
             require(it.contains(":"))
             val port = it.substringAfterLast(":").toIntOrNull()
             require(port != null && port in 0..65535)
