@@ -700,9 +700,6 @@ fun StandardV2RayBean.toUri(): String? {
                 if (host.isNotEmpty()) {
                     builder.addQueryParameter("host", host.listByLineOrComma().joinToString(","))
                 }
-                if (path.isNotEmpty()) {
-                    builder.addQueryParameter("path", path.listByLineOrComma().joinToString(","))
-                }
             }
         }
         "kcp" -> {
