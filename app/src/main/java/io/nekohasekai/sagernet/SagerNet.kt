@@ -31,12 +31,14 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.net.LinkAddress
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.PowerManager
 import android.os.StrictMode
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -256,9 +258,12 @@ class SagerNet : Application(),
         }
 
         var currentNetwork: Network? = null
+        var currentLinkAddresses: Set<LinkAddress>? = null
 
         fun reloadNetwork(network: Network?) {
             val capabilities = connectivity.getNetworkCapabilities(network) ?: return
+            val linkProperties = connectivity.getLinkProperties(network) ?: return
+
             val networkType = when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "wifi"
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI_AWARE) -> "wifi"
@@ -273,25 +278,35 @@ class SagerNet : Application(),
                 else -> ""
             }
             Libsagernetcore.setNetworkType(networkType)
-            val ssid: String?
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                ssid = DefaultNetworkListener.ssid
+
+            val ssid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                DefaultNetworkListener.ssid
             } else {
+                @Suppress("DEPRECATION")
                 val wifiInfo = wifi.connectionInfo
-                ssid = wifiInfo?.ssid
+                wifiInfo?.ssid
             }
             Libsagernetcore.setSSID(ssid?.trim { it == '"' } ?: "")
 
-            if (DataStore.interruptReusedConnections && currentNetwork != null && currentNetwork != network) {
-                Libsagernetcore.interfaceUpdate()
+            val linkAddresses = linkProperties.linkAddresses.toSet()
+            if (DataStore.logLevel == LogLevel.DEBUG && currentLinkAddresses != linkAddresses) {
+                Log.d("Exclave", "updated link addresses: " + linkAddresses.joinToString(" ", "[", "]") { it.address.hostAddress!! + "/" + it.prefixLength })
             }
-            connectivity.getLinkProperties(network)?.let { linkProperties ->
-                val linkAddresses = linkProperties.linkAddresses.toList().map { it.address }
-                Libsagernetcore.setDiscardIPv6(!linkAddresses.any {
-                    it is Inet6Address && !it.isLinkLocalAddress
-                })
+            Libsagernetcore.setDiscardIPv6(!linkAddresses.any { it.address is Inet6Address && !it.address.isLinkLocalAddress })
+
+            if (DataStore.interruptReusedConnections) {
+                val networkChanged = currentNetwork != null && currentNetwork != network
+                val linkAddressesChanged = currentLinkAddresses != null && !linkAddresses.containsAll(currentLinkAddresses!!)
+                if (networkChanged || linkAddressesChanged) {
+                    if (DataStore.logLevel == LogLevel.DEBUG) {
+                        Log.d("Exclave", "network changed, interrupt reused connections")
+                    }
+                    Libsagernetcore.interfaceUpdate()
+                }
             }
+
             currentNetwork = network
+            currentLinkAddresses = linkAddresses
         }
 
         fun startService() = ContextCompat.startForegroundService(

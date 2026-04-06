@@ -43,10 +43,14 @@ class ProxyService : Service(),
 
     @Volatile
     override var underlyingNetwork: Network? = null
+    private var networkListenerIsRunning = false
     override suspend fun preInit() {
+        networkListenerIsRunning = true
         DefaultNetworkListener.start(this) {
-            SagerNet.reloadNetwork(it)
-            underlyingNetwork = it
+            if (networkListenerIsRunning) {
+                SagerNet.reloadNetwork(it)
+                underlyingNetwork = it
+            }
         }
     }
 
@@ -59,6 +63,7 @@ class ProxyService : Service(),
     override fun killProcesses() {
         data.proxy?.v2rayPoint?.withLocalResolver(null)
         super.killProcesses()
+        networkListenerIsRunning = false
         GlobalScope.launch(Dispatchers.Default) { DefaultNetworkListener.stop(this) }
     }
 

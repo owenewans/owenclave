@@ -105,6 +105,7 @@ class VpnService : BaseVpnService(),
             if (Build.VERSION.SDK_INT == 28 && metered) null else underlyingNetwork?.let {
                 arrayOf(it)
             }
+    private var networkListenerIsRunning = false
 
     override suspend fun startProcesses() {
         startVpn()
@@ -132,6 +133,7 @@ class VpnService : BaseVpnService(),
         tun?.apply {
             tun = null
         }
+        networkListenerIsRunning = false
         GlobalScope.launch(Dispatchers.Default) { DefaultNetworkListener.stop(this) }
     }
 
@@ -160,9 +162,12 @@ class VpnService : BaseVpnService(),
     }
 
     override suspend fun preInit() {
+        networkListenerIsRunning = true
         DefaultNetworkListener.start(this) {
-            underlyingNetwork = it
-            SagerNet.reloadNetwork(it)
+            if (networkListenerIsRunning) {
+                underlyingNetwork = it
+                SagerNet.reloadNetwork(it)
+            }
         }
     }
 
