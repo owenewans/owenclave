@@ -488,6 +488,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
             editButton.isGone = group.ungrouped
             updateButton.isVisible = group.type == GroupType.SUBSCRIPTION
+            optionsButton.isGone = false
             groupName.text = group.displayName()
 
             editButton.setOnClickListener {
@@ -546,8 +547,9 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
 
             if (group.type == GroupType.SUBSCRIPTION) {
                 val subscription = group.subscription!!
+                val text = mutableListOf<String>()
                 if (subscription.bytesUsed > 0L || subscription.bytesRemaining > 0L) {
-                    var text = if (subscription.bytesRemaining > 0L) {
+                    text.add(if (subscription.bytesRemaining > 0L) {
                         getString(
                             R.string.subscription_traffic, FormatFileSizeCompat.formatFileSize(
                                 context, subscription.bytesUsed, DataStore.useIECUnit
@@ -561,32 +563,34 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                                 context, subscription.bytesUsed, DataStore.useIECUnit
                             )
                         )
-                    }
-                    if (subscription.expiryDate > 0L) {
-                        text += "\n"
-                        text += getString(
-                            R.string.subscription_expire,
-                            DateUtils.getRelativeTimeSpanString(context, subscription.expiryDate * 1000)
-                                // hack for Chinese, "1月1日" -> "1 月 1 日","上午0:00" -> 上午 0:00"
-                                .replace("^([1-9]|1[0-2])月([1-9]|1[0-9]|2[0-9]|3[0-1])日+".toRegex(), "$1 月 $2 日")
-                                .replace("^上午(([1-9]|1[0-2]):([0-5][0-9]))+".toRegex(), "上午 $1")
-                                .replace("^下午(([1-9]|1[0-2]):([0-5][0-9]))+".toRegex(), "下午 $1")
-                        )
-                    }
-                    if (text.isNotEmpty()) {
-                        groupTraffic.isVisible = true
-                        groupTraffic.text = text
-                        groupStatus.setPadding(0)
-                        if (proxyGroup.id !in GroupUpdater.updating && subscription.bytesRemaining > 0L) {
-                            subscriptionUpdateProgress.apply {
-                                isVisible = true
-                                setProgressCompat(
-                                    ((subscription.bytesUsed.toDouble() / (subscription.bytesUsed + subscription.bytesRemaining).toDouble()) * 100).toInt(),
-                                    true
-                                )
-                            }
+                    })
+                }
+                if (subscription.expiryDate > 0L) {
+                    text.add(getString(
+                        R.string.subscription_expire,
+                        DateUtils.getRelativeTimeSpanString(context, subscription.expiryDate * 1000)
+                            // hack for Chinese, "1月1日" -> "1 月 1 日","上午0:00" -> 上午 0:00"
+                            .replace("^([1-9]|1[0-2])月([1-9]|1[0-9]|2[0-9]|3[0-1])日+".toRegex(), "$1 月 $2 日")
+                            .replace("^上午(([1-9]|1[0-2]):([0-5][0-9]))+".toRegex(), "上午 $1")
+                            .replace("^下午(([1-9]|1[0-2]):([0-5][0-9]))+".toRegex(), "下午 $1")
+                    ))
+                }
+                if (text.isNotEmpty()) {
+                    groupTraffic.isVisible = true
+                    groupTraffic.text = text.joinToString("\n")
+                    groupStatus.setPadding(0)
+                    if (proxyGroup.id !in GroupUpdater.updating && subscription.bytesRemaining > 0L) {
+                        subscriptionUpdateProgress.apply {
+                            isVisible = true
+                            setProgressCompat(
+                                ((subscription.bytesUsed.toDouble() / (subscription.bytesUsed + subscription.bytesRemaining).toDouble()) * 100).toInt(),
+                                true
+                            )
                         }
                     }
+                } else {
+                    groupTraffic.isVisible = false
+                    groupStatus.setPadding(0, 0, 0, dp2px(4))
                 }
             } else {
                 groupTraffic.isVisible = false
