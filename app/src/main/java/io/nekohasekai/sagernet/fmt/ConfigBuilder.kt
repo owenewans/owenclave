@@ -45,7 +45,6 @@ import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.http3.Http3Bean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
-import io.nekohasekai.sagernet.fmt.internal.ChainBean
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
@@ -2104,10 +2103,21 @@ fun buildV2RayConfig(
                     uid = uidList
                 }
 
-                if (rule.ssid.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (app.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                if (!forExport && !forTest && rule.ssid.isNotEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+                    val isLocationPermissionGranted = app.checkSelfPermission(
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        } else {
+                            Manifest.permission.ACCESS_COARSE_LOCATION
+                        }
+                    ) == PackageManager.PERMISSION_GRANTED
+                    if (!isLocationPermissionGranted) {
                         throw Alerts.RouteAlertException(
-                            Alerts.ROUTE_ALERT_NEED_FINE_LOCATION_ACCESS, rule.displayName()
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                Alerts.ROUTE_ALERT_NEED_FINE_LOCATION_ACCESS
+                            } else {
+                                Alerts.ROUTE_ALERT_NEED_COARSE_LOCATION_ACCESS
+                            }, rule.displayName()
                         )
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && app.checkSelfPermission(Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -2115,19 +2125,18 @@ fun buildV2RayConfig(
                             Alerts.ROUTE_ALERT_NEED_BACKGROUND_LOCATION_ACCESS, rule.displayName()
                         )
                     }
-                    val isLocationEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val isLocationServiceEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         SagerNet.location.isLocationEnabled
                     } else {
                         try {
-                            Settings.Secure.getInt(
-                                app.contentResolver, Settings.Secure.LOCATION_MODE
-                            ) != Settings.Secure.LOCATION_MODE_OFF
+                            @Suppress("DEPRECATION")
+                            Settings.Secure.getInt(app.contentResolver, Settings.Secure.LOCATION_MODE) != Settings.Secure.LOCATION_MODE_OFF
                         } catch (e: Settings.SettingNotFoundException) {
                             e.printStackTrace()
                             false
                         }
                     }
-                    if (!isLocationEnabled) {
+                    if (!isLocationServiceEnabled) {
                         throw Alerts.RouteAlertException(
                             Alerts.ROUTE_ALERT_LOCATION_DISABLED, rule.displayName()
                         )

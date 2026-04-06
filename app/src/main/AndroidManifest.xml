@@ -14,15 +14,14 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:ignore="BackgroundLocationPolicy" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission
-        android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
-        android:minSdkVersion="34" />
+        android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
     <uses-permission
-        android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED"
-        android:minSdkVersion="34" />
+        android:name="android.permission.FOREGROUND_SERVICE_SYSTEM_EXEMPTED" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.NEARBY_WIFI_DEVICES"
@@ -30,10 +29,9 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
+        tools:ignore="PackageVisibilityPolicy,QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
@@ -51,6 +49,9 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.location.gps"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.wifi"
         android:required="false" />
 
     <queries>
@@ -84,7 +85,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SagerNet.Start"
         android:localeConfig="@xml/locales_config"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        tools:targetApi="33"
+        tools:ignore="Deprecated">
         <meta-data
             android:name="android.app.shortcuts"
             android:resource="@xml/shortcuts" />
@@ -114,12 +117,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="subscription"
-                    android:scheme="exclave" />
-                <data
-                    android:host="subscription"
-                    android:scheme="sn" />
+                <data android:scheme="exclave" />
+                <data android:scheme="sn" />
+                <data android:host="subscription" />
 
             </intent-filter>
 
@@ -290,7 +290,7 @@
             android:label="@string/app_name"
             android:permission="android.permission.BIND_VPN_SERVICE"
             android:process=":bg"
-            tools:ignore="ForegroundServicePermission" >
+            tools:ignore="ForegroundServicePermission,VpnServicePolicy" >
 
             <intent-filter>
                 <action android:name="android.net.VpnService" />
@@ -335,6 +335,7 @@
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
             tools:node="merge">
             <meta-data
                 android:name="io.nekohasekai.sagernet.SagerNet"
