@@ -279,14 +279,17 @@ class SagerNet : Application(),
             }
             Libsagernetcore.setNetworkType(networkType)
 
-            val ssid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                DefaultNetworkListener.ssid
+            var ssid = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                DefaultNetworkListener.ssid ?: ""
             } else {
                 @Suppress("DEPRECATION")
-                val wifiInfo = wifi.connectionInfo
-                wifiInfo?.ssid
+                wifi.connectionInfo?.ssid ?: ""
             }
-            Libsagernetcore.setSSID(ssid?.trim { it == '"' } ?: "")
+            if (ssid == WifiManager.UNKNOWN_SSID) ssid = ""
+            if (ssid.length >= 2 && ssid.first() == '\"' && ssid.last() == '\"') {
+                ssid = ssid.substring(1, ssid.length - 1)
+            }
+            Libsagernetcore.setSSID(ssid)
 
             val linkAddresses = linkProperties.linkAddresses.toSet()
             if (DataStore.logLevel == LogLevel.DEBUG && currentLinkAddresses != linkAddresses) {
