@@ -548,6 +548,9 @@ data class ProxyEntity(
         @Query("SELECT * FROM proxy_entities WHERE id = :proxyId")
         fun getById(proxyId: Long): ProxyEntity?
 
+        @Query("SELECT COUNT(*) FROM proxy_entities WHERE groupId = :groupId AND id = :proxyId LIMIT 1")
+        fun isIdInGroup(proxyId: Long, groupId: Long): Long
+
         @Query("DELETE FROM proxy_entities WHERE id IN (:proxyId)")
         fun deleteById(proxyId: Long): Int
 
