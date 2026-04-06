@@ -492,11 +492,7 @@ class BaseService {
                 try {
                     Executable.killAll()    // clean up old processes
                     preInit()
-                    try {
-                        proxy.init()
-                    } catch (e: Exception) {
-                        error(e.readableMessage)
-                    }
+                    proxy.init()
                     proxy.processes = GuardedProcessPool {
                         Logs.w(it)
                         stopRunner(false, it.readableMessage)
