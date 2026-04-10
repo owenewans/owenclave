@@ -412,7 +412,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         opts.getString("x-padding-bytes")?.also {
                             addProperty("xPaddingBytes", it)
                         }
-                        opts.getInt("sc-max-each-post-bytes")?.also {
+                        opts.getString("sc-max-each-post-bytes")?.also {
                             addProperty("scMaxEachPostBytes", it)
                         }
                         opts.getObject("reuse-settings")?.also { xmux ->
