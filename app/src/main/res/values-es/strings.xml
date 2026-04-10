@@ -202,7 +202,6 @@
         <item quantity="other">%d perfiles</item>
     </plurals>
     <string name="menu_traffic">Tráfico</string>
-    <string name="tile_title">Interruptor</string>
     <string name="group_default">Sin grupo</string>
     <string name="plugin_exists_but_on_shit_system">El perfil %s requiere el plugin %s, pero tu proveedor de equipo propietario (usualmente gigantes del capitalismo de vigilancia y creadores de malware) alteró tu Android, haciendo que el plugin sea inutilizable.</string>
     <string name="delete_group_prompt">¿Realmente quieres eliminar este grupo?</string>
@@ -395,7 +394,6 @@
     <string name="root_ca_provider">Proveedor de CA raíz</string>
     <string name="root_ca_mozilla">Mozilla</string>
     <string name="root_ca_system">Sistema</string>
-    <string name="action_switch">Cambiar</string>
     <string name="udp_over_tcp">UDP sobre TCP</string>
     <string name="tuic_udp_relay_mode">Modo de retransmisión UDP</string>
     <string name="congestion_control">Controlador de congestión</string>

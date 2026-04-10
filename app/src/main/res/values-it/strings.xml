@@ -162,7 +162,6 @@
     <string name="group_update">Aggiornamento</string>
     <string name="menu_about">Circa</string>
     <string name="menu_configuration">Configurazione</string>
-    <string name="tile_title">Interruttore</string>
     <string name="append_http_proxy_sum">Il proxy HTTP verrà usato direttamente da (browser / app supportate), senza passare tramite il dispositivo NIC virtuale (Android 10+)</string>
     <string name="group_settings">Impostazioni Gruppo</string>
     <string name="update_settings">Aggiorna Impostazioni</string>

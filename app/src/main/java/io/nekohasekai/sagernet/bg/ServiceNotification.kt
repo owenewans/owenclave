@@ -184,7 +184,7 @@ class ServiceNotification(
         builder.addAction(closeAction)
 
         val switchAction = NotificationCompat.Action.Builder(
-            0, service.getString(R.string.action_switch), PendingIntent.getActivity(
+            0, service.getString(R.string.quick_toggle), PendingIntent.getActivity(
                 service, 0, Intent(service, SwitchActivity::class.java), flags
             )
         ).apply {

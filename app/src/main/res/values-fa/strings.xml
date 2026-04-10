@@ -47,7 +47,6 @@
     <string name="group_subscription_link">لینک اشتراک</string>
     <string name="group_update">به‌روزرسانی</string>
     <string name="group_name">نام گروه</string>
-    <string name="tile_title">تعویض کننده</string>
     <string name="quick_toggle">تغییر وضعیت</string>
     <string name="group_default">گروه‌بندی نشده</string>
     <string name="theme">قالب</string>
@@ -395,7 +394,6 @@
     <string name="backup_importing">در حال وارد کردن…</string>
     <string name="use_local_dns_as_direct_dns">استفاده از LocalDNS بعنوان DirectDNS</string>
     <string name="flow">الگوریتم کنترل جریان</string>
-    <string name="action_switch">سوئیچ</string>
     <string name="udp_over_tcp">UDP بیش از TCP</string>
     <string name="tuic_udp_relay_mode">حالت رله UDP</string>
     <string name="congestion_control">کنترل کننده ازدحام</string>

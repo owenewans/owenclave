@@ -76,7 +76,6 @@
     <string name="group_subscription_link">Tautan Langganan</string>
     <string name="group_update">Perbarui</string>
     <string name="group_name">Nama grup</string>
-    <string name="tile_title">Pengalih</string>
     <string name="quick_toggle">Beralih</string>
     <string name="group_default">Tidak bergrup</string>
     <string name="theme">Tema</string>
@@ -384,7 +383,6 @@
     <string name="pcap_summary">Simpan lalu lintas ke file .pcap</string>
     <string name="pcap_notice">File Pcap akan disimpan ke %s</string>
     <string name="tools_network">Jaringan</string>
-    <string name="action_switch">Beralih</string>
     <string name="group_order_by_name">Berdasarkan Nama</string>
     <string name="route_need_vpn">Aturan perutean `%s` bergantung pada VPN yang berlaku, sehingga diabaikan.</string>
     <string name="naive_insecure_concurrency_summary">Gunakan koneksi terowongan konkuren N agar lebih kuat dalam kondisi jaringan yang buruk. Lebih banyak koneksi membuat tunneling lebih mudah dideteksi dan kurang aman. Proyek ini mengupayakan keamanan terkuat terhadap analisis lalu lintas. Menggunakannya dengan cara yang tidak aman mengalahkan tujuannya.

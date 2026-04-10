@@ -35,7 +35,7 @@ class SwitchActivity : ThemedActivity(R.layout.layout_empty),
         super.onCreate(savedInstanceState)
 
         supportFragmentManager.beginTransaction().replace(
-            R.id.fragment_holder, ConfigurationFragment(true, null, R.string.action_switch)
+            R.id.fragment_holder, ConfigurationFragment(true, null, R.string.quick_toggle)
         ).commitAllowingStateLoss()
     }
 

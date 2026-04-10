@@ -250,7 +250,6 @@
     <string name="connection_test_refused">连接重置</string>
     <string name="connection_test_timeout">超时</string>
     <string name="connection_test_unreachable">不可达</string>
-    <string name="tile_title">开关</string>
     <string name="append_http_proxy">附加 HTTP 代理至 VPN</string>
     <string name="append_http_proxy_sum">一些支持的应用将直接使用 HTTP 代理，它们的流量不会经过 VPN 接口。</string>
     <string name="protocol_settings">协议设置</string>
@@ -402,7 +401,6 @@
     <string name="experimental_reduced_iv_head_entropy">这是 GFWReport 针对 GFW 对随机流协议的阻塞行为而提出的对策。
 \n
 \n这个选项将 IV 的前 6 个字节重新映射为可打印的字符，启用本选项后，私密网络路径上的任何人都有可能识别该协议。</string>
-    <string name="action_switch">切换</string>
     <string name="udp_over_tcp">UDP over TCP</string>
     <string name="flow">Flow</string>
     <string name="tuic_disable_sni">禁用 SNI</string>

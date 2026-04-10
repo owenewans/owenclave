@@ -12,7 +12,6 @@
     <string name="theme">Theme</string>
     <string name="group_default">Ungrouped</string>
     <string name="quick_toggle">Toggle</string>
-    <string name="tile_title">Switcher</string>
     <string name="menu_traffic">Traffic</string>
     <!-- group -->
     <string name="group_name">Group name</string>
@@ -435,7 +434,6 @@
     <string name="mtu">MTU</string>
     <string name="experimental_reduced_iv_head_entropy">This is GFWReport\'s proposal for a countermeasure for the random stream like protocol blocking behavior observed on GFW.
 \n\nThis option remap the first 6 bytes of IV to printable characters, it\'s possible for anyone on the privileged network path to identify the protocol when enabled.</string>
-    <string name="action_switch">Switch</string>
     <string name="udp_over_tcp">UDP over TCP</string>
     <string name="tuic_udp_relay_mode">UDP relay mode</string>
     <string name="congestion_control">Congestion control</string>

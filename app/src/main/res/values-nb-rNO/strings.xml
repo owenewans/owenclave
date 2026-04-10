@@ -286,7 +286,6 @@
 \n%s</string>
     <string name="group_delete_confirm_prompt">Er du sikker på at du vil fjerne denne gruppen\?</string>
     <string name="group_update">Oppdater</string>
-    <string name="tile_title">Bytter</string>
     <string name="quick_toggle">Veksle</string>
     <string name="menu_configuration">Konfigurasjon</string>
     <string name="obfs">Obfs</string>

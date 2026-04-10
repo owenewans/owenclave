@@ -11,7 +11,6 @@
     <string name="theme">テーマ</string>
     <string name="group_default">非グループ</string>
     <string name="quick_toggle">切り替え</string>
-    <string name="tile_title">スイッチ</string>
     <string name="menu_traffic">トラフィック</string>
     <string name="group_name">グループ</string>
     <string name="group_update">アップデート</string>
@@ -390,7 +389,6 @@
     <string name="packet_encoding">Packet encoding</string>
     <string name="mtu">MTU</string>
     <string name="experimental_reduced_iv_head_entropy">これは、GFWで観察されたランダムストリームのようなプロトコルブロッキング行動に対するGFWReportの対策提案です。\n\nこのオプションでは、IVの最初の6バイトを印刷可能な文字に再マッピングします。これが有効な場合、特権のあるネットワーク経路にいる誰もがプロトコルを識別できる可能性があります。</string>
-    <string name="action_switch">スイッチ</string>
     <string name="udp_over_tcp">UDP over TCP</string>
     <string name="tuic_udp_relay_mode">UDPリレーモード</string>
     <string name="congestion_control">輻輳コントローラー</string>
