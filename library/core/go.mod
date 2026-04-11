@@ -2,7 +2,7 @@ module libsagernetcore
 
 go 1.25.0
 
-require github.com/dyhkwong/libsagernetcore v0.0.0-20260411011253-62b12b23cea4
+require github.com/dyhkwong/libsagernetcore v0.0.0-20260411021521-21805a2bf005
 
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
@@ -70,6 +70,6 @@ require (
 )
 
 replace (
-	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.48.1-0.20260411003605-2bd83303559e
+	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.48.1-0.20260411021354-de63c9919409
 	gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
 )
