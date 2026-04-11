@@ -107,7 +107,7 @@ Exclave is licensed under the GNU General Public License as published by the Fre
 The following procedures are only applicable to a typical AMD64 Linux distros. It is possible to build on other platforms but the procedures may vary.
 
 - Install and configure JDK 21, Go 1.25 and Go Mobile.
-- Install and configure Android SDK Platform 36, Android SDK Build-Tools 36.1.0, Android SDK Platform-Tools and Android NDK r29 through Android Studio or Android SDK Command-line Tools.
+- Install and configure Android SDK Platform 36, Android SDK Build-Tools 37.0.0, Android SDK Platform-Tools and Android NDK r29 through Android Studio or Android SDK Command-line Tools.
 - Replace `release.keystore` with your own. It can be generated with Java `keytool`.
 - Create a new `local.properties` file if it does not exist. Append the following lines to `local.properties`.
 ```

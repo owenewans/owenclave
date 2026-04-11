@@ -66,7 +66,7 @@ fun Project.requireLocalProperties(): Properties {
 
 fun Project.setupCommon(projectName: String = "") {
     android.apply {
-        buildToolsVersion = "36.1.0"
+        buildToolsVersion = "37.0.0"
         compileSdk = 36
         defaultConfig.minSdk = if (projectName.lowercase() == "naive") 24 else 21
         compileOptions.sourceCompatibility = JavaVersion.VERSION_21
