@@ -156,24 +156,25 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val discardICMP = findPreference<SwitchPreference>(Key.DISCARD_ICMP)!!
         val appTrafficStatistics = findPreference<SwitchPreference>(Key.APP_TRAFFIC_STATISTICS)!!
         serviceMode.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
             tunImplementation.isEnabled = newValue == MODE_VPN
             mtu.isEnabled = newValue == MODE_VPN
             enableVPNInterfaceIPv6Address.isEnabled = newValue == MODE_VPN
             allowAppsBypassVpn.isEnabled = newValue == MODE_VPN
             discardICMP.isEnabled = newValue == MODE_VPN
             meteredNetwork.isEnabled = newValue == MODE_VPN
-            enablePcap.isEnabled = newValue == MODE_VPN && tunImplementation.value == "${TunImplementation.GVISOR}"
+            enablePcap.isEnabled = newValue == MODE_VPN && tunImplementation.value.toInt() == TunImplementation.GVISOR
             appTrafficStatistics.isEnabled = newValue == MODE_VPN
             isProxyApps.isEnabled = newValue == MODE_VPN
             bypassLan.isEnabled = newValue == MODE_VPN
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 appendHttpProxy.isVisible = requireHttp.isChecked && newValue == MODE_VPN
-                        && httpUsername.isVisible && httpUsername.text.isEmpty()
-                        && httpPassword.isVisible && httpPassword.text.isEmpty()
+                        && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
+                        && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
                 httpProxyException.isVisible = requireHttp.isChecked && newValue == MODE_VPN
                         && appendHttpProxy.isVisible && appendHttpProxy.isChecked
-                        && httpUsername.isVisible && httpUsername.text.isEmpty()
-                        && httpPassword.isVisible && httpPassword.text.isEmpty()
+                        && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
+                        && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
             }
             if (SagerNet.started) {
                 SagerNet.stopService()
@@ -186,7 +187,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
         tunImplementation.isEnabled = serviceMode.value == MODE_VPN
         tunImplementation.setOnPreferenceChangeListener { _, newValue ->
-            enablePcap.isEnabled = serviceMode.value == MODE_VPN && newValue == "${TunImplementation.GVISOR}"
+            enablePcap.isEnabled = serviceMode.value == MODE_VPN && (newValue as String).toInt() == TunImplementation.GVISOR
             if (SagerNet.started) {
                 SagerNet.stopService()
                 runOnMainDispatcher {
@@ -207,7 +208,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         }
         meteredNetwork.isEnabled = serviceMode.value == MODE_VPN
         meteredNetwork.onPreferenceChangeListener = reloadListener
-        enablePcap.isEnabled = serviceMode.value == MODE_VPN && tunImplementation.value == "${TunImplementation.GVISOR}"
+        enablePcap.isEnabled = serviceMode.value == MODE_VPN && tunImplementation.value.toInt() == TunImplementation.GVISOR
         enablePcap.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
                 val path = File(
@@ -416,10 +417,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         } else {
             httpUsername.onPreferenceChangeListener = { _, newValue ->
                 newValue as String
-                appendHttpProxy.isVisible = serviceMode.value == MODE_VPN && newValue.isEmpty() && httpPassword.isVisible && httpPassword.text.isEmpty()
+                appendHttpProxy.isVisible = serviceMode.value == MODE_VPN && newValue.isEmpty() && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
                 httpProxyException.isVisible = serviceMode.value == MODE_VPN && newValue.isEmpty()
                         && appendHttpProxy.isVisible && appendHttpProxy.isChecked
-                        && newValue.isEmpty() && httpPassword.isVisible && httpPassword.text.isEmpty()
+                        && newValue.isEmpty() && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
                 needReload()
                 true
             }
@@ -431,10 +432,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         } else {
             httpPassword.onPreferenceChangeListener = { _, newValue ->
                 newValue as String
-                appendHttpProxy.isVisible = serviceMode.value == MODE_VPN && newValue.isEmpty() && httpUsername.isVisible && httpUsername.text.isEmpty()
+                appendHttpProxy.isVisible = serviceMode.value == MODE_VPN && newValue.isEmpty() && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
                 httpProxyException.isVisible = serviceMode.value == MODE_VPN && newValue.isEmpty()
                         && appendHttpProxy.isVisible && appendHttpProxy.isChecked
-                        && newValue.isEmpty() && httpUsername.isVisible && httpUsername.text.isEmpty()
+                        && newValue.isEmpty() && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
                 needReload()
                 true
             }
@@ -456,19 +457,19 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 httpUsername.isVisible = newValue
                 httpPassword.isVisible = newValue
                 appendHttpProxy.isVisible = newValue && serviceMode.value == MODE_VPN
-                        && httpUsername.isVisible && httpUsername.text.isEmpty()
-                        && httpPassword.isVisible && httpPassword.text.isEmpty()
+                        && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
+                        && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
                 httpProxyException.isVisible = newValue && serviceMode.value == MODE_VPN
                         && appendHttpProxy.isVisible && appendHttpProxy.isChecked
-                        && httpUsername.isVisible && httpUsername.text.isEmpty()
-                        && httpPassword.isVisible && httpPassword.text.isEmpty()
+                        && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
+                        && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
                 allowAccess.isVisible = requireSocks.isChecked || newValue || requireTransproxy.isChecked || requireDns.isChecked
                 needReload()
                 true
             }
             appendHttpProxy.isVisible = requireHttp.isChecked && serviceMode.value == MODE_VPN
-                    && httpUsername.isVisible && httpUsername.text.isEmpty()
-                    && httpPassword.isVisible && httpPassword.text.isEmpty()
+                    && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
+                    && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
             appendHttpProxy.setOnPreferenceChangeListener { _, newValue ->
                 httpProxyException.isVisible = newValue as Boolean
                 needReload()
@@ -476,8 +477,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             }
             httpProxyException.isVisible = requireHttp.isChecked && serviceMode.value == MODE_VPN
                     && appendHttpProxy.isVisible && appendHttpProxy.isChecked
-                    && httpUsername.isVisible && httpUsername.text.isEmpty()
-                    && httpPassword.isVisible && httpPassword.text.isEmpty()
+                    && httpUsername.isVisible && httpUsername.text.isNullOrEmpty()
+                    && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
             httpProxyException.onPreferenceChangeListener = reloadListener
         }
 

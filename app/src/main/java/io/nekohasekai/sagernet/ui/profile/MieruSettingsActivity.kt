@@ -69,7 +69,7 @@ class MieruSettingsActivity : ProfileSettingsActivity<MieruBean>() {
 
         val serverPort = findPreference<EditTextPreference>(Key.SERVER_PORT)!!
         val serverPortRange = findPreference<EditTextPreference>(Key.SERVER_PORTS)!!
-        serverPort.isEnabled = serverPortRange.text.isEmpty()
+        serverPort.isEnabled = serverPortRange.text.isNullOrEmpty()
         serverPortRange.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
             serverPort.isEnabled = newValue.isEmpty()

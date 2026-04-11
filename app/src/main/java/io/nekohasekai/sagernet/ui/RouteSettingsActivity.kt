@@ -204,7 +204,7 @@ class RouteSettingsActivity(
         networkType = findPreference(Key.ROUTE_NETWORK_TYPE)!!
         ssid = findPreference(Key.ROUTE_SSID)!!
 
-        apps.isEnabled = customPackageNames.text.isEmpty()
+        apps.isEnabled = customPackageNames.text.isNullOrEmpty()
         customPackageNames.setOnPreferenceChangeListener { _, newValue ->
             apps.isEnabled = (newValue as String).isEmpty()
             true

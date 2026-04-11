@@ -125,9 +125,9 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         val hopInterval = findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL)!!
         val hopIntervalMin = findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL_MIN)!!
         val hopIntervalMax = findPreference<EditTextPreference>(Key.SERVER_HOP_INTERVAL_MAX)!!
-        hopInterval.isVisible = isValidHysteriaMultiPort && (hopIntervalMin.text.isEmpty() || hopIntervalMin.text.toIntOrNull() == 0) && (hopIntervalMax.text.isEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
-        hopIntervalMin.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
-        hopIntervalMax.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
+        hopInterval.isVisible = isValidHysteriaMultiPort && (hopIntervalMin.text.isNullOrEmpty() || hopIntervalMin.text.toIntOrNull() == 0) && (hopIntervalMax.text.isNullOrEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
+        hopIntervalMin.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isNullOrEmpty() || hopInterval.text.toIntOrNull() == 0)
+        hopIntervalMax.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isNullOrEmpty() || hopInterval.text.toIntOrNull() == 0)
         hopInterval.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
             val isValidHysteriaMultiPort = serverPorts.text.isValidHysteriaMultiPort()
@@ -137,20 +137,20 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         }
         hopIntervalMin.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
-            hopInterval.isVisible = serverPorts.text.isValidHysteriaMultiPort() && (newValue.isEmpty() || newValue.toIntOrNull() == 0) && (hopIntervalMax.text.isEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
+            hopInterval.isVisible = serverPorts.text.isValidHysteriaMultiPort() && (newValue.isEmpty() || newValue.toIntOrNull() == 0) && (hopIntervalMax.text.isNullOrEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
             true
         }
         hopIntervalMax.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
-            hopInterval.isVisible = serverPorts.text.isValidHysteriaMultiPort() && (newValue.isEmpty() || newValue.toIntOrNull() == 0) && (hopIntervalMin.text.isEmpty() || hopIntervalMin.text.toIntOrNull() == 0)
+            hopInterval.isVisible = serverPorts.text.isValidHysteriaMultiPort() && (newValue.isEmpty() || newValue.toIntOrNull() == 0) && (hopIntervalMin.text.isNullOrEmpty() || hopIntervalMin.text.toIntOrNull() == 0)
             true
         }
         serverPorts.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
             val isValidHysteriaMultiPort = newValue.isValidHysteriaMultiPort()
-            hopInterval.isVisible = isValidHysteriaMultiPort && (hopIntervalMin.text.isEmpty() || hopIntervalMin.text.toIntOrNull() == 0) && (hopIntervalMax.text.isEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
-            hopIntervalMin.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
-            hopIntervalMax.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isEmpty() || hopInterval.text.toIntOrNull() == 0)
+            hopInterval.isVisible = isValidHysteriaMultiPort && (hopIntervalMin.text.isNullOrEmpty() || hopIntervalMin.text.toIntOrNull() == 0) && (hopIntervalMax.text.isNullOrEmpty() || hopIntervalMax.text.toIntOrNull() == 0)
+            hopIntervalMin.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isNullOrEmpty() || hopInterval.text.toIntOrNull() == 0)
+            hopIntervalMax.isVisible = isValidHysteriaMultiPort && (hopInterval.text.isNullOrEmpty() || hopInterval.text.toIntOrNull() == 0)
             true
         }
 
