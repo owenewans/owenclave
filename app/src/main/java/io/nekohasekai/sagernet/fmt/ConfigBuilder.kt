@@ -126,6 +126,8 @@ import io.nekohasekai.sagernet.utils.PackageCache
 import kotlin.io.encoding.Base64
 import libsagernetcore.Libsagernetcore
 import java.io.File
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 const val TAG_SOCKS = "socks"
 const val TAG_HTTP = "http"
@@ -161,9 +163,10 @@ class V2rayBuildResult(
     val dumpUID: Boolean,
     val alerts: List<Pair<Int, String>>,
 ) {
-    data class IndexEntity(var isBalancer: Boolean, var chain: LinkedHashMap<Int, ProxyEntity>)
+    data class IndexEntity(var isBalancer: Boolean, var chain: LinkedHashMap<Triple<Int, String, String>, ProxyEntity>)
 }
 
+@OptIn(ExperimentalUuidApi::class)
 fun buildV2RayConfig(
     proxy: ProxyEntity, forTest: Boolean = false, forExport: Boolean = false
 ): V2rayBuildResult {
@@ -597,7 +600,7 @@ fun buildV2RayConfig(
             lateinit var pastOutbound: OutboundObject
             lateinit var currentOutbound: OutboundObject
             lateinit var pastInboundTag: String
-            val chainMap = LinkedHashMap<Int, ProxyEntity>()
+            val chainMap = LinkedHashMap<Triple<Int, String, String>, ProxyEntity>()
             indexMap.add(IndexEntity(isBalancer, chainMap))
             val chainOutbounds = ArrayList<OutboundObject>()
             var chainOutbound = ""
@@ -645,13 +648,19 @@ fun buildV2RayConfig(
 
                     if (proxyEntity.needExternal()) {
                         val localPort = mkPort()
-                        chainMap[localPort] = proxyEntity
+                        val username = Uuid.generateV4().toHexString()
+                        val password = Uuid.generateV4().toHexString()
+                        chainMap[Triple(localPort, username, password)] = proxyEntity
                         currentOutbound.apply {
                             protocol = "socks"
                             settings = LazyOutboundConfigurationObject(this, SocksOutboundConfigurationObject().apply {
                                 servers = listOf(SocksOutboundConfigurationObject.ServerObject().apply {
                                     address = LOCALHOST
                                     port = localPort
+                                    users = listOf(SocksOutboundConfigurationObject.ServerObject.UserObject().apply {
+                                        user = username
+                                        pass = password
+                                    })
                                 })
                                 if (proxyEntity.naiveBean != null && proxyEntity.naiveBean!!.singUoT && DataStore.experimentalFlagsProperties.getBooleanProperty( "singuot")) {
                                     uot = true

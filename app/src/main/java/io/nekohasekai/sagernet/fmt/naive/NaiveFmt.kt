@@ -83,9 +83,16 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     return builder.string
 }
 
-fun NaiveBean.buildNaiveConfig(port: Int): String {
+fun NaiveBean.buildNaiveConfig(port: Int, username: String = "", password: String = ""): String {
     return GsonBuilder().setPrettyPrinting().create().toJson(JsonObject().apply {
-        addProperty("listen", "socks://" + joinHostPort(LOCALHOST, port))
+        val url = Libsagernetcore.newURL("socks").apply {
+            setHostPort(LOCALHOST, port)
+            if (username.isNotEmpty() && password.isNotEmpty()) {
+                this.username = username
+                this.password = password
+            }
+        }
+        addProperty("listen", url.string)
         // NaïveProxy v130.0.6723.40-2 release notes:
         // Fixed a crash when the username or password contains the comma character `,`.
         // The comma is used for delimiting proxies in a proxy chain.

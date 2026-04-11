@@ -339,15 +339,18 @@ data class ProxyEntity(
                 }
 
                 for ((_, chain) in config.index) {
-                    chain.entries.forEachIndexed { _, (port, profile) ->
+                    chain.entries.forEachIndexed { _, (triple, profile) ->
+                        val port = triple.first
+                        val username = triple.second
+                        val password = triple.third
                         when (val bean = profile.requireBean()) {
                             is NaiveBean -> {
                                 append("\n\n")
-                                append(bean.buildNaiveConfig(port))
+                                append(bean.buildNaiveConfig(port, username, password))
                             }
                             is ShadowQUICBean -> {
                                 append("\n\n")
-                                append(bean.buildShadowQUICConfig(port, forExport = true))
+                                append(bean.buildShadowQUICConfig(port, username, password, forExport = true))
                             }
                         }
                     }

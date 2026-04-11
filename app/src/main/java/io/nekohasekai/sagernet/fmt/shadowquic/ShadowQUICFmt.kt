@@ -31,12 +31,18 @@ import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 
-fun ShadowQUICBean.buildShadowQUICConfig(port: Int, cacheFile: (() -> File)? = null, forExport: Boolean = false): String {
+fun ShadowQUICBean.buildShadowQUICConfig(port: Int, username: String = "", password: String = "", cacheFile: (() -> File)? = null, forExport: Boolean = false): String {
     val confObject: MutableMap<String, Any> = HashMap()
 
     val inboundObject: MutableMap<String, Any> = HashMap()
     inboundObject["type"] = "socks"
     inboundObject["bind-addr"] = joinHostPort(LOCALHOST, port)
+    if (username.isNotEmpty() && password.isNotEmpty()) {
+        val userObject: MutableMap<String, Any> = HashMap()
+        userObject["username"] = username
+        userObject["password"] = password
+        inboundObject["users"] = listOf(userObject)
+    }
     confObject["inbound"] = inboundObject
 
     val outboundObject: MutableMap<String, Any> = HashMap()
