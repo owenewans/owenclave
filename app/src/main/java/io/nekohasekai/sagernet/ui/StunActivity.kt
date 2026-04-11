@@ -36,6 +36,7 @@ import io.nekohasekai.sagernet.ktx.PUBLIC_STUN_SERVERS
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.noties.markwon.Markwon
 import libsagernetcore.Libsagernetcore
 
@@ -111,16 +112,42 @@ class StunActivity : ThemedActivity() {
     }
 
     fun doTest() {
+        if (SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks) {
+            runOnMainDispatcher {
+                AlertDialog.Builder(this@StunActivity)
+                    .setTitle(R.string.error_title)
+                    .setMessage("SOCKS inbound is disabled")
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .runCatching { show() }
+            }
+            return
+        }
+        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR && !DataStore.requireDnsInbound) {
+            runOnMainDispatcher {
+                AlertDialog.Builder(this@StunActivity)
+                    .setTitle(R.string.error_title)
+                    .setMessage("DNS inbound is disabled")
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .runCatching { show() }
+            }
+            return
+        }
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = Libsagernetcore.stunTest(
-                binding.natStunServer.text.toString(),
-                SagerNet.started && DataStore.startedProfile > 0,
-                SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR,
-                DataStore.socksPort,
-                if (DataStore.requireDnsInbound) DataStore.localDNSPort else 0
-            )
+            val stunClient = Libsagernetcore.newStunClient().apply {
+                if (SagerNet.started && DataStore.startedProfile > 0) {
+                    if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isNotEmpty()) {
+                        useSocks5WithAuth(DataStore.socksPort, DataStore.socksUsername, DataStore.socksPassword)
+                    } else {
+                        useSocks5(DataStore.socksPort)
+                    }
+                    if (DataStore.tunImplementation == TunImplementation.GVISOR) {
+                        useDNS(DataStore.localDNSPort)
+                    }
+                }
+            }
+            val result = stunClient.stunTest(binding.natStunServer.text.toString())
             onMainDispatcher {
                 if (result.error.isNotEmpty()) {
                     AlertDialog.Builder(this@StunActivity)
@@ -142,16 +169,42 @@ class StunActivity : ThemedActivity() {
     }
 
     fun doLegacyTest() {
+        if (SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks) {
+            runOnMainDispatcher {
+                AlertDialog.Builder(this@StunActivity)
+                    .setTitle(R.string.error_title)
+                    .setMessage("SOCKS inbound is disabled")
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .runCatching { show() }
+            }
+            return
+        }
+        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR && !DataStore.requireDnsInbound) {
+            runOnMainDispatcher {
+                AlertDialog.Builder(this@StunActivity)
+                    .setTitle(R.string.error_title)
+                    .setMessage("DNS inbound is disabled")
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .runCatching { show() }
+            }
+            return
+        }
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
-            val result = Libsagernetcore.stunLegacyTest(
-                binding.natStunServer.text.toString(),
-                SagerNet.started && DataStore.startedProfile > 0,
-                SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR,
-                DataStore.socksPort,
-                if (DataStore.requireDnsInbound) DataStore.localDNSPort else 0
-            )
+            val stunClient = Libsagernetcore.newStunClient().apply {
+                if (SagerNet.started && DataStore.startedProfile > 0) {
+                    if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isNotEmpty()) {
+                        useSocks5WithAuth(DataStore.socksPort, DataStore.socksUsername, DataStore.socksPassword)
+                    } else {
+                        useSocks5(DataStore.socksPort)
+                    }
+                    if (DataStore.tunImplementation == TunImplementation.GVISOR) {
+                        useDNS(DataStore.localDNSPort)
+                    }
+                }
+            }
+            val result = stunClient.stunLegacyTest(binding.natStunServer.text.toString())
             onMainDispatcher {
                 if (result.error.isNotEmpty()) {
                     AlertDialog.Builder(this@StunActivity)

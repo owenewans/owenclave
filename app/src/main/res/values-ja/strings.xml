@@ -546,4 +546,5 @@
     <string name="insecure_warn">セキュリティ案</string>
     <string name="insecure_warn_sum">平文と同等のセキュリティを持つプロファイルについて警告を表示してください。</string>
     <string name="ech">ECH</string>
+    <string name="require_socks">SOCKS5インバウンドを有効にする</string>
 </resources>

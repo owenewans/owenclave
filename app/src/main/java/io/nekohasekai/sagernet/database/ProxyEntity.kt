@@ -357,14 +357,9 @@ data class ProxyEntity(
     }
 
     fun needExternal(): Boolean {
-        val bean = requireBean()
-        if (bean is ConfigBean) {
-            return bean.type != "v2ray_outbound"
-        }
         return when (type) {
             TYPE_NAIVE -> true
             TYPE_SHADOWQUIC -> true
-
             else -> false
         }
     }

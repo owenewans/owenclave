@@ -602,4 +602,6 @@
     <string name="hysteria_hop_interval_min">Minimum port hopping interval (s)</string>
     <string name="hysteria_hop_interval_max">Maximum port hopping interval (s)</string>
     <string name="hysteria_bbr_profile">BBR profile</string>
+    <string name="require_socks">Enable SOCKS5 inbound</string>
+    <string name="custom_package_name_or_uid">Custom package name or UID</string>
 </resources>

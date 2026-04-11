@@ -395,4 +395,5 @@
     <string name="fileSize_pebibyte">بيبيبايت</string>
     <string name="translation_platform">منصة الترجمة</string>
     <string name="insecure_warn">استشارات أمنية</string>
+    <string name="require_socks">تفعيل SOCKS5 الوارد</string>
 </resources>

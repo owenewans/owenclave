@@ -570,4 +570,5 @@
     <string name="ech">ECH</string>
     <string name="mieru_traffic_pattern">Patrón de tráfico</string>
     <string name="server_name_to_verify">ServerNameToVerify</string>
+    <string name="require_socks">Activar SOCKS5 de entrada</string>
 </resources>

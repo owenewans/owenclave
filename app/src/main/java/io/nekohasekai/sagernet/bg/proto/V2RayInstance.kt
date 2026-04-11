@@ -28,14 +28,12 @@ import android.webkit.WebViewClient
 import io.nekohasekai.sagernet.RootCAProvider
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.bg.AbstractInstance
-import io.nekohasekai.sagernet.bg.ExternalInstance
 import io.nekohasekai.sagernet.bg.GuardedProcessPool
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.fmt.V2rayBuildResult
 import io.nekohasekai.sagernet.fmt.buildV2RayConfig
-import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
@@ -97,19 +95,6 @@ abstract class V2RayInstance(
                                 }
                             }
                         )
-                    }
-                    is ConfigBean -> {
-                        when (bean.type) {
-                            "v2ray_outbound" -> {
-                            }
-                            else -> {
-                                externalInstances[port] = ExternalInstance(
-                                    profile, port
-                                ).apply {
-                                    init()
-                                }
-                            }
-                        }
                     }
                 }
             }

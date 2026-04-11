@@ -47,10 +47,11 @@ data class RuleEntity(
     var packages: List<String> = listOf(),
     @ColumnInfo(defaultValue = "") var ssid: String = "",
     @ColumnInfo(defaultValue = "") var networkType: Set<String> = emptySet(),
+    @ColumnInfo(defaultValue = "") var customPackageNames: List<String> = listOf(),
 ) : Parcelable {
 
     fun isBypassRule(): Boolean {
-        return (domains.isNotEmpty() && ip.isEmpty() || ip.isNotEmpty() && domains.isEmpty()) && port.isEmpty() && sourcePort.isEmpty() && network.isEmpty() && source.isEmpty() && protocol.isEmpty() && attrs.isEmpty() && !reverse && redirect.isEmpty() && outbound == -1L && packages.isEmpty() && ssid.isEmpty() && networkType.isEmpty()
+        return (domains.isNotEmpty() && ip.isEmpty() || ip.isNotEmpty() && domains.isEmpty()) && port.isEmpty() && sourcePort.isEmpty() && network.isEmpty() && source.isEmpty() && protocol.isEmpty() && attrs.isEmpty() && !reverse && redirect.isEmpty() && outbound == -1L && packages.isEmpty() && customPackageNames.isEmpty()  && ssid.isEmpty() && networkType.isEmpty()
     }
 
     fun isProxyRule(): Boolean {
@@ -75,6 +76,7 @@ data class RuleEntity(
         if (packages.isNotEmpty()) summary += app.resources.getQuantityString(
             R.plurals.apps_message, packages.size, packages.size
         ) + "\n"
+        if (customPackageNames.isNotEmpty()) summary += "${customPackageNames.joinToString("\n")}\n"
         if (ssid.isNotEmpty()) summary += "$ssid\n"
         if (networkType.isNotEmpty()) {
             val types = mutableListOf<String>()
@@ -109,9 +111,6 @@ data class RuleEntity(
 
     @androidx.room.Dao
     interface Dao {
-
-        @Query("SELECT * from rules WHERE (packages != '') AND enabled = 1")
-        fun checkVpnNeeded(): List<RuleEntity>
 
         @Query("SELECT * FROM rules ORDER BY userOrder")
         fun allRules(): List<RuleEntity>

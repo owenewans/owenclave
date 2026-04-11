@@ -43,6 +43,7 @@ import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.dp2px
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import libsagernetcore.Libsagernetcore
 
 class ProbeCertActivity : ThemedActivity() {
@@ -180,20 +181,32 @@ class ProbeCertActivity : ThemedActivity() {
     }
 
     private fun probeCert() {
-        binding.waitLayout.isVisible = true
         var port: Int
         try {
             port = binding.probeCertServerPort.text.toString().toInt()
         } catch (e: NumberFormatException) {
             binding.waitLayout.isVisible = false
             binding.certificate.setText("")
-            AlertDialog.Builder(this@ProbeCertActivity)
-                .setTitle(R.string.error_title)
-                .setMessage(e.toString())
-                .setPositiveButton(android.R.string.ok) { _, _ -> }
-                .runCatching { show() }
+            runOnMainDispatcher {
+                AlertDialog.Builder(this@ProbeCertActivity)
+                    .setTitle(R.string.error_title)
+                    .setMessage(e.toString())
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .runCatching { show() }
+            }
             return
         }
+        if (SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks && binding.probeCertProtocol.selectedItemPosition == 1) {
+            runOnMainDispatcher {
+                AlertDialog.Builder(this@ProbeCertActivity)
+                    .setTitle(R.string.error_title)
+                    .setMessage("SOCKS inbound is disabled")
+                    .setPositiveButton(android.R.string.ok) { _, _ -> }
+                    .runCatching { show() }
+            }
+            return
+        }
+        binding.waitLayout.isVisible = true
         runOnDefaultDispatcher {
             val result = Libsagernetcore.probeCert(
                 binding.probeCertServer.text.toString(),
@@ -205,8 +218,12 @@ class ProbeCertActivity : ThemedActivity() {
                     1 -> "quic"
                     else -> error("impossible")
                 },
-                SagerNet.started && DataStore.startedProfile > 0,
-                DataStore.socksPort
+                SagerNet.started && DataStore.startedProfile > 0 && DataStore.requireSocks,
+                if (DataStore.requireSocks) DataStore.socksPort else 0,
+                if (DataStore.requireSocks) DataStore.socksUsername else "",
+                if (DataStore.requireSocks) DataStore.socksPassword else "",
+                SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks,
+                if (!DataStore.requireSocks) SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path" else "",
             )
             onMainDispatcher {
                 binding.waitLayout.isVisible = false

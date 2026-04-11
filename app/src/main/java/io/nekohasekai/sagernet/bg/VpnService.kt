@@ -266,7 +266,8 @@ class VpnService : BaseVpnService(),
             builder.addDnsServer(PRIVATE_VLAN6_DNS)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && DataStore.appendHttpProxy && DataStore.requireHttp) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && DataStore.appendHttpProxy && DataStore.requireHttp
+            && DataStore.httpUsername.isEmpty() && DataStore.httpPassword.isEmpty()) {
             if (DataStore.httpProxyException.isNotEmpty()) {
                 builder.setHttpProxy(ProxyInfo.buildDirectProxy(LOCALHOST, DataStore.httpPort,
                     DataStore.httpProxyException.listByLineOrComma()))

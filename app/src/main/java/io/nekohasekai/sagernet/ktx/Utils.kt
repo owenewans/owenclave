@@ -68,9 +68,9 @@ inline fun <T> Iterable<T>.forEachTry(action: (T) -> Unit) {
 val Throwable.readableMessage: String
     get() = localizedMessage.takeIf { !it.isNullOrBlank() } ?: javaClass.simpleName
 
-fun parsePort(str: String?, default: Int, min: Int = 1025): Int {
+fun parsePort(str: String?, default: Int, min: Int = 0): Int {
     val value = str?.toIntOrNull() ?: default
-    return if (value < min || value > 65535) default else value
+    return if (value !in min..65535) default else value
 }
 
 fun broadcastReceiver(callback: (Context, Intent) -> Unit): BroadcastReceiver =

@@ -59,8 +59,8 @@ github.com/dyhkwong/hysteria/core/v2 v2.8.1-1 h1:zCZ6i/vbenJBd4s6lcRD16y6sa9ogQb
 github.com/dyhkwong/hysteria/core/v2 v2.8.1-1/go.mod h1:HT48TFGERK3NGl46xxpF+uhPzEfXjdaKtTXx6zurS9M=
 github.com/dyhkwong/hysteria/extras/v2 v2.8.1-1 h1:yhqPjCsKmt/FnYdyeofs/uAWaLWL2JdAH6Mgyjjd3cQ=
 github.com/dyhkwong/hysteria/extras/v2 v2.8.1-1/go.mod h1:jBhySesF/lc8v1SyqEbXQVcuboRWlArbj7hT0o+M7mI=
-github.com/dyhkwong/libsagernetcore v0.0.0-20260411005507-fd2e74c98497 h1:I0S9GMkO0kAHrYHGyADrG9JgguF/7iXOXSifMMrBxrY=
-github.com/dyhkwong/libsagernetcore v0.0.0-20260411005507-fd2e74c98497/go.mod h1:Zo7+rYjWULpPsjKSDduTrdNIlzx7oJOh8A0ltpprZEk=
+github.com/dyhkwong/libsagernetcore v0.0.0-20260411011253-62b12b23cea4 h1:lf6B+1re+n+QCeE/v5Z2z2Kd0fIHW2Hi0/54Ryc12uY=
+github.com/dyhkwong/libsagernetcore v0.0.0-20260411011253-62b12b23cea4/go.mod h1:Zo7+rYjWULpPsjKSDduTrdNIlzx7oJOh8A0ltpprZEk=
 github.com/dyhkwong/sing-juicity v0.1.2 h1:bBz2kRo5rHmg+FiUZ55hcPHNVhjJDGC29U5ukzlXdu8=
 github.com/dyhkwong/sing-juicity v0.1.2/go.mod h1:12RIse/M0Bg4kyxpdkfe2Hus1PFBgTnG2lClOXHOrBk=
 github.com/dyhkwong/v2ray-core/v5 v5.48.1-0.20260411003605-2bd83303559e h1:9EA6yGq/zxqGzNP0cD7+EtvI5hIrFrf7w37Ifdu5YKU=

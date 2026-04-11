@@ -571,4 +571,6 @@
     <string name="hysteria_hop_interval_min">最小端口跳跃间隔（秒）</string>
     <string name="hysteria_hop_interval_max">最大端口跳跃间隔（秒）</string>
     <string name="hysteria_bbr_profile">BBR 配置</string>
+    <string name="require_socks">启用 SOCKS5 入站</string>
+    <string name="custom_package_name_or_uid">自定义包名或 UID</string>
 </resources>

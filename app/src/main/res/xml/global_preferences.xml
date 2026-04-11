@@ -331,10 +331,26 @@
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/inbound_settings">
+        <SwitchPreference
+            app:defaultValue="true"
+            app:icon="@drawable/baseline_flight_takeoff_24"
+            app:key="requireSocks"
+            app:title="@string/require_socks" />
         <EditTextPreference
             app:icon="@drawable/ic_maps_directions_boat"
             app:key="socksPort"
             app:title="@string/port_proxy"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="socksUsername"
+            app:title="@string/username"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="socksPassword"
+            app:title="@string/password"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_http_24"
@@ -344,6 +360,17 @@
             app:icon="@drawable/ic_maps_directions_boat"
             app:key="httpPort"
             app:title="@string/port_http"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="httpUsername"
+            app:title="@string/username"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="httpPassword"
+            app:title="@string/password"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:defaultValue="true"
@@ -420,7 +447,7 @@
             app:key="queryAllPackagesAlternativeMethod"
             app:title="@string/query_all_packages_alternative_method" />
         <EditTextPreference
-            app:defaultValue="127.0.0.1:6060"
+            app:dialogMessage="Example: 127.0.0.1:6060\nOpen http://127.0.0.1:6060/debug/pprof in your browser."
             app:key="pprofServer"
             app:title="pprof server listening address"
             app:useSimpleSummaryProvider="true" />

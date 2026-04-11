@@ -25,6 +25,7 @@ import android.os.Build
 import android.provider.Settings
 import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginManager
+import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonSyntaxException
 import io.nekohasekai.sagernet.Key
@@ -124,6 +125,7 @@ import io.nekohasekai.sagernet.ktx.uuidOrGenerate
 import io.nekohasekai.sagernet.utils.PackageCache
 import kotlin.io.encoding.Base64
 import libsagernetcore.Libsagernetcore
+import java.io.File
 
 const val TAG_SOCKS = "socks"
 const val TAG_HTTP = "http"
@@ -165,6 +167,9 @@ class V2rayBuildResult(
 fun buildV2RayConfig(
     proxy: ProxyEntity, forTest: Boolean = false, forExport: Boolean = false
 ): V2rayBuildResult {
+    if (proxy.type == ProxyEntity.TYPE_CONFIG && proxy.configBean!!.type == "v2ray") {
+        return buildCustomConfig(proxy, forTest, forExport)
+    }
 
     val outboundTags = ArrayList<String>()
     val outboundTagsCurrent = ArrayList<String>()
@@ -283,7 +288,7 @@ fun buildV2RayConfig(
     var hasTagDirect = false
     var directNeedsInterruption = false
 
-    val shouldDumpUID = extraRules.any { it.packages.isNotEmpty() }
+    val shouldDumpUID = extraRules.any { it.packages.isNotEmpty() || it.customPackageNames.isNotEmpty() }
     val alerts = mutableListOf<Pair<Int, String>>()
 
     lateinit var result: V2rayBuildResult
@@ -350,14 +355,36 @@ fun buildV2RayConfig(
 
         if (!forTest) inbounds.add(InboundObject().apply {
             tag = TAG_SOCKS
-            listen = bind
-            port = DataStore.socksPort
+            if (DataStore.requireSocks) {
+                listen = bind
+                port = DataStore.socksPort
+            } else {
+                val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path"
+                listen = path
+                if (!forExport) {
+                    val udsFile = File(path)
+                    if (udsFile.exists()) udsFile.delete()
+                }
+            }
             protocol = "socks"
-            settings = LazyInboundConfigurationObject(this,
-                SocksInboundConfigurationObject().apply {
-                    auth = "noauth"
+            if (DataStore.requireSocks) {
+                settings = LazyInboundConfigurationObject(this, SocksInboundConfigurationObject().apply {
+                    if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
+                        auth = "noauth"
+                    } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
+                        error("username is empty but password is not empty for SOCKS5 inbound")
+                    } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
+                        error("username is not empty but password is empty for SOCKS5 inbound")
+                    } else {
+                        auth = "password"
+                        accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
+                            user = DataStore.socksUsername
+                            pass = DataStore.socksPassword
+                        })
+                    }
                     udp = true
                 })
+            }
             if (trafficSniffing || useFakeDns) {
                 sniffing = InboundObject.SniffingObject().apply {
                     enabled = true
@@ -382,6 +409,12 @@ fun buildV2RayConfig(
                 settings = LazyInboundConfigurationObject(this,
                     HTTPInboundConfigurationObject().apply {
                         allowTransparent = true
+                        if (DataStore.httpUsername.isNotEmpty() || DataStore.httpPassword.isNotEmpty()) {
+                            accounts = listOf(HTTPInboundConfigurationObject.AccountObject().apply {
+                                user = DataStore.httpUsername
+                                pass = DataStore.httpPassword
+                            })
+                        }
                     })
                 if (trafficSniffing || useFakeDns) {
                     sniffing = InboundObject.SniffingObject().apply {
@@ -615,25 +648,18 @@ fun buildV2RayConfig(
                         chainMap[localPort] = proxyEntity
                         currentOutbound.apply {
                             protocol = "socks"
-                            settings = LazyOutboundConfigurationObject(this,
-                                SocksOutboundConfigurationObject().apply {
-                                    servers = listOf(SocksOutboundConfigurationObject.ServerObject()
-                                        .apply {
-                                            address = LOCALHOST
-                                            port = localPort
-                                        })
-                                    if (DataStore.experimentalFlagsProperties.getBooleanProperty( "singuot")) {
-                                        proxyEntity.naiveBean?.singUoT?.takeIf { it }?.let {
-                                            uot = true
-                                        }
-                                    }
-                                    proxyEntity.naiveBean?.let {
-                                        directNeedsInterruption = true
-                                    }
-                                    proxyEntity.shadowquicBean?.let {
-                                        directNeedsInterruption = true
-                                    }
+                            settings = LazyOutboundConfigurationObject(this, SocksOutboundConfigurationObject().apply {
+                                servers = listOf(SocksOutboundConfigurationObject.ServerObject().apply {
+                                    address = LOCALHOST
+                                    port = localPort
                                 })
+                                if (proxyEntity.naiveBean != null && proxyEntity.naiveBean!!.singUoT && DataStore.experimentalFlagsProperties.getBooleanProperty( "singuot")) {
+                                    uot = true
+                                }
+                                if (proxyEntity.naiveBean != null || proxyEntity.shadowquicBean != null) {
+                                    directNeedsInterruption = true
+                                }
+                            })
                         }
                     } else {
                         currentOutbound.apply {
@@ -2081,15 +2107,25 @@ fun buildV2RayConfig(
 
         for (rule in extraRules) {
             val uidList = mutableListOf<Int>()
-            if (rule.packages.isNotEmpty()) {
+            if (rule.packages.isNotEmpty() || rule.customPackageNames.isNotEmpty()) {
                 if (!isVpn) {
                     alerts.add(Alerts.ROUTE_ALERT_NOT_VPN to rule.displayName())
                     continue
                 }
                 PackageCache.awaitLoadSync()
-                for (pkg in rule.packages) {
-                    PackageCache[pkg]?.let {
-                        uidList.add(it)
+                if (rule.customPackageNames.isNotEmpty()) {
+                    rule.customPackageNames.forEach {
+                        it.toIntOrNull()?.let {
+                            uidList.add(it)
+                        } ?: PackageCache[it]?.let {
+                            uidList.add(it)
+                        }
+                    }
+                } else {
+                    rule.packages.forEach {
+                        PackageCache[it]?.let {
+                            uidList.add(it)
+                        }
                     }
                 }
                 if (uidList.isEmpty()) {
@@ -2635,8 +2671,7 @@ fun buildV2RayConfig(
 
 }
 
-fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
-
+fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: Boolean = false): V2rayBuildResult {
     val bind = LOCALHOST
     val trafficSniffing = DataStore.trafficSniffing
 
@@ -2649,7 +2684,6 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
     var socksInbound = inbounds.find { it.tag == TAG_SOCKS }?.apply {
         if (protocol != "socks") error("Inbound $tag with type $protocol, excepted socks.")
     }
-
     if (socksInbound == null) {
         val socksInbounds = inbounds.filter { it.protocol == "socks" }
         if (socksInbounds.size == 1) {
@@ -2657,30 +2691,96 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
         }
     }
 
-    if (socksInbound != null) {
-        socksInbound.apply {
-            listen = bind
-            this.port = port
-        }
-    } else {
-        inbounds.add(InboundObject().apply {
-            tag = TAG_SOCKS
-            listen = bind
-            this.port = port
-            protocol = "socks"
-            settings = LazyInboundConfigurationObject(this,
-                SocksInboundConfigurationObject().apply {
-                    auth = "noauth"
-                    udp = true
-                })
-            if (trafficSniffing) {
-                sniffing = InboundObject.SniffingObject().apply {
-                    enabled = true
-                    destOverride = listOf("http", "tls", "quic")
-                    metadataOnly = false
+    if (!forTest) {
+        if (socksInbound != null) {
+            socksInbound.apply {
+                init()
+                streamSettings = null
+                if (DataStore.requireSocks) {
+                    listen = bind
+                    port = DataStore.socksPort
+                } else {
+                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path"
+                    listen = path
+                    if (!forExport) {
+                        val udsFile = File(path)
+                        if (udsFile.exists()) udsFile.delete()
+                    }
                 }
+                val socksInboundConfigurationObject = settings?.value as? SocksInboundConfigurationObject ?: SocksInboundConfigurationObject()
+                socksInboundConfigurationObject.apply {
+                    if (!DataStore.requireSocks) {
+                        auth = "noauth"
+                        accounts = null
+                        ip = null
+                        udp = null
+                    } else {
+                        if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
+                            auth = "noauth"
+                            accounts = null
+                        } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
+                            error("username is empty but password is not empty for SOCKS5 inbound")
+                        } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
+                            error("username is not empty but password is empty for SOCKS5 inbound")
+                        } else {
+                            auth = "password"
+                            accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
+                                user = DataStore.socksUsername
+                                pass = DataStore.socksPassword
+                            })
+                        }
+                    }
+                }
+                settings = LazyInboundConfigurationObject(this, socksInboundConfigurationObject)
             }
-        })
+        } else {
+            inbounds.add(InboundObject().apply {
+                tag = TAG_SOCKS
+                protocol = "socks"
+                if (DataStore.requireSocks) {
+                    listen = bind
+                    port = DataStore.socksPort
+                } else {
+                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path"
+                    listen = path
+                    if (!forExport) {
+                        val udsFile = File(path)
+                        if (udsFile.exists()) udsFile.delete()
+                    }
+                }
+                if (DataStore.requireSocks) {
+                    settings = LazyInboundConfigurationObject(this, SocksInboundConfigurationObject().apply {
+                    if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
+                            auth = "noauth"
+                        } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
+                            error("username is empty but password is not empty for SOCKS5 inbound")
+                        } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
+                            error("username is not empty but password is empty for SOCKS5 inbound")
+                        } else {
+                            auth = "password"
+                            accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
+                                user = DataStore.socksUsername
+                                pass = DataStore.socksPassword
+                            })
+                        }
+                        udp = true
+                    })
+                }
+                val useFakeDns = DataStore.enableFakeDns
+                if (trafficSniffing || useFakeDns) {
+                    sniffing = InboundObject.SniffingObject().apply {
+                        enabled = true
+                        destOverride = when {
+                            useFakeDns && !trafficSniffing -> listOf("fakedns")
+                            useFakeDns -> listOf("fakedns", "http", "tls", "quic")
+                            else -> listOf("http", "tls", "quic")
+                        }
+                        // metadataOnly = useFakeDns && !trafficSniffing
+                        routeOnly = !DataStore.destinationOverride
+                    }
+                }
+            })
+        }
     }
 
     val outbounds = try {
@@ -2739,22 +2839,20 @@ fun buildCustomConfig(proxy: ProxyEntity, port: Int): V2rayBuildResult {
         }
     }
 
-
     return V2rayBuildResult(
-        config.toString(),
-        emptyList(),
-        false, // requireWs
-        0, // wsPort
-        false, // requireSh
-        0, // shPort
-        outboundTags,
-        outboundTags,
-        emptyMap(),
-        directTag,
-        "",
-        emptySet(),
-        false,
-        emptyList()
+        config = GsonBuilder().setPrettyPrinting().create().toJson(config),
+        index = emptyList(),
+        requireWs = false,
+        wsPort = 0,
+        requireSh = false,
+        shPort = 0,
+        outboundTags = outboundTags,
+        outboundTagsCurrent = outboundTags,
+        outboundTagsAll =  emptyMap(),
+        bypassTag =  directTag,
+        observerTag = "",
+        observatoryTags = emptySet(),
+        dumpUID =  false,
+        alerts =  emptyList()
     )
-
 }
