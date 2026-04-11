@@ -170,12 +170,6 @@ fun Project.setupPlugin(projectName: String) {
     androidComponents.apply {
         onVariants { variant ->
             variant.outputs.forEach { output ->
-                when (output.filters.find { it.filterType == FilterConfiguration.FilterType.ABI }?.identifier) {
-                    "arm64-v8a" -> output.versionCode.set(verCode + 4)
-                    "x86_64" -> output.versionCode.set(verCode + 3)
-                    "armeabi-v7a" -> output.versionCode.set(verCode + 2)
-                    "x86" -> output.versionCode.set(verCode + 1)
-                }
                 (output as? VariantOutputImpl)?.let { variantOutputImpl ->
                     val versionName = variantOutputImpl.versionName.orNull.orEmpty()
                     variantOutputImpl.outputFileName.set(variantOutputImpl.outputFileName.get()

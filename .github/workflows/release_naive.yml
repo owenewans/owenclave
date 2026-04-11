@@ -2,18 +2,12 @@ name: NaïveProxy Plugin Release Build
 on:
   workflow_dispatch:
     inputs:
-      COMMIT_HASH:
-        required: true
-      VERSION_NAME:
-        required: true
-      VERSION_CODE:
-        required: true
-#      release:
-#        description: 'Release (y/n)'
-#        required: false
-#      tag:
-#        description: 'Release Tag'
-#        required: false
+      release:
+        description: 'Release (y/n)'
+        required: false
+      tag:
+        description: 'Release Tag'
+        required: false
 jobs:
   native:
     runs-on: ubuntu-latest
@@ -28,17 +22,15 @@ jobs:
       - name: Checkout Submodule
         run: |
           git submodule update --init plugin/naive/src/main/jni/naiveproxy
-          pushd plugin/naive/src/main/jni/naiveproxy
-          git fetch origin ${{ github.event.inputs.COMMIT_HASH }}
-          git checkout ${{ github.event.inputs.COMMIT_HASH }}
-          popd
+      - name: Fetch Status
+        run: git submodule status 'plugin/naive/*' > naive_status
       - name: Native Cache
         id: cache
         uses: actions/cache@v5
         with:
           path: |
             plugin/naive/src/main/jniLibs/${{ matrix.arch }}
-          key: naive-${{ matrix.arch }}-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
+          key: naive-${{ matrix.arch }}-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Native Build
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
@@ -53,30 +45,35 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Checkout Submodule
+        run: |
+          git submodule update --init plugin/naive/src/main/jni/naiveproxy
+      - name: Fetch Status
+        run: git submodule status 'plugin/naive/*' > naive_status
       - name: Native Cache (armeabi-v7a)
         uses: actions/cache@v5
         with:
           path: |
             plugin/naive/src/main/jniLibs/armeabi-v7a
-          key: naive-armeabi-v7a-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
+          key: naive-armeabi-v7a-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Native Cache (arm64-v8a)
         uses: actions/cache@v5
         with:
           path: |
             plugin/naive/src/main/jniLibs/arm64-v8a
-          key: naive-arm64-v8a-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
+          key: naive-arm64-v8a-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Native Cache (x86)
         uses: actions/cache@v5
         with:
           path: |
             plugin/naive/src/main/jniLibs/x86
-          key: naive-x86-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
+          key: naive-x86-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Native Cache (x86_64)
         uses: actions/cache@v5
         with:
           path: |
             plugin/naive/src/main/jniLibs/x86_64
-          key: naive-x86_64-${{ github.event.inputs.COMMIT_HASH }}-${{ hashFiles('bin/plugin/naive/*') }}
+          key: naive-x86_64-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Gradle cache
         uses: actions/cache@v5
         with:
@@ -100,23 +97,23 @@ jobs:
         with:
           name: APKs
           path: ${{ env.APK }}
-#  publish:
-#    name: Publish Release
-#    if: github.event.inputs.release == 'y' && github.event.inputs.tag != ''
-#    runs-on: ubuntu-latest
-#    needs: build
-#    env:
-#      GH_TOKEN: ${{ github.token }}
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v6
-#      - name: Download Artifacts
-#        uses: actions/download-artifact@v8
-#        with:
-#          name: APKs
-#          path: artifacts
-#      - name: Publish Release
-#        run: |
-#          mkdir apks
-#          find artifacts -name "*.apk" -exec cp {} apks \;
-#          gh release create --latest=false ${{ github.event.inputs.tag }} --notes="" --title=${{ github.event.inputs.tag }} ./apks/*
+  publish:
+    name: Publish Release
+    if: github.event.inputs.release == 'y' && github.event.inputs.tag != ''
+    runs-on: ubuntu-latest
+    needs: build
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Download Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: APKs
+          path: artifacts
+      - name: Publish Release
+        run: |
+          mkdir apks
+          find artifacts -name "*.apk" -exec cp {} apks \;
+          gh release create --latest=false ${{ github.event.inputs.tag }} --notes="" --title=${{ github.event.inputs.tag }} ./apks/*
