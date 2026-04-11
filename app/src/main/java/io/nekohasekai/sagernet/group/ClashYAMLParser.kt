@@ -496,8 +496,12 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
         "hysteria2" -> {
             return listOf(Hysteria2Bean().apply {
                 serverAddress = proxy.getString("server") ?: return listOf()
-                serverPorts = (proxy.getString("ports")?.takeIf { it.isValidHysteriaPort() }
-                    ?: proxy.getString("port")?.toUIntOrNull()?.toString()) ?: return listOf()
+                val port = proxy.getInt("port")?.takeIf { it > 0 }
+                val ports = proxy.getString("ports")?.toIntRanges()
+                if (port == null && ports == null) return listOf()
+                serverPorts = ports?.joinToString(",") {
+                    if (it.third) it.first.toString() else "${it.first}-${it.second}"
+                } ?: port.toString()
                 auth = proxy.getString("password")
                 sni = proxy.getString("sni")
                 allowInsecure = proxy.getBoolean("skip-cert-verify") == true
@@ -534,7 +538,32 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         else -> return listOf()
                     }
                 }
-                hopInterval = proxy.getString("hop-interval")?.toUIntOrNull()?.toLong()?.takeIf { it > 0 }
+                if (ports != null) {
+                    // Ref: https://github.com/MetaCubeX/mihomo/commit/80072ebb6f9933e6a87ae94e3f6917a6c82c665e
+                    val hopIntervalInt = proxy.getInt("hop-interval")?.takeIf { it > 0 }
+                    val hopIntervalString = proxy.getString("hop-interval")?.toIntRange()
+                    if (hopIntervalString != null) {
+                        if (hopIntervalString.first == hopIntervalString.second) {
+                            hopInterval = hopIntervalString.first.toLong()
+                        } else {
+                            // Ref: https://github.com/MetaCubeX/mihomo/blob/80072ebb6f9933e6a87ae94e3f6917a6c82c665e/adapter/outbound/hysteria2.go#L215-L223
+                            var start = hopIntervalString.first
+                            var end = hopIntervalString.second
+                            if (start == 0) {
+                                start = 30
+                            } else if (start < 5) {
+                                start = 5
+                            }
+                            if (end < start) {
+                                end = start
+                            }
+                            hopIntervalMin = start.toLong()
+                            hopIntervalMax = end.toLong()
+                        }
+                    } else if (hopIntervalInt != null) {
+                        hopInterval = hopIntervalInt.toLong()
+                    }
+                }
                 name = proxy.getString("name")
             })
         }
@@ -909,4 +938,54 @@ private fun String.convertClashStringToInt(): Int? {
         return null
     }
     return newStr.replace("_", "").toIntOrNull()
+}
+
+// Ref: https://github.com/MetaCubeX/mihomo/blob/80072ebb6f9933e6a87ae94e3f6917a6c82c665e/common/utils/ranges.go#L16-L48
+private fun String.toIntRanges(): List<Triple<Int, Int, Boolean>> {
+    // example: 200 or 200/302 or 200-400 or 200/204/401-429/501-503
+    var expected = this.trim()
+    if (expected.isEmpty() || expected == "*") {
+        return listOf()
+    }
+    // support: 200,302 or 200,204,401-429,501-503
+    expected = expected.replace(",", "/")
+    val list = expected.split("/")
+    val ranges = mutableListOf<Triple<Int, Int, Boolean>>()
+    for (s in list) {
+        if (s.isEmpty()) {
+            continue
+        }
+        val r = s.toIntRange() ?: return listOf()
+        ranges.add(r)
+    }
+    return ranges
+}
+
+// Ref: https://github.com/MetaCubeX/mihomo/blob/80072ebb6f9933e6a87ae94e3f6917a6c82c665e/common/utils/range.go#L65-L87
+// Triple<Int, Int, Boolean>: start, end, isSinglePort
+private fun String.toIntRange(): Triple<Int, Int, Boolean>? {
+    val s = this.trim()
+    if (s.isEmpty()) {
+        return Triple(0, 0, true)
+    }
+    val status = s.split("-")
+    val start = status[0].trim { it == '[' || it == ' ' || it == ']' }.convertClashStringToInt()
+    if (start == null) {
+        return null
+    }
+    when (status.size) {
+        1 -> { // Single port
+            return Triple(start, start, true)
+        }
+        2 -> { // Port range
+            val end = status[1].trim { it == '[' || it == ' ' || it == ']' }.convertClashStringToInt()
+            if (end == null) {
+                return null
+            }
+            return Triple(start, end, false)
+        }
+        else -> {
+            return null
+        }
+    }
 }
