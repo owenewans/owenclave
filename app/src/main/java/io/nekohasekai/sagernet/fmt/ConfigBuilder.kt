@@ -27,7 +27,7 @@ import com.github.shadowsocks.plugin.PluginConfiguration
 import com.github.shadowsocks.plugin.PluginManager
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
-import com.google.gson.JsonSyntaxException
+import com.google.gson.JsonObject
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.RouteMode
@@ -113,6 +113,7 @@ import io.nekohasekai.sagernet.ktx.getBooleanProperty
 import io.nekohasekai.sagernet.ktx.getInt
 import io.nekohasekai.sagernet.ktx.getObject
 import io.nekohasekai.sagernet.ktx.getString
+import io.nekohasekai.sagernet.ktx.getStringArray
 import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLine
@@ -162,6 +163,7 @@ class V2rayBuildResult(
     var observatoryTags: Set<String>,
     val dumpUID: Boolean,
     val alerts: List<Pair<Int, String>>,
+    val useFakeDNS: Boolean,
 ) {
     data class IndexEntity(var isBalancer: Boolean, var chain: LinkedHashMap<Triple<Int, String, String>, ProxyEntity>)
 }
@@ -2672,7 +2674,8 @@ fun buildV2RayConfig(
             rootObserver?.tag ?: "",
             rootObserver?.settings?.get("subjectSelector") as? Set<String> ?: HashSet(),
             shouldDumpUID,
-            alerts
+            alerts,
+            DataStore.enableFakeDns,
         )
     }
 
@@ -2681,11 +2684,77 @@ fun buildV2RayConfig(
 }
 
 fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: Boolean = false): V2rayBuildResult {
-    val bind = LOCALHOST
-    val trafficSniffing = DataStore.trafficSniffing
-
     val bean = proxy.configBean!!
+    val bind = LOCALHOST
     val config = parseJson(bean.content, lenient = true).asJsonObject
+
+    // TODO: add fake DNS pool CIDR to TUN route address
+    var useFakeDns = false
+    runCatching {
+        config.getObject("fakedns", ignoreCase = true)?.also {
+            useFakeDns = true
+        }
+    }
+    runCatching {
+        config.getArray("fakedns", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
+            useFakeDns = true
+        }
+    }
+    config.getObject("dns", ignoreCase = true)?.also { dns ->
+        runCatching {
+            dns.getBoolean("fakedns", ignoreCase = true)?.takeIf { it }?.also {
+                useFakeDns = true
+            }
+        }
+        runCatching {
+            dns.getStringArray("fakedns", ignoreCase = true)?.also {
+                useFakeDns = true
+            }
+        }
+        runCatching {
+            dns.getArray("fakedns", ignoreCase = true)?.also {
+                useFakeDns = true
+            }
+        }
+        var servers: List<JsonObject>? = null
+        try {
+            servers = dns.getArray("servers", ignoreCase = true)
+        } catch (_: Exception) {}
+        servers?.forEach { server ->
+            runCatching {
+                server.getBoolean("fakedns", ignoreCase = true)?.takeIf { it }?.also {
+                    useFakeDns = true
+                    return@forEach
+                }
+            }
+            runCatching {
+                server.getStringArray("fakedns", ignoreCase = true)?.also {
+                    useFakeDns = true
+                    return@forEach
+                }
+            }
+            runCatching {
+                server.getArray("fakedns", ignoreCase = true)?.also {
+                    useFakeDns = true
+                    return@forEach
+                }
+            }
+        }
+    }
+
+    var isConfigWithSniffing = false
+    var shouldDumpUID = false
+    config.getObject("routing", ignoreCase = true)?.also { routeObject ->
+        gson.fromJson(routeObject.toString(), RoutingObject::class.java)?.also { route ->
+            if (route.rules?.any { it.uid?.isNotEmpty() == true } == true) {
+                shouldDumpUID = true
+            }
+            if (route.rules?.any { it.protocol?.isNotEmpty() == true } == true) {
+                isConfigWithSniffing = true
+            }
+        }
+    }
+
     val inbounds = config.getArray("inbounds")
         ?.map { gson.fromJson(it.toString(), InboundObject::class.java) }
         ?.toMutableList() ?: ArrayList()
@@ -2695,7 +2764,7 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
     }
     if (socksInbound == null) {
         val socksInbounds = inbounds.filter { it.protocol == "socks" }
-        if (socksInbounds.size == 1) {
+        if (socksInbounds.isNotEmpty()) {
             socksInbound = socksInbounds[0]
         }
     }
@@ -2775,31 +2844,28 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
                         udp = true
                     })
                 }
-                val useFakeDns = DataStore.enableFakeDns
-                if (trafficSniffing || useFakeDns) {
+                if (DataStore.trafficSniffing || isConfigWithSniffing || useFakeDns) {
                     sniffing = InboundObject.SniffingObject().apply {
                         enabled = true
-                        destOverride = when {
-                            useFakeDns && !trafficSniffing -> listOf("fakedns")
-                            useFakeDns -> listOf("fakedns", "http", "tls", "quic")
-                            else -> listOf("http", "tls", "quic")
+                        val protocols = mutableListOf<String>().apply {
+                            if (useFakeDns) add("fakedns")
+                            if (DataStore.trafficSniffing) addAll(listOf("http", "tls", "quic"))
                         }
-                        // metadataOnly = useFakeDns && !trafficSniffing
-                        routeOnly = !DataStore.destinationOverride
+                        if (protocols.isNotEmpty()) {
+                            destOverride = protocols
+                        }
+                        metadataOnly = useFakeDns && !DataStore.trafficSniffing && !isConfigWithSniffing
+                        routeOnly = DataStore.trafficSniffing && !DataStore.destinationOverride
                     }
                 }
+                if (shouldDumpUID) dumpUID = true
             })
         }
     }
 
-    val outbounds = try {
-        config.getArray("outbounds")?.map { it ->
-            gson.fromJson(it.toString() .takeIf { it.isNotEmpty() } ?: "{}",
-                OutboundObject::class.java)
-        }?.toMutableList()
-    } catch (_: JsonSyntaxException) {
-        null
-    }
+    val outbounds = config.getArray("outbounds")?.map {
+        gson.fromJson(it.toString(), OutboundObject::class.java)
+    }?.toMutableList()
     var flushOutbounds = false
 
     val outboundTags = ArrayList<String>()
@@ -2861,7 +2927,8 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
         bypassTag =  directTag,
         observerTag = "",
         observatoryTags = emptySet(),
-        dumpUID =  false,
-        alerts =  emptyList()
+        dumpUID =  shouldDumpUID,
+        alerts =  emptyList(),
+        useFakeDNS = useFakeDns,
     )
 }

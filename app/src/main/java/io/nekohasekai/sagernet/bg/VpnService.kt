@@ -302,7 +302,8 @@ class VpnService : BaseVpnService(),
             implementation = tunImplementation
             sniffing = DataStore.trafficSniffing
             overrideDestination = DataStore.destinationOverride
-            fakeDNS = DataStore.enableFakeDns
+            // fakeDNS = DataStore.enableFakeDns
+            fakeDNS = data.proxy!!.config.useFakeDNS
             dumpUID = data.proxy!!.config.dumpUID
             trafficStats = DataStore.appTrafficStatistics
             pCap = DataStore.enablePcap
