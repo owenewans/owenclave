@@ -23,6 +23,7 @@ import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.SwitchPreference
 import com.takisoft.preferencex.PreferenceFragmentCompat
+import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -47,6 +48,7 @@ class ShadowQUICSettingsActivity : ProfileSettingsActivity<ShadowQUICBean>() {
         DataStore.serverShadowQUICDisableALPN = disableALPN
         DataStore.serverShadowQUICUseSunnyQUIC = useSunnyQUIC
         DataStore.serverCertificates = certificate
+        DataStore.serverUploadSpeed = brutalUploadBandwidth
     }
 
     override fun ShadowQUICBean.serialize() {
@@ -63,6 +65,7 @@ class ShadowQUICSettingsActivity : ProfileSettingsActivity<ShadowQUICBean>() {
         disableALPN = DataStore.serverShadowQUICDisableALPN
         useSunnyQUIC = DataStore.serverShadowQUICUseSunnyQUIC
         certificate = DataStore.serverCertificates
+        brutalUploadBandwidth = DataStore.serverUploadSpeed
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -88,6 +91,13 @@ class ShadowQUICSettingsActivity : ProfileSettingsActivity<ShadowQUICBean>() {
         certificate.isEnabled = useSunnyQUIC.isChecked
         useSunnyQUIC.setOnPreferenceChangeListener { _, newValue ->
             certificate.isEnabled = newValue as Boolean
+            true
+        }
+        val congestionControl = findPreference<SimpleMenuPreference>(Key.SERVER_CONGESTION_CONTROLLER)!!
+        val brutalUploadBandwidth = findPreference<EditTextPreference>(Key.SERVER_UPLOAD_SPEED)!!
+        brutalUploadBandwidth.isEnabled = congestionControl.value == "brutal"
+        congestionControl.setOnPreferenceChangeListener { _, newValue ->
+            brutalUploadBandwidth.isEnabled = (newValue as String) == "brutal"
             true
         }
     }

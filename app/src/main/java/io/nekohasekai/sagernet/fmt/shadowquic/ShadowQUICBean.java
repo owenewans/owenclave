@@ -39,6 +39,7 @@ public class ShadowQUICBean extends AbstractBean {
     public Boolean disableALPN;
     public Boolean useSunnyQUIC;
     public String certificate;
+    public Long brutalUploadBandwidth;
 
     @Override
     public void initializeDefaultValues() {
@@ -53,12 +54,13 @@ public class ShadowQUICBean extends AbstractBean {
         if (disableALPN == null) disableALPN = false;
         if (useSunnyQUIC == null) useSunnyQUIC = false;
         if (certificate == null) certificate = "";
+        if (brutalUploadBandwidth == null) brutalUploadBandwidth = 0L;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
         super.serialize(output);
-        output.writeInt(2);
+        output.writeInt(3);
         output.writeString(username);
         output.writeString(password);
         output.writeString(sni);
@@ -69,6 +71,7 @@ public class ShadowQUICBean extends AbstractBean {
         output.writeBoolean(disableALPN);
         output.writeBoolean(useSunnyQUIC);
         output.writeString(certificate);
+        output.writeLong(brutalUploadBandwidth);
     }
 
     @Override
@@ -88,6 +91,9 @@ public class ShadowQUICBean extends AbstractBean {
         }
         if (version >= 2) {
             certificate = input.readString();
+        }
+        if (version >= 3) {
+            brutalUploadBandwidth = input.readLong();
         }
     }
 

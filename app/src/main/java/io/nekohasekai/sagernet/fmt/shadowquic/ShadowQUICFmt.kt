@@ -56,7 +56,19 @@ fun ShadowQUICBean.buildShadowQUICConfig(port: Int, username: String = "", passw
     } else if (alpn.isNotEmpty()) {
         outboundObject["alpn"] = alpn.listByLineOrComma()
     }
-    if (congestionControl.isNotEmpty()) outboundObject["congestion-control"] = congestionControl
+    when (congestionControl) {
+        "" -> {}
+        "brutal" -> {
+            val brutalObject: MutableMap<String, Any> = HashMap()
+            brutalObject["bandwidth"] = "${brutalUploadBandwidth}m"
+            val congestionControlObject: MutableMap<String, Any> = HashMap()
+            congestionControlObject["brutal"] = brutalObject
+            outboundObject["congestion-control"] = congestionControlObject
+        }
+        else -> {
+            outboundObject["congestion-control"] = congestionControl
+        }
+    }
     if (zeroRTT) outboundObject["zero-rtt"] = zeroRTT
     if (udpOverStream) outboundObject["over-stream"] = udpOverStream
     if (useSunnyQUIC && certificate.isNotEmpty() && cacheFile != null) {

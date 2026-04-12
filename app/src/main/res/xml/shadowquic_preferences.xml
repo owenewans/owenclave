@@ -52,6 +52,11 @@
             app:key="serverCongestionController"
             app:title="@string/congestion_control"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_file_file_upload"
+            app:key="serverUploadSpeed"
+            app:title="Upload bandwidth (Mbps)"
+            app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/baseline_flight_takeoff_24"
             app:key="serverReduceRTT"

@@ -894,6 +894,7 @@
         <item>bbr</item>
         <item>cubic</item>
         <item>new-reno</item>
+        <item>brutal</item>
     </string-array>
 
 </resources>
