@@ -2842,7 +2842,7 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
     config.add("inbounds", inboundArray)
     if (flushOutbounds) {
         outbounds!!.forEach { it.init() }
-        val outboundArray = JsonArray(inbounds.size)
+        val outboundArray = JsonArray(outbounds.size)
         for (outbound in outbounds) {
             outboundArray.add(parseJson(gson.toJson(outbound), lenient = true))
         }
