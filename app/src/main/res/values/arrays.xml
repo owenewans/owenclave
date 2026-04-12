@@ -890,4 +890,10 @@
         <item>aggressive</item>
     </string-array>
 
+    <string-array name="shadowquic_congestion_control_value">
+        <item>bbr</item>
+        <item>cubic</item>
+        <item>new-reno</item>
+    </string-array>
+
 </resources>
