@@ -415,6 +415,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         opts.getString("sc-max-each-post-bytes")?.also {
                             addProperty("scMaxEachPostBytes", it)
                         }
+                        opts.getString("sc-min-posts-interval-ms")?.also {
+                            addProperty("scMinPostsIntervalMs", it)
+                        }
                         opts.getObject("reuse-settings")?.also { xmux ->
                             JsonObject().apply {
                                 xmux.getString("max-connections")?.also {
