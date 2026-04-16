@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedQuantity">
-    <string name="action_import_err">Chaîne de certificat épinglé SHA-256</string>
+    <string name="action_import_err">Échec de l\'importation.</string>
     <string name="delete_confirm_prompt">Êtes-vous sûr(e) de vouloir retirer ce profil \?</string>
     <string name="delete">Retirer</string>
     <string name="add_profile_methods_scan_qr_code">Scannez le code QR</string>
@@ -14,7 +14,7 @@
     <string name="night_mode">Mode nuit</string>
     <plurals name="lines">
         <item quantity="one">%d ligne</item>
-        <item quantity="many"/>
+        <item quantity="many"></item>
         <item quantity="other">%d lignes</item>
     </plurals>
     <string name="random">Aléatoire</string>
@@ -26,7 +26,7 @@
     <string name="confirm">Confirmer</string>
     <plurals name="apps_message">
         <item quantity="one">%d application</item>
-        <item quantity="many"/>
+        <item quantity="many"></item>
         <item quantity="other">%d applications</item>
     </plurals>
     <string name="select_apps">Sélectionnez les applications</string>
@@ -84,7 +84,7 @@
     <string name="group_duplicate">Reproduction:
 \n%s</string>
     <string name="connection_test_clear_results">Effacer les résultats des tests</string>
-    <string name="action_export_err">Proxy inverse</string>
+    <string name="action_export_err">Échec de l\'export.</string>
     <string name="ssh_private_key">Clé privée</string>
     <string name="port_transproxy">Port du Transproxy</string>
     <string name="cag_ws">Paramètres WebSocket</string>
@@ -109,7 +109,7 @@
     <string name="config_type">Type de configuration</string>
     <string name="extra_headers">Entêtes supplémentaires</string>
     <string name="balancer_type">Type</string>
-    <string name="action_import">Configurer quelques règles avant d\'enregistrer</string>
+    <string name="action_import">Importer depuis le presse-papiers</string>
     <string name="auto">Auto</string>
     <string name="balancer_strategy">Stratégie</string>
     <string name="connection_test_url">URL de test de connexion</string>
@@ -119,7 +119,7 @@
     <string name="route_asset_status">Version locale : %s</string>
     <string name="plugin_disabled">Désactivé</string>
     <string name="connection_test_testing">Test…</string>
-    <string name="action_export_clipboard">Êtes-vous sûr de vouloir supprimer cette route ?</string>
+    <string name="action_export_clipboard">Exporter dans le presse-papiers</string>
     <string name="dns_routing_message">Résoler les domaines dans les routes de contournement avec DNS Direct</string>
     <string name="menu_traffic">Trafic</string>
     <string name="connection_test_error">Échec : %s</string>
@@ -128,19 +128,19 @@
     <string name="protocol">Protocole</string>
     <string name="port_proxy">Port du Proxy SOCKS5</string>
     <string name="route_asset_updated">Mis à jour</string>
-    <string name="action_export_file">La route ne peut pas se contenir elle-même.</string>
+    <string name="action_export_file">Exporter dans un fichier</string>
     <string name="connection_test_available">Succès : la négociation HTTPS a pris %dms</string>
     <string name="require_transproxy">Activer Transproxy entrant</string>
     <string name="server_port">Port distant</string>
     <string name="show_direct_speed">Afficher la vitesse directe</string>
-    <string name="stop">Contourner les adresses privées</string>
+    <string name="stop">Arrêter</string>
     <string name="speed_detail">Proxy： %1$s↑ %2$s↓
 \nDirecte： %3$s↑ %4$s↓</string>
     <string name="subscriptions">Souscriptions</string>
     <string name="cag_misc">Paramètres divers</string>
     <string name="enable_dns_routing">Activer le routage DNS</string>
     <string name="port_http">Port du Proxy HTTP</string>
-    <string name="invalid_server">Les modifications ne sont pas enregistrées. Voulez-vous enregistrer ?</string>
+    <string name="invalid_server">Nom de serveur invalide</string>
     <string name="ws_browser_forwarding_sum">Transférer les WebSockets correspondants via le navigateur</string>
     <string name="require_http">Activer HTTP Entrant</string>
     <string name="show_direct_speed_sum">Afficher également la vitesse du trafic sans proxy dans la notification</string>
@@ -156,7 +156,7 @@
     <string name="speed">%s/s</string>
     <string name="transproxy_mode">Mode Transproxy</string>
     <string name="connection_test_unreachable">Non accessible</string>
-    <string name="action_import_file">Assurez-vous d\'avoir lu la documentation avant d\'ajouter des règles personnalisées, sinon vous pourriez ne pas pouvoir vous connecter à Internet.</string>
+    <string name="action_import_file">Importer depuis un fichier</string>
     <string name="port_local_dns">Port du DNS local</string>
     <string name="probe_url">URL de test personnalisée</string>
     <string name="profile_name">Nom de profil</string>
@@ -173,11 +173,11 @@
     <string name="empty_route">Route vide</string>
     <string name="search_apps">Rechercher…</string>
     <string name="show_system_apps">Afficher les applications système</string>
-    <string name="clipboard_empty">Seed mKCP</string>
-    <string name="connect">Clé QUIC</string>
-    <string name="settings">Nom du service gRPC</string>
-    <string name="edit">ALPN</string>
-    <string name="share">Déduplication</string>
+    <string name="clipboard_empty">Le presse-papiers est vide</string>
+    <string name="connect">Connecter</string>
+    <string name="settings">Préférences</string>
+    <string name="edit">Modifier</string>
+    <string name="share">Partager</string>
     <plurals name="removed">
         <item quantity="one">%d élément supprimé</item>
         <item quantity="many"/>
@@ -190,12 +190,12 @@
     <string name="traffic_stats">Statistiques</string>
     <plurals name="tcp_connections">
         <item quantity="one">%d connexion TCP</item>
-        <item quantity="many"/>
+        <item quantity="many"></item>
         <item quantity="other">%d connexions TCP</item>
     </plurals>
     <plurals name="udp_connections">
         <item quantity="one">%d connexion UDP</item>
-        <item quantity="many"/>
+        <item quantity="many"></item>
         <item quantity="other">%d connexions UDP</item>
     </plurals>
     <string name="copy_package_name">Copier le nom du paquet</string>
@@ -234,7 +234,7 @@
     <string name="route_bypass_domain">Règle de domaine pour %s</string>
     <string name="tasker_blurb_start_profile">Démarrer le profil %s</string>
     <string name="no_proxies_found_in_subscription">Aucun proxy trouvé dans cette souscription</string>
-    <string name="profile_empty">Sécurité QUIC</string>
+    <string name="profile_empty">Veuillez sélectionner un profil</string>
     <string name="no_proxies_found_in_file">Aucun proxy trouvé dans ce fichier</string>
     <string name="profile_config">Configuration du profil</string>
     <string name="root_ca_provider">Fournisseur de certificat racine CA</string>
@@ -263,17 +263,17 @@
     <string name="root_ca_mozilla">Mozilla</string>
     <string name="root_ca_system">Système</string>
     <string name="packet_encoding">Codage du paquet</string>
-    <string name="auto_connect">Service proxy</string>
+    <string name="auto_connect">Connexion auto</string>
     <string name="hysteria_auth_type">Type d\'authentification</string>
     <string name="ws_host">Hôte WebSocket</string>
     <string name="invert_selections">Inverser la sélection</string>
-    <string name="clear_selections">Contourner</string>
-    <string name="service_vpn">Autorisation VPN refusée</string>
-    <string name="stopping">Stratégie de domaine</string>
-    <string name="add_profile">Chaîne de proxy</string>
+    <string name="clear_selections">Effacer la sélection</string>
+    <string name="service_vpn">Service VPN</string>
+    <string name="stopping">En train de s\'éteindre…</string>
+    <string name="add_profile">Ajouter un profile</string>
     <string name="circular_reference">Référence circulaire</string>
-    <string name="action_export_msg">Votre appareil ne dispose pas d\'un sélecteur de fichiers standard Android, veuillez en installer un, tel que Material Files.</string>
-    <string name="action_import_msg">Adresse du proxy inverse</string>
+    <string name="action_export_msg">Export avec succès !</string>
+    <string name="action_import_msg">Importation avec succès !</string>
     <string name="vpn_connected">Connecté, tapez pour vérifier la connexion</string>
     <string name="cleartext_http_warning">Le trafic HTTP en clair n\'est pas sûr</string>
     <string name="no_proxies_found">Aucun proxy trouvé dans le lien</string>
@@ -314,22 +314,4 @@
     <string name="fileSize_pebibyte">Pio</string>
     <string name="translation_platform">Plateforme de traduction</string>
     <string name="require_socks">Activer SOCKS5 Entrant</string>
-    <string name="protocol_param">Paramètres du protocole</string>
-    <string name="obfs">Obfs</string>
-    <string name="obfs_param">Paramètres Obfs</string>
-    <string name="alter_id">ID alternatif</string>
-    <string name="security">Sécurité de la couche de transport</string>
-    <string name="url">URL</string>
-    <string name="sni">SNI</string>
-    <string name="metered">Indication de connexion limitée</string>
-    <string name="metered_summary">Indiquer au système de traiter le VPN comme une connexion limitée</string>
-    <string name="proxied_apps">VPN par application</string>
-    <string name="proxied_apps_summary">Exclure les applications sélectionnées du VPN ou inclure les applications sélectionnées dans le VPN</string>
-    <string name="scanning">Analyse en cours…</string>
-    <string name="bypass_apps">Restaurer l\'état de connexion précédent après le démarrage de l\'appareil ou la mise à jour de l\'application</string>
-    <string name="auto_connect_summary">Proxy démarré.</string>
-    <string name="service_proxy">Échec du démarrage du service VPN. Vous devrez peut-être redémarrer votre appareil.</string>
-    <string name="forward_success">%d élément ajouté</string>
-    <string name="vpn_permission_denied">Activer Mux</string>
-    <string name="reboot_required">Connexions simultanées Mux</string>
 </resources>
