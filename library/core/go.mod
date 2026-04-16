@@ -2,7 +2,7 @@ module libsagernetcore
 
 go 1.25.0
 
-require github.com/dyhkwong/libsagernetcore v0.0.0-20260413180756-7fb58879164f
+require github.com/dyhkwong/libsagernetcore v0.0.0-20260416124802-9732b2018d9c
 
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
@@ -29,7 +29,7 @@ require (
 	github.com/metacubex/utls v1.8.4 // indirect
 	github.com/miekg/dns v1.1.72 // indirect
 	github.com/pion/transport/v4 v4.0.1 // indirect
-	github.com/pires/go-proxyproto v0.11.0 // indirect
+	github.com/pires/go-proxyproto v0.12.0 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/refraction-networking/utls v1.8.3-0.20260301010127-aa6edf4b11af // indirect
@@ -70,6 +70,6 @@ require (
 )
 
 replace (
-	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260413175856-0a75b0df4fd3
+	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260416115057-6c521ac81cf8
 	gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
 )

@@ -59,12 +59,12 @@ github.com/dyhkwong/hysteria/core/v2 v2.8.1-1 h1:zCZ6i/vbenJBd4s6lcRD16y6sa9ogQb
 github.com/dyhkwong/hysteria/core/v2 v2.8.1-1/go.mod h1:HT48TFGERK3NGl46xxpF+uhPzEfXjdaKtTXx6zurS9M=
 github.com/dyhkwong/hysteria/extras/v2 v2.8.1-1 h1:yhqPjCsKmt/FnYdyeofs/uAWaLWL2JdAH6Mgyjjd3cQ=
 github.com/dyhkwong/hysteria/extras/v2 v2.8.1-1/go.mod h1:jBhySesF/lc8v1SyqEbXQVcuboRWlArbj7hT0o+M7mI=
-github.com/dyhkwong/libsagernetcore v0.0.0-20260413180756-7fb58879164f h1:qf7eN4RMFmF3nOczkdtGhDQnHiwz8z0Dpr/IZWbdZGc=
-github.com/dyhkwong/libsagernetcore v0.0.0-20260413180756-7fb58879164f/go.mod h1:bu6O+l4rf5mPzCRVwrvIWuvT9jrzol55fg6QGuKGjsw=
+github.com/dyhkwong/libsagernetcore v0.0.0-20260416124802-9732b2018d9c h1:NvDknNuga0XNwW42BSeoGvP4OuME++NXXEv7I9Bparc=
+github.com/dyhkwong/libsagernetcore v0.0.0-20260416124802-9732b2018d9c/go.mod h1:WQWro6BlUaR4r6eLV0QLr9TGWafSAZA+9ct3dmiMEXY=
 github.com/dyhkwong/sing-juicity v0.1.2 h1:bBz2kRo5rHmg+FiUZ55hcPHNVhjJDGC29U5ukzlXdu8=
 github.com/dyhkwong/sing-juicity v0.1.2/go.mod h1:12RIse/M0Bg4kyxpdkfe2Hus1PFBgTnG2lClOXHOrBk=
-github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260413175856-0a75b0df4fd3 h1:GKYAFdUJ3p9lBvQc+tTV/DZiMhfJiDBYQllBG78Wxj8=
-github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260413175856-0a75b0df4fd3/go.mod h1:2uvFO7UquZY+QHnzgOWv0uzeYtN4sL6NelfCZGISTuI=
+github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260416115057-6c521ac81cf8 h1:fmxfgrys7sG+lqkt3b0Rtk7+653UjJr1bEJkjT0/nV0=
+github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260416115057-6c521ac81cf8/go.mod h1:00VgzO290J12uJbg/PVuAgF+mEhF5lBDCO81+xdZfaU=
 github.com/enfein/mieru/v3 v3.30.1 h1:gHHXQfpQO/5d789o9kokVfej7jl795aJwPihUk3gTDU=
 github.com/enfein/mieru/v3 v3.30.1/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s5F6Qd3hM=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
@@ -190,8 +190,8 @@ github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FI
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
 github.com/pion/transport/v4 v4.0.1 h1:sdROELU6BZ63Ab7FrOLn13M6YdJLY20wldXW2Cu2k8o=
 github.com/pion/transport/v4 v4.0.1/go.mod h1:nEuEA4AD5lPdcIegQDpVLgNoDGreqM/YqmEx3ovP4jM=
-github.com/pires/go-proxyproto v0.11.0 h1:gUQpS85X/VJMdUsYyEgyn59uLJvGqPhJV5YvG68wXH4=
-github.com/pires/go-proxyproto v0.11.0/go.mod h1:ZKAAyp3cgy5Y5Mo4n9AlScrkCZwUy0g3Jf+slqQVcuU=
+github.com/pires/go-proxyproto v0.12.0 h1:TTCxD66dU898tahivkqc3hoceZp7P44FnorWyo9d5vM=
+github.com/pires/go-proxyproto v0.12.0/go.mod h1:qUvfqUMEoX7T8g0q7TQLDnhMjdTrxnG0hvpMn+7ePNI=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
