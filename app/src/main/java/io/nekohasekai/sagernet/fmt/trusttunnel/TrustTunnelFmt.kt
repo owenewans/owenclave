@@ -107,6 +107,7 @@ fun TrustTunnelBean.toUri(): String {
         if (name.isNotEmpty()) {
             writeTLV(Tag.Name.code, name.toByteArray())
         }
+        writeTLV(Tag.Version.code, byteArrayOf(Version.Version1.code))
     }
     return "tt://?" + Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayBuilder.toByteArray())
 }
