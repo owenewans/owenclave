@@ -443,42 +443,43 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                             addProperty("xPaddingBytes", it)
                         }
                         opts.getBoolean("x-padding-obfs-mode")?.also {
-                            opts.getString("x-padding-key")?.also {
-                                addProperty("xPaddingKey", it)
-                            }
-                            opts.getString("x-padding-header")?.also {
-                                addProperty("xPaddingHeader", it)
-                            }
-                            opts.getString("x-padding-placement")?.also {
-                                addProperty("xPaddingPlacement", it)
-                            }
-                            opts.getString("x-padding-method")?.also {
-                                addProperty("xPaddingMethod", it)
-                            }
-                            opts.getString("uplink-http-method")?.also {
-                                addProperty("uplinkHTTPMethod", it)
-                            }
-                            opts.getString("session-placement")?.also {
-                                addProperty("sessionPlacement", it)
-                            }
-                            opts.getString("session-key")?.also {
-                                addProperty("sessionKey", it)
-                            }
-                            opts.getString("seq-placement")?.also {
-                                addProperty("seqPlacement", it)
-                            }
-                            opts.getString("seq-key")?.also {
-                                addProperty("seqKey", it)
-                            }
-                            opts.getString("uplink-data-placement")?.also {
-                                addProperty("uplinkDataPlacement", it)
-                            }
-                            opts.getString("uplink-data-key")?.also {
-                                addProperty("uplinkDataKey", it)
-                            }
-                            opts.getString("uplink-chunk-size")?.also {
-                                addProperty("uplinkChunkSize", it)
-                            }
+                            addProperty("xPaddingObfsMode", it)
+                        }
+                        opts.getString("x-padding-key")?.also {
+                            addProperty("xPaddingKey", it)
+                        }
+                        opts.getString("x-padding-header")?.also {
+                            addProperty("xPaddingHeader", it)
+                        }
+                        opts.getString("x-padding-placement")?.also {
+                            addProperty("xPaddingPlacement", it)
+                        }
+                        opts.getString("x-padding-method")?.also {
+                            addProperty("xPaddingMethod", it)
+                        }
+                        opts.getString("uplink-http-method")?.also {
+                            addProperty("uplinkHTTPMethod", it)
+                        }
+                        opts.getString("session-placement")?.also {
+                            addProperty("sessionPlacement", it)
+                        }
+                        opts.getString("session-key")?.also {
+                            addProperty("sessionKey", it)
+                        }
+                        opts.getString("seq-placement")?.also {
+                            addProperty("seqPlacement", it)
+                        }
+                        opts.getString("seq-key")?.also {
+                            addProperty("seqKey", it)
+                        }
+                        opts.getString("uplink-data-placement")?.also {
+                            addProperty("uplinkDataPlacement", it)
+                        }
+                        opts.getString("uplink-data-key")?.also {
+                            addProperty("uplinkDataKey", it)
+                        }
+                        opts.getString("uplink-chunk-size")?.also {
+                            addProperty("uplinkChunkSize", it)
                         }
                     }.takeIf { !it.isEmpty }?.also {
                         bean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(it)
