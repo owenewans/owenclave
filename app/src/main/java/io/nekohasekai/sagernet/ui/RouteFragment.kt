@@ -187,6 +187,7 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                                         domains = Gson().fromJson(it, Array<String>::class.java).mapNotNull { it.trim().ifBlank { null } }.joinToString("\n")
                                     }
                                     rawRule.get("ip")?.takeIf { !it.isJsonNull }?.let {
+                                        // Fuck https://github.com/XTLS/Xray-core/pull/5951, I don't care about it.
                                         ip = Gson().fromJson(it, Array<String>::class.java).mapNotNull { it.trim().ifBlank { null } }.joinToString("\n")
                                     }
                                     port = rawRule.get("port")?.takeIf { !it.isJsonNull }?.asString?.trim() ?: ""
@@ -198,6 +199,9 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                                     }
                                     rawRule.get("protocol")?.takeIf { !it.isJsonNull }?.let {
                                         protocol = Gson().fromJson(it, Array<String>::class.java).mapNotNull { it.trim().ifBlank { null } }.joinToString("\n")
+                                    }
+                                    rawRule.get("process")?.takeIf { !it.isJsonNull }?.let {
+                                        packages = Gson().fromJson(it, Array<String>::class.java).mapNotNull { it.trim().ifBlank { null } }
                                     }
                                 })
                             }
@@ -242,7 +246,14 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                                         }
                                     }
                                 }
-                                if (rule.domains.isEmpty() && rule.ip.isEmpty() && rule.port.isEmpty() && protocols.isEmpty) {
+                                val processes = JsonArray().apply {
+                                    if (rule.customPackageNames.isNotEmpty()) {
+                                        rule.customPackageNames.forEach { if (it.toIntOrNull() != null) add(it) }
+                                    } else if (rule.packages.isNotEmpty()) {
+                                        rule.packages.forEach { add(it) }
+                                    }
+                                }
+                                if (rule.domains.isEmpty() && rule.ip.isEmpty() && rule.port.isEmpty() && protocols.isEmpty && processes.isEmpty) {
                                     continue
                                 }
                                 jsonArray.add(JsonObject().apply {
@@ -278,6 +289,9 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                                     }
                                     if (!protocols.isEmpty) {
                                         add("protocol", protocols)
+                                    }
+                                    if (!processes.isEmpty) {
+                                        add("process", processes)
                                     }
                                 })
                             }
