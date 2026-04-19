@@ -396,7 +396,7 @@
     <string name="root_ca_system">Sistema</string>
     <string name="udp_over_tcp">UDP sobre TCP</string>
     <string name="tuic_udp_relay_mode">Modo de retransmisión UDP</string>
-    <string name="congestion_control">Controlador de congestión</string>
+    <string name="congestion_control">Control de congestión</string>
     <string name="tuic_disable_sni">Desactivar SNI</string>
     <string name="flow">Flow</string>
     <string name="ws_max_early_data">Datos iniciales máximos</string>
@@ -571,4 +571,9 @@
     <string name="mieru_traffic_pattern">Patrón de tráfico</string>
     <string name="server_name_to_verify">ServerNameToVerify</string>
     <string name="require_socks">Activar SOCKS5 de entrada</string>
+    <string name="insecure_warning_detail">La seguridad de este perfil es equivalente a la del texto sin cifrar.\n\nEsta advertencia se muestra porque la opción \"Advertencias de seguridad\" está activada.</string>
+    <string name="hysteria_hop_interval_min">Intervalo mínimo de salto de puerto (s)</string>
+    <string name="hysteria_hop_interval_max">Intervalo máximo de salto de puerto (s)</string>
+    <string name="hysteria_bbr_profile">Perfil BBR</string>
+    <string name="custom_package_name_or_uid">Nombre de paquete personalizado o UID</string>
 </resources>
