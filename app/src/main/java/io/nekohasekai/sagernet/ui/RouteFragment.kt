@@ -238,17 +238,18 @@ class RouteFragment : ToolbarFragment(R.layout.layout_route), Toolbar.OnMenuItem
                         if (rules.isNotEmpty()) {
                             val jsonArray = JsonArray()
                             for (rule in rules) {
-                                val protocols = JsonArray()
-                                if (rule.protocol.isNotEmpty()) {
-                                    rule.protocol.listByLineOrComma().forEach {
-                                        when (it) {
-                                            "http", "tls", "quic", "bittorrent" -> protocols.add(it)
+                                val protocols = JsonArray().apply {
+                                    if (rule.protocol.isNotEmpty()) {
+                                        rule.protocol.listByLineOrComma().forEach {
+                                            when (it) {
+                                                "http", "tls", "quic", "bittorrent" -> add(it)
+                                            }
                                         }
                                     }
                                 }
                                 val processes = JsonArray().apply {
                                     if (rule.customPackageNames.isNotEmpty()) {
-                                        rule.customPackageNames.forEach { if (it.toIntOrNull() != null) add(it) }
+                                        rule.customPackageNames.forEach { if (it.toIntOrNull() == null) add(it) }
                                     } else if (rule.packages.isNotEmpty()) {
                                         rule.packages.forEach { add(it) }
                                     }
