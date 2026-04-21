@@ -20,6 +20,7 @@
 
 package io.nekohasekai.sagernet.ui
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.graphics.Typeface
 import android.os.Bundle
@@ -50,6 +51,7 @@ class ProbeCertActivity : ThemedActivity() {
 
     private lateinit var binding: LayoutProbeCertBinding
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -196,45 +198,28 @@ class ProbeCertActivity : ThemedActivity() {
             }
             return
         }
-        if (SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks && binding.probeCertProtocol.selectedItemPosition == 1) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@ProbeCertActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("SOCKS inbound is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
-        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.requireSocks && !DataStore.socksUDP && binding.probeCertProtocol.selectedItemPosition == 1) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@ProbeCertActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("SOCKS inbound UDP is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
         binding.waitLayout.isVisible = true
         runOnDefaultDispatcher {
-            val result = Libsagernetcore.probeCert(
-                binding.probeCertServer.text.toString(),
-                port,
-                binding.probeCertServerName.text.toString(),
-                binding.probeCertAlpn.text.toString(),
-                when (binding.probeCertProtocol.selectedItemPosition) {
-                    0 -> "tls"
-                    1 -> "quic"
-                    else -> error("impossible")
-                },
-                SagerNet.started && DataStore.startedProfile > 0 && DataStore.requireSocks,
-                if (DataStore.requireSocks) DataStore.socksPort else 0,
-                if (DataStore.requireSocks) DataStore.socksUsername else "",
-                if (DataStore.requireSocks) DataStore.socksPassword else "",
-                SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks,
-                if (!DataStore.requireSocks) SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path" else "",
-            )
+            val certProber = Libsagernetcore.newCertProber().apply {
+                if (SagerNet.started && DataStore.startedProfile > 0) {
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
+                }
+            }
+            val result = when (binding.probeCertProtocol.selectedItemPosition) {
+                0 -> certProber.probeTLS(
+                    binding.probeCertServer.text.toString(),
+                    port,
+                    binding.probeCertServerName.text.toString(),
+                    binding.probeCertAlpn.text.toString(),
+                )
+                1 -> certProber.probeQUIC(
+                    binding.probeCertServer.text.toString(),
+                    port,
+                    binding.probeCertServerName.text.toString(),
+                    binding.probeCertAlpn.text.toString(),
+                )
+                else -> error("impossible")
+            }
             onMainDispatcher {
                 binding.waitLayout.isVisible = false
                 if (result.error.isNotEmpty()) {

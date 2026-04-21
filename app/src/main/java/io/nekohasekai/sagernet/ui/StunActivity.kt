@@ -29,14 +29,12 @@ import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.databinding.LayoutStunBinding
 import io.nekohasekai.sagernet.ktx.PUBLIC_STUN_SERVERS
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
-import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.noties.markwon.Markwon
 import libsagernetcore.Libsagernetcore
 
@@ -112,49 +110,13 @@ class StunActivity : ThemedActivity() {
     }
 
     fun doTest() {
-        if (SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@StunActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("SOCKS inbound is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
-        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.requireSocks && !DataStore.socksUDP) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@StunActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("SOCKS inbound UDP is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
-        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR && !DataStore.requireDnsInbound) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@StunActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("DNS inbound is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
             val stunClient = Libsagernetcore.newStunClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isNotEmpty()) {
-                        useSocks5WithAuth(DataStore.socksPort, DataStore.socksUsername, DataStore.socksPassword)
-                    } else {
-                        useSocks5(DataStore.socksPort)
-                    }
-                    if (DataStore.tunImplementation == TunImplementation.GVISOR) {
-                        useDNS(DataStore.localDNSPort)
-                    }
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
+                    useDNS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path")
                 }
             }
             val result = stunClient.stunTest(binding.natStunServer.text.toString())
@@ -179,49 +141,13 @@ class StunActivity : ThemedActivity() {
     }
 
     fun doLegacyTest() {
-        if (SagerNet.started && DataStore.startedProfile > 0 && !DataStore.requireSocks) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@StunActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("SOCKS inbound is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
-        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.requireSocks && !DataStore.socksUDP) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@StunActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("SOCKS inbound UDP is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
-        if (SagerNet.started && DataStore.startedProfile > 0 && DataStore.tunImplementation == TunImplementation.GVISOR && !DataStore.requireDnsInbound) {
-            runOnMainDispatcher {
-                AlertDialog.Builder(this@StunActivity)
-                    .setTitle(R.string.error_title)
-                    .setMessage("DNS inbound is disabled")
-                    .setPositiveButton(android.R.string.ok) { _, _ -> }
-                    .runCatching { show() }
-            }
-            return
-        }
         binding.waitLayout.isVisible = true
         binding.resultLayout.isVisible = false
         runOnDefaultDispatcher {
             val stunClient = Libsagernetcore.newStunClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isNotEmpty()) {
-                        useSocks5WithAuth(DataStore.socksPort, DataStore.socksUsername, DataStore.socksPassword)
-                    } else {
-                        useSocks5(DataStore.socksPort)
-                    }
-                    if (DataStore.tunImplementation == TunImplementation.GVISOR) {
-                        useDNS(DataStore.localDNSPort)
-                    }
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
+                    useDNS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path")
                 }
             }
             val result = stunClient.stunLegacyTest(binding.natStunServer.text.toString())

@@ -286,8 +286,6 @@ fun buildV2RayConfig(
     val indexMap = ArrayList<IndexEntity>()
     var requireWs = false
     var requireSh = false
-    val requireHttp = !forTest && DataStore.requireHttp
-    val requireTransproxy = if (forTest) false else DataStore.requireTransproxy
     val destinationOverride = DataStore.destinationOverride
     val trafficStatistics = !forTest && DataStore.profileTrafficStatistics
     var hasTagDirect = false
@@ -358,129 +356,111 @@ fun buildV2RayConfig(
         }
         inbounds = mutableListOf()
 
-        if (!forTest) inbounds.add(InboundObject().apply {
-            tag = TAG_SOCKS
-            if (DataStore.requireSocks) {
-                listen = bind
-                port = DataStore.socksPort
-            } else {
-                val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path"
-                listen = path
-                if (!forExport) {
+        if (!forTest) {
+            if (!forExport) {
+                inbounds.add(InboundObject().apply {
+                    tag = "ipc-in"
+                    protocol = "trojan"
+                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path"
                     val udsFile = File(path)
                     if (udsFile.exists()) udsFile.delete()
-                }
-            }
-            protocol = "socks"
-            if (DataStore.requireSocks) {
-                settings = LazyInboundConfigurationObject(this, SocksInboundConfigurationObject().apply {
-                    if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
-                        auth = "noauth"
-                    } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
-                        error("username is empty but password is not empty for SOCKS5 inbound")
-                    } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
-                        error("username is not empty but password is empty for SOCKS5 inbound")
-                    } else {
-                        auth = "password"
-                        accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
-                            user = DataStore.socksUsername
-                            pass = DataStore.socksPassword
+                    listen = path
+                    settings = LazyInboundConfigurationObject(this, V2RayConfig.TrojanInboundConfigurationObject().apply {
+                        clients = listOf(V2RayConfig.TrojanInboundConfigurationObject.ClientObject().apply {
+                            password = ""
                         })
+                    })
+                    if (trafficSniffing || useFakeDns) {
+                        sniffing = InboundObject.SniffingObject().apply {
+                            enabled = true
+                            destOverride = when {
+                                useFakeDns && !trafficSniffing -> listOf("fakedns")
+                                useFakeDns -> listOf("fakedns", "http", "tls", "quic")
+                                else -> listOf("http", "tls", "quic")
+                            }
+                            metadataOnly = useFakeDns && !trafficSniffing
+                            routeOnly = !destinationOverride
+                        }
                     }
-                    udp = DataStore.socksUDP
                 })
             }
-            if (trafficSniffing || useFakeDns) {
-                sniffing = InboundObject.SniffingObject().apply {
-                    enabled = true
-                    destOverride = when {
-                        useFakeDns && !trafficSniffing -> listOf("fakedns")
-                        useFakeDns -> listOf("fakedns", "http", "tls", "quic")
-                        else -> listOf("http", "tls", "quic")
-                    }
-                    metadataOnly = useFakeDns && !trafficSniffing
-                    routeOnly = !destinationOverride
-                }
-            }
-            if (shouldDumpUID) dumpUID = true
-        })
-
-        if (requireHttp) {
-            inbounds.add(InboundObject().apply {
-                tag = TAG_HTTP
-                listen = bind
-                port = DataStore.httpPort
-                protocol = "http"
-                settings = LazyInboundConfigurationObject(this,
-                    HTTPInboundConfigurationObject().apply {
-                        allowTransparent = true
-                        if (DataStore.httpUsername.isNotEmpty() || DataStore.httpPassword.isNotEmpty()) {
-                            accounts = listOf(HTTPInboundConfigurationObject.AccountObject().apply {
-                                user = DataStore.httpUsername
-                                pass = DataStore.httpPassword
+            if (DataStore.requireSocks) {
+                inbounds.add(InboundObject().apply {
+                    tag = TAG_SOCKS
+                    listen = bind
+                    port = DataStore.socksPort
+                    protocol = "socks"
+                    settings = LazyInboundConfigurationObject(this, SocksInboundConfigurationObject().apply {
+                        if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
+                            auth = "noauth"
+                        } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
+                            error("username is empty but password is not empty for SOCKS5 inbound")
+                        } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
+                            error("username is not empty but password is empty for SOCKS5 inbound")
+                        } else {
+                            auth = "password"
+                            accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
+                                user = DataStore.socksUsername
+                                pass = DataStore.socksPassword
                             })
                         }
+                        udp = DataStore.socksUDP
                     })
-                if (trafficSniffing || useFakeDns) {
-                    sniffing = InboundObject.SniffingObject().apply {
-                        enabled = true
-                        destOverride = when {
-                            useFakeDns && !trafficSniffing -> listOf("fakedns")
-                            useFakeDns -> listOf("fakedns", "http", "tls")
-                            else -> listOf("http", "tls")
-                        }
-                        metadataOnly = useFakeDns && !trafficSniffing
-                        routeOnly = !destinationOverride
-                    }
-                }
-                if (shouldDumpUID) dumpUID = true
-            })
-        }
-
-        if (requireTransproxy) {
-            inbounds.add(InboundObject().apply {
-                tag = TAG_TRANS
-                listen = bind
-                port = DataStore.transproxyPort
-                protocol = "dokodemo-door"
-                settings = LazyInboundConfigurationObject(this,
-                    DokodemoDoorInboundConfigurationObject().apply {
-                        // network = "tcp,udp"
-                        network = "tcp"
-                        followRedirect = true
-                    })
-                if (trafficSniffing || useFakeDns) {
-                    sniffing = InboundObject.SniffingObject().apply {
-                        enabled = true
-                        destOverride = when {
-                            useFakeDns && !trafficSniffing -> listOf("fakedns")
-                            // useFakeDns -> listOf("fakedns", "http", "tls", "quic")
-                            useFakeDns -> listOf("fakedns", "http", "tls")
-                            // else -> listOf("http", "tls", "quic")
-                            else -> listOf("http", "tls")
-                        }
-                        metadataOnly = useFakeDns && !trafficSniffing
-                        routeOnly = !destinationOverride
-                    }
-                }
-                /*when (DataStore.transproxyMode) {
-                    1 -> streamSettings = StreamSettingsObject().apply {
-                        sockopt = StreamSettingsObject.SockoptObject().apply {
-                            tproxy = "tproxy"
+                    if (trafficSniffing || useFakeDns) {
+                        sniffing = InboundObject.SniffingObject().apply {
+                            enabled = true
+                            destOverride = when {
+                                useFakeDns && !trafficSniffing -> listOf("fakedns")
+                                useFakeDns -> listOf("fakedns", "http", "tls", "quic")
+                                else -> listOf("http", "tls", "quic")
+                            }
+                            metadataOnly = useFakeDns && !trafficSniffing
+                            routeOnly = !destinationOverride
                         }
                     }
-                }*/
-                if (shouldDumpUID) dumpUID = true
-            })
-            if (bind == LOCALHOST) {
+                    if (shouldDumpUID) dumpUID = true
+                })
+            }
+            if (DataStore.requireHttp) {
                 inbounds.add(InboundObject().apply {
-                    tag = TAG_TRANS6
-                    listen = LOCALHOST6
+                    tag = TAG_HTTP
+                    listen = bind
+                    port = DataStore.httpPort
+                    protocol = "http"
+                    settings = LazyInboundConfigurationObject(this,
+                        HTTPInboundConfigurationObject().apply {
+                            allowTransparent = true
+                            if (DataStore.httpUsername.isNotEmpty() || DataStore.httpPassword.isNotEmpty()) {
+                                accounts = listOf(HTTPInboundConfigurationObject.AccountObject().apply {
+                                    user = DataStore.httpUsername
+                                    pass = DataStore.httpPassword
+                                })
+                            }
+                        })
+                    if (trafficSniffing || useFakeDns) {
+                        sniffing = InboundObject.SniffingObject().apply {
+                            enabled = true
+                            destOverride = when {
+                                useFakeDns && !trafficSniffing -> listOf("fakedns")
+                                useFakeDns -> listOf("fakedns", "http", "tls")
+                                else -> listOf("http", "tls")
+                            }
+                            metadataOnly = useFakeDns && !trafficSniffing
+                            routeOnly = !destinationOverride
+                        }
+                    }
+                    if (shouldDumpUID) dumpUID = true
+                })
+            }
+
+            if (DataStore.requireTransproxy) {
+                inbounds.add(InboundObject().apply {
+                    tag = TAG_TRANS
+                    listen = bind
                     port = DataStore.transproxyPort
                     protocol = "dokodemo-door"
                     settings = LazyInboundConfigurationObject(this,
                         DokodemoDoorInboundConfigurationObject().apply {
-                            // network = "tcp,udp"
                             network = "tcp"
                             followRedirect = true
                         })
@@ -489,24 +469,41 @@ fun buildV2RayConfig(
                             enabled = true
                             destOverride = when {
                                 useFakeDns && !trafficSniffing -> listOf("fakedns")
-                                // useFakeDns -> listOf("fakedns", "http", "tls", "quic")
                                 useFakeDns -> listOf("fakedns", "http", "tls")
-                                // else -> listOf("http", "tls", "quic")
                                 else -> listOf("http", "tls")
                             }
                             metadataOnly = useFakeDns && !trafficSniffing
                             routeOnly = !destinationOverride
                         }
-                        /*when (DataStore.transproxyMode) {
-                            1 -> streamSettings = StreamSettingsObject().apply {
-                                sockopt = StreamSettingsObject.SockoptObject().apply {
-                                    tproxy = "tproxy"
-                                }
-                            }
-                        }*/
                     }
                     if (shouldDumpUID) dumpUID = true
                 })
+                if (bind == LOCALHOST) {
+                    inbounds.add(InboundObject().apply {
+                        tag = TAG_TRANS6
+                        listen = LOCALHOST6
+                        port = DataStore.transproxyPort
+                        protocol = "dokodemo-door"
+                        settings = LazyInboundConfigurationObject(this,
+                            DokodemoDoorInboundConfigurationObject().apply {
+                                network = "tcp"
+                                followRedirect = true
+                            })
+                        if (trafficSniffing || useFakeDns) {
+                            sniffing = InboundObject.SniffingObject().apply {
+                                enabled = true
+                                destOverride = when {
+                                    useFakeDns && !trafficSniffing -> listOf("fakedns")
+                                    useFakeDns -> listOf("fakedns", "http", "tls")
+                                    else -> listOf("http", "tls")
+                                }
+                                metadataOnly = useFakeDns && !trafficSniffing
+                                routeOnly = !destinationOverride
+                            }
+                        }
+                        if (shouldDumpUID) dumpUID = true
+                    })
+                }
             }
         }
 
@@ -2338,6 +2335,24 @@ fun buildV2RayConfig(
             protocol = "blackhole"
         })
 
+        if (!forTest && !forExport) {
+            inbounds.add(InboundObject().apply {
+                tag = TAG_DNS_IN
+                val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path"
+                val udsFile = File(path)
+                if (udsFile.exists()) udsFile.delete()
+                listen = path
+                protocol = "dokodemo-door"
+                settings = LazyInboundConfigurationObject(this,
+                    DokodemoDoorInboundConfigurationObject().apply {
+                        address = LOCALHOST // placeholder, all queries are handled internally
+                        network = "unix"
+                        port = 53 // placeholder, all queries are handled internally
+                    }
+                )
+            })
+        }
+
         if (!forTest && DataStore.requireDnsInbound && DataStore.localDNSPort > 0) {
             inbounds.add(InboundObject().apply {
                 tag = TAG_DNS_IN
@@ -2346,7 +2361,7 @@ fun buildV2RayConfig(
                 protocol = "dokodemo-door"
                 settings = LazyInboundConfigurationObject(this,
                     DokodemoDoorInboundConfigurationObject().apply {
-                        address = bind // placeholder, all queries are handled internally
+                        address = LOCALHOST // placeholder, all queries are handled internally
                         network = "tcp,udp"
                         port = 53 // placeholder, all queries are handled internally
                     }
@@ -2685,7 +2700,6 @@ fun buildV2RayConfig(
 
 fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: Boolean = false): V2rayBuildResult {
     val bean = proxy.configBean!!
-    val bind = LOCALHOST
     val config = parseJson(bean.content, lenient = true).asJsonObject
 
     // TODO: add fake DNS pool CIDR to TUN route address
@@ -2759,108 +2773,45 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
         ?.map { gson.fromJson(it.toString(), InboundObject::class.java) }
         ?.toMutableList() ?: ArrayList()
 
-    var socksInbound = inbounds.find { it.tag == TAG_SOCKS }?.apply {
-        if (protocol != "socks") error("Inbound $tag with type $protocol, excepted socks.")
-    }
-    if (socksInbound == null) {
-        val socksInbounds = inbounds.filter { it.protocol == "socks" }
-        if (socksInbounds.isNotEmpty()) {
-            socksInbound = socksInbounds[0]
-        }
-    }
-
-    if (!forTest) {
-        if (socksInbound != null) {
-            socksInbound.apply {
-                init()
-                streamSettings = null
-                if (DataStore.requireSocks) {
-                    listen = bind
-                    port = DataStore.socksPort
-                } else {
-                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path"
-                    listen = path
-                    if (!forExport) {
-                        val udsFile = File(path)
-                        if (udsFile.exists()) udsFile.delete()
+    if (!forTest && !forExport) {
+        inbounds.add(InboundObject().apply {
+            tag = "ipc-in"
+            protocol = "trojan"
+            val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path"
+            val udsFile = File(path)
+            if (udsFile.exists()) udsFile.delete()
+            listen = path
+            if (DataStore.trafficSniffing || isConfigWithSniffing || useFakeDns) {
+                sniffing = InboundObject.SniffingObject().apply {
+                    enabled = true
+                    val protocols = mutableListOf<String>().apply {
+                        if (useFakeDns) add("fakedns")
+                        if (DataStore.trafficSniffing) addAll(listOf("http", "tls", "quic"))
                     }
-                }
-                val socksInboundConfigurationObject = settings?.value as? SocksInboundConfigurationObject ?: SocksInboundConfigurationObject()
-                socksInboundConfigurationObject.apply {
-                    if (!DataStore.requireSocks) {
-                        auth = "noauth"
-                        accounts = null
-                        ip = null
-                        udp = null
-                    } else {
-                        if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
-                            auth = "noauth"
-                            accounts = null
-                        } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
-                            error("username is empty but password is not empty for SOCKS5 inbound")
-                        } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
-                            error("username is not empty but password is empty for SOCKS5 inbound")
-                        } else {
-                            auth = "password"
-                            accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
-                                user = DataStore.socksUsername
-                                pass = DataStore.socksPassword
-                            })
-                        }
+                    if (protocols.isNotEmpty()) {
+                        destOverride = protocols
                     }
+                    metadataOnly = useFakeDns && !DataStore.trafficSniffing && !isConfigWithSniffing
+                    routeOnly = DataStore.trafficSniffing && !DataStore.destinationOverride
                 }
-                settings = LazyInboundConfigurationObject(this, socksInboundConfigurationObject)
             }
-        } else {
-            inbounds.add(InboundObject().apply {
-                tag = TAG_SOCKS
-                protocol = "socks"
-                if (DataStore.requireSocks) {
-                    listen = bind
-                    port = DataStore.socksPort
-                } else {
-                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/socks_path"
-                    listen = path
-                    if (!forExport) {
-                        val udsFile = File(path)
-                        if (udsFile.exists()) udsFile.delete()
-                    }
+            if (shouldDumpUID) dumpUID = true
+        })
+        inbounds.add(InboundObject().apply {
+            tag = TAG_DNS_IN
+            val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path"
+            val udsFile = File(path)
+            if (udsFile.exists()) udsFile.delete()
+            listen = path
+            protocol = "dokodemo-door"
+            settings = LazyInboundConfigurationObject(this,
+                DokodemoDoorInboundConfigurationObject().apply {
+                    address = LOCALHOST // placeholder, all queries are handled internally
+                    network = "unix"
+                    port = 53 // placeholder, all queries are handled internally
                 }
-                if (DataStore.requireSocks) {
-                    settings = LazyInboundConfigurationObject(this, SocksInboundConfigurationObject().apply {
-                    if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isEmpty()) {
-                            auth = "noauth"
-                        } else if (DataStore.socksUsername.isEmpty() && DataStore.socksPassword.isNotEmpty()) {
-                            error("username is empty but password is not empty for SOCKS5 inbound")
-                        } else if (DataStore.socksUsername.isNotEmpty() && DataStore.socksPassword.isEmpty()) {
-                            error("username is not empty but password is empty for SOCKS5 inbound")
-                        } else {
-                            auth = "password"
-                            accounts = listOf(SocksInboundConfigurationObject.AccountObject().apply {
-                                user = DataStore.socksUsername
-                                pass = DataStore.socksPassword
-                            })
-                        }
-                        udp = DataStore.socksUDP
-                    })
-                }
-                if (DataStore.trafficSniffing || isConfigWithSniffing || useFakeDns) {
-                    sniffing = InboundObject.SniffingObject().apply {
-                        enabled = true
-                        val protocols = mutableListOf<String>().apply {
-                            if (useFakeDns) add("fakedns")
-                            if (DataStore.trafficSniffing) addAll(listOf("http", "tls", "quic"))
-                        }
-                        if (protocols.isNotEmpty()) {
-                            destOverride = protocols
-                        }
-                        metadataOnly = useFakeDns && !DataStore.trafficSniffing && !isConfigWithSniffing
-                        routeOnly = DataStore.trafficSniffing && !DataStore.destinationOverride
-                    }
-                }
-                if (shouldDumpUID) dumpUID = true
-            })
-        }
+            )
+        })
     }
 
     val outbounds = config.getArray("outbounds")?.map {

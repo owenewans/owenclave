@@ -2,7 +2,7 @@ module libsagernetcore
 
 go 1.25.0
 
-require github.com/dyhkwong/libsagernetcore v0.0.0-20260418165228-92c405cc7602
+require github.com/dyhkwong/libsagernetcore v0.0.0-20260421235355-f4ea9be004ce
 
 require (
 	github.com/adrg/xdg v0.5.3 // indirect
@@ -47,7 +47,6 @@ require (
 	github.com/v2fly/ss-bloomring v0.0.0-20210312155135-28617310f63e // indirect
 	github.com/v2fly/struc v0.0.0-20241227015403-8e8fa1badfd6 // indirect
 	github.com/v2fly/v2ray-core/v5 v5.49.0 // indirect
-	github.com/wzshiming/socks5 v0.7.0 // indirect
 	github.com/xtaci/smux v1.5.15 // indirect
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.50.0 // indirect
