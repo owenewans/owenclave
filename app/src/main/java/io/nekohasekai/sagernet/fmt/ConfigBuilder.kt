@@ -363,16 +363,11 @@ fun buildV2RayConfig(
             if (!forExport) {
                 inbounds.add(InboundObject().apply {
                     tag = "ipc-in"
-                    protocol = "trojan"
-                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path"
+                    protocol = "ipc"
+                    val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock"
                     val udsFile = File(path)
                     if (udsFile.exists()) udsFile.delete()
                     listen = path
-                    settings = LazyInboundConfigurationObject(this, V2RayConfig.TrojanInboundConfigurationObject().apply {
-                        clients = listOf(V2RayConfig.TrojanInboundConfigurationObject.ClientObject().apply {
-                            password = ""
-                        })
-                    })
                     if (trafficSniffing || useFakeDns) {
                         sniffing = InboundObject.SniffingObject().apply {
                             enabled = true
@@ -980,6 +975,9 @@ fun buildV2RayConfig(
                                                 }
                                                 if (bean.realityShortId.isNotEmpty()) {
                                                     shortId = bean.realityShortId
+                                                }
+                                                if (bean.realityMldsa65Verify.isNotEmpty()) {
+                                                    mldsa65Verify = bean.realityMldsa65Verify
                                                 }
                                                 if (bean.realityFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.realityFingerprint
@@ -2451,16 +2449,15 @@ fun buildV2RayConfig(
         if (!forTest && !forExport) {
             inbounds.add(InboundObject().apply {
                 tag = TAG_DNS_IN
-                val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path"
+                val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock"
                 val udsFile = File(path)
                 if (udsFile.exists()) udsFile.delete()
                 listen = path
                 protocol = "dokodemo-door"
                 settings = LazyInboundConfigurationObject(this,
                     DokodemoDoorInboundConfigurationObject().apply {
-                        address = LOCALHOST // placeholder, all queries are handled internally
+                        address = "/ipc_dns.sock" // placeholder, all queries are handled internally
                         network = "unix"
-                        port = 53 // placeholder, all queries are handled internally
                     }
                 )
             })
@@ -2889,8 +2886,8 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
     if (!forTest && !forExport) {
         inbounds.add(InboundObject().apply {
             tag = "ipc-in"
-            protocol = "trojan"
-            val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path"
+            protocol = "ipc"
+            val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock"
             val udsFile = File(path)
             if (udsFile.exists()) udsFile.delete()
             listen = path
@@ -2912,16 +2909,15 @@ fun buildCustomConfig(proxy: ProxyEntity, forTest: Boolean = false, forExport: B
         })
         inbounds.add(InboundObject().apply {
             tag = TAG_DNS_IN
-            val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path"
+            val path = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock"
             val udsFile = File(path)
             if (udsFile.exists()) udsFile.delete()
             listen = path
             protocol = "dokodemo-door"
             settings = LazyInboundConfigurationObject(this,
                 DokodemoDoorInboundConfigurationObject().apply {
-                    address = LOCALHOST // placeholder, all queries are handled internally
+                    address = "/ipc_dns.sock" // placeholder, all queries are handled internally
                     network = "unix"
-                    port = 53 // placeholder, all queries are handled internally
                 }
             )
         })

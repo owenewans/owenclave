@@ -202,7 +202,7 @@ class ProbeCertActivity : ThemedActivity() {
         runOnDefaultDispatcher {
             val certProber = Libsagernetcore.newCertProber().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
                 }
             }
             val result = when (binding.probeCertProtocol.selectedItemPosition) {

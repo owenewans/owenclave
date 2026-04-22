@@ -115,8 +115,8 @@ class StunActivity : ThemedActivity() {
         runOnDefaultDispatcher {
             val stunClient = Libsagernetcore.newStunClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
-                    useDNS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path")
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                    useDNSUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock")
                 }
             }
             val result = stunClient.stunTest(binding.natStunServer.text.toString())
@@ -146,8 +146,8 @@ class StunActivity : ThemedActivity() {
         runOnDefaultDispatcher {
             val stunClient = Libsagernetcore.newStunClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
-                    useDNS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns_path")
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                    useDNSUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock")
                 }
             }
             val result = stunClient.stunLegacyTest(binding.natStunServer.text.toString())

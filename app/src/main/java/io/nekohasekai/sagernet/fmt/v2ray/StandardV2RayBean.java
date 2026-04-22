@@ -26,7 +26,6 @@ import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean;
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean;
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean;
-import kotlin.io.encoding.Base64;
 import libsagernetcore.Libsagernetcore;
 
 public abstract class StandardV2RayBean extends AbstractBean {
@@ -70,6 +69,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     public String realityPublicKey;
     public String realityShortId;
+    public String realityMldsa65Verify;
     public String realityFingerprint;
     public Boolean realityDisableX25519Mlkem768;
 
@@ -146,6 +146,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         if (realityPublicKey == null) realityPublicKey = "";
         if (realityShortId == null) realityShortId = "";
+        if (realityMldsa65Verify == null) realityMldsa65Verify = "";
         if (realityFingerprint == null) realityFingerprint = "chrome";
         if (realityDisableX25519Mlkem768 == null) realityDisableX25519Mlkem768 = false;
 
@@ -171,7 +172,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(35);
+        output.writeInt(36);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -304,6 +305,8 @@ public abstract class StandardV2RayBean extends AbstractBean {
         output.writeBoolean(singMuxPadding);
 
         output.writeBoolean(echEnabled);
+
+        output.writeString(realityMldsa65Verify);
     }
 
     @Override
@@ -553,6 +556,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
         }
         if (version >= 35) {
             echEnabled = input.readBoolean();
+        }
+        if (version >= 36) {
+            realityMldsa65Verify = input.readString();
         }
     }
 

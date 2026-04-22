@@ -325,6 +325,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverEchConfig by profileCacheStore.string(Key.SERVER_ECH_CONFIG)
     var serverRealityPublicKey by profileCacheStore.string(Key.SERVER_REALITY_PUBLIC_KEY)
     var serverRealityShortId by profileCacheStore.string(Key.SERVER_REALITY_SHORT_ID)
+    var serverRealityMldsa65Verify by profileCacheStore.string(Key.SERVER_REALITY_MLDSA65_VERIFY)
     var serverRealityFingerprint by profileCacheStore.string(Key.SERVER_REALITY_FINGERPRINT)
     var serverRealityDisableX25519Mlkem768 by profileCacheStore.boolean(Key.SERVER_REALITY_DISABLE_X25519MLKEM768)
     var serverGrpcServiceNameCompat by profileCacheStore.boolean(Key.SERVER_GRPC_SERVICE_NAME_COMPAT)

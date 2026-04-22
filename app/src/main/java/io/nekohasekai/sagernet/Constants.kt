@@ -183,6 +183,7 @@ object Key {
 
     const val SERVER_REALITY_PUBLIC_KEY = "serverRealityPublicKey"
     const val SERVER_REALITY_SHORT_ID = "serverRealityShortId"
+    const val SERVER_REALITY_MLDSA65_VERIFY = "serverRealityMldsa65Verify"
     const val SERVER_REALITY_FINGERPRINT = "serverRealityFingerprint"
     const val SERVER_REALITY_DISABLE_X25519MLKEM768 = "serverRealityDisableX25519Mlkem768"
 

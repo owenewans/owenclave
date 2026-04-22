@@ -575,4 +575,5 @@
     <string name="custom_package_name_or_uid">自定义包名或 UID</string>
     <string name="balancer_use_landing_proxy">使用分组落地代理</string>
     <string name="balancer_use_front_proxy">使用分组前置代理</string>
+    <string name="reality_mldsa65_verify">REALITY mldsa65Verify</string>
 </resources>

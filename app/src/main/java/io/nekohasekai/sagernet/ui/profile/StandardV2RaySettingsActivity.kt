@@ -138,6 +138,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         DataStore.serverRealityPublicKey = realityPublicKey
         DataStore.serverRealityShortId = realityShortId
+        DataStore.serverRealityMldsa65Verify = realityMldsa65Verify
         DataStore.serverRealityFingerprint = realityFingerprint
         DataStore.serverRealityDisableX25519Mlkem768 = realityDisableX25519Mlkem768
 
@@ -244,6 +245,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         realityPublicKey = DataStore.serverRealityPublicKey
         realityShortId = DataStore.serverRealityShortId
+        realityMldsa65Verify = DataStore.serverRealityMldsa65Verify
         realityFingerprint = DataStore.serverRealityFingerprint
         realityDisableX25519Mlkem768 = DataStore.serverRealityDisableX25519Mlkem768
 
@@ -306,6 +308,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
     lateinit var realityPublicKey: EditTextPreference
     lateinit var realityShortId: EditTextPreference
+    lateinit var realityMldsa65Verify: EditTextPreference
     lateinit var realityFingerprint: SimpleMenuPreference
     lateinit var realityDisableX25519Mlkem768: SwitchPreference
 
@@ -387,6 +390,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
+        realityMldsa65Verify = findPreference(Key.SERVER_REALITY_MLDSA65_VERIFY)!!
         realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
         realityDisableX25519Mlkem768 = findPreference(Key.SERVER_REALITY_DISABLE_X25519MLKEM768)!!
 
@@ -773,6 +777,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         alpn.isVisible = security == "tls"
         realityPublicKey.isVisible = security == "reality"
         realityShortId.isVisible = security == "reality"
+        realityMldsa65Verify.isVisible = security == "reality"
         utlsFingerprint.isVisible = security == "tls" && (network.value == "tcp" || network.value == "ws"
                 || network.value == "http" || network.value == "meek" || network.value == "httpupgrade"
                 || network.value == "grpc" || network.value == "splithttp" || network.value == "mekya")

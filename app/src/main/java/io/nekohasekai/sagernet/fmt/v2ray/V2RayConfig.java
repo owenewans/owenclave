@@ -284,6 +284,8 @@ public class V2RayConfig {
         @Override
         protected Class<? extends InboundConfigurationObject> getType() {
             switch (ctx.protocol.toLowerCase(Locale.ROOT)) {
+                case "ipc":
+                    return IPCInboundConfigurationObject.class;
                 case "dokodemo-door":
                     return DokodemoDoorInboundConfigurationObject.class;
                 case "http":
@@ -321,6 +323,11 @@ public class V2RayConfig {
     public interface InboundConfigurationObject {
     }
 
+    public static class IPCInboundConfigurationObject implements InboundConfigurationObject {
+
+        public Integer level;
+
+    }
     public static class DokodemoDoorInboundConfigurationObject implements InboundConfigurationObject {
 
         public String address;
@@ -1114,7 +1121,6 @@ public class V2RayConfig {
         public String serverName;
         public Boolean allowInsecure;
         public List<String> alpn;
-        public Boolean enableSessionResumption;
         public List<CertificateObject> certificates;
         public Boolean disableSystemRoot;
         public List<String> pinnedPeerCertificateChainSha256;
@@ -1170,10 +1176,10 @@ public class V2RayConfig {
         public String serverName;
         public String publicKey;
         public String shortId;
+        public String mldsa65Verify;
         public String fingerprint;
         public String version;
         public Boolean disableX25519MLKEM768;
-        public Boolean reenableCHACHA20POLY1305;
 
     }
 

@@ -69,7 +69,7 @@ object RawUpdater : GroupUpdater() {
         } else {
             val response = Libsagernetcore.newHttpClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_path")
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
                 }
             }.newRequest().apply {
                 setURL(subscription.link)

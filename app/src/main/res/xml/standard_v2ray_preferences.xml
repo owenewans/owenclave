@@ -208,6 +208,11 @@
             app:key="serverRealityShortId"
             app:title="@string/reality_short_id"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="serverRealityMldsa65Verify"
+            app:title="@string/reality_mldsa65_verify"
+            app:useSimpleSummaryProvider="true" />
         <com.takisoft.preferencex.SimpleMenuPreference
             app:entries="@array/reality_fingerprint_value"
             app:entryValues="@array/reality_fingerprint_value"

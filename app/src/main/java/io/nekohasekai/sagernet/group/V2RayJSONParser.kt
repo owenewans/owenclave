@@ -187,6 +187,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 realitySettings.getString("shortId")?.also {
                                     v2rayBean.realityShortId = it
                                 }
+                                realitySettings.getString("mldsa65Verify")?.also {
+                                    v2rayBean.realityMldsa65Verify = it
+                                }
                             }
                         }
                     }

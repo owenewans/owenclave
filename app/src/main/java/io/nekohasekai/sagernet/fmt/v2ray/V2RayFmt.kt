@@ -238,6 +238,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             url.queryParameterNotBlank("sid")?.let {
                 bean.realityShortId = it
             }
+            url.queryParameterNotBlank("pqv")?.let {
+                bean.realityMldsa65Verify = it
+            }
             if (bean is VLESSBean) {
                 url.queryParameterNotBlank("flow")?.let {
                     when (it) {
@@ -870,6 +873,9 @@ fun StandardV2RayBean.toUri(): String? {
             builder.addQueryParameter("pbk", realityPublicKey.ifEmpty { error("empty reality public key") })
             if (realityShortId.isNotEmpty()) {
                 builder.addQueryParameter("sid", realityShortId)
+            }
+            if (realityMldsa65Verify.isNotEmpty()) {
+                builder.addQueryParameter("pqv", realityMldsa65Verify)
             }
             builder.addQueryParameter("fp", "chrome") // "若使用 REALITY，此项不可省略。"
             if (this is VLESSBean && flow.isNotEmpty()) {
