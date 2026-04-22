@@ -1351,12 +1351,14 @@ class ConfigurationFragment @JvmOverloads constructor(
             override suspend fun onUpdated(profileId: Long, trafficStats: TrafficStats) {
                 val index = configurationIdList.indexOf(profileId)
                 if (index != -1) {
-                    val holder = layoutManager.findViewByPosition(index)
-                        ?.let { configurationListView.getChildViewHolder(it) } as ConfigurationHolder?
-                    if (holder != null) {
-                        holder.entity.stats = trafficStats
+                    val profile = configurationList[profileId]
+                    if (profile != null) {
+                        profile.stats = trafficStats
                         onMainDispatcher {
-                            holder.bind(holder.entity)
+                            val holder = configurationListView.findViewHolderForAdapterPosition(index) as? ConfigurationHolder
+                            if (holder != null && holder.entity.id == profileId) {
+                                holder.updateTraffic(profile)
+                            }
                         }
                     }
                 }
@@ -1636,6 +1638,49 @@ class ConfigurationFragment @JvmOverloads constructor(
                     }
                 }
 
+            }
+
+            fun updateTraffic(proxyEntity: ProxyEntity) {
+                val parent = parent ?: return
+                if (!::entity.isInitialized) return
+
+                entity.stats = proxyEntity.stats
+
+                var rx = proxyEntity.rx
+                var tx = proxyEntity.tx
+
+                val stats = proxyEntity.stats
+                if (stats != null) {
+                    rx += stats.rxTotal
+                    tx += stats.txTotal
+                }
+
+                val showTraffic = rx + tx != 0L
+                trafficText.isVisible = showTraffic
+                if (showTraffic) {
+                    trafficText.text = view.context.getString(
+                        R.string.traffic,
+                        FormatFileSizeCompat.formatFileSize(view.context, tx, DataStore.useIECUnit),
+                        FormatFileSizeCompat.formatFileSize(view.context, rx, DataStore.useIECUnit)
+                    )
+                }
+
+                var address = proxyEntity.displayAddress()
+                if (proxyEntity.requireBean().name.isEmpty() || !parent.alwaysShowAddress) {
+                    address = ""
+                }
+
+                (trafficText.parent as View).isGone = (!showTraffic || proxyEntity.status <= 0) && address.isEmpty()
+
+                if (proxyEntity.status <= 0) {
+                    if (showTraffic) {
+                        profileStatus.text = trafficText.text
+                        profileStatus.setTextColor(requireContext().getColorAttr(android.R.attr.textColorSecondary))
+                        trafficText.text = ""
+                    } else {
+                        profileStatus.text = ""
+                    }
+                }
             }
 
             fun showCode(link: String) {
