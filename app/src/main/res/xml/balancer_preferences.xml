@@ -33,15 +33,13 @@
         app:defaultValue="false"
         app:icon="@drawable/ic_hardware_router"
         app:key="balancerUseFrontProxy"
-        app:title="@string/balancer_use_front_proxy"
-        app:summary="@string/balancer_use_front_proxy_summary" />
+        app:title="@string/balancer_use_front_proxy" />
 
     <SwitchPreference
         app:defaultValue="false"
         app:icon="@drawable/baseline_public_24"
         app:key="balancerUseLandingProxy"
-        app:title="@string/balancer_use_landing_proxy"
-        app:summary="@string/balancer_use_landing_proxy_summary" />
+        app:title="@string/balancer_use_landing_proxy" />
 
     <EditTextPreference
         app:icon="@drawable/ic_action_delete"

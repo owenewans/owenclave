@@ -573,4 +573,6 @@
     <string name="hysteria_bbr_profile">BBR 配置</string>
     <string name="require_socks">启用 SOCKS5 入站</string>
     <string name="custom_package_name_or_uid">自定义包名或 UID</string>
+    <string name="balancer_use_landing_proxy">使用分组落地代理</string>
+    <string name="balancer_use_front_proxy">使用分组前置代理</string>
 </resources>
