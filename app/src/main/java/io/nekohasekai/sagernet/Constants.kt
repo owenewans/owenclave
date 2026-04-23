@@ -74,6 +74,7 @@ object Key {
     const val SOCKS_USERNAME = "socksUsername"
     const val SOCKS_PASSWORD = "socksPassword"
     const val SOCKS_UDP = "socksUDP"
+    const val SOCKS_UDP_WARNING_DISABLE = "socksUDPWarningDisable"
     const val REQUIRE_HTTP = "requireHttp"
     const val HTTP_USERNAME = "httpUsername"
     const val HTTP_PASSWORD = "httpPassword"

@@ -608,4 +608,5 @@
     <string name="custom_package_name_or_uid">Custom package name or UID</string>
     <string name="udp" translatable="false">UDP</string>
     <string name="reality_mldsa65_verify">REALITY mldsa65Verify</string>
+    <string name="socks5_udp_authentication_warning">SOCKS5 UDP is not protected by username/password authentication. If UDP is enabled, the authentication can be bypassed easily.</string>
 </resources>

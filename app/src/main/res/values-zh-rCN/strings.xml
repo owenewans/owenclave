@@ -576,4 +576,5 @@
     <string name="balancer_use_landing_proxy">使用分组落地代理</string>
     <string name="balancer_use_front_proxy">使用分组前置代理</string>
     <string name="reality_mldsa65_verify">REALITY mldsa65Verify</string>
+    <string name="socks5_udp_authentication_warning">SOCKS5 UDP 不受用户名/密码认证的保护。如果启用 UDP，认证可以被容易地绕过。</string>
 </resources>

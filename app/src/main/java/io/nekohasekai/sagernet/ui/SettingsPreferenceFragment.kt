@@ -391,16 +391,57 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         portSocks5.setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
         portSocks5.isVisible = requireSocks.isChecked
         portSocks5.onPreferenceChangeListener = reloadListener
+        val socks5UDP = findPreference<SwitchPreference>(Key.SOCKS_UDP)!!
         val socks5Username = findPreference<EditTextPreference>(Key.SOCKS_USERNAME)!!
         socks5Username.isVisible = requireSocks.isChecked
-        socks5Username.onPreferenceChangeListener = reloadListener
+        socks5Username.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            if (newValue.isNotEmpty() && socks5UDP.isVisible && socks5UDP.isChecked && !DataStore.socksUDPWarningDisable) runOnMainDispatcher {
+                MaterialAlertDialogBuilder(requireContext()).apply {
+                    setMessage(R.string.socks5_udp_authentication_warning)
+                    setPositiveButton(android.R.string.ok, null)
+                    setNeutralButton(R.string.do_not_show_again, { _, _ ->
+                        DataStore.socksUDPWarningDisable = true
+                    })
+                }.show()
+            }
+            needReload()
+            true
+        }
         val socks5Password = findPreference<EditTextPreference>(Key.SOCKS_PASSWORD)!!
         socks5Password.summaryProvider = ProfileSettingsActivity.PasswordSummaryProvider
         socks5Password.isVisible = requireSocks.isChecked
-        socks5Password.onPreferenceChangeListener = reloadListener
-        val socks5UDP = findPreference<SwitchPreference>(Key.SOCKS_UDP)!!
+        socks5Password.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            if (newValue.isNotEmpty() && socks5UDP.isVisible && socks5UDP.isChecked && !DataStore.socksUDPWarningDisable) runOnMainDispatcher {
+                MaterialAlertDialogBuilder(requireContext()).apply {
+                    setMessage(R.string.socks5_udp_authentication_warning)
+                    setPositiveButton(android.R.string.ok, null)
+                    setNeutralButton(R.string.do_not_show_again, { _, _ ->
+                        DataStore.socksUDPWarningDisable = true
+                    })
+                }.show()
+            }
+            needReload()
+            true
+        }
         socks5UDP.isVisible = requireSocks.isChecked
-        socks5UDP.onPreferenceChangeListener = reloadListener
+        socks5UDP.setOnPreferenceChangeListener { _, newValue ->
+            newValue as Boolean
+            if (newValue
+                && ((socks5Username.isVisible && !socks5Username.text.isNullOrEmpty()) || (socks5Password.isVisible && !socks5Password.text.isNullOrEmpty()))
+                && !DataStore.socksUDPWarningDisable) runOnMainDispatcher {
+                MaterialAlertDialogBuilder(requireContext()).apply {
+                    setMessage(R.string.socks5_udp_authentication_warning)
+                    setPositiveButton(android.R.string.ok, null)
+                    setNeutralButton(R.string.do_not_show_again, { _, _ ->
+                        DataStore.socksUDPWarningDisable = true
+                    })
+                }.show()
+            }
+            needReload()
+            true
+        }
         requireSocks.setOnPreferenceChangeListener { _, newValue ->
             portSocks5.isVisible = newValue as Boolean
             socks5Username.isVisible = newValue
