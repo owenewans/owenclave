@@ -139,7 +139,6 @@
         <item name="colorMaterial100">@color/fab_color_progress</item>
         <item name="colorMaterial300">@color/material_light_black</item>
 
-        <item name="pref_categoryColor">?android:textColorPrimary</item>
         <item name="android:textColorLink">?attr/accentOrTextSecondary</item>
         <item name="fabColorBackground">?colorPrimaryDark</item>
         <item name="selectedColorPrimary">@color/white</item>
@@ -172,7 +171,6 @@
         <item name="itemShapeFillColor">#E0E0E0</item>
 
         <item name="colorMaterial100">@color/fab_color_progress</item>
-        <item name="pref_categoryColor">?android:textColorPrimary</item>
         <item name="android:textColorLink">?attr/accentOrTextSecondary</item>
 
         <item name="accentOrTextSecondary">?android:textColorSecondary</item>
@@ -333,7 +331,6 @@
         <item name="colorMaterial100">@color/fab_color_progress</item>
         <item name="colorMaterial300">@color/material_light_black</item>
 
-        <item name="pref_categoryColor">?android:textColorPrimary</item>
         <item name="android:textColorLink">?attr/accentOrTextSecondary</item>
         <item name="fabColorBackground">?colorPrimaryDark</item>
         <item name="selectedColorPrimary">@color/white</item>
@@ -366,7 +363,6 @@
         <item name="itemShapeFillColor">#E0E0E0</item>
 
         <item name="colorMaterial100">@color/fab_color_progress</item>
-        <item name="pref_categoryColor">?android:textColorPrimary</item>
         <item name="android:textColorLink">?attr/accentOrTextSecondary</item>
 
         <item name="accentOrTextSecondary">?android:textColorSecondary</item>

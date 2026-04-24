@@ -29,8 +29,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.takisoft.preferencex.PreferenceFragmentCompat
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.AssetEntity
@@ -40,7 +40,6 @@ import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeLi
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.isHTTPorHTTPSURL
-import io.nekohasekai.sagernet.ktx.listByLine
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import java.io.File
@@ -262,7 +261,7 @@ class AssetEditActivity(
         val activity: AssetEditActivity
             get() = requireActivity() as AssetEditActivity
 
-        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = DataStore.profileCacheStore
             try {
                 activity.apply {

@@ -30,11 +30,11 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.*
 import io.nekohasekai.sagernet.Key.MODE_VPN
 import io.nekohasekai.sagernet.database.DataStore
@@ -77,7 +77,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         true
     }
 
-    override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         preferenceManager.preferenceDataStore = DataStore.configurationStore
         DataStore.initGlobal()
         addPreferencesFromResource(R.xml.global_preferences)
@@ -101,8 +101,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<SimpleMenuPreference>(Key.NIGHT_THEME)!!.setOnPreferenceChangeListener { _, newTheme ->
-            Theme.currentNightMode = (newTheme as String).toInt()
+        findPreference<ListPreference>(Key.NIGHT_THEME)!!.setOnPreferenceChangeListener { _, newValue ->
+            Theme.currentNightMode = (newValue as String).toInt()
             Theme.applyNightTheme()
             requireActivity().apply {
                 ActivityCompat.recreate(this)
@@ -129,7 +129,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 else -> Locale.forLanguageTag(code).displayName // just a fallback name from Java
             }
         }
-        val appLanguage = findPreference<SimpleMenuPreference>(Key.APP_LANGUAGE)!!
+        val appLanguage = findPreference<ListPreference>(Key.APP_LANGUAGE)!!
         val locale = when (val value = AppCompatDelegate.getApplicationLocales().toLanguageTags()) {
             // https://stackoverflow.com/questions/13291578/how-to-localize-an-android-app-in-indonesian-language
             // Some old Android versions still return "in".
@@ -146,8 +146,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-        val serviceMode = findPreference<SimpleMenuPreference>(Key.SERVICE_MODE)!!
-        val tunImplementation = findPreference<SimpleMenuPreference>(Key.TUN_IMPLEMENTATION)!!
+        val serviceMode = findPreference<ListPreference>(Key.SERVICE_MODE)!!
+        val tunImplementation = findPreference<ListPreference>(Key.TUN_IMPLEMENTATION)!!
         val mtu = findPreference<EditTextPreference>(Key.MTU)!!
         val enableVPNInterfaceIPv6Address = findPreference<SwitchPreference>(Key.ENABLE_VPN_INTERFACE_IPV6_ADDRESS)!!
         val allowAppsBypassVpn = findPreference<SwitchPreference>(Key.ALLOW_APPS_BYPASS_VPN)!!
@@ -257,7 +257,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         showDirectSpeed.isEnabled = profileTrafficStatistics.isChecked
         showDirectSpeed.onPreferenceChangeListener = reloadListener
 
-        findPreference<SimpleMenuPreference>(Key.LOG_LEVEL)!!.setOnPreferenceChangeListener { _, newValue ->
+        findPreference<ListPreference>(Key.LOG_LEVEL)!!.setOnPreferenceChangeListener { _, newValue ->
             if ((newValue as String).toInt() == LogLevel.DEBUG && !DataStore.logLevelDebugWarningDisable) {
                 MaterialAlertDialogBuilder(requireContext()).apply {
                     setMessage(R.string.debug_log_sum)
@@ -271,7 +271,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
 
-        findPreference<SimpleMenuPreference>(Key.PROVIDER_ROOT_CA)!!.setOnPreferenceChangeListener { _, newValue ->
+        findPreference<ListPreference>(Key.PROVIDER_ROOT_CA)!!.setOnPreferenceChangeListener { _, newValue ->
            if ((newValue as String).toInt() == RootCAProvider.CUSTOM) {
                 runOnMainDispatcher {
                     val context = requireContext()
@@ -314,11 +314,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         hijackDns.isEnabled = trafficSniffing.isChecked
         hijackDns.onPreferenceChangeListener = reloadListener
 
-        findPreference<SimpleMenuPreference>(Key.OUTBOUND_DOMAIN_STRATEGY)!!.onPreferenceChangeListener = reloadListener
-        findPreference<SimpleMenuPreference>(Key.OUTBOUND_DOMAIN_STRATEGY_FOR_DIRECT)!!.onPreferenceChangeListener = reloadListener
-        findPreference<SimpleMenuPreference>(Key.OUTBOUND_DOMAIN_STRATEGY_FOR_SERVER)!!.onPreferenceChangeListener = reloadListener
+        findPreference<ListPreference>(Key.OUTBOUND_DOMAIN_STRATEGY)!!.onPreferenceChangeListener = reloadListener
+        findPreference<ListPreference>(Key.OUTBOUND_DOMAIN_STRATEGY_FOR_DIRECT)!!.onPreferenceChangeListener = reloadListener
+        findPreference<ListPreference>(Key.OUTBOUND_DOMAIN_STRATEGY_FOR_SERVER)!!.onPreferenceChangeListener = reloadListener
 
-        val rulesProvider = findPreference<SimpleMenuPreference>(Key.RULES_PROVIDER)!!
+        val rulesProvider = findPreference<ListPreference>(Key.RULES_PROVIDER)!!
         val rulesGeositeUrl = findPreference<LinkOrContentPreference>(Key.RULES_GEOSITE_URL)!!
         val rulesGeoipUrl = findPreference<LinkOrContentPreference>(Key.RULES_GEOIP_URL)!!
         rulesProvider.setOnPreferenceChangeListener { _, newValue ->
@@ -333,7 +333,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         // protocol settings
         val enableFragment = findPreference<SwitchPreference>(Key.ENABLE_FRAGMENT)!!
         val enableFragmentForDirect = findPreference<SwitchPreference>(Key.ENABLE_FRAGMENT_FOR_DIRECT)!!
-        val fragmentMethod = findPreference<SimpleMenuPreference>(Key.FRAGMENT_METHOD)!!
+        val fragmentMethod = findPreference<ListPreference>(Key.FRAGMENT_METHOD)!!
         enableFragment.setOnPreferenceChangeListener { _, newValue ->
             newValue as Boolean
             enableFragmentForDirect.isVisible = newValue
@@ -345,7 +345,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
 
         // DNS settings
         findPreference<EditTextPreference>(Key.REMOTE_DNS)!!.onPreferenceChangeListener = reloadListener
-        findPreference<SimpleMenuPreference>(Key.REMOTE_DNS_QUERY_STRATEGY)!!.onPreferenceChangeListener = reloadListener
+        findPreference<ListPreference>(Key.REMOTE_DNS_QUERY_STRATEGY)!!.onPreferenceChangeListener = reloadListener
         findPreference<EditTextPreference>(Key.EDNS_CLIENT_IP)!!.onPreferenceChangeListener = reloadListener
 
         val useLocalDnsAsDirectDns = findPreference<SwitchPreference>(Key.USE_LOCAL_DNS_AS_DIRECT_DNS)!!
@@ -357,7 +357,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             true
         }
         directDns.isEnabled = !useLocalDnsAsDirectDns.isChecked
-        findPreference<SimpleMenuPreference>(Key.DIRECT_DNS_QUERY_STRATEGY)!!.onPreferenceChangeListener = reloadListener
+        findPreference<ListPreference>(Key.DIRECT_DNS_QUERY_STRATEGY)!!.onPreferenceChangeListener = reloadListener
 
         val useLocalDnsAsBootstrapDns = findPreference<SwitchPreference>(Key.USE_LOCAL_DNS_AS_BOOTSTRAP_DNS)!!
         val bootstrapDns = findPreference<EditTextPreference>(Key.BOOTSTRAP_DNS)!!
@@ -559,7 +559,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         // misc settings
         findPreference<SwitchPreference>(Key.SHOW_GROUP_NAME)!!.onPreferenceChangeListener = reloadListener
         findPreference<SwitchPreference>(Key.ACQUIRE_WAKE_LOCK)!!.onPreferenceChangeListener = reloadListener
-        findPreference<SimpleMenuPreference>(Key.FAB_STYLE)!!.setOnPreferenceChangeListener { _, _ ->
+        findPreference<ListPreference>(Key.FAB_STYLE)!!.setOnPreferenceChangeListener { _, _ ->
             requireActivity().apply {
                 this.finish()
                 startActivity(intent)

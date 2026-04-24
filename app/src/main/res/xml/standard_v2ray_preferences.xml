@@ -34,7 +34,7 @@
             app:key="serverAlterId"
             app:title="@string/alter_id"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="auto"
             app:entries="@array/vmess_encryption_value"
             app:entryValues="@array/vmess_encryption_value"
@@ -48,7 +48,7 @@
             app:key="serverEncryptionForVless"
             app:title="@string/enc_method"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="2"
             app:entries="@array/socks_versions"
             app:entryValues="@array/int_array_3"
@@ -56,28 +56,28 @@
             app:key="serverProtocol"
             app:title="@string/app_version"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/xtls_flow_value"
             app:entryValues="@array/xtls_flow_value"
             app:icon="@drawable/ic_baseline_stream_24"
             app:key="serverFlow"
             app:title="@string/flow"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/packet_encoding_entry"
             app:entryValues="@array/packet_encoding_value"
             app:icon="@drawable/baseline_widgets_24"
             app:key="serverPacketEncoding"
             app:title="@string/packet_encoding"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/networks_entry"
             app:entryValues="@array/networks_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverNetwork"
             app:title="@string/network"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="none"
             app:entries="@array/kcp_quic_headers_entry"
             app:entryValues="@array/kcp_quic_headers_value"
@@ -85,7 +85,7 @@
             app:key="serverHeader"
             app:title="@string/header_type"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="none"
             app:entries="@array/quic_security_value"
             app:entryValues="@array/quic_security_value"
@@ -125,7 +125,7 @@
             app:key="serverMekyaKcpSeed"
             app:title="@string/kcp_seed"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="none"
             app:entries="@array/kcp_quic_headers_entry"
             app:entryValues="@array/kcp_quic_headers_value"
@@ -138,7 +138,7 @@
             app:key="serverMekyaUrl"
             app:title="@string/url"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="none"
             app:entries="@array/transport_layer_encryption_entry"
             app:entryValues="@array/transport_layer_encryption_value"
@@ -190,7 +190,7 @@
             app:key="serverAllowInsecure"
             app:summary="@string/allow_insecure_sum"
             app:title="@string/allow_insecure" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/utls_entry"
             app:entryValues="@array/utls_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
@@ -213,7 +213,7 @@
             app:key="serverRealityMldsa65Verify"
             app:title="@string/reality_mldsa65_verify"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/reality_fingerprint_value"
             app:entryValues="@array/reality_fingerprint_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
@@ -276,7 +276,7 @@
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverShBrowserForwarding"
             app:title="@string/ws_browser_forwarding" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="auto"
             app:entries="@array/splithttp_mode_entry"
             app:entryValues="@array/splithttp_mode_value"
@@ -371,7 +371,7 @@
             app:key="serverMuxConcurrency"
             app:title="@string/mux_concurrency"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/packet_encoding_entry"
             app:entryValues="@array/packet_encoding_value"
             app:icon="@drawable/baseline_widgets_24"
@@ -388,7 +388,7 @@
             app:key="serverSingMux"
             app:title="Enable sing-mux"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/sing_mux_protocol_value"
             app:entryValues="@array/sing_mux_protocol_value"
             app:defaultValue="h2mux"

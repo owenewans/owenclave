@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.takisoft.preferencex.SimpleMenuPreference
+    <rikka.preference.SimpleMenuPreference
         app:defaultValue="0"
         app:entries="@array/tasker_action_entry"
         app:entryValues="@array/int_array_2"

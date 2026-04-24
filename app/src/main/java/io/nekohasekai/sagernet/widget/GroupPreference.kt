@@ -21,19 +21,19 @@ package io.nekohasekai.sagernet.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.database.SagerDatabase
+import rikka.preference.SimpleMenuPreference
 
 class GroupPreference : SimpleMenuPreference {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyle: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(
         context, attrs, defStyle
     )
 
     constructor(
-        context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+        context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {

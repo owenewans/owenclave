@@ -20,25 +20,24 @@
 package io.nekohasekai.sagernet.widget
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
 import androidx.core.widget.addTextChangedListener
 import com.google.android.material.textfield.TextInputLayout
-import com.takisoft.preferencex.EditTextPreference
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.readableMessage
 import androidx.core.net.toUri
+import androidx.preference.EditTextPreference
 
 class LinkOrContentPreference : EditTextPreference {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context, attrs, defStyleAttr
     )
 
     constructor(
-        context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
+        context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
 
 

@@ -24,7 +24,7 @@
             app:key="serverPassword"
             app:title="@string/password"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="2"
             app:entries="@array/shadowtls_protocol_version_value"
             app:entryValues="@array/shadowtls_protocol_version_value"

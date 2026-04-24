@@ -11,7 +11,7 @@
             android:title="@string/theme"
             app:icon="@drawable/ic_baseline_color_lens_24"
             app:key="appTheme" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="0"
             app:entries="@array/night_mode"
             app:entryValues="@array/int_array_4"
@@ -19,14 +19,14 @@
             app:key="nightTheme"
             app:title="@string/night_mode"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue=""
             app:entries="@array/language_entry"
             app:entryValues="@array/language_value"
             app:icon="@drawable/baseline_translate_24"
             app:key="appLanguage"
             app:title="@string/language" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="vpn"
             app:entries="@array/service_modes"
             app:entryValues="@array/service_mode_values"
@@ -34,7 +34,7 @@
             app:key="serviceMode"
             app:title="@string/service_mode"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="0"
             app:entries="@array/tun_implementation"
             app:entryValues="@array/int_array_2"
@@ -73,7 +73,7 @@
             app:key="profileTrafficStatistics"
             app:summary="@string/profile_traffic_statistics_summary"
             app:title="@string/profile_traffic_statistics" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="1000"
             app:entries="@array/notification_entry"
             app:entryValues="@array/notification_value"
@@ -87,7 +87,7 @@
             app:summary="@string/show_direct_speed_sum"
             app:title="@string/show_direct_speed"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="2"
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:entries="@array/log_level_entry"
@@ -95,7 +95,7 @@
             app:key="logLevel"
             app:title="@string/log_level"
             app:useSimpleSummaryProvider="true"/>
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             android:icon="@drawable/ic_baseline_push_pin_24"
             app:defaultValue="1"
             app:entries="@array/root_ca_provider_entry"
@@ -128,7 +128,7 @@
             app:key="bypassLan"
             app:summary="@string/bypass_private_sum"
             app:title="@string/route_opt_bypass_lan" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="AsIs"
             app:entries="@array/domain_strategy"
             app:entryValues="@array/domain_strategy"
@@ -152,7 +152,7 @@
             app:key="hijackDns0"
             app:summary="@string/hijack_dns_message"
             app:title="@string/hijack_dns" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="AsIs"
             app:entries="@array/outbound_domain_strategy"
             app:entryValues="@array/outbound_domain_strategy_value"
@@ -160,7 +160,7 @@
             app:key="outboundDomainStrategy"
             app:title="@string/resolve_destination"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="AsIs"
             app:entries="@array/outbound_domain_strategy"
             app:entryValues="@array/outbound_domain_strategy_value"
@@ -168,7 +168,7 @@
             app:key="outboundDomainStrategyForDirect"
             app:title="@string/resolve_destination_for_direct"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="AsIs"
             app:entries="@array/outbound_domain_strategy"
             app:entryValues="@array/outbound_domain_strategy_value"
@@ -176,7 +176,7 @@
             app:key="outboundDomainStrategyForServer"
             app:title="@string/resolve_destination_for_server"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="0"
             app:entries="@array/rules_dat_provider_entry"
             app:entryValues="@array/rules_dat_provider_value"
@@ -196,7 +196,7 @@
             app:key="rulesGeoipUrl"
             app:title="@string/rules_geoip_url"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="0"
             app:entries="@array/route_mode"
             app:entryValues="@array/int_array_3"
@@ -213,7 +213,7 @@
             app:key="connectionTestURL"
             app:title="@string/connection_test_url"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             android:icon="@drawable/baseline_flight_takeoff_24"
             app:defaultValue="0"
             app:entries="@array/shadowsocks_2022_implementation"
@@ -236,7 +236,7 @@
             app:key="enableFragment"
             app:summary="@string/enable_fragment_sum"
             app:title="@string/enable_fragment" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="0"
             app:entries="@array/tls_fragmentation_entry"
             app:entryValues="@array/tls_fragmentation_value"
@@ -268,7 +268,7 @@
             app:key="remoteDns"
             app:title="@string/remote_dns"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="UseIP"
             app:entries="@array/dns_query_strategy"
             app:entryValues="@array/dns_query_strategy_value"
@@ -293,7 +293,7 @@
             app:key="directDns"
             app:title="@string/direct_dns"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="UseIP"
             app:entries="@array/dns_query_strategy"
             app:entryValues="@array/dns_query_strategy_value"
@@ -434,7 +434,7 @@
             app:icon="@drawable/ic_hardware_router"
             app:key="stunServers"
             app:title="@string/nat_stun_server_hint" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="1"
             app:entries="@array/fab_style_entry"
             app:entryValues="@array/int_array_2"

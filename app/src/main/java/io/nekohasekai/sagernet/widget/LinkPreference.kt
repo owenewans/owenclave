@@ -20,14 +20,14 @@
 package io.nekohasekai.sagernet.widget
 
 import android.content.Context
-import android.net.Uri
 import android.util.AttributeSet
 import androidx.core.widget.addTextChangedListener
+import androidx.preference.EditTextPreference
 import com.google.android.material.textfield.TextInputLayout
-import com.takisoft.preferencex.EditTextPreference
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.readableMessage
 import libsagernetcore.Libsagernetcore
+import androidx.core.net.toUri
 
 class LinkPreference : EditTextPreference {
 
@@ -38,7 +38,7 @@ class LinkPreference : EditTextPreference {
     constructor(
         context: Context,
         attrs: AttributeSet?,
-    ) : this(context, attrs, com.takisoft.preferencex.R.attr.editTextPreferenceStyle)
+    ) : this(context, attrs, androidx.preference.R.attr.editTextPreferenceStyle)
 
     constructor(
         context: Context,
@@ -81,7 +81,7 @@ class LinkPreference : EditTextPreference {
                     if (link.toString().contains("\n")) {
                         error("invalid url")
                     }
-                    val uri = Uri.parse(link.toString())
+                    val uri = link.toString().toUri()
 
                     if (uri.scheme.isNullOrBlank()) {
                         error("Missing scheme in url")

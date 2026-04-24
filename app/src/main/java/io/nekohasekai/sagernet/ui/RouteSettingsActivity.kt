@@ -36,12 +36,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -185,7 +185,7 @@ class RouteSettingsActivity(
         apps.postUpdate()
     }
 
-    lateinit var outbound: SimpleMenuPreference
+    lateinit var outbound: ListPreference
     lateinit var reverse: SwitchPreference
     lateinit var redirect: EditTextPreference
     lateinit var apps: AppListPreference
@@ -447,7 +447,7 @@ class RouteSettingsActivity(
         val activity: RouteSettingsActivity
             get() = requireActivity() as RouteSettingsActivity
 
-        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = DataStore.profileCacheStore
             try {
                 activity.apply {

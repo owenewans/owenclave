@@ -70,14 +70,14 @@
             app:key="serverHopIntervalMax"
             app:title="@string/hysteria_hop_interval_max"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/hysteria2_congestion_control"
             app:entryValues="@array/hysteria2_congestion_control"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverCongestionController"
             app:title="@string/congestion_control"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/hysteria2_bbr_profile"
             app:entryValues="@array/hysteria2_bbr_profile"
             app:icon="@drawable/ic_baseline_compare_arrows_24"

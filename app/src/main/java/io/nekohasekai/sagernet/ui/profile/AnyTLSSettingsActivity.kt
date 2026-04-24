@@ -22,10 +22,10 @@ package io.nekohasekai.sagernet.ui.profile
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -92,7 +92,7 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
     }
 
     lateinit var password: EditTextPreference
-    lateinit var security: SimpleMenuPreference
+    lateinit var security: ListPreference
     lateinit var sni: EditTextPreference
     lateinit var alpn: EditTextPreference
     lateinit var securityCategory: PreferenceCategory
@@ -101,14 +101,14 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
     lateinit var pinnedPeerCertificatePublicKey: EditTextPreference
     lateinit var pinnedPeerCertificate: EditTextPreference
     lateinit var allowInsecure: SwitchPreference
-    lateinit var utlsFingerprint: SimpleMenuPreference
+    lateinit var utlsFingerprint: ListPreference
     lateinit var mtlsCertificate: EditTextPreference
     lateinit var mtlsCertificatePrivateKey: EditTextPreference
     lateinit var echEnabled: SwitchPreference
     lateinit var echConfig: EditTextPreference
     lateinit var realityPublicKey: EditTextPreference
     lateinit var realityShortId: EditTextPreference
-    lateinit var realityFingerprint: SimpleMenuPreference
+    lateinit var realityFingerprint: ListPreference
     lateinit var realityDisableX25519Mlkem768: SwitchPreference
 
     override fun PreferenceFragmentCompat.createPreferences(

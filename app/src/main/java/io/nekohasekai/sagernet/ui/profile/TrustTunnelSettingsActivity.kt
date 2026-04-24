@@ -21,9 +21,9 @@ package io.nekohasekai.sagernet.ui.profile
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -88,8 +88,8 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
-        val utlsFingerprint = findPreference<SimpleMenuPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
-        val protocol = findPreference<SimpleMenuPreference>(Key.SERVER_PROTOCOL)!!
+        val utlsFingerprint = findPreference<ListPreference>(Key.SERVER_UTLS_FINGERPRINT)!!
+        val protocol = findPreference<ListPreference>(Key.SERVER_PROTOCOL)!!
         utlsFingerprint.isVisible = protocol.value == "https"
         protocol.setOnPreferenceChangeListener { _, newValue ->
             newValue as String

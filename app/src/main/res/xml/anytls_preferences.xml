@@ -42,7 +42,7 @@
             app:key="serverAnyTLSMinIdleSession"
             app:title="@string/anytls_min_idle_session"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:defaultValue="tls"
             app:entries="@array/transport_layer_encryption_entry"
             app:entryValues="@array/transport_layer_encryption_value"
@@ -94,7 +94,7 @@
             app:key="serverAllowInsecure"
             app:summary="@string/allow_insecure_sum"
             app:title="@string/allow_insecure" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/utls_entry"
             app:entryValues="@array/utls_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
@@ -122,7 +122,7 @@
             app:key="serverRealityShortId"
             app:title="@string/reality_short_id"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/reality_fingerprint_value"
             app:entryValues="@array/reality_fingerprint_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"

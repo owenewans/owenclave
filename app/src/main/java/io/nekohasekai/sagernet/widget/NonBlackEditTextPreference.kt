@@ -21,7 +21,7 @@ package io.nekohasekai.sagernet.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import com.takisoft.preferencex.EditTextPreference
+import androidx.preference.EditTextPreference
 
 class NonBlackEditTextPreference : EditTextPreference {
 
@@ -32,7 +32,7 @@ class NonBlackEditTextPreference : EditTextPreference {
     constructor(
         context: Context,
         attrs: AttributeSet?,
-    ) : this(context, attrs, com.takisoft.preferencex.R.attr.editTextPreferenceStyle)
+    ) : this(context, attrs, androidx.preference.R.attr.editTextPreferenceStyle)
 
     constructor(
         context: Context,

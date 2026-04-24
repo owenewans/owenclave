@@ -6,7 +6,7 @@
         app:title="@string/profile_name"
         app:useSimpleSummaryProvider="true" />
 
-    <com.takisoft.preferencex.SimpleMenuPreference
+    <rikka.preference.SimpleMenuPreference
         app:defaultValue="v2ray"
         app:entries="@array/config_type_entry"
         app:entryValues="@array/config_type_value"

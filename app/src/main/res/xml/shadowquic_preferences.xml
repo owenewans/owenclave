@@ -45,7 +45,7 @@
             app:key="serverShadowQUICDisableALPN"
             app:title="Disable ALPN"
             app:useSimpleSummaryProvider="true" />
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:entries="@array/shadowquic_congestion_control_value"
             app:entryValues="@array/shadowquic_congestion_control_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"

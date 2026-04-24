@@ -35,8 +35,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.preference.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
@@ -71,8 +69,8 @@ class GroupSettingsActivity(
         }
     }
 
-    private lateinit var frontProxyPreference: SimpleMenuPreference
-    private lateinit var landingProxyPreference: SimpleMenuPreference
+    private lateinit var frontProxyPreference: ListPreference
+    private lateinit var landingProxyPreference: ListPreference
 
     fun ProxyGroup.init() {
         DataStore.groupName = name ?: ""
@@ -194,7 +192,7 @@ class GroupSettingsActivity(
             }
         }
 
-        val groupType = findPreference<SimpleMenuPreference>(Key.GROUP_TYPE)!!
+        val groupType = findPreference<ListPreference>(Key.GROUP_TYPE)!!
         val groupSubscription = findPreference<PreferenceCategory>(Key.GROUP_SUBSCRIPTION)!!
         val subscriptionUpdate = findPreference<PreferenceCategory>(Key.SUBSCRIPTION_UPDATE)!!
 
@@ -346,7 +344,7 @@ class GroupSettingsActivity(
         val activity: GroupSettingsActivity
             get() = requireActivity() as GroupSettingsActivity
 
-        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = DataStore.profileCacheStore
             try {
                 activity.apply {

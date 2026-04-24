@@ -31,10 +31,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceDataStore
+import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -106,7 +106,7 @@ class TaskerActivity : ThemedActivity(R.layout.layout_config_settings),
     }
 
     lateinit var profile: TaskerProfilePreference
-    lateinit var action: SimpleMenuPreference
+    lateinit var action: ListPreference
 
     fun PreferenceFragmentCompat.createPreferences(
         savedInstanceState: Bundle?,
@@ -201,7 +201,7 @@ class TaskerActivity : ThemedActivity(R.layout.layout_config_settings),
         val activity: TaskerActivity
             get() = requireActivity() as TaskerActivity
 
-        override fun onCreatePreferencesFix(savedInstanceState: Bundle?, rootKey: String?) {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.preferenceDataStore = DataStore.profileCacheStore
             try {
                 activity.apply {

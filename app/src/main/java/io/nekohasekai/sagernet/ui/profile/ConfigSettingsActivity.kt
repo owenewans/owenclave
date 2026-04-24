@@ -21,8 +21,8 @@ package io.nekohasekai.sagernet.ui.profile
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceFragmentCompat
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -66,7 +66,7 @@ class ConfigSettingsActivity : ProfileSettingsActivity<ConfigBean>() {
         addPreferencesFromResource(R.xml.config_preferences)
         editConfigPreference = findPreference(Key.SERVER_CONFIG)!!
         val serverAddresses = findPreference<EditTextPreference>(Key.SERVER_ADDRESS)!!
-        val serverProtocol = findPreference<SimpleMenuPreference>(Key.SERVER_PROTOCOL)!!
+        val serverProtocol = findPreference<ListPreference>(Key.SERVER_PROTOCOL)!!
         fun updateProtocol(protocol: String) {
             serverAddresses.isVisible = protocol == "v2ray_outbound"
         }

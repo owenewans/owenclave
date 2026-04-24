@@ -19,7 +19,9 @@ material = "1.13.0"
 gson = "2.13.2"
 zxing-core = "3.5.4"
 protobuf-java = "4.34.1"
-preferencex = "1.1.0"
+preference = "1.2.1"
+simplemenu-preference = "1.0.3"
+flexbox = "3.0.0"
 snakeyaml = "2.6"
 material-about-library = "3.2.0-rc01"
 process-phoenix = "3.0.0"
@@ -44,6 +46,9 @@ camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = 
 camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camera" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+preference = { module = "androidx.preference:preference", version.ref = "preference" }
+simplemenu-preference = { module = "dev.rikka.rikkax.preference:simplemenu-preference", version.ref = "simplemenu-preference" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 work-multiprocess = { module = "androidx.work:work-multiprocess", version.ref = "work" }
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -53,9 +58,6 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing-core" }
 protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf-java" }
-preferencex = { module = "com.takisoft.preferencex:preferencex", version.ref = "preferencex" }
-preferencex-simplemenu = { module = "com.takisoft.preferencex:preferencex-simplemenu", version.ref = "preferencex" }
-preferencex-colorpicker = { module = "com.takisoft.preferencex:preferencex-colorpicker", version.ref = "preferencex" }
 snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
 material-about-library = { module = "com.github.daniel-stoneuk:material-about-library", version.ref = "material-about-library" }
 process-phoenix = { module = "com.jakewharton:process-phoenix", version.ref = "process-phoenix" }

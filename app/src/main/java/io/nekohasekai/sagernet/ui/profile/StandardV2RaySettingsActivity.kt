@@ -29,8 +29,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.EditTextPreference
+import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
+import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.github.shadowsocks.plugin.*
 import com.github.shadowsocks.preference.PluginConfigurationDialogFragment
@@ -38,8 +40,6 @@ import com.github.shadowsocks.preference.PluginPreference
 import com.github.shadowsocks.preference.PluginPreferenceDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.takisoft.preferencex.PreferenceFragmentCompat
-import com.takisoft.preferencex.SimpleMenuPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
@@ -281,15 +281,15 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         singMuxPadding = DataStore.serverSingMuxPadding
     }
 
-    lateinit var encryption: SimpleMenuPreference
+    lateinit var encryption: ListPreference
     lateinit var vlessEncryption: NonBlackEditTextPreference
-    lateinit var network: SimpleMenuPreference
-    lateinit var header: SimpleMenuPreference
+    lateinit var network: ListPreference
+    lateinit var header: ListPreference
     lateinit var requestHost: EditTextPreference
     lateinit var path: EditTextPreference
-    lateinit var quicSecurity: SimpleMenuPreference
-    lateinit var security: SimpleMenuPreference
-    lateinit var xtlsFlow: SimpleMenuPreference
+    lateinit var quicSecurity: ListPreference
+    lateinit var security: ListPreference
+    lateinit var xtlsFlow: ListPreference
     lateinit var alterId: EditTextPreference
 
     lateinit var sni: EditTextPreference
@@ -300,7 +300,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var pinnedCertificatePublickey: EditTextPreference
     lateinit var pinnedCertificate: EditTextPreference
     lateinit var allowInsecure: SwitchPreference
-    lateinit var utlsFingerprint: SimpleMenuPreference
+    lateinit var utlsFingerprint: ListPreference
     lateinit var mtlsCertificate: EditTextPreference
     lateinit var mtlsCertificatePrivateKey: EditTextPreference
     lateinit var echEnabled: SwitchPreference
@@ -309,26 +309,26 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var realityPublicKey: EditTextPreference
     lateinit var realityShortId: EditTextPreference
     lateinit var realityMldsa65Verify: EditTextPreference
-    lateinit var realityFingerprint: SimpleMenuPreference
+    lateinit var realityFingerprint: ListPreference
     lateinit var realityDisableX25519Mlkem768: SwitchPreference
 
-    lateinit var packetEncoding: SimpleMenuPreference
+    lateinit var packetEncoding: ListPreference
 
     lateinit var hy2UpMbps: EditTextPreference
     lateinit var hy2DownMbps: EditTextPreference
     lateinit var hy2Password: EditTextPreference
 
     lateinit var mekyaKcpSeed: EditTextPreference
-    lateinit var mekyaKcpHeaderType: SimpleMenuPreference
+    lateinit var mekyaKcpHeaderType: ListPreference
     lateinit var mekyaUrl: EditTextPreference
 
-    lateinit var socksProtocol: SimpleMenuPreference
+    lateinit var socksProtocol: ListPreference
     lateinit var passwordUUID: EditTextPreference
 
     lateinit var wsCategory: PreferenceCategory
     lateinit var wsUseBrowserForwarder: SwitchPreference
     lateinit var splithttpCategory: PreferenceCategory
-    lateinit var splithttpMode: SimpleMenuPreference
+    lateinit var splithttpMode: ListPreference
     lateinit var splithttpExtra: EditTextPreference
     lateinit var grpcCategory: PreferenceCategory
     lateinit var ssExperimentsCategory: PreferenceCategory
@@ -340,9 +340,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
 
     lateinit var mux: SwitchPreference
     lateinit var muxConcurrency: EditTextPreference
-    lateinit var muxPacketEncoding: SimpleMenuPreference
+    lateinit var muxPacketEncoding: ListPreference
     lateinit var singMux: SwitchPreference
-    lateinit var singMuxProtocol: SimpleMenuPreference
+    lateinit var singMuxProtocol: ListPreference
     lateinit var singMuxMaxConnections: EditTextPreference
     lateinit var singMuxMinStreams: EditTextPreference
     lateinit var singMuxMaxStreams: EditTextPreference

@@ -3,7 +3,7 @@
     <PreferenceCategory
         app:title="Server Settings"
         app:iconSpaceReserved="false">
-        <com.takisoft.preferencex.SimpleMenuPreference
+        <rikka.preference.SimpleMenuPreference
             app:key="obfs"
             app:persistent="false"
             app:entries="@array/simple_obfs_wrapper"
