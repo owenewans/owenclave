@@ -130,7 +130,7 @@ class ScannerActivity : ThemedActivity() {
             }
 
             cameraPreview = Preview.Builder().build()
-                .also { it.setSurfaceProvider(binding.previewView.surfaceProvider) }
+                .also { it.surfaceProvider = binding.previewView.surfaceProvider }
             imageAnalysis = ImageAnalysis.Builder().build()
             imageAnalyzer = ZxingQRCodeAnalyzer(onSuccess, fatalError)
             imageAnalysis.setAnalyzer(analysisExecutor, imageAnalyzer)
@@ -314,43 +314,20 @@ class ScannerActivity : ThemedActivity() {
 
     // Every time camera.cameraInfo.cameraSelector will get different value,
     // so useFront used to record it.
-    // sfa use select to resolve it.
     private var useFront = false
-    private lateinit var flash: MenuItem
-
-    private fun resetFlash() {
-        flash.setIcon(R.drawable.ic_action_flight_on)
-        flash.setTitle(R.string.action_flash_on)
-        flash.isVisible = true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        flash = menu.findItem(R.id.action_flash)
-        return super.onPrepareOptionsMenu(menu)
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_import_file -> {
                 startFilesForResult(importCodeFile, "image/*")
             }
-
             R.id.action_flash -> {
                 if (!::camera.isInitialized) {
                     return true
                 }
-                val enableFlash = camera.cameraInfo.torchState.value == TorchState.ON
-                camera.cameraControl.enableTorch(!enableFlash)
-                if (enableFlash) {
-                    item.setIcon(R.drawable.ic_action_flight_on)
-                    item.setTitle(R.string.action_flash_on)
-                } else {
-                    item.setIcon(R.drawable.ic_action_flight_off)
-                    item.setTitle(R.string.action_flash_off)
-                }
+                val torchOn = camera.cameraInfo.torchState.value == TorchState.ON
+                camera.cameraControl.enableTorch(!torchOn)
             }
-
-            // Switch front or back camera.
             R.id.action_camera_switch -> {
                 if (!::camera.isInitialized) {
                     return true
@@ -358,12 +335,8 @@ class ScannerActivity : ThemedActivity() {
                 useFront = !useFront
                 camera.cameraControl.enableTorch(false)
                 val cameraSelector = if (useFront) {
-                    flash.isVisible = false
-
                     CameraSelector.DEFAULT_FRONT_CAMERA
                 } else {
-                    resetFlash()
-
                     CameraSelector.DEFAULT_BACK_CAMERA
                 }
                 cameraProvider.unbindAll()
@@ -378,10 +351,8 @@ class ScannerActivity : ThemedActivity() {
                     fatalError(e)
                 }
             }
-
             else -> return super.onOptionsItemSelected(item)
         }
-
         return true
     }
 }
