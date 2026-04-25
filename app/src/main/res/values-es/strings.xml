@@ -576,4 +576,7 @@
     <string name="hysteria_hop_interval_max">Intervalo máximo de salto de puerto (s)</string>
     <string name="hysteria_bbr_profile">Perfil BBR</string>
     <string name="custom_package_name_or_uid">Nombre de paquete personalizado o UID</string>
+    <string name="balancer_use_landing_proxy">Usar proxy de aterrizaje de grupo</string>
+    <string name="balancer_use_front_proxy">Usar proxy frontal de grupo</string>
+    <string name="socks5_udp_authentication_warning">SOCKS5 UDP no está protegido por autenticación con nombre de usuario y contraseña. Si UDP está activado, la autenticación se puede eludir fácilmente.</string>
 </resources>
