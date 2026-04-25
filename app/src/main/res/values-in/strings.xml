@@ -559,5 +559,4 @@
     <string name="hysteria_hop_interval_max">Interval lompat port maksimum (d)</string>
     <string name="hysteria_bbr_profile">Profil BBR</string>
     <string name="custom_package_name_or_uid">Nama paket atau UID kustom</string>
-    <string name="reality_mldsa65_verify">REALITY mldsa65Verify</string>
 </resources>
