@@ -157,8 +157,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         opts?.getString("path")?.let {
                             pluginOpts["path"] = it
                         }
-                        if (opts?.getBoolean("mux") == true) {
-                            pluginOpts["mux"] = "1"
+                        when (opts?.getBoolean("mux")) {
+                            false -> pluginOpts["mux"] = "0"
+                            true, null -> { /*pluginOpts["mux"] = "1"*/ }
                         }
                         if (opts?.getBoolean("v2ray-http-upgrade") == true) {
                             return listOf()
