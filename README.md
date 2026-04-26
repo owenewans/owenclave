@@ -104,8 +104,6 @@ Exclave is licensed under the GNU General Public License as published by the Fre
 
 ## Build from source
 
-The following procedures are only applicable to a typical AMD64 Linux distros. It is possible to build on other platforms but the procedures may vary.
-
 - Install and configure JDK 21, Go 1.25 and Go Mobile.
 - Install and configure Android SDK Platform 36 and 37.0, Android SDK Build-Tools 37.0.0, Android SDK Platform-Tools and Android NDK r29 through Android Studio or Android SDK Command-line Tools.
 - Replace `release.keystore` with your own. It can be generated with Java `keytool`.
@@ -115,9 +113,19 @@ The following procedures are only applicable to a typical AMD64 Linux distros. I
     ALIAS_NAME=your_alias_name
     ALIAS_PASS=your_alias_pass
 ```
-- Build libsagernetcore: `./run lib core` or `./library/core/build.sh`
-- Download assets: `./gradlew :app:downloadAssets`, or update assets to the latest version: `./gradlew :app:updateAssets`
-- Build Exclave: `./gradlew :app:assembleOssRelease`
+
+- Linux (x64) or macOS (x64/arm64):
+
+  - Build libsagernetcore: `./run lib core` or `./library/core/build.sh`
+  - Download assets: `./gradlew :app:downloadAssets`, or update assets to the latest version: `./gradlew :app:updateAssets`
+  - Build Exclave: `./gradlew :app:assembleOssRelease`
+
+- Windows (x64):
+
+  - Build libsagernetcore: `./library/core/build.bat`
+  - Download assets: `./gradlew.bat :app:downloadAssets`, or update assets to the latest version: `./gradlew.bat :app:updateAssets`
+  - Build Exclave: `./gradlew.bat :app:assembleOssRelease`
+
 - APK files are located in `./app/build/outputs/apk/oss/release`
 
 ## Acknowledgment
