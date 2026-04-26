@@ -9,5 +9,4 @@
     <item
         android:id="@+id/create_rule"
         android:title="@string/create_rule" />
-
 </menu>
