@@ -61,12 +61,12 @@ github.com/dyhkwong/hysteria/core/v2 v2.8.2-2 h1:6dYwiNQIg3i/s9Ba8rvJkj2wAdbFKxF
 github.com/dyhkwong/hysteria/core/v2 v2.8.2-2/go.mod h1:21dOeZ1dDm43dXzf4iXUL3anCmlp1zTrHTDOviwEYUo=
 github.com/dyhkwong/hysteria/extras/v2 v2.8.2-2 h1:YC1ChbZrTLP3CHrNLQYOQl+QpJfwhwPy3Pi1/ATbMeA=
 github.com/dyhkwong/hysteria/extras/v2 v2.8.2-2/go.mod h1:jBhySesF/lc8v1SyqEbXQVcuboRWlArbj7hT0o+M7mI=
-github.com/dyhkwong/libsagernetcore v0.0.0-20260429012154-42559ed32bf5 h1:09eO49iYgcgAl2W4c3XrNGq616O7kXec+CBB9J/V1CI=
-github.com/dyhkwong/libsagernetcore v0.0.0-20260429012154-42559ed32bf5/go.mod h1:CSAfUVOMowvwCl7030k/ym8jVnrA5t5FoG1BsmGw6Sg=
+github.com/dyhkwong/libsagernetcore v0.0.0-20260429200134-d0a86658ed4c h1:2+vtsSdFUmhUQOga3KsiHP2Ot9bNmyGwDS+eonvf43E=
+github.com/dyhkwong/libsagernetcore v0.0.0-20260429200134-d0a86658ed4c/go.mod h1:LHrS7zIPiISWVouvn0ECFVAEpAsOTrHD6vjfH5pAjPs=
 github.com/dyhkwong/sing-juicity v0.1.2 h1:bBz2kRo5rHmg+FiUZ55hcPHNVhjJDGC29U5ukzlXdu8=
 github.com/dyhkwong/sing-juicity v0.1.2/go.mod h1:12RIse/M0Bg4kyxpdkfe2Hus1PFBgTnG2lClOXHOrBk=
-github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260429011935-e05e448ae3f3 h1:7DeoPVZv024ffLvI5B8tgtaObe10zJABA6RognxB4oI=
-github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260429011935-e05e448ae3f3/go.mod h1:rYYP+1MWkirdjgWVuXE3bnJPP1N1LZJiwlN3It1vgDA=
+github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260429195609-fcaef408a887 h1:ttEPt2iThLi+qpg35gGpqtK5BEGc/hg8hAnPraCfJQg=
+github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260429195609-fcaef408a887/go.mod h1:rYYP+1MWkirdjgWVuXE3bnJPP1N1LZJiwlN3It1vgDA=
 github.com/enfein/mieru/v3 v3.32.0 h1:/1c6Nk2Q0IU3R1L+haxBw688x1laUpWFx034IQPgzbM=
 github.com/enfein/mieru/v3 v3.32.0/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s5F6Qd3hM=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
