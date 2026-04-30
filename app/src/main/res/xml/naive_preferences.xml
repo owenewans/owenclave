@@ -30,7 +30,7 @@
             app:key="serverPassword"
             app:title="@string/password"
             app:useSimpleSummaryProvider="true"/>
-        <rikka.preference.SimpleMenuPreference
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             android:layout_height="match_parent"
             app:defaultValue="https"
             app:entries="@array/naive_proto_entry"

@@ -1,6 +1,6 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <rikka.preference.SimpleMenuPreference
+    <io.nekohasekai.sagernet.widget.SimpleMenuPreference
         app:defaultValue="0"
         app:entries="@array/tasker_action_entry"
         app:entryValues="@array/int_array_2"

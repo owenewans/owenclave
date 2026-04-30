@@ -20,7 +20,6 @@ gson = "2.13.2"
 zxing-core = "3.5.4"
 protobuf-java = "4.34.1"
 preference = "1.2.1"
-simplemenu-preference = "1.0.3"
 flexbox = "3.0.0"
 snakeyaml = "2.6"
 material-about-library = "3.2.0-rc01"
@@ -47,7 +46,6 @@ camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cam
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "swiperefreshlayout" }
 appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 preference = { module = "androidx.preference:preference", version.ref = "preference" }
-simplemenu-preference = { module = "dev.rikka.rikkax.preference:simplemenu-preference", version.ref = "simplemenu-preference" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work" }
 work-multiprocess = { module = "androidx.work:work-multiprocess", version.ref = "work" }

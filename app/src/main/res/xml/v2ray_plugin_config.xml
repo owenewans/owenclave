@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <rikka.preference.SimpleMenuPreference
+    <io.nekohasekai.sagernet.widget.SimpleMenuPreference
         app:key="mode"
         app:persistent="false"
         app:entries="@array/v2ray_plugin_mode"
@@ -34,7 +34,7 @@
         app:useSimpleSummaryProvider="true" />
     <PreferenceCategory
         app:title="Debug">
-        <rikka.preference.SimpleMenuPreference
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:key="loglevel"
             app:persistent="false"
             app:entries="@array/v2ray_plugin_log_level"

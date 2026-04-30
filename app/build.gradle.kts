@@ -43,7 +43,6 @@ dependencies {
     implementation(libs.swiperefreshlayout)
     implementation(libs.appcompat)
     implementation(libs.preference)
-    implementation(libs.simplemenu.preference)
     implementation(libs.flexbox)
     implementation(libs.work.runtime.ktx)
     implementation(libs.work.multiprocess)

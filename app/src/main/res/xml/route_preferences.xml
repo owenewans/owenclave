@@ -54,7 +54,7 @@
             app:key="routeSourcePort"
             app:title="sourcePort"
             app:useSimpleSummaryProvider="true" />
-        <rikka.preference.SimpleMenuPreference
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:entries="@array/route_protocol_entry"
             app:entryValues="@array/route_protocol_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
@@ -78,7 +78,7 @@
             app:key="routeAttrs"
             app:title="attrs"
             app:useSimpleSummaryProvider="true" /-->
-        <rikka.preference.SimpleMenuPreference
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:icon="@drawable/ic_hardware_router"
             app:key="routeOutbound"
             app:title="outbound" />

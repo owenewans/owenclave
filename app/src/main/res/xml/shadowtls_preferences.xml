@@ -24,7 +24,7 @@
             app:key="serverPassword"
             app:title="@string/password"
             app:useSimpleSummaryProvider="true" />
-        <rikka.preference.SimpleMenuPreference
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:defaultValue="2"
             app:entries="@array/shadowtls_protocol_version_value"
             app:entryValues="@array/shadowtls_protocol_version_value"

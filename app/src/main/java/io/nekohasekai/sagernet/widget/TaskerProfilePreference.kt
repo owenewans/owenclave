@@ -24,7 +24,6 @@ import android.util.AttributeSet
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
-import rikka.preference.SimpleMenuPreference
 
 class TaskerProfilePreference : SimpleMenuPreference {
 

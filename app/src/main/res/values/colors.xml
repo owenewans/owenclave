@@ -281,6 +281,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="fab_color_progress">@color/material_light_black</color>
+    <color name="dropdown_color_background">@color/white</color>
+    <color name="dropdown_color_selected">#EEEEEE</color>
 
     <color name="ansi_black">#1d1f21</color>
     <color name="ansi_red">#CC342B</color>
