@@ -2,7 +2,7 @@ module libsagernetcore
 
 go 1.25.0
 
-require github.com/dyhkwong/libsagernetcore v0.0.0-20260429200134-d0a86658ed4c
+require github.com/dyhkwong/libsagernetcore v0.0.0-20260503015659-1fd965132780
 
 require (
 	filippo.io/mldsa v0.0.0-20260215214346-43d0283efc3e // indirect
@@ -14,8 +14,8 @@ require (
 	github.com/ccding/go-stun v0.1.5 // indirect
 	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
-	github.com/dyhkwong/hysteria/core/v2 v2.8.2-2 // indirect
-	github.com/dyhkwong/hysteria/extras/v2 v2.8.2-2 // indirect
+	github.com/dyhkwong/hysteria/core/v2 v2.8.2-3 // indirect
+	github.com/dyhkwong/hysteria/extras/v2 v2.8.2-3 // indirect
 	github.com/dyhkwong/sing-juicity v0.1.2 // indirect
 	github.com/enfein/mieru/v3 v3.32.0 // indirect
 	github.com/gofrs/uuid/v5 v5.4.0 // indirect
@@ -70,6 +70,6 @@ require (
 )
 
 replace (
-	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260429195609-fcaef408a887
+	github.com/v2fly/v2ray-core/v5 => github.com/dyhkwong/v2ray-core/v5 v5.49.1-0.20260503015333-5db9da2190f0
 	gvisor.dev/gvisor => gvisor.dev/gvisor v0.0.0-20250429202743-3a608a52255d
 )
