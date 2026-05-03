@@ -2,7 +2,7 @@ module libsagernetcore
 
 go 1.25.0
 
-require github.com/dyhkwong/libsagernetcore v0.0.0-20260503015659-1fd965132780
+require github.com/dyhkwong/libsagernetcore v0.0.0-20260503211113-e3556912847f
 
 require (
 	filippo.io/mldsa v0.0.0-20260215214346-43d0283efc3e // indirect
