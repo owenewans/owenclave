@@ -248,10 +248,13 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     bean.mtlsCertificate = cert
                     bean.mtlsCertificatePrivateKey = key
                 }
-                /*proxy.getObject("ech-opts")?.also {
-                    bean.echEnabled = it.getBoolean("enable")
-                    bean.echConfig = it.getString("config")
-                }*/
+                if (bean is VLESSBean) {
+                    // Only parse ECH for shit VLESS free nodes
+                    proxy.getObject("ech-opts")?.also {
+                        bean.echEnabled = it.getBoolean("enable")
+                        bean.echConfig = it.getString("config")
+                    }
+                }
             }
 
             if (bean is VMessBean) {

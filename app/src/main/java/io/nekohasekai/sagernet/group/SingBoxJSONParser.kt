@@ -223,7 +223,9 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                         }
                                     }
                                 }
-                                /*tls.getObject("ech")?.also { ech ->
+                                if (v2rayBean is VLESSBean) {
+                                    // Only parse ECH for shit VLESS free nodes
+                                    tls.getObject("ech")?.also { ech ->
                                     ech.getBoolean("enabled")?.also { enabled ->
                                         if (enabled) {
                                             v2rayBean.echEnabled = true
@@ -234,7 +236,8 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                             }
                                         }
                                     }
-                                }*/
+                                }
+                                }
                             }
                         }
                     }
@@ -1163,7 +1166,7 @@ private fun JsonObject.getByteArrayArray(key: String): Array<ByteArray>? {
 }
 
 // this is not strict, but enough
-/*private fun parseECHConfigPem(pem: String): String? {
+private fun parseECHConfigPem(pem: String): String? {
     if (pem.split("-----BEGIN ECH CONFIGS-----").size - 1 != 1) {
         return null
     }
@@ -1180,4 +1183,4 @@ private fun JsonObject.getByteArrayArray(key: String): Array<ByteArray>? {
     } catch (_: Exception) {
         null
     }
-}*/
+}
