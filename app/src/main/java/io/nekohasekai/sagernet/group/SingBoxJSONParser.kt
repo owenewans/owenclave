@@ -344,6 +344,10 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
             return listOf(v2rayBean)
         }
         "hysteria2" -> {
+            outbound.getObject("realm")?.also {
+                // unsupported
+                return listOf()
+            }
             val hysteria2Bean = Hysteria2Bean().apply {
                 outbound.getString("tag", ignoreCase = false)?.also {
                     name = it

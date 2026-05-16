@@ -543,6 +543,10 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
             })
         }
         "hysteria2" -> {
+            proxy.getObject("realm-opts")?.also { opts ->
+                // unsupported
+                if (opts.getBoolean("enable") == true) return listOf()
+            }
             return listOf(Hysteria2Bean().apply {
                 serverAddress = proxy.getString("server") ?: return listOf()
                 val port = proxy.getInt("port")?.takeIf { it > 0 }
