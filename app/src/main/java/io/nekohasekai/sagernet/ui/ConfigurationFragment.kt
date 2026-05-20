@@ -1025,6 +1025,9 @@ class ConfigurationFragment @JvmOverloads constructor(
             if (::proxyGroup.isInitialized) {
                 outState.putParcelable("proxyGroup", proxyGroup)
             }
+            if (::layoutManager.isInitialized) {
+                outState.putInt("scrollPosition", layoutManager.findFirstVisibleItemPosition())
+            }
         }
 
         override fun onViewStateRestored(savedInstanceState: Bundle?) {
@@ -1033,6 +1036,10 @@ class ConfigurationFragment @JvmOverloads constructor(
             savedInstanceState?.getParcelable<ProxyGroup>("proxyGroup")?.also {
                 proxyGroup = it
                 onViewCreated(requireView(), null)
+            }
+            savedInstanceState?.getInt("scrollPosition", -1)?.takeIf { it >= 0 }?.let { pos ->
+                scrolled = true
+                configurationListView.scrollToPosition(pos)
             }
         }
 
@@ -1056,12 +1063,11 @@ class ConfigurationFragment @JvmOverloads constructor(
         override fun onResume() {
             super.onResume()
 
-            if (::configurationListView.isInitialized && configurationListView.size == 0) {
-                configurationListView.adapter = adapter
-                runOnDefaultDispatcher {
-                    adapter.reloadProfiles()
+            if (::adapter.isInitialized) {
+                if (adapter.itemCount == 0) {
+                    runOnDefaultDispatcher { adapter.reloadProfiles() }
                 }
-            } else if (!::configurationListView.isInitialized) {
+            } else {
                 onViewCreated(requireView(), null)
             }
             checkOrderMenu()
@@ -1071,7 +1077,9 @@ class ConfigurationFragment @JvmOverloads constructor(
                     ?.toolbar?.menu?.findItem(R.id.action_new_shadowquic)?.isVisible  = false
             }
 
-            configurationListView.requestFocus()
+            if (::configurationListView.isInitialized) {
+                configurationListView.requestFocus()
+            }
         }
 
         fun checkOrderMenu() {
@@ -1213,6 +1221,7 @@ class ConfigurationFragment @JvmOverloads constructor(
 
             var configurationIdList: MutableList<Long> = mutableListOf()
             val configurationList = HashMap<Long, ProxyEntity>()
+            val pendingDeletedIds = java.util.concurrent.ConcurrentHashMap.newKeySet<Long>()
 
             private fun getItem(profileId: Long): ProxyEntity? {
                 var profile = configurationList[profileId]
@@ -1304,10 +1313,14 @@ class ConfigurationFragment @JvmOverloads constructor(
 
             override fun undo(actions: List<Pair<Int, ProxyEntity>>) {
                 for ((index, item) in actions) {
+                    pendingDeletedIds.remove(item.id)
                     configurationListView.post {
-                        configurationList[item.id] = item
-                        configurationIdList.add(index, item.id)
-                        notifyItemInserted(index)
+                        if (!configurationIdList.contains(item.id)) {
+                            configurationList[item.id] = item
+                            val safeIndex = index.coerceIn(0, configurationIdList.size)
+                            configurationIdList.add(safeIndex, item.id)
+                            notifyItemInserted(safeIndex)
+                        }
                     }
                 }
             }
@@ -1366,13 +1379,15 @@ class ConfigurationFragment @JvmOverloads constructor(
 
             override suspend fun onRemoved(groupId: Long, profileId: Long) {
                 if (groupId != proxyGroup.id) return
-                val index = configurationIdList.indexOf(profileId)
-                if (index < 0) return
 
+                pendingDeletedIds.remove(profileId)
                 configurationListView.post {
-                    configurationIdList.removeAt(index)
-                    configurationList.remove(profileId)
-                    notifyItemRemoved(index)
+                    val index = configurationIdList.indexOf(profileId)
+                    if (index >= 0) {
+                        configurationIdList.removeAt(index)
+                        configurationList.remove(profileId)
+                        notifyItemRemoved(index)
+                    }
                 }
             }
 
@@ -1400,6 +1415,7 @@ class ConfigurationFragment @JvmOverloads constructor(
 
 
                 var newProfiles = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
+                newProfiles = newProfiles.filter { it.id !in pendingDeletedIds }
                 when (proxyGroup.order) {
                     GroupOrder.BY_NAME -> {
                         newProfiles = newProfiles.sortedBy { it.displayName() }
@@ -1426,10 +1442,12 @@ class ConfigurationFragment @JvmOverloads constructor(
                     configurationIdList.addAll(newProfileIds)
                     notifyDataSetChanged()
 
-                    if (selectedProfileIndex != -1) {
+                    if (selectedProfileIndex != -1 && !scrolled) {
                         configurationListView.scrollTo(selectedProfileIndex, true)
-                    } else if (newProfiles.isNotEmpty()) {
+                        scrolled = true
+                    } else if (newProfiles.isNotEmpty() && !scrolled) {
                         configurationListView.scrollTo(0, true)
+                        scrolled = true
                     }
 
                 }
@@ -1570,6 +1588,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                         val index = it.configurationIdList.indexOf(proxyEntity.id)
                         if (index >= 0) {
                             it.remove(index)
+                            it.pendingDeletedIds.add(proxyEntity.id)
                             undoManager.remove(index to proxyEntity)
                         }
                     }
