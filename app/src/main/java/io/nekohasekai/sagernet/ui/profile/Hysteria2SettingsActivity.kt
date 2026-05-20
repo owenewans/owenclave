@@ -60,6 +60,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
         DataStore.serverCongestionController = congestionControl
         DataStore.serverHysteria2BBRProfile = bbrProfile
+        DataStore.serverHysteria2OmitMaxDatagramFrameSize = omitMaxDatagramFrameSize
     }
 
     override fun Hysteria2Bean.serialize() {
@@ -86,6 +87,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
         congestionControl = DataStore.serverCongestionController
         bbrProfile = DataStore.serverHysteria2BBRProfile
+        omitMaxDatagramFrameSize = DataStore.serverHysteria2OmitMaxDatagramFrameSize
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

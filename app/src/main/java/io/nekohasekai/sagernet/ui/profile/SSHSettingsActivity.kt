@@ -44,6 +44,7 @@ class SSHSettingsActivity : ProfileSettingsActivity<SSHBean>() {
         DataStore.serverPrivateKey = privateKey
         DataStore.serverPassword1 = privateKeyPassphrase
         DataStore.serverCertificates = publicKey
+        DataStore.serverSSHKeepaliveInterval = keepaliveInterval
     }
 
     override fun SSHBean.serialize() {
@@ -64,6 +65,7 @@ class SSHSettingsActivity : ProfileSettingsActivity<SSHBean>() {
             }
         }
         publicKey = DataStore.serverCertificates
+        keepaliveInterval = DataStore.serverSSHKeepaliveInterval
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -82,6 +84,9 @@ class SSHSettingsActivity : ProfileSettingsActivity<SSHBean>() {
         }
         val privateKeyPassphrase = findPreference<EditTextPreference>(Key.SERVER_PASSWORD1)!!.apply {
             summaryProvider = PasswordSummaryProvider
+        }
+        findPreference<EditTextPreference>(Key.SERVER_SSH_KEEPALIVE_INTERVAL)!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
         }
         val authType = findPreference<ListPreference>(Key.SERVER_AUTH_TYPE)!!
         fun updateAuthType(type: Int = DataStore.serverAuthType) {

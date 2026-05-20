@@ -58,7 +58,12 @@
             app:key="serverCertificates"
             app:title="@string/ssh_public_key"
             app:useSimpleSummaryProvider="true" />
-    </PreferenceCategory>
 
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_cached"
+            app:key="serverSSHKeepaliveInterval"
+            app:title="@string/ssh_keepalive_interval"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

@@ -609,4 +609,8 @@
     <string name="udp" translatable="false">UDP</string>
     <string name="reality_mldsa65_verify" translatable="false">REALITY mldsa65Verify</string>
     <string name="socks5_udp_authentication_warning">SOCKS5 UDP is not protected by username/password authentication. If UDP is enabled, the authentication can be bypassed easily.</string>
+    <string name="enable_hysteria2_omit_max_datagram_frame_size">Enable Hysteria 2 OmitMaxDatagramFrameSize</string>
+    <string name="hysteria2_omit_max_datagram_frame_size" translatable="false">OmitMaxDatagramFrameSize</string>
+    <string name="hysteria2_omit_max_datagram_frame_size_sum">If the Hysteria 2 server does not support this breaking change, UDP will be unusable. This is a temporary option and may be removed in the future.</string>
+    <string name="ssh_keepalive_interval">Keepalive interval (s)</string>
 </resources>

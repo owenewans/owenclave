@@ -53,6 +53,7 @@ public class Hysteria2Bean extends AbstractBean {
     public String mtlsCertificatePrivateKey;
     public String congestionControl;
     public String bbrProfile;
+    public Boolean omitMaxDatagramFrameSize;
 
     @Override
     public void initializeDefaultValues() {
@@ -77,11 +78,12 @@ public class Hysteria2Bean extends AbstractBean {
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
         if (congestionControl == null) congestionControl = "bbr";
         if (bbrProfile == null) bbrProfile = "standard";
+        if (omitMaxDatagramFrameSize == null) omitMaxDatagramFrameSize = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(7);
+        output.writeInt(8);
         super.serialize(output);
         output.writeString(auth);
         output.writeString(obfs);
@@ -104,6 +106,7 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeLong(hopIntervalMax);
         output.writeString(congestionControl);
         output.writeString(bbrProfile);
+        output.writeBoolean(omitMaxDatagramFrameSize);
     }
 
     @Override
@@ -165,6 +168,9 @@ public class Hysteria2Bean extends AbstractBean {
             congestionControl = input.readString();
             bbrProfile = input.readString();
         }
+        if (version >= 8) {
+            omitMaxDatagramFrameSize = input.readBoolean();
+        }
     }
 
     @Override
@@ -196,6 +202,7 @@ public class Hysteria2Bean extends AbstractBean {
         bean.hopIntervalMax = hopIntervalMax;
         bean.congestionControl = congestionControl;
         bean.bbrProfile = bbrProfile;
+        bean.omitMaxDatagramFrameSize = omitMaxDatagramFrameSize;
     }
 
     @Override

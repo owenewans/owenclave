@@ -123,6 +123,7 @@ object Key {
     const val ENABLE_FRAGMENT_FOR_DIRECT = "enableFragmentForDirect"
     const val FRAGMENT_METHOD = "fragmentMethod"
     const val REALITY_DISABLE_X25519MLKEM768 = "realityDisableX25519Mlkem768"
+    const val HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE = "hysteria2OmitMaxDatagramFrameSize"
     const val GRPC_SERVICE_NAME_COMPAT = "grpcServiceNameCompat"
     const val PROFILE_SECURITY_ADVISORY = "profileSecurityAdvisory"
 
@@ -236,6 +237,8 @@ object Key {
     const val SERVER_ANYTLS_IDLE_SESSION_TIMEOUT = "serverAnyTLSIdleSessionTimeout"
     const val SERVER_ANYTLS_MIN_IDLE_SESSION = "serverAnyTLSMinIdleSession"
     const val SERVER_TRUSTTUNNEL_SERVER_NAME_TO_VERIFY = "serverTrustTunnelServerNameToVerify"
+    const val SERVER_HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE = "serverHysteria2OmitMaxDatagramFrameSize"
+    const val SERVER_SSH_KEEPALIVE_INTERVAL = "serverSSHKeepaliveInterval"
 
     const val SERVER_PORTS = "serverPorts"
     const val SERVER_HOP_INTERVAL = "serverHopInterval"

@@ -41,6 +41,7 @@ public class SSHBean extends AbstractBean {
     public String privateKey;
     public String privateKeyPassphrase;
     public String publicKey;
+    public Integer keepaliveInterval;
 
     @Override
     public void initializeDefaultValues() {
@@ -54,11 +55,12 @@ public class SSHBean extends AbstractBean {
         if (privateKey == null) privateKey = "";
         if (privateKeyPassphrase == null) privateKeyPassphrase = "";
         if (publicKey == null) publicKey = "";
+        if (keepaliveInterval == null) keepaliveInterval = 0;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeString(username);
         output.writeInt(authType);
@@ -74,6 +76,7 @@ public class SSHBean extends AbstractBean {
                 break;
         }
         output.writeString(publicKey);
+        output.writeInt(keepaliveInterval);
     }
 
     @Override
@@ -94,6 +97,9 @@ public class SSHBean extends AbstractBean {
                 break;
         }
         publicKey = input.readString();
+        if (version >= 1) {
+            keepaliveInterval = input.readInt();
+        }
     }
 
 
@@ -103,6 +109,7 @@ public class SSHBean extends AbstractBean {
         if (bean.publicKey == null || bean.publicKey.isEmpty() && !publicKey.isEmpty()) {
             bean.publicKey = publicKey;
         }
+        bean.keepaliveInterval = keepaliveInterval;
     }
 
 

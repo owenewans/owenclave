@@ -689,7 +689,7 @@ public class V2RayConfig {
                 case "wireguard":
                     return WireGuardOutboundConfigurationObject.class;
                 case "ssh":
-                    return SSHOutbountConfigurationObject.class;
+                    return SSHOutboundConfigurationObject.class;
                 case "shadowsocks-2022":
                     return Shadowsocks2022OutboundConfigurationObject.class;
                 case "shadowsocks2022":
@@ -949,7 +949,7 @@ public class V2RayConfig {
 
     }
 
-    public static class SSHOutbountConfigurationObject implements OutboundConfigurationObject {
+    public static class SSHOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public String address;
         public Integer port;
@@ -961,6 +961,7 @@ public class V2RayConfig {
         public Integer userLevel;
         public String clientVersion;
         public List<String> hostKeyAlgorithms;
+        public Integer keepaliveInterval;
 
     }
 
@@ -1337,6 +1338,7 @@ public class V2RayConfig {
         public Long hopInterval;
         public Long hopIntervalMin;
         public Long hopIntervalMax;
+        public Boolean omitMaxDatagramFrameSize;
 
         public static class CongestionObject {
             public String type;

@@ -89,7 +89,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RealityObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ReverseObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject.BalancerObject.StrategyObject
-import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SSHOutbountConfigurationObject
+import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SSHOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ShadowsocksOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.Shadowsocks_2022OutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SocksInboundConfigurationObject
@@ -1234,6 +1234,8 @@ fun buildV2RayConfig(
                                         }
                                         "hysteria2" -> {
                                             hy2Settings = Hysteria2Object().apply {
+                                                // V2Ray transport is TCP only so it is safe to omit MaxDatagramFrameSize.
+                                                omitMaxDatagramFrameSize = true
                                                 if (bean.hy2Password.isNotEmpty()) {
                                                     password = bean.hy2Password
                                                 }
@@ -1358,7 +1360,7 @@ fun buildV2RayConfig(
                             } else if (bean is SSHBean) {
                                 protocol = "ssh"
                                 settings = LazyOutboundConfigurationObject(this,
-                                    SSHOutbountConfigurationObject().apply {
+                                    SSHOutboundConfigurationObject().apply {
                                         address = bean.serverAddress
                                         port = bean.serverPort
                                         user = bean.username
@@ -1376,6 +1378,9 @@ fun buildV2RayConfig(
                                         if (bean.publicKey.isNotEmpty()) {
                                             publicKey = bean.publicKey
                                         }
+                                        if (bean.keepaliveInterval > 0) {
+                                            keepaliveInterval = bean.keepaliveInterval
+                                        }
                                     })
                             } else if (bean is Hysteria2Bean) {
                                 protocol = "hysteria2"
@@ -1392,6 +1397,9 @@ fun buildV2RayConfig(
                                     security = "tls"
                                     hy2Settings = Hysteria2Object().apply {
                                         use_udp_extension = true
+                                        if (DataStore.hysteria2OmitMaxDatagramFrameSize || bean.omitMaxDatagramFrameSize) {
+                                            omitMaxDatagramFrameSize = true
+                                        }
                                         if (bean.auth.isNotEmpty()) {
                                             password = bean.auth
                                         }
