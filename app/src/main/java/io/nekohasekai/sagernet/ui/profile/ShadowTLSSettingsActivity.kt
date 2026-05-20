@@ -25,6 +25,7 @@ import androidx.preference.PreferenceFragmentCompat
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.ktx.unwrapIDN
 
@@ -62,6 +63,10 @@ class ShadowTLSSettingsActivity : ProfileSettingsActivity<ShadowTLSBean>() {
         rootKey: String?,
     ) {
         addPreferencesFromResource(R.xml.shadowtls_preferences)
+
+        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
+        }
 
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider

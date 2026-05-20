@@ -25,6 +25,7 @@ import androidx.preference.PreferenceFragmentCompat
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.ktx.unwrapIDN
 
@@ -67,6 +68,9 @@ class MieruSettingsActivity : ProfileSettingsActivity<MieruBean>() {
         addPreferencesFromResource(R.xml.mieru_preferences)
 
         val serverPort = findPreference<EditTextPreference>(Key.SERVER_PORT)!!
+        serverPort.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
+        }
         val serverPortRange = findPreference<EditTextPreference>(Key.SERVER_PORTS)!!
         serverPort.isEnabled = serverPortRange.text.isNullOrEmpty()
         serverPortRange.setOnPreferenceChangeListener { _, newValue ->

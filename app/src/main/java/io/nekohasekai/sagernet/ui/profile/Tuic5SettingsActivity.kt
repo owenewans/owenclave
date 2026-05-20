@@ -27,6 +27,7 @@ import androidx.preference.SwitchPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.ktx.getBooleanProperty
 import io.nekohasekai.sagernet.ktx.unwrapIDN
@@ -88,6 +89,10 @@ class Tuic5SettingsActivity : ProfileSettingsActivity<Tuic5Bean>() {
         rootKey: String?,
     ) {
         addPreferencesFromResource(R.xml.tuic5_preferences)
+
+        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
+        }
 
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider

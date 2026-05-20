@@ -26,6 +26,7 @@ import androidx.preference.SwitchPreference
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.ktx.unwrapIDN
 
@@ -75,6 +76,9 @@ class JuicitySettingsActivity : ProfileSettingsActivity<JuicityBean>() {
     ) {
         addPreferencesFromResource(R.xml.juicity_preferences)
 
+        findPreference<EditTextPreference>(Key.SERVER_PORT)!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Port)
+        }
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
