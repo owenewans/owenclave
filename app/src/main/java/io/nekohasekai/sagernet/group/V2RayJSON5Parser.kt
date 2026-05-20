@@ -126,8 +126,8 @@ fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
                                         v2rayBean.allowInsecure = allowInsecure
                                     }
                                 }
-                                if (v2rayBean is VLESSBean) {
-                                    // Only parse ECH for shit VLESS free nodes
+                                if (v2rayBean is VLESSBean || v2rayBean is TrojanBean) {
+                                    // Only parse ECH for shit VLESS or Trojan free nodes
                                     tlsConfig.getString("echDohServer")?.also {
                                         v2rayBean.echEnabled = true
                                     }

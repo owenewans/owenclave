@@ -223,8 +223,8 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                         }
                                     }
                                 }
-                                if (v2rayBean is VLESSBean) {
-                                    // Only parse ECH for shit VLESS free nodes
+                                if (v2rayBean is VLESSBean || v2rayBean is TrojanBean) {
+                                    // Only parse ECH for shit VLESS or Trojan free nodes
                                     tls.getObject("ech")?.also { ech ->
                                     ech.getBoolean("enabled")?.also { enabled ->
                                         if (enabled) {

@@ -221,8 +221,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.allowInsecure = true
                 }
             }
-            if (url.scheme == "vless") {
-                // Only parse ECH for shit VLESS free nodes
+            if (url.scheme == "vless" || url.scheme == "trojan") {
+                // Only parse ECH for shit VLESS or Trojan free nodes
                 url.queryParameter("ech")?.let {
                     bean.echEnabled = true
                     try {

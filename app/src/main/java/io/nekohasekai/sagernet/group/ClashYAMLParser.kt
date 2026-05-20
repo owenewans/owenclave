@@ -248,8 +248,8 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     bean.mtlsCertificate = cert
                     bean.mtlsCertificatePrivateKey = key
                 }
-                if (bean is VLESSBean) {
-                    // Only parse ECH for shit VLESS free nodes
+                if (bean is VLESSBean || bean is TrojanBean) {
+                    // Only parse ECH for shit VLESS or Trojan free nodes
                     proxy.getObject("ech-opts")?.also {
                         bean.echEnabled = it.getBoolean("enable")
                         bean.echConfig = it.getString("config")
