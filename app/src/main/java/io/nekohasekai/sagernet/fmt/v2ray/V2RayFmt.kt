@@ -323,6 +323,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
         }
         "httpupgrade" -> {
+            // Fuck Xray httpupgrade ALPN
+            // https://github.com/XTLS/Xray-core/blob/1bdb488c9ec09ea51e6899697d5b7437f3cf6eb2/transport/internet/tls/tls.go#L94-L131
+            bean.alpn = null
             url.queryParameterNotBlank("host")?.let {
                 // will not follow the breaking change in
                 // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
@@ -347,6 +350,9 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
         }
         "ws" -> {
+            // Fuck Xray ws ALPN
+            // https://github.com/XTLS/Xray-core/blob/1bdb488c9ec09ea51e6899697d5b7437f3cf6eb2/transport/internet/tls/tls.go#L94-L131
+            bean.alpn = null
             url.queryParameterNotBlank("host")?.let {
                 // will not follow the breaking change in
                 // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471

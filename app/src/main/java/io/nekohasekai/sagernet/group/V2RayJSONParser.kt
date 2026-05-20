@@ -274,6 +274,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         }
                         "ws", "websocket" -> {
                             v2rayBean.type = "ws"
+                            // Fuck Xray ws ALPN
+                            // https://github.com/XTLS/Xray-core/blob/1bdb488c9ec09ea51e6899697d5b7437f3cf6eb2/transport/internet/tls/tls.go#L94-L131
+                            v2rayBean.alpn = null
                             streamSettings.getObject("wsSettings")?.also { wsSettings ->
                                 wsSettings.getObject("headers")?.also {
                                     v2rayBean.host = it.getString("host")
@@ -356,6 +359,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         }
                         "httpupgrade" -> {
                             v2rayBean.type = "httpupgrade"
+                            // Fuck Xray httpupgrade ALPN
+                            // https://github.com/XTLS/Xray-core/blob/1bdb488c9ec09ea51e6899697d5b7437f3cf6eb2/transport/internet/tls/tls.go#L94-L131
+                            v2rayBean.alpn = null
                             streamSettings.getObject("httpupgradeSettings")?.also { httpupgradeSettings ->
                                 httpupgradeSettings.getString("host")?.also {
                                     // will not follow the breaking change in

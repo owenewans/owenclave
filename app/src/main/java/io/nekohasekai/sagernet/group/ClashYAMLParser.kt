@@ -352,6 +352,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 }
             }
             if (bean.type == "ws") {
+                // Fuck Xray ws and httpupgrade ALPN
+                // https://github.com/MetaCubeX/mihomo/blob/301d580d8ac7a1466633a2b3f0331bcf29c17735/component/tls/utls.go#L258-L283
+                bean.alpn = null
                 if (bean is TrojanBean && (bean.security == "tls" || bean.security == "reality") && !bean.sni.isNullOrEmpty()) {
                     bean.host = bean.sni
                 }
