@@ -229,8 +229,8 @@
         <SwitchPreference
             app:icon="@drawable/baseline_construction_24"
             app:key="hysteria2OmitMaxDatagramFrameSize"
-            app:summary="@string/enable_hysteria2_omit_max_datagram_frame_size"
-            app:title="@string/hysteria2_omit_max_datagram_frame_size_sum" />
+            app:summary="@string/hysteria2_omit_max_datagram_frame_size_sum"
+            app:title="@string/enable_hysteria2_omit_max_datagram_frame_size" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_format_align_left_24"
             app:key="grpcServiceNameCompat"

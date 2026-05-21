@@ -578,7 +578,6 @@
     <string name="reality_mldsa65_verify">REALITY mldsa65Verify</string>
     <string name="socks5_udp_authentication_warning">SOCKS5 UDP 不受用户名/密码认证的保护。如果启用 UDP，认证可以被容易地绕过。</string>
     <string name="enable_hysteria2_omit_max_datagram_frame_size">启用 Hysteria 2 OmitMaxDatagramFrameSize</string>
-    <string name="hysteria2_omit_max_datagram_frame_size" translatable="false">OmitMaxDatagramFrameSize</string>
     <string name="hysteria2_omit_max_datagram_frame_size_sum">如果 Hysteria 2 服务端不支持此破坏性变更，UDP 将无法使用。这是一个临时性选项，将来可能会被移除。</string>
     <string name="ssh_keepalive_interval">保活间隔（秒）</string>
 </resources>

@@ -124,8 +124,8 @@
         <SwitchPreference
             app:icon="@drawable/baseline_construction_24"
             app:key="serverHysteria2OmitMaxDatagramFrameSize"
-            app:summary="@string/hysteria2_omit_max_datagram_frame_size"
-            app:title="@string/hysteria2_omit_max_datagram_frame_size_sum" />
+            app:summary="@string/hysteria2_omit_max_datagram_frame_size_sum"
+            app:title="@string/hysteria2_omit_max_datagram_frame_size" />
     </PreferenceCategory>
 
 </PreferenceScreen>
