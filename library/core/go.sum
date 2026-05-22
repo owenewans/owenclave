@@ -65,8 +65,8 @@ github.com/dyhkwong/libsagernetcore v0.0.0-20260522093448-e247549c11c7 h1:iMnoK7
 github.com/dyhkwong/libsagernetcore v0.0.0-20260522093448-e247549c11c7/go.mod h1:ngY7ORuP8IJqyEN0oxkW7e+lBixqb3kEAUvLno7snIA=
 github.com/dyhkwong/sing-juicity v0.1.2 h1:bBz2kRo5rHmg+FiUZ55hcPHNVhjJDGC29U5ukzlXdu8=
 github.com/dyhkwong/sing-juicity v0.1.2/go.mod h1:12RIse/M0Bg4kyxpdkfe2Hus1PFBgTnG2lClOXHOrBk=
-github.com/dyhkwong/v2ray-core/v5 v5.50.1-0.20260522093014-5cecabddc85a h1:vPVt4EUmPnX3Ud3hZKLcGxebJt79yPcXGJrHbUaYagc=
-github.com/dyhkwong/v2ray-core/v5 v5.50.1-0.20260522093014-5cecabddc85a/go.mod h1:l4na48HWyKYFdmllbcxK3G4FbkCIQMRI3jZZCf92BfM=
+github.com/dyhkwong/v2ray-core/v5 v5.50.1-0.20260522172134-2322a4cd6ba2 h1:B9uCJoerPD6qawF5RAgsifIlQwyUscnPxzpx3o2YFI0=
+github.com/dyhkwong/v2ray-core/v5 v5.50.1-0.20260522172134-2322a4cd6ba2/go.mod h1:l4na48HWyKYFdmllbcxK3G4FbkCIQMRI3jZZCf92BfM=
 github.com/enfein/mieru/v3 v3.32.0 h1:/1c6Nk2Q0IU3R1L+haxBw688x1laUpWFx034IQPgzbM=
 github.com/enfein/mieru/v3 v3.32.0/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s5F6Qd3hM=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
