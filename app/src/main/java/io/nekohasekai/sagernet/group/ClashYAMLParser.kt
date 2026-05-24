@@ -48,7 +48,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
 import kotlin.io.encoding.Base64
-import libsagernetcore.Libsagernetcore
+import libexclavecore.Libexclavecore
 
 fun parseClashProxies(proxies: List<Map<String, Any?>>): List<AbstractBean> {
     val beans = mutableListOf<AbstractBean>()
@@ -365,7 +365,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     bean.path = wsOpts.getString("path")
                     if (!bean.path.isNullOrEmpty()) {
                         try {
-                            val u = Libsagernetcore.parseURL(bean.path)
+                            val u = Libexclavecore.parseURL(bean.path)
                             u.queryParameter("ed")?.also { ed ->
                                 u.deleteQueryParameter("ed")
                                 bean.path = u.string

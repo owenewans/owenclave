@@ -54,7 +54,7 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.dp2px
 import io.nekohasekai.sagernet.ktx.dp2pxf
 import io.nekohasekai.sagernet.ktx.snackbar
-import libsagernetcore.Libsagernetcore
+import libexclavecore.Libexclavecore
 
 class AboutFragment : ToolbarFragment(R.layout.layout_about) {
 
@@ -130,7 +130,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://github.com/dyhkwong/Exclave/releases".toUri()
+                                    "https://github.com/ExclaveNetwork/Exclave/releases".toUri()
                                 ))
                             }
                             .setOnLongClickAction {
@@ -140,26 +140,26 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .build())
                         .addItem(MaterialAboutActionItem.Builder()
                             .icon(R.drawable.ic_baseline_airplanemode_active_24)
-                            .text(getString(R.string.version_x, "v2ray-core"))
-                            .subText(Libsagernetcore.getV2RayVersion() + "-fork")
+                            .text(getString(R.string.version_x, "exclave-core"))
+                            .subText(Libexclavecore.getV2RayVersion())
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://github.com/dyhkwong/v2ray-core/tree/dev-sagernet".toUri()
+                                    "https://github.com/ExclaveNetwork/exclave-core".toUri()
                                 ))
                             }
                             .build())
                         .addItem(MaterialAboutActionItem.Builder()
                             .icon(R.drawable.ic_baseline_info_24)
                             .text(getString(R.string.version_x, "Go"))
-                            .subText(Libsagernetcore.getGoVersion())
+                            .subText(Libexclavecore.getGoVersion())
                             .setOnLongClickAction {
                                 AlertDialog.Builder(activityContext).apply {
                                     setView(NestedScrollView(activityContext).apply {
                                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                                         addView( HorizontalScrollView(activityContext).apply {
                                             addView(TextView(activityContext).apply {
-                                                text = Libsagernetcore.getDepInfo()
+                                                text = Libexclavecore.getDepInfo()
                                                 textSize = dp2pxf(4)
                                                 typeface = Typeface.MONOSPACE
                                                 isSingleLine = false
@@ -201,7 +201,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://github.com/dyhkwong/Exclave".toUri()
+                                    "https://github.com/ExclaveNetwork/Exclave".toUri()
                                 ))
                             }
                             .build())
@@ -224,7 +224,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                         TextView(activityContext).apply {
                                             setPadding(dp2px(16))
                                             text = getString(
-                                                if (Libsagernetcore.buildWithClash()) {
+                                                if (Libexclavecore.buildWithClash()) {
                                                     R.string.license_gpl_v3_only
                                                 } else {
                                                     R.string.license_gpl_v3_or_later

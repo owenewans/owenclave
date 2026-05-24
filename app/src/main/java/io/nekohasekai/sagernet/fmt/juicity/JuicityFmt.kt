@@ -20,11 +20,11 @@
 package io.nekohasekai.sagernet.fmt.juicity
 
 import io.nekohasekai.sagernet.ktx.*
-import libsagernetcore.Libsagernetcore
+import libexclavecore.Libexclavecore
 import java.util.Base64
 
 fun parseJuicity(url: String): JuicityBean {
-    val link = Libsagernetcore.parseURL(url)
+    val link = Libexclavecore.parseURL(url)
     return JuicityBean().apply {
         name = link.fragment
         serverAddress = link.host.ifEmpty { error("empty host") }
@@ -54,7 +54,7 @@ fun parseJuicity(url: String): JuicityBean {
 }
 
 fun JuicityBean.toUri(): String? {
-    val builder = Libsagernetcore.newURL("juicity").apply {
+    val builder = Libexclavecore.newURL("juicity").apply {
         setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         username = uuid.ifEmpty { error("empty uuid") }
         if (name.isNotEmpty()) {

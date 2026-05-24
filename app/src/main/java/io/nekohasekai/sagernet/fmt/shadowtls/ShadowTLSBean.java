@@ -26,7 +26,7 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
-import libsagernetcore.Libsagernetcore;
+import libexclavecore.Libexclavecore;
 
 public class ShadowTLSBean extends AbstractBean {
 
@@ -119,7 +119,7 @@ public class ShadowTLSBean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libsagernetcore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libexclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         if (!allowInsecure) {

@@ -32,13 +32,11 @@ Some supported protocols:
 
 </details>
 
-It is a fork of the archived Android proxy client SagerNet and uses a custom overhauled fork of V2Ray.
-
 ## Download
 
 - Exclave
 
-  [Download from GitHub releases](https://github.com/dyhkwong/Exclave/releases)
+  [Download from GitHub releases](https://github.com/ExclaveNetwork/Exclave/releases)
 
   [Download from F-Droid](https://f-droid.org/packages/com.github.dyhkwong.sagernet)
 
@@ -54,7 +52,7 @@ Starting in September 2026, Google will [block apps from "sideloading"](https://
 
 ## Explanation of terms
 
-[Exclave wiki](https://github.com/dyhkwong/Exclave/wiki). It contains some subjective comments. Viewer discretion is advised.
+[Exclave wiki](https://github.com/ExclaveNetwork/Exclave/wiki). It contains some subjective comments. Viewer discretion is advised.
 
 ## Translation
 
@@ -62,7 +60,7 @@ Is Exclave not in your language, or the translation is incorrect or incomplete? 
 
 ## Issue tracker
 
-Please report bugs and submit feature requests [here](https://github.com/dyhkwong/Exclave/issues). Do not report to v2ray-core as this project has heavily modified the code of v2ray-core.
+Please report bugs and submit feature requests [here](https://github.com/ExclaveNetwork/Exclave/issues).
 
 - Before creating a new issue, please search for existing ones. Do not create duplicate issues.
 - Old versions are not supported. Please ensure that you are using the latest version.
@@ -73,12 +71,12 @@ Please report bugs and submit feature requests [here](https://github.com/dyhkwon
 
 ## Discussion
 
-- Public [discussions](https://github.com/dyhkwong/Exclave/discussions) are always preferred because they can be viewed by everyone.
+- Public [discussions](https://github.com/ExclaveNetwork/Exclave/discussions) are always preferred because they can be viewed by everyone.
 - Private [chat group](https://t.me/s/exclavian).
 
 ## Code contribution
 
-- Create a [pull request](https://github.com/dyhkwong/Exclave/pulls) to contribute code. New features needs prior communications in the issue tracker, while bug fixes does not.
+- Create a [pull request](https://github.com/ExclaveNetwork/Exclave/pulls) to contribute code. New features needs prior communications in the issue tracker, while bug fixes does not.
 
 ## License
 
@@ -100,7 +98,7 @@ Please report bugs and submit feature requests [here](https://github.com/dyhkwon
 
 ## Notice
 
-Exclave is licensed under the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. However, Exclave optionally incorporates code covered by the GNU General Public License as published by the Free Software Foundation, version 3. If `github.com/dyhkwong/libsagernetcore` is compiled with `with_clash` tag, the GNU General Public License as published by the Free Software Foundation, version 3, applies to all of Exclave.
+Exclave is licensed under the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. However, Exclave optionally incorporates code covered by the GNU General Public License as published by the Free Software Foundation, version 3. If `github.com/exclavenetwork/libexclavecore` is compiled with `with_clash` tag, the GNU General Public License as published by the Free Software Foundation, version 3, applies to all of Exclave.
 
 ## Build from source
 
@@ -116,13 +114,13 @@ Exclave is licensed under the GNU General Public License as published by the Fre
 
 - Linux (x64) or macOS (x64/arm64):
 
-  - Build libsagernetcore: `./run lib core` or `./library/core/build.sh`
+  - Build libexclavecore: `./run lib core` or `./library/core/build.sh`
   - Download assets: `./gradlew :app:downloadAssets`, or update assets to the latest version: `./gradlew :app:updateAssets`
   - Build Exclave: `./gradlew :app:assembleOssRelease`
 
 - Windows (x64):
 
-  - Build libsagernetcore: `./library/core/build.bat`
+  - Build libexclavecore: `./library/core/build.bat`
   - Download assets: `./gradlew.bat :app:downloadAssets`, or update assets to the latest version: `./gradlew.bat :app:updateAssets`
   - Build Exclave: `./gradlew.bat :app:assembleOssRelease`
 

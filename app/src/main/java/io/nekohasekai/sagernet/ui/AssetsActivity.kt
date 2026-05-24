@@ -43,7 +43,7 @@ import io.nekohasekai.sagernet.databinding.LayoutAssetItemBinding
 import io.nekohasekai.sagernet.databinding.LayoutAssetsBinding
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
-import libsagernetcore.Libsagernetcore
+import libexclavecore.Libexclavecore
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -327,7 +327,7 @@ class AssetsActivity : ThemedActivity() {
             else -> error("invalid asset provider")
         }
 
-        val client = Libsagernetcore.newHttpClient().apply {
+        val client = Libexclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
                 useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
@@ -388,7 +388,7 @@ class AssetsActivity : ThemedActivity() {
     }
 
     suspend fun updateCustomAsset(file: File, url: String) {
-        val client = Libsagernetcore.newHttpClient().apply {
+        val client = Libexclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
                 useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")

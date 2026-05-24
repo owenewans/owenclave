@@ -41,7 +41,7 @@ import io.nekohasekai.sagernet.fmt.shadowquic.buildShadowQUICConfig
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
-import libsagernetcore.V2RayInstance
+import libexclavecore.V2RayInstance
 import java.io.File
 
 abstract class V2RayInstance(

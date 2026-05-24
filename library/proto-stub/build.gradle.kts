@@ -13,7 +13,7 @@ dependencies {
     api(libs.protobuf.java)
 }
 android {
-    namespace = "com.v2ray.core"
+    namespace = "com.github.exclavenetwork.exclave.core"
     buildTypes {
         release {
             isMinifyEnabled = false

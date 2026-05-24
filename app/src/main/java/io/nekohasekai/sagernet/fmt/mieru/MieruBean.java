@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 import io.nekohasekai.sagernet.ktx.NetsKt;
-import libsagernetcore.Libsagernetcore;
+import libexclavecore.Libexclavecore;
 
 public class MieruBean extends AbstractBean {
 
@@ -121,7 +121,7 @@ public class MieruBean extends AbstractBean {
         if (portRange.isEmpty()) {
             return super.displayAddress();
         }
-        if (Libsagernetcore.isIPv6(serverAddress)) {
+        if (Libexclavecore.isIPv6(serverAddress)) {
             return "[" + serverAddress + "]:" + String.join(",", NetsKt.listByLineOrComma(portRange));
         } else {
             return NetsKt.wrapIDN(serverAddress) + ":" + String.join(",", NetsKt.listByLineOrComma(portRange));

@@ -28,8 +28,8 @@ import io.nekohasekai.sagernet.ktx.tryResumeWithException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asExecutor
 import kotlinx.coroutines.runBlocking
-import libsagernetcore.Libsagernetcore
-import libsagernetcore.LocalResolver
+import libexclavecore.Libexclavecore
+import libexclavecore.LocalResolver
 import java.net.InetAddress
 import java.net.UnknownHostException
 import kotlin.coroutines.suspendCoroutine
@@ -104,10 +104,10 @@ interface LocalResolver : LocalResolver {
             val filtered = mutableListOf<String>()
             when {
                 network.endsWith("4") -> for (address in answer) {
-                    address.hostAddress?.takeIf { Libsagernetcore.isIPv4(it) }?.also { filtered.add(it) }
+                    address.hostAddress?.takeIf { Libexclavecore.isIPv4(it) }?.also { filtered.add(it) }
                 }
                 network.endsWith("6") -> for (address in answer) {
-                    address.hostAddress?.takeIf { Libsagernetcore.isIPv6(it) }?.also { filtered.add(it) }
+                    address.hostAddress?.takeIf { Libexclavecore.isIPv6(it) }?.also { filtered.add(it) }
                 }
                 else -> filtered.addAll(answer.mapNotNull { it.hostAddress })
             }

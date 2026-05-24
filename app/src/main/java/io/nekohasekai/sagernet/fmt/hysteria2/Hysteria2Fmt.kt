@@ -24,7 +24,7 @@ import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
 import io.nekohasekai.sagernet.ktx.queryParameterNotBlank
-import libsagernetcore.Libsagernetcore
+import libexclavecore.Libexclavecore
 
 fun parseHysteria2(rawURL: String): Hysteria2Bean {
     var url = rawURL
@@ -40,7 +40,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
         }
     }
 
-    val link = Libsagernetcore.parseURL(url)
+    val link = Libexclavecore.parseURL(url)
     return Hysteria2Bean().apply {
         name = link.fragment
         serverAddress = link.host.ifEmpty { error("empty host") }
@@ -112,7 +112,7 @@ fun Hysteria2Bean.toUri(): String? {
         error("empty server address")
     }
 
-    val builder = Libsagernetcore.newURL("hysteria2").apply {
+    val builder = Libexclavecore.newURL("hysteria2").apply {
         // fuck port hopping URL
         rawHost = if (serverAddress.contains(":")) {
             "[$serverAddress]:$serverPorts"

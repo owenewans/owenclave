@@ -26,7 +26,7 @@ import androidx.preference.EditTextPreference
 import com.google.android.material.textfield.TextInputLayout
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ktx.readableMessage
-import libsagernetcore.Libsagernetcore
+import libexclavecore.Libexclavecore
 import androidx.core.net.toUri
 
 class LinkPreference : EditTextPreference {
@@ -109,7 +109,7 @@ class LinkPreference : EditTextPreference {
                 text = defaultValue
                 false
             } else try {
-                Libsagernetcore.parseURL(newValue)
+                Libexclavecore.parseURL(newValue)
                 true
             } catch (ignored: Exception) {
                 false

@@ -27,5 +27,3 @@ Some supported protocols:
 - SOCKS4, SOCKS4A and SOCKS5
 
 Although it can take charge of the traffic through the VPN service provided by the system, it is a TCP and UDP proxy used as a "pseudo-VPN" rather than a VPN.
-
-It is a fork of the archived Android proxy client SagerNet and uses a custom overhauled fork of V2Ray.

@@ -11,7 +11,7 @@ build/
 .cxx
 local.properties
 /app/libs/
-/app/src/main/assets/v2ray/*.dat
+/app/src/main/assets/exclave-core/*.dat
 /service_account_credentials.json
 jniLibs/
 go.work
