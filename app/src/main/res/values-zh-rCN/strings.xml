@@ -581,4 +581,6 @@
     <string name="hysteria2_omit_max_datagram_frame_size_sum">如果 Hysteria 2 服务端不支持此破坏性变更，UDP 将无法使用。这是一个临时性选项，将来可能会被移除。</string>
     <string name="ssh_keepalive_interval">保活间隔（秒）</string>
     <string name="custom_outbound">自定义出站</string>
+    <string name="hysteria2_gecko_max_packet_size">最大包大小</string>
+    <string name="hysteria2_gecko_min_packet_size">最小包大小</string>
 </resources>
