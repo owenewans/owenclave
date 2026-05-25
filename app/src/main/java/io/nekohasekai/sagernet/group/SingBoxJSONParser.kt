@@ -214,7 +214,7 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                     reality.getBoolean("enabled")?.also { enabled ->
                                         if (enabled) {
                                             v2rayBean.security = "reality"
-                                            reality.getString("public_key")?.also {
+                                            reality.getString("public_key")?.ifEmpty { return listOf() }?.also {
                                                 v2rayBean.realityPublicKey = it
                                             }
                                             reality.getString("short_id")?.also {

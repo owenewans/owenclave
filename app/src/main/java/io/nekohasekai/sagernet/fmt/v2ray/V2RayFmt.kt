@@ -236,7 +236,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             url.queryParameterNotBlank("sni")?.let {
                 bean.sni = it
             }
-            url.queryParameterNotBlank("pbk")?.let {
+            url.queryParameterNotBlank("pbk")?.ifEmpty { error("empty reality public key") }?.let {
                 bean.realityPublicKey = it
             }
             url.queryParameterNotBlank("sid")?.let {
@@ -606,7 +606,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
     }
 
     when (val security = json.getString("tls")) {
-        "tls", "reality" -> {
+        "tls" -> {
             bean.security = security
             bean.name = json.getString("ps")?.takeIf { it.isNotEmpty() }
             // See https://github.com/2dust/v2rayNG/blob/5db2df77a01144b8f3d40116f8c183153f181d05/V2rayNG/app/src/main/java/com/v2ray/ang/handler/V2rayConfigManager.kt#L1077-L1242
@@ -618,6 +618,9 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             json.getInt("insecure")?.takeIf { it == 1 }?.let {
                 bean.allowInsecure = true
             }
+        }
+        "reality" -> {
+            error("v2rayN(G) style link lacks REALITY public key support and does not work at all.")
         }
         else -> bean.security = "none"
     }

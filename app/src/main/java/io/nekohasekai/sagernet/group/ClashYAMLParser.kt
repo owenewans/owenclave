@@ -340,7 +340,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
 
             proxy.getObject("reality-opts")?.also {
                 bean.security = "reality"
-                bean.realityPublicKey = it.getString("public-key")
+                bean.realityPublicKey = it.getString("public-key")?.ifEmpty { return listOf() }
                 bean.realityShortId = it.getString("short-id")
             }
 
