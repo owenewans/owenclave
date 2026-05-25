@@ -34,7 +34,7 @@ import libexclavecore.Libexclavecore;
 public class Hysteria2Bean extends AbstractBean {
 
     public String auth;
-    public String obfs;
+    public String obfsPassword;
     public String sni;
     public String pinnedPeerCertificateSha256;
     public String pinnedPeerCertificatePublicKeySha256;
@@ -54,12 +54,15 @@ public class Hysteria2Bean extends AbstractBean {
     public String congestionControl;
     public String bbrProfile;
     public Boolean omitMaxDatagramFrameSize;
+    public String obfsType;
+    public Integer geckoMinPacketSize;
+    public Integer geckoMaxPacketSize;
 
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
         if (auth == null) auth = "";
-        if (obfs == null) obfs = "";
+        if (obfsPassword == null) obfsPassword = "";
         if (sni == null) sni = "";
         if (pinnedPeerCertificateSha256 == null) pinnedPeerCertificateSha256 = "";
         if (pinnedPeerCertificatePublicKeySha256 == null) pinnedPeerCertificatePublicKeySha256 = "";
@@ -79,14 +82,17 @@ public class Hysteria2Bean extends AbstractBean {
         if (congestionControl == null) congestionControl = "bbr";
         if (bbrProfile == null) bbrProfile = "standard";
         if (omitMaxDatagramFrameSize == null) omitMaxDatagramFrameSize = false;
+        if (obfsType == null) obfsType = "";
+        if (geckoMinPacketSize == null) geckoMinPacketSize = 0;
+        if (geckoMaxPacketSize == null) geckoMaxPacketSize = 0;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(8);
+        output.writeInt(9);
         super.serialize(output);
         output.writeString(auth);
-        output.writeString(obfs);
+        output.writeString(obfsPassword);
         output.writeString(sni);
         output.writeString(pinnedPeerCertificateSha256);
         output.writeString(pinnedPeerCertificatePublicKeySha256);
@@ -107,6 +113,9 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeString(congestionControl);
         output.writeString(bbrProfile);
         output.writeBoolean(omitMaxDatagramFrameSize);
+        output.writeString(obfsType);
+        output.writeInt(geckoMinPacketSize);
+        output.writeInt(geckoMaxPacketSize);
     }
 
     @Override
@@ -114,7 +123,10 @@ public class Hysteria2Bean extends AbstractBean {
         int version = input.readInt();
         super.deserialize(input);
         auth = input.readString();
-        obfs = input.readString();
+        obfsPassword = input.readString();
+        if (!obfsPassword.isEmpty() && version < 9) {
+            obfsType = "salamander";
+        }
         sni = input.readString();
         pinnedPeerCertificateSha256 = input.readString();
         if (version >= 4) {
@@ -171,6 +183,11 @@ public class Hysteria2Bean extends AbstractBean {
         if (version >= 8) {
             omitMaxDatagramFrameSize = input.readBoolean();
         }
+        if (version >= 9) {
+            obfsType = input.readString();
+            geckoMinPacketSize = input.readInt();
+            geckoMaxPacketSize = input.readInt();
+        }
     }
 
     @Override
@@ -203,6 +220,12 @@ public class Hysteria2Bean extends AbstractBean {
         bean.congestionControl = congestionControl;
         bean.bbrProfile = bbrProfile;
         bean.omitMaxDatagramFrameSize = omitMaxDatagramFrameSize;
+        if (bean.geckoMinPacketSize == null || bean.geckoMinPacketSize == 0) {
+            bean.geckoMinPacketSize = geckoMinPacketSize;
+        }
+        if (bean.geckoMaxPacketSize == null || bean.geckoMaxPacketSize == 0) {
+            bean.geckoMaxPacketSize = geckoMaxPacketSize;
+        }
     }
 
     @Override
@@ -247,7 +270,7 @@ public class Hysteria2Bean extends AbstractBean {
             // do not care if DNS server is reliable or not
             return false;
         }
-        if (!obfs.isEmpty()) {
+        if (!obfsPassword.isEmpty()) {
             return false;
         }
         if (!allowInsecure) {

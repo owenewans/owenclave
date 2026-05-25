@@ -245,6 +245,9 @@ object Key {
     const val SERVER_HOP_INTERVAL_MIN = "serverHopIntervalMin"
     const val SERVER_HOP_INTERVAL_MAX = "serverHopIntervalMax"
     const val SERVER_HYSTERIA2_BBR_PROFILE = "serverHysteria2BBRProfile"
+    const val SERVER_HYSTERIA2_OBFS_TYPE = "serverHysteria2ObfsType"
+    const val SERVER_HYSTERIA2_GECKO_MIN_PACKET_SIZE = "serverHysteria2GeckoMinPacketSize"
+    const val SERVER_HYSTERIA2_GECKO_MAX_PACKET_SIZE = "serverHysteria2GeckoMaxPacketSize"
 
     const val SERVER_NAIVE_NO_POST_QUANTUM = "serverNaiveNoPostQuantum"
     const val SERVER_SHADOWQUIC_DISABLE_ALPN = "serverShadowQUICDisableALPN"

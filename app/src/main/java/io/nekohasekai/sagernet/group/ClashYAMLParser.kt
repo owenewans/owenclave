@@ -589,7 +589,14 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     when (it) {
                         "" -> {}
                         "salamander" -> {
-                            obfs = proxy.getString("obfs-password")
+                            obfsType = "salamander"
+                            obfsPassword = proxy.getString("obfs-password")
+                        }
+                        "gecko" -> {
+                            obfsType = "gecko"
+                            obfsPassword = proxy.getString("obfs-password")
+                            geckoMinPacketSize = proxy.getInt("obfs-min-packet-size")?.takeIf { it > 0 }
+                            geckoMaxPacketSize = proxy.getInt("obfs-max-packet-size")?.takeIf { it > 0 }
                         }
                         else -> return listOf()
                     }

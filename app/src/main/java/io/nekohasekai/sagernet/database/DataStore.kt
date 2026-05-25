@@ -341,6 +341,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverHopIntervalMin by profileCacheStore.stringToLong(Key.SERVER_HOP_INTERVAL_MIN)
     var serverHopIntervalMax by profileCacheStore.stringToLong(Key.SERVER_HOP_INTERVAL_MAX)
     var serverHysteria2BBRProfile by profileCacheStore.string(Key.SERVER_HYSTERIA2_BBR_PROFILE)
+    var serverHysteria2ObfsType by profileCacheStore.string(Key.SERVER_HYSTERIA2_OBFS_TYPE)
+    var serverHysteria2GeckoMinPacketSize by profileCacheStore.stringToInt(Key.SERVER_HYSTERIA2_GECKO_MIN_PACKET_SIZE)
+    var serverHysteria2GeckoMaxPacketSize by profileCacheStore.stringToInt(Key.SERVER_HYSTERIA2_GECKO_MAX_PACKET_SIZE)
 
     var serverVMessExperimentalAuthenticatedLength by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH)
     var serverVMessExperimentalNoTerminationSignal by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL)

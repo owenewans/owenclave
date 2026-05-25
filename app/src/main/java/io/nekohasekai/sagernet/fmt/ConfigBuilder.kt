@@ -1415,10 +1415,18 @@ fun buildV2RayConfig(
                                                 bbrProfile = bean.bbrProfile
                                             }
                                         }
-                                        if (bean.obfs.isNotEmpty()) {
+                                        if (bean.obfsType.isNotEmpty()) {
                                             obfs = Hysteria2Object.OBFSObject().apply {
-                                                type = "salamander"
-                                                password = bean.obfs
+                                                type = bean.obfsType
+                                                password = bean.obfsPassword
+                                                if (bean.obfsType == "gecko") {
+                                                    if (bean.geckoMinPacketSize > 0) {
+                                                        minPacketSize = bean.geckoMinPacketSize
+                                                    }
+                                                    if (bean.geckoMaxPacketSize > 0) {
+                                                        maxPacketSize = bean.geckoMaxPacketSize
+                                                    }
+                                                }
                                             }
                                         }
                                         if (bean.serverPorts.isNotEmpty() && bean.serverPorts.isValidHysteriaMultiPort()) {

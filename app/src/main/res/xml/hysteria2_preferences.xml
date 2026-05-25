@@ -24,11 +24,28 @@
             app:key="serverPassword"
             app:title="@string/password"
             app:useSimpleSummaryProvider="true" />
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverHysteria2ObfsType"
+            app:entries="@array/hysteria2_obfs_type"
+            app:entryValues="@array/hysteria2_obfs_type"
+            app:title="@string/obfs"
+            app:useSimpleSummaryProvider="true"/>
         <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverObfs"
             app:title="@string/hysteria_obfs"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverHysteria2GeckoMinPacketSize"
+            app:title="@string/hysteria2_gecko_min_packet_size"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="serverHysteria2GeckoMaxPacketSize"
+            app:title="@string/hysteria2_gecko_max_packet_size"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:icon="@drawable/ic_action_copyright"

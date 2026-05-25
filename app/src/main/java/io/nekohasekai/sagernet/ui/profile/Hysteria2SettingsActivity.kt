@@ -40,7 +40,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.profileName = name
         DataStore.serverAddress = serverAddress
         DataStore.serverPort = serverPort
-        DataStore.serverObfs = obfs
+        DataStore.serverObfs = obfsPassword
         DataStore.serverPassword = auth
         DataStore.serverSNI = sni
         DataStore.serverCertificates = certificates
@@ -61,13 +61,16 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.serverCongestionController = congestionControl
         DataStore.serverHysteria2BBRProfile = bbrProfile
         DataStore.serverHysteria2OmitMaxDatagramFrameSize = omitMaxDatagramFrameSize
+        DataStore.serverHysteria2ObfsType = obfsType
+        DataStore.serverHysteria2GeckoMinPacketSize = geckoMinPacketSize
+        DataStore.serverHysteria2GeckoMaxPacketSize = geckoMaxPacketSize
     }
 
     override fun Hysteria2Bean.serialize() {
         name = DataStore.profileName
         serverAddress = DataStore.serverAddress.unwrapIDN()
         serverPort = DataStore.serverPort
-        obfs = DataStore.serverObfs
+        obfsPassword = DataStore.serverObfs
         auth = DataStore.serverPassword
         sni = DataStore.serverSNI
         certificates = DataStore.serverCertificates
@@ -88,6 +91,9 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         congestionControl = DataStore.serverCongestionController
         bbrProfile = DataStore.serverHysteria2BBRProfile
         omitMaxDatagramFrameSize = DataStore.serverHysteria2OmitMaxDatagramFrameSize
+        obfsType = DataStore.serverHysteria2ObfsType
+        geckoMinPacketSize = DataStore.serverHysteria2GeckoMinPacketSize
+        geckoMaxPacketSize = DataStore.serverHysteria2GeckoMaxPacketSize
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -110,8 +116,29 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         findPreference<EditTextPreference>(Key.SERVER_PASSWORD)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
-        findPreference<EditTextPreference>(Key.SERVER_OBFS)!!.apply {
+
+        val obfsType = findPreference<ListPreference>(Key.SERVER_HYSTERIA2_OBFS_TYPE)!!
+        val obfsPassword = findPreference<EditTextPreference>(Key.SERVER_OBFS)!!
+        obfsPassword.apply {
             summaryProvider = PasswordSummaryProvider
+        }
+        obfsPassword.isVisible = obfsType.value.isNotEmpty()
+        val geckoMinPacketSize = findPreference<EditTextPreference>(Key.SERVER_HYSTERIA2_GECKO_MIN_PACKET_SIZE)!!
+        geckoMinPacketSize.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
+        geckoMinPacketSize.isVisible = obfsType.value == "gecko"
+        val geckoMaxPacketSize = findPreference<EditTextPreference>(Key.SERVER_HYSTERIA2_GECKO_MAX_PACKET_SIZE)
+        geckoMaxPacketSize!!.apply {
+            setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
+        }
+        geckoMaxPacketSize.isVisible = obfsType.value == "gecko"
+        obfsType.setOnPreferenceChangeListener { _, newValue ->
+            newValue as String
+            obfsPassword.isVisible = newValue.isNotEmpty()
+            geckoMinPacketSize.isVisible = newValue == "gecko"
+            geckoMaxPacketSize.isVisible = newValue == "gecko"
+            true
         }
 
         val echEnabled = findPreference<SwitchPreference>(Key.SERVER_ECH_ENABLED)!!

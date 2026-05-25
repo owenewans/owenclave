@@ -461,9 +461,26 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                 } ?: return listOf()
                 outbound.getObject("obfs")?.also { obfuscation ->
                     obfuscation.getString("type")?.takeIf { it.isNotEmpty() }?.also { type ->
-                        if (type != "salamander") return listOf()
-                        obfuscation.getString("password")?.also {
-                            obfs = it
+                        when (type) {
+                            "salamander" -> {
+                                obfsType = "salamander"
+                                obfuscation.getString("password")?.also {
+                                    obfsPassword = it
+                                }
+                            }
+                            "gecko" -> {
+                                obfsType = "gecko"
+                                obfuscation.getString("password")?.also {
+                                    obfsPassword = it
+                                }
+                                obfuscation.getInt("min_packet_size")?.takeIf { it > 0 }?.also {
+                                    geckoMinPacketSize = it
+                                }
+                                obfuscation.getInt("max_packet_size")?.takeIf { it > 0 }?.also {
+                                    geckoMaxPacketSize = it
+                                }
+                            }
+                            else -> return listOf()
                         }
                     }
                 }

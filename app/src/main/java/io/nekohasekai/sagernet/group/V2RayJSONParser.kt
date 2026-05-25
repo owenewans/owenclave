@@ -576,7 +576,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                                 hy2Settings.getObject("obfs")?.also { obfs ->
                                     obfs.getString("type")?.also { type ->
-                                        if (type == "salamander") {
+                                        if (type.isNotEmpty()) {
                                             return listOf()
                                         }
                                     }
@@ -1030,10 +1030,25 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                                 hy2Settings.getObject("obfs")?.also { obfs ->
                                     obfs.getString("type")?.also { type ->
-                                        if (type == "salamander") {
-                                            obfs.getString("password")?.also {
-                                                hysteria2Bean.obfs = it
+                                        when (type) {
+                                            "" -> {}
+                                            "salamander" -> {
+                                                obfs.getString("password")?.also {
+                                                    hysteria2Bean.obfsPassword = it
+                                                }
                                             }
+                                            "gecko" -> {
+                                                obfs.getString("password")?.also {
+                                                    hysteria2Bean.obfsPassword = it
+                                                }
+                                                obfs.getInt("minPacketSize")?.takeIf { it > 0 }?.also {
+                                                    hysteria2Bean.geckoMinPacketSize = it
+                                                }
+                                                obfs.getInt("maxPacketSize")?.takeIf { it > 0 }?.also {
+                                                    hysteria2Bean.geckoMaxPacketSize = it
+                                                }
+                                            }
+                                            else -> return listOf()
                                         }
                                     }
                                 }
@@ -1763,11 +1778,26 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also { udpMasks ->
                         if (udpMasks.size != 1) return listOf()
                         val udpmask = udpMasks[0]
-                        if (udpmask.getString("type") != "salamander") return listOf()
-                        udpmask.getObject("settings")?.also { settings ->
-                            settings.getString("password")?.also {
-                                hysteria2Bean.obfs = it
+                        when (udpmask.getString("type")) {
+                            "" -> {}
+                            "salamander" -> {
+                                hysteria2Bean.obfsType = "salamander"
+                                udpmask.getObject("settings")?.also { settings ->
+                                    settings.getString("password")?.also {
+                                        hysteria2Bean.obfsPassword = it
+                                    }
+                                }
                             }
+                            "gecko" -> {
+                                hysteria2Bean.obfsType = "gecko"
+                                udpmask.getObject("settings")?.also { settings ->
+                                    settings.getString("password")?.also {
+                                        hysteria2Bean.obfsPassword = it
+                                    }
+                                    // TODO: min/max packet size
+                                }
+                            }
+                            else -> return listOf()
                         }
                     }
                     finalmask.getObject("quicParams")?.also { quicParams ->

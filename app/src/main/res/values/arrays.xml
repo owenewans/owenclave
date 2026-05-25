@@ -899,4 +899,10 @@
         <item>brutal</item>
     </string-array>
 
+    <string-array name="hysteria2_obfs_type">
+        <item />
+        <item>salamander</item>
+        <item>gecko</item>
+    </string-array>
+
 </resources>

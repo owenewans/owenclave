@@ -1350,6 +1350,8 @@ public class V2RayConfig {
         public static class OBFSObject {
             public String type;
             public String password;
+            public Integer minPacketSize;
+            public Integer maxPacketSize;
         }
 
     }
