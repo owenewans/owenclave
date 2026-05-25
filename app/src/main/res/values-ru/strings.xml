@@ -583,4 +583,10 @@
     <string name="require_socks">Включить входящий трафик SOCKS5</string>
     <string name="custom_package_name_or_uid">Пользовательское имя пакета или UID</string>
     <string name="socks5_udp_authentication_warning">UDP-трафик в SOCKS5 не защищён аутентификацией по имени пользователя и паролю. Если UDP включён, аутентификацию можно легко обойти.</string>
+    <string name="hysteria2_omit_max_datagram_frame_size_sum">Если сервер Hysteria 2 не поддерживает это критическое изменение, UDP будет недоступен. Это временная опция, которая может быть удалена в будущем.</string>
+    <string name="ssh_keepalive_interval">Интервал проверки соединения (сек)</string>
+    <string name="custom_outbound">Пользовательское исходящее соединение</string>
+    <string name="hysteria2_gecko_max_packet_size">Максимальный размер пакета</string>
+    <string name="hysteria2_gecko_min_packet_size">Минимальный размер пакета</string>
+    <string name="enable_hysteria2_omit_max_datagram_frame_size">Включить Hysteria 2 OmitMaxDatagramFrameSize</string>
 </resources>
