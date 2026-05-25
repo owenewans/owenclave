@@ -92,7 +92,14 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeInt(9);
         super.serialize(output);
         output.writeString(auth);
-        output.writeString(obfsPassword);
+        switch (obfsType) {
+            case "salamander", "gecko":
+                output.writeString(obfsPassword);
+                break;
+            default:
+                output.writeString(""); // obfsPassword
+                break;
+        }
         output.writeString(sni);
         output.writeString(pinnedPeerCertificateSha256);
         output.writeString(pinnedPeerCertificatePublicKeySha256);
@@ -114,8 +121,16 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeString(bbrProfile);
         output.writeBoolean(omitMaxDatagramFrameSize);
         output.writeString(obfsType);
-        output.writeInt(geckoMinPacketSize);
-        output.writeInt(geckoMaxPacketSize);
+        switch (obfsType) {
+            case "gecko":
+                output.writeInt(geckoMinPacketSize);
+                output.writeInt(geckoMaxPacketSize);
+                break;
+            default:
+                output.writeInt(0); // geckoMinPacketSize
+                output.writeInt(0); // geckoMaxPacketSize
+                break;
+        }
     }
 
     @Override
@@ -185,8 +200,25 @@ public class Hysteria2Bean extends AbstractBean {
         }
         if (version >= 9) {
             obfsType = input.readString();
-            geckoMinPacketSize = input.readInt();
-            geckoMaxPacketSize = input.readInt();
+            switch (obfsType) {
+                case "salamander":
+                    input.readInt(); // geckoMinPacketSize
+                    input.readInt(); // geckoMaxPacketSize
+                    geckoMinPacketSize = 0;
+                    geckoMaxPacketSize = 0;
+                    break;
+                case "gecko":
+                    geckoMinPacketSize = input.readInt();
+                    geckoMaxPacketSize = input.readInt();
+                    break;
+                default:
+                    input.readInt(); // geckoMinPacketSize
+                    input.readInt(); // geckoMaxPacketSize
+                    geckoMinPacketSize = 0;
+                    geckoMaxPacketSize = 0;
+                    obfsPassword = "";
+                    break;
+            }
         }
     }
 
