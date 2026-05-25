@@ -613,4 +613,5 @@
     <string name="hysteria2_omit_max_datagram_frame_size" translatable="false">OmitMaxDatagramFrameSize</string>
     <string name="hysteria2_omit_max_datagram_frame_size_sum">If the Hysteria 2 server does not support this breaking change, UDP will be unusable. This is a temporary option and may be removed in the future.</string>
     <string name="ssh_keepalive_interval">Keepalive interval (s)</string>
+    <string name="custom_outbound">Custom outbound</string>
 </resources>

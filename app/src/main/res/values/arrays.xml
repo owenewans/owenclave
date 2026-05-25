@@ -361,8 +361,8 @@
     </string-array>
 
     <string-array name="config_type_entry">
-        <item>V2Ray</item>
-        <item>V2Ray Outbound</item>
+        <item>@string/custom_config</item>
+        <item>@string/custom_outbound</item>
     </string-array>
     <string-array name="config_type_value">
         <item>v2ray</item>

@@ -580,4 +580,5 @@
     <string name="enable_hysteria2_omit_max_datagram_frame_size">启用 Hysteria 2 OmitMaxDatagramFrameSize</string>
     <string name="hysteria2_omit_max_datagram_frame_size_sum">如果 Hysteria 2 服务端不支持此破坏性变更，UDP 将无法使用。这是一个临时性选项，将来可能会被移除。</string>
     <string name="ssh_keepalive_interval">保活间隔（秒）</string>
+    <string name="custom_outbound">自定义出站</string>
 </resources>
