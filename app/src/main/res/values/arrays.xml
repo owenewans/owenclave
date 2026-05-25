@@ -792,6 +792,7 @@
         <item>@string/language_id_display_name</item>
         <item>@string/language_it_display_name</item>
         <item>@string/language_ja_display_name</item>
+        <item>@string/language_ko_display_name</item>
         <item>@string/language_nb_NO_display_name</item>
         <item>@string/language_ru_display_name</item>
         <item>@string/language_tr_display_name</item>
@@ -809,6 +810,7 @@
         <item>id</item>
         <item>it</item>
         <item>ja</item>
+        <item>ko</item>
         <item>nb-NO</item>
         <item>ru</item>
         <item>tr</item>
