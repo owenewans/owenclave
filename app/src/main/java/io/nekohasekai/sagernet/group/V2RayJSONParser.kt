@@ -1797,7 +1797,26 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     settings.getString("password")?.also {
                                         hysteria2Bean.obfsPassword = it
                                     }
-                                    // TODO: min/max packet size
+                                    settings.getInt("packetSize")?.also {
+                                        hysteria2Bean.geckoMinPacketSize = it.takeIf { it > 0 }
+                                        hysteria2Bean.geckoMaxPacketSize = it.takeIf { it > 0 }
+                                    } ?: settings.getString("packetSize")?.also {
+                                        val packetSizeInt = it.toIntOrNull()
+                                        if (packetSizeInt != null && packetSizeInt > 0) {
+                                            hysteria2Bean.geckoMinPacketSize = packetSizeInt
+                                            hysteria2Bean.geckoMaxPacketSize = packetSizeInt
+                                        } else {
+                                            val packetSizeStringList = it.split("-")
+                                            if (packetSizeStringList.size == 2) {
+                                                val packetSizeInt0 = packetSizeStringList[0].toIntOrNull()
+                                                val packetSizeInt1 = packetSizeStringList[1].toIntOrNull()
+                                                if (packetSizeInt0 != null && packetSizeInt0 > 0 && packetSizeInt1 != null && packetSizeInt1 > 0) {
+                                                    hysteria2Bean.geckoMinPacketSize = minOf(packetSizeInt0, packetSizeInt1)
+                                                    hysteria2Bean.geckoMaxPacketSize = maxOf(packetSizeInt0, packetSizeInt1)
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             else -> return listOf()
