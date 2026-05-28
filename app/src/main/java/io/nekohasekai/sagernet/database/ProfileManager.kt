@@ -202,43 +202,61 @@ object ProfileManager {
         var rules = SagerDatabase.rulesDao.allRules()
         if (rules.isEmpty() && !DataStore.rulesFirstCreate) {
             DataStore.rulesFirstCreate = true
-            var country = Locale.getDefault().country.lowercase()
-            var displayCountry = Locale.getDefault().displayCountry
-            if (country in arrayOf(
-                    "ir"
-                )
-            ) {
-                createRule(
-                    RuleEntity(
-                        name = app.getString(R.string.route_bypass_domain, displayCountry),
-                        domains = "domain:$country",
-                        outbound = -1
-                    ), false
-                )
-            } else {
-                country = Locale.CHINA.country.lowercase()
-                displayCountry = Locale.CHINA.displayCountry
-                createRule(
-                    RuleEntity(
-                        name = app.getString(R.string.route_play_store, displayCountry),
-                        domains = "domain:googleapis.cn",
-                    ), false
-                )
-                createRule(
-                    RuleEntity(
-                        name = app.getString(R.string.route_bypass_domain, displayCountry),
-                        domains = "geosite:$country",
-                        outbound = -1
-                    ), false
-                )
+            val country = Locale.getDefault().country
+            val displayCountry = Locale.getDefault().displayCountry
+            when {
+                country == "CN" -> {
+                    createRule(
+                        RuleEntity(
+                            name = app.getString(R.string.route_play_store, displayCountry),
+                            domains = "domain:googleapis.cn",
+                        ), false
+                    )
+                    createRule(
+                        RuleEntity(
+                            name = app.getString(R.string.route_bypass_domain, displayCountry),
+                            domains = "geosite:cn",
+                            outbound = -1
+                        ), false
+                    )
+                }
+                country == "IR" -> {
+                    createRule(
+                        RuleEntity(
+                            name = app.getString(R.string.route_bypass_domain, displayCountry),
+                            domains = "geosite:category-ir",
+                            outbound = -1
+                        ), false
+                    )
+                }
+                country == "RU" -> {
+                    createRule(
+                        // https://habr.com/ru/articles/1020080/
+                        // Added because of the request from users. Do not rely on it.
+                        RuleEntity(
+                            name = "UID -1", // TODO: l10n
+                            customPackageNames = listOf("-1"),
+                            outbound = -1
+                        ), false
+                    )
+                    createRule(
+                        RuleEntity(
+                            name = app.getString(R.string.route_bypass_domain, displayCountry),
+                            domains = "geosite:category-ru",
+                            outbound = -1
+                        ), false
+                    )
+                }
+                country.length == 2 -> {
+                    createRule(
+                        RuleEntity(
+                            name = app.getString(R.string.route_bypass_ip, displayCountry),
+                            ip = "geoip:${country.lowercase()}",
+                            outbound = -1
+                        ), false
+                    )
+                }
             }
-            createRule(
-                RuleEntity(
-                    name = app.getString(R.string.route_bypass_ip, displayCountry),
-                    ip = "geoip:$country",
-                    outbound = -1
-                ), false
-            )
             createRule(
                 RuleEntity(
                     enabled = true,
