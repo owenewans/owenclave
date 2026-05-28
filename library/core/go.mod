@@ -2,7 +2,7 @@ module libexclavecore
 
 go 1.26
 
-require github.com/exclavenetwork/libexclavecore v0.0.0-20260528123439-730de29496b5
+require github.com/exclavenetwork/libexclavecore v0.0.0-20260528125956-b031ead2ac1d
 
 require (
 	filippo.io/mldsa v0.0.0-20260215214346-43d0283efc3e // indirect

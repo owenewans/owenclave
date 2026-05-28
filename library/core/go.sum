@@ -65,8 +65,8 @@ github.com/exclavenetwork/hysteria/core/v2 v2.9.2-1 h1:5hLS8B3kfQAnHnd3ovOUE75gN
 github.com/exclavenetwork/hysteria/core/v2 v2.9.2-1/go.mod h1:Tc8xxjEwzxae8KfMHJhwAkk30sovWjSb+ssslEhg6O4=
 github.com/exclavenetwork/hysteria/extras/v2 v2.9.2-1 h1:YCoF9cbCqQcVYoU5Pgsp5yddNsb97PKxtMLDwAsgDs8=
 github.com/exclavenetwork/hysteria/extras/v2 v2.9.2-1/go.mod h1:mTsEUFxPXYDYgaeQwZHjxzMmkOZO1QAr8a+/9HFtFQY=
-github.com/exclavenetwork/libexclavecore v0.0.0-20260528123439-730de29496b5 h1:w6oO6q+AO4QWapaOGInculw8OmsLh94uSdqlmrujM98=
-github.com/exclavenetwork/libexclavecore v0.0.0-20260528123439-730de29496b5/go.mod h1:JYR8FpRhH6HFAiwE38o2G9Rp1ThLb+dkHcGId5KlbQY=
+github.com/exclavenetwork/libexclavecore v0.0.0-20260528125956-b031ead2ac1d h1:xMoVVdpydm1wSSzDzE/6imt0tdYwFbkfKG0VpB2xWGc=
+github.com/exclavenetwork/libexclavecore v0.0.0-20260528125956-b031ead2ac1d/go.mod h1:JYR8FpRhH6HFAiwE38o2G9Rp1ThLb+dkHcGId5KlbQY=
 github.com/exclavenetwork/sing-juicity v0.1.4 h1:TcHrs9SwN717mDpsa8xe/JcJJG4UIB7+1ttaQJSV2d0=
 github.com/exclavenetwork/sing-juicity v0.1.4/go.mod h1:2DohMvdRHvjMQGbbem18mZuPuUADdtKIh5FQTTGm8es=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
