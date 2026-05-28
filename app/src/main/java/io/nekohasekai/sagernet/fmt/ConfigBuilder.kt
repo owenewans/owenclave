@@ -1909,6 +1909,9 @@ fun buildV2RayConfig(
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
                                         }
+                                        if (bean.utlsFingerprint.isNotEmpty()) {
+                                            fingerprint = bean.utlsFingerprint
+                                        }
                                         if (bean.echEnabled) {
                                             ech = TLSObject.ECHObject().apply {
                                                 enabled = bean.echEnabled
