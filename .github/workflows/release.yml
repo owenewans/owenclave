@@ -88,6 +88,8 @@ jobs:
     needs: build
     env:
       GH_TOKEN: ${{ github.token }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
