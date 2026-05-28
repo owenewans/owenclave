@@ -293,7 +293,6 @@
             app:key="useLocalDnsAsDirectDns"
             app:title="@string/use_local_dns_as_direct_dns" />
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
-            app:defaultValue="tcp://223.5.5.5"
             app:icon="@drawable/ic_action_dns"
             app:key="directDns"
             app:title="@string/direct_dns"

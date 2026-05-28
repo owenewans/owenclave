@@ -35,6 +35,7 @@ import io.nekohasekai.sagernet.database.preference.RoomPreferenceDataStore
 import io.nekohasekai.sagernet.ktx.*
 import java.io.BufferedReader
 import java.io.StringReader
+import java.util.Locale
 import java.util.Properties
 
 object DataStore : OnPreferenceDataStoreChangeListener {
@@ -145,7 +146,14 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var speedInterval by configurationStore.stringToInt(Key.SPEED_INTERVAL)
 
     var remoteDns by configurationStore.stringNotBlack(Key.REMOTE_DNS) { "tcp://1.1.1.1" }
-    var directDns by configurationStore.stringNotBlack(Key.DIRECT_DNS) { "tcp://223.5.5.5" }
+    var directDns by configurationStore.stringNotBlack(Key.DIRECT_DNS) {
+        when (Locale.getDefault().country) {
+            "CN" -> "tcp://223.5.5.5"
+            "IR" -> "tcp://178.22.122.100"
+            "RU" -> "tcp://77.88.8.8"
+            else -> "tcp://1.1.1.1"
+        }
+    }
     var bootstrapDns by configurationStore.stringNotBlack(Key.BOOTSTRAP_DNS)
     var useLocalDnsAsDirectDns by configurationStore.boolean(Key.USE_LOCAL_DNS_AS_DIRECT_DNS) { Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q }
     var useLocalDnsAsBootstrapDns by configurationStore.boolean(Key.USE_LOCAL_DNS_AS_BOOTSTRAP_DNS) { true }
