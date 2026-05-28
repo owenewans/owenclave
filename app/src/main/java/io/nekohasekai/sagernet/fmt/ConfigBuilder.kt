@@ -952,7 +952,10 @@ fun buildV2RayConfig(
                                                 if (bean.allowInsecure) {
                                                     allowInsecure = true
                                                 }
-                                                if (bean.utlsFingerprint.isNotEmpty()) {
+                                                val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForTLS")
+                                                if (!overrideFingerprint.isNullOrEmpty()) {
+                                                    fingerprint = overrideFingerprint
+                                                } else if (bean.utlsFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.utlsFingerprint
                                                 }
                                                 if (bean.echEnabled) {
@@ -979,7 +982,10 @@ fun buildV2RayConfig(
                                                 if (bean.realityMldsa65Verify.isNotEmpty()) {
                                                     mldsa65Verify = bean.realityMldsa65Verify
                                                 }
-                                                if (bean.realityFingerprint.isNotEmpty()) {
+                                                val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForREALITY")
+                                                if (!overrideFingerprint.isNullOrEmpty()) {
+                                                    fingerprint = overrideFingerprint
+                                                } else if (bean.realityFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.realityFingerprint
                                                 }
                                                 if (DataStore.realityDisableX25519Mlkem768 || bean.realityDisableX25519Mlkem768 && !forExport) {
@@ -1699,7 +1705,10 @@ fun buildV2RayConfig(
                                                 if (bean.allowInsecure) {
                                                     allowInsecure = true
                                                 }
-                                                if (bean.utlsFingerprint.isNotEmpty()) {
+                                                val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForTLS")
+                                                if (!overrideFingerprint.isNullOrEmpty()) {
+                                                    fingerprint = overrideFingerprint
+                                                } else if (bean.utlsFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.utlsFingerprint
                                                 }
                                                 if (bean.echEnabled) {
@@ -1723,7 +1732,10 @@ fun buildV2RayConfig(
                                                 if (bean.realityShortId.isNotEmpty()) {
                                                     shortId = bean.realityShortId
                                                 }
-                                                if (bean.realityFingerprint.isNotEmpty()) {
+                                                val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForREALITY")
+                                                if (!overrideFingerprint.isNullOrEmpty()) {
+                                                    fingerprint = overrideFingerprint
+                                                } else if (bean.realityFingerprint.isNotEmpty()) {
                                                     fingerprint = bean.realityFingerprint
                                                 }
                                                 if (DataStore.realityDisableX25519Mlkem768 || bean.realityDisableX25519Mlkem768 && !forExport) {
@@ -1909,7 +1921,10 @@ fun buildV2RayConfig(
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
                                         }
-                                        if (bean.utlsFingerprint.isNotEmpty()) {
+                                        val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForTLS")
+                                        if (!overrideFingerprint.isNullOrEmpty()) {
+                                            fingerprint = overrideFingerprint
+                                        } else if (bean.utlsFingerprint.isNotEmpty()) {
                                             fingerprint = bean.utlsFingerprint
                                         }
                                         if (bean.echEnabled) {
