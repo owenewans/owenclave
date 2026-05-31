@@ -43,10 +43,9 @@ jobs:
           java-version: 21
           cache: 'gradle'
       - name: Setup Android SDK
-      # gomobile can't parse newer version codes like android-36.1 or android-37.0.
-      # Always install android-36 for gomobile.
         uses: android-actions/setup-android@v4
         with:
+          # https://github.com/golang/go/issues/79606
           packages: 'platform-tools platforms;android-36'
       - name: Setup Android NDK
         id: setup-ndk
