@@ -298,8 +298,8 @@
     <string name="obfs">Obfs</string>
     <string name="protocol_param">Параметры протокола</string>
     <string name="speed">%s/с</string>
-    <string name="hysteria_download_mbps">Максимальная скорость загрузки (в Мбит/с)</string>
-    <string name="hysteria_upload_mbps">Максимальная скорость загрузки (в Мбит/с)</string>
+    <string name="hysteria_download_mbps">Максимальная скорость получения (Мбит/с)</string>
+    <string name="hysteria_upload_mbps">Максимальная скорость отправки (Мбит/с)</string>
     <string name="hysteria_auth_type">Тип аутентификации</string>
     <string name="hysteria_obfs">Пароль для обфускации</string>
     <string name="experimental_no_termination_signal">Не отправлять одинарный дуплексный сигнал завершения соединения для TCP-соединения при передаче через VMess. Это нарушит работу некоторых приложений.</string>
