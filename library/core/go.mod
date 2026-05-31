@@ -2,7 +2,7 @@ module libexclavecore
 
 go 1.26
 
-require github.com/exclavenetwork/libexclavecore v0.0.0-20260528125956-b031ead2ac1d
+require github.com/exclavenetwork/libexclavecore v0.0.0-20260531141921-277a68f79c1e
 
 require (
 	filippo.io/mldsa v0.0.0-20260215214346-43d0283efc3e // indirect
@@ -14,8 +14,8 @@ require (
 	github.com/ccding/go-stun v0.1.5 // indirect
 	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
-	github.com/enfein/mieru/v3 v3.32.0 // indirect
-	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260528105021-68916a18d8d0 // indirect
+	github.com/enfein/mieru/v3 v3.33.0 // indirect
+	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260531141753-e9720c7c2d53 // indirect
 	github.com/exclavenetwork/hysteria/core/v2 v2.9.2-1 // indirect
 	github.com/exclavenetwork/hysteria/extras/v2 v2.9.2-1 // indirect
 	github.com/exclavenetwork/sing-juicity v0.1.4 // indirect
@@ -30,7 +30,7 @@ require (
 	github.com/lunixbochs/struc v0.0.0-20200707160740-784aaebc1d40 // indirect
 	github.com/metacubex/utls v1.8.4 // indirect
 	github.com/miekg/dns v1.1.72 // indirect
-	github.com/pion/transport/v4 v4.0.1 // indirect
+	github.com/pion/transport/v4 v4.0.2 // indirect
 	github.com/pires/go-proxyproto v0.12.0 // indirect
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.1 // indirect
@@ -52,16 +52,16 @@ require (
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.52.0 // indirect
 	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
-	golang.org/x/mobile v0.0.0-20260520154334-0e4426e1883d // indirect
+	golang.org/x/mobile v0.0.0-20260529142300-ecb4cd65260a // indirect
 	golang.org/x/mod v0.36.0 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
-	golang.org/x/time v0.10.0 // indirect
+	golang.org/x/time v0.14.0 // indirect
 	golang.org/x/tools v0.45.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
-	golang.zx2c4.com/wireguard v0.0.0-20250521234502-f333402bd9cb // indirect
+	golang.zx2c4.com/wireguard v0.0.0-20260522210424-ecfc5a8d5446 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260226221140-a57be14db171 // indirect
 	google.golang.org/grpc v1.81.1 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
