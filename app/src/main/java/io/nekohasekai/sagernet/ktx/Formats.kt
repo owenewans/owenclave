@@ -72,7 +72,8 @@ fun parseShareLinks(text: String): List<AbstractBean> {
             || startsWith("socks4://", ignoreCase = true)
             || startsWith("socks4a://", ignoreCase = true)
             || startsWith("socks5://", ignoreCase = true)
-            || startsWith("socks5h://", ignoreCase = true)) {
+            || startsWith("socks5h://", ignoreCase = true)
+            || startsWith("socks+tls://", ignoreCase = true)) {
             runCatching {
                 entities.add(parseSOCKS(this))
             }
