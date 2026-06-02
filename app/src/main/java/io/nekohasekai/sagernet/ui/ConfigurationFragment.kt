@@ -38,7 +38,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.size
 import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -73,12 +72,10 @@ import io.nekohasekai.sagernet.widget.UndoSnackbarManager
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import libexclavecore.Libexclavecore
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.zip.ZipInputStream
 import kotlin.concurrent.timerTask
-import androidx.core.net.toUri
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ChainBean
@@ -312,22 +309,35 @@ class ConfigurationFragment @JvmOverloads constructor(
                 }
 
                 if (proxies.isEmpty()) {
-                    if (!fileText.contains("\n") && !fileText.contains("\r")
-                        && fileText.startsWith("exclave://", ignoreCase = true)
-                        && fileText.substring("exclave://".length).startsWith("subscription?", ignoreCase = true)) {
-                        (requireActivity() as? MainActivity)?.importSubscription(fileText.toUri())
-                    } else if (!fileText.contains("\n") && !fileText.contains("\r") && isHTTPorHTTPSURL(fileText)) {
-                        val builder = Libexclavecore.newURL("exclave").apply {
-                            host = "subscription"
-                        }
-                        builder.addQueryParameter("url", fileText)
-                        (requireActivity() as? MainActivity)?.importSubscription(builder.string.toUri())
+                    if (!fileText.contains("\n") && !fileText.contains("\r") && isHTTPorHTTPSURL(fileText)) {
+                        (requireActivity() as? MainActivity)?.importSubscription(fileText)
                     } else {
                         onMainDispatcher {
                             snackbar(getString(R.string.no_proxies_found_in_file)).show()
                         }
                     }
                 } else import(proxies)
+            } catch (e: Exception) {
+                Logs.w(e)
+                onMainDispatcher {
+                    snackbar(e.readableMessage).show()
+                }
+            }
+        }
+    }
+
+    val importBackupFile = registerForActivityResult(ActivityResultContracts.GetContent()) { file ->
+        if (file != null) runOnDefaultDispatcher {
+            try {
+                val text = requireContext().contentResolver.openInputStream(file)!!.use {
+                    it.bufferedReader().readText()
+                }
+                val proxies = parseBackupLines(text)
+                if (proxies.isNotEmpty()) {
+                    import(proxies)
+                } else onMainDispatcher {
+                    snackbar(getString(R.string.no_proxies_found_in_file)).show()
+                }
             } catch (e: Exception) {
                 Logs.w(e)
                 onMainDispatcher {
@@ -400,16 +410,8 @@ class ConfigurationFragment @JvmOverloads constructor(
                         try {
                             val proxies = RawUpdater.parseRaw(text)
                             if (proxies.isNullOrEmpty()) {
-                                if (!text.contains("\n") && !text.contains("\r")
-                                    && text.startsWith("exclave://", ignoreCase = true)
-                                    && text.substring("exclave://".length).startsWith("subscription?", ignoreCase = true)) {
-                                    (requireActivity() as? MainActivity)?.importSubscription(text.toUri())
-                                } else if (!text.contains("\n") && !text.contains("\r") && isHTTPorHTTPSURL(text)) {
-                                    val builder = Libexclavecore.newURL("exclave").apply {
-                                        host = "subscription"
-                                    }
-                                    builder.addQueryParameter("url", text)
-                                    (requireActivity() as? MainActivity)?.importSubscription(builder.string.toUri())
+                                if (!text.contains("\n") && !text.contains("\r") && isHTTPorHTTPSURL(text)) {
+                                    (requireActivity() as? MainActivity)?.importSubscription(text)
                                 } else onMainDispatcher {
                                     snackbar(getString(R.string.no_proxies_found_in_clipboard)).show()
                                 }
@@ -427,6 +429,31 @@ class ConfigurationFragment @JvmOverloads constructor(
             }
             R.id.action_import_file -> {
                 startFilesForResult(importFile, "*/*")
+            }
+            R.id.action_import_backup_clipboard -> {
+                val text = SagerNet.getClipboardText()
+                if (text.isBlank()) {
+                    snackbar(getString(R.string.clipboard_empty)).show()
+                } else {
+                    runOnDefaultDispatcher {
+                        try {
+                            val proxies = parseBackupLines(text)
+                            if (proxies.isNotEmpty()) {
+                                import(proxies)
+                            } else onMainDispatcher {
+                                snackbar(getString(R.string.no_proxies_found_in_file)).show()
+                            }
+                        } catch (e: Exception) {
+                            Logs.w(e)
+                            onMainDispatcher {
+                                snackbar(e.readableMessage).show()
+                            }
+                        }
+                    }
+                }
+            }
+            R.id.action_import_backup_file -> {
+                startFilesForResult(importBackupFile, "*/*")
             }
             R.id.action_new_socks -> {
                 startActivity(Intent(requireActivity(), SocksSettingsActivity::class.java))

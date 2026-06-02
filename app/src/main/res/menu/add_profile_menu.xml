@@ -99,6 +99,18 @@
                     </item>
                 </menu>
             </item>
+            <item
+                android:id="@+id/action_import_backup"
+                android:title="@string/backup">
+                <menu>
+                    <item
+                        android:id="@+id/action_import_backup_clipboard"
+                        android:title="@string/action_import" />
+                    <item
+                        android:id="@+id/action_import_backup_file"
+                        android:title="@string/action_import_file" />
+                </menu>
+            </item>
         </menu>
     </item>
     <item

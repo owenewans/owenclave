@@ -111,25 +111,12 @@
                 <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
             </intent-filter>
 
-            <intent-filter android:label="@string/subscription_import">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="exclave" />
-                <data android:scheme="sn" />
-                <data android:host="subscription" />
-
-            </intent-filter>
-
             <intent-filter android:label="@string/profile_import">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="exclave" />
                 <!--data android:scheme="http" /-->
                 <!--data android:scheme="https" /-->
                 <data android:scheme="ss" />

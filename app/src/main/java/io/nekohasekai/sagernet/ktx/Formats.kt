@@ -28,7 +28,7 @@ import io.nekohasekai.sagernet.fmt.hysteria2.parseHysteria2
 import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.mieru.parseMieru
 import io.nekohasekai.sagernet.fmt.naive.parseNaive
-import io.nekohasekai.sagernet.fmt.parseBackupLink
+import io.nekohasekai.sagernet.fmt.parseBackup
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
@@ -37,11 +37,7 @@ import io.nekohasekai.sagernet.fmt.trusttunnel.parseTrustTunnel
 import io.nekohasekai.sagernet.fmt.tuic5.parseTuic
 import io.nekohasekai.sagernet.fmt.v2ray.parseV2Ray
 import io.nekohasekai.sagernet.fmt.wireguard.parseWireGuard
-import java.io.ByteArrayOutputStream
-import java.util.zip.Deflater
-import java.util.zip.Inflater
 import kotlin.io.encoding.Base64
-import kotlin.io.use
 
 fun String.decodeBase64(): String {
     if (this.lines().size > 1) {
@@ -64,11 +60,7 @@ fun parseShareLinks(text: String): List<AbstractBean> {
     val entitiesByLine = ArrayList<AbstractBean>()
 
     fun String.parseLink(entities: ArrayList<AbstractBean>) {
-        if (startsWith("exclave://", ignoreCase = true)) {
-            runCatching {
-                entities.add(parseBackupLink(this))
-            }
-        } else if (startsWith("socks://", ignoreCase = true)
+        if (startsWith("socks://", ignoreCase = true)
             || startsWith("socks4://", ignoreCase = true)
             || startsWith("socks4a://", ignoreCase = true)
             || startsWith("socks5://", ignoreCase = true)
@@ -151,40 +143,20 @@ fun parseShareLinks(text: String): List<AbstractBean> {
     return if (entities.size > entitiesByLine.size) entities else entitiesByLine
 }
 
+fun parseBackupLines(text: String): List<AbstractBean> {
+    val lines = text.split('\n')
+    val entities = ArrayList<AbstractBean>()
+    for (line in lines) {
+        try {
+            entities.add(parseBackup(line))
+        } catch (_: Exception) {
+            return listOf()
+        }
+    }
+    return entities
+}
+
 fun <T : Serializable> T.applyDefaultValues(): T {
     initializeDefaultValues()
     return this
-}
-
-fun ByteArray.zlibCompress(level: Int): ByteArray {
-    // Compress the bytes
-    // 1 to 4 bytes/char for UTF-8
-    val output = ByteArray(size * 4)
-    val compressor = Deflater(level).apply {
-        setInput(this@zlibCompress)
-        finish()
-    }
-    val compressedDataLength: Int = compressor.deflate(output)
-    compressor.end()
-    return output.copyOfRange(0, compressedDataLength)
-}
-
-fun ByteArray.zlibDecompress(): ByteArray {
-    val inflater = Inflater()
-    val outputStream = ByteArrayOutputStream()
-
-    return outputStream.use {
-        val buffer = ByteArray(1024)
-
-        inflater.setInput(this)
-
-        var count = -1
-        while (count != 0) {
-            count = inflater.inflate(buffer)
-            outputStream.write(buffer, 0, count)
-        }
-
-        inflater.end()
-        outputStream.toByteArray()
-    }
 }

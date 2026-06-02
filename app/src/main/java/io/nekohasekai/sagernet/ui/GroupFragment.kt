@@ -395,12 +395,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 QRCodeDialog(link).showAllowingStateLoss(parentFragmentManager)
             }
 
-            fun export(link: String) {
-                val success = SagerNet.trySetPrimaryClip(link)
-                (requireActivity() as ThemedActivity).snackbar(if (success) R.string.action_export_msg else R.string.action_export_err)
-                    .show()
-            }
-
             when (item.itemId) {
                 R.id.action_subscription_link_qr -> {
                     showCode(proxyGroup.subscription!!.link!!)
@@ -432,9 +426,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 }
                 R.id.action_file -> {
                     startFilesForResult(exportProfiles, "profiles_${proxyGroup.displayName()}.txt")
-                }
-                R.id.action_export_backup_clipboard -> {
-                    export(proxyGroup.exportBackup())
                 }
                 R.id.action_export_backup_of_all_profiles_clipboard -> {
                     runOnDefaultDispatcher {

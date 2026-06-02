@@ -60,15 +60,12 @@ import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeLi
 import io.nekohasekai.sagernet.databinding.LayoutMainBinding
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.Alerts
-import io.nekohasekai.sagernet.fmt.KryoConverters
 import io.nekohasekai.sagernet.fmt.PluginEntry
 import io.nekohasekai.sagernet.group.GroupInterfaceAdapter
-import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.utils.PackageCache
 import io.noties.markwon.Markwon
 import libexclavecore.Libexclavecore
-import kotlin.io.encoding.Base64
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
@@ -225,8 +222,10 @@ class MainActivity : ThemedActivity(),
         val uri = intent.data ?: return
 
         runOnDefaultDispatcher {
-            if ((uri.scheme?.lowercase() == "exclave" || uri.scheme?.lowercase() == "sn") && uri.host == "subscription") {
-                importSubscription(uri)
+            if (uri.scheme == "exclave" && uri.host == "subscription") {
+                uri.getQueryParameter("url")?.let {
+                    importSubscription(it)
+                }
             } else {
                 importProfile(uri)
             }
@@ -240,59 +239,20 @@ class MainActivity : ThemedActivity(),
         return connection.service!!.urlTest()
     }
 
-    suspend fun importSubscription(uri: Uri) {
-        val group: ProxyGroup
-
-        val url = uri.getQueryParameter("url")
-        if (!url.isNullOrBlank()) {
-            group = ProxyGroup(type = GroupType.SUBSCRIPTION)
-            val subscription = SubscriptionBean()
-            group.subscription = subscription
-
-            // human-readable cleartext format
-            subscription.link = url
-            group.name = uri.getQueryParameter("name")
-
-            val type = uri.getQueryParameter("type")
-            when (type?.lowercase()) {
-                "sip008" -> {
-                    subscription.type = SubscriptionType.SIP008
-                }
-            }
-
-        } else {
-            // private binary format derived from SagerNet
-            if (uri.scheme?.lowercase() != "exclave") {
-                // do not be compatible with the private binary format from other software
-                return
-            }
-            val data = uri.encodedQuery.takeIf { !it.isNullOrBlank() } ?: return
-            try {
-                group = KryoConverters.deserialize(
-                    ProxyGroup().apply { export = true }, Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).decode(data).zlibDecompress()
-                ).apply {
-                    export = false
-                }
-            } catch (e: Exception) {
-                onMainDispatcher {
-                    alert(e.readableMessage).show()
-                }
-                return
+    suspend fun importSubscription(uri: String) {
+        val group = ProxyGroup(type = GroupType.SUBSCRIPTION).apply {
+            subscription = SubscriptionBean().apply {
+                link = uri
+                name = getString(R.string.subscription)
             }
         }
-
-        val name = group.name.takeIf { !it.isNullOrEmpty() } ?: group.subscription?.link
-        if (name.isNullOrEmpty()) return
-
-        group.name = group.name.takeIf { !it.isNullOrEmpty() }
-            ?: getString(R.string.subscription)
 
         onMainDispatcher {
 
             displayFragmentWithId(R.id.nav_group)
 
             MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.subscription_import)
-                .setMessage(getString(R.string.subscription_import_message, name))
+                .setMessage(getString(R.string.subscription_import_message, uri))
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     runOnDefaultDispatcher {
                         finishImportSubscription(group)

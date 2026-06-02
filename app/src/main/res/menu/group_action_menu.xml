@@ -23,15 +23,6 @@
                 </menu>
             </item>
             <item
-                android:id="@+id/action_export_backup"
-                android:title="@string/backup">
-                <menu>
-                    <item
-                        android:id="@+id/action_export_backup_clipboard"
-                        android:title="@string/action_export_clipboard" />
-                </menu>
-            </item>
-            <item
                 android:id="@+id/action_export_backup_of_all_profiles"
                 android:title="@string/backup_all_profiles">
                 <menu>
