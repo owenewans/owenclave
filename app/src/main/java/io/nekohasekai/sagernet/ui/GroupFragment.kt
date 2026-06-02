@@ -451,18 +451,6 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                     }
                 }
                 R.id.action_export_backup_of_all_profiles_file -> {
-                    runOnDefaultDispatcher {
-                        val profiles = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
-                        val links = profiles.map {
-                            if (it.canExportBackup()) {
-                                it.requireBean().exportBackup()
-                            }
-                        }.joinToString("\n")
-                        onMainDispatcher {
-                            SagerNet.trySetPrimaryClip(links)
-                            snackbar(R.string.action_export_msg).show()
-                        }
-                    }
                     startFilesForResult(exportBackupOfAllProfiles, "profiles_${proxyGroup.displayName()}_backup.txt")
                 }
                 R.id.action_clear -> {
