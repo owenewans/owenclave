@@ -113,7 +113,7 @@
     <string name="quic_key">Clave QUIC</string>
     <string name="uuid">ID de usuario</string>
     <string name="obfs_param">Parámetros de obfs</string>
-    <string name="obfs">Obfs</string>
+    <string name="obfs">Ofuscación</string>
     <string name="protocol_param">Parámetros de protocolo</string>
     <string name="protocol">Protocolo</string>
     <string name="dns_routing_message">Resuelve los dominios en rutas de omisión con el DNS directo</string>
@@ -505,7 +505,7 @@
     <string name="network_satellite">Satélite</string>
     <string name="network_invalid">Tipo de red no válido: Se requiere Android %s.</string>
     <string name="require_dns_inbound">Activar DNS de entrada</string>
-    <string name="reality_disable_x25519mlkem768">Desactivar REALITY X25519MLKEM768</string>
+    <string name="reality_disable_x25519mlkem768">Desactivar X25519MLKEM768 de REALITY</string>
     <string name="reality_breaking_change_summary">Compatible con servidores REALITY que no soportan este cambio importante. Esta es una opción temporal y será eliminada en el futuro.</string>
     <string name="anytls_idle_session_check_interval">Intervalo de comprobación de sesión inactiva (s)</string>
     <string name="anytls_idle_session_timeout">Tiempo de espera de sesión inactiva (s)</string>
@@ -578,4 +578,10 @@
     <string name="balancer_use_landing_proxy">Usar proxy de aterrizaje de grupo</string>
     <string name="balancer_use_front_proxy">Usar proxy frontal de grupo</string>
     <string name="socks5_udp_authentication_warning">SOCKS5 UDP no está protegido por autenticación con nombre de usuario y contraseña. Si UDP está activado, la autenticación se puede eludir fácilmente.</string>
+    <string name="enable_hysteria2_omit_max_datagram_frame_size">Activar OmitMaxDatagramFrameSize de Hysteria 2</string>
+    <string name="hysteria2_omit_max_datagram_frame_size_sum">Si el servidor Hysteria 2 no es compatible con este cambio importante, UDP no se podrá utilizar. Esta es una opción temporal y puede eliminarse en el futuro.</string>
+    <string name="ssh_keepalive_interval">Intervalo(s) de Keepalive</string>
+    <string name="custom_outbound">Salida personalizada</string>
+    <string name="hysteria2_gecko_max_packet_size">Tamaño máximo de paquete</string>
+    <string name="hysteria2_gecko_min_packet_size">Tamaño mínimo de paquete</string>
 </resources>
