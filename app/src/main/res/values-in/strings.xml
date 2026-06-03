@@ -558,4 +558,5 @@
     <string name="hysteria_hop_interval_max">Interval lompat port maksimum (d)</string>
     <string name="hysteria_bbr_profile">Profil BBR</string>
     <string name="custom_package_name_or_uid">Nama paket atau UID kustom</string>
+    <string name="socks5_udp_authentication_warning">SOCKS5 UDP tidak di proteksi otentifikasi nama dan Sandi. jika UDP di aktifkan, otentifikasi dapat di lewati dengan mudah.</string>
 </resources>
