@@ -29,24 +29,19 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.26.3
+          go-version: 1.26.4
           cache-dependency-path: "library/core/go.sum"
       - name: Setup Go Mobile
         # https://github.com/golang/mobile/blob/c31d5b91ecc32c0d598b8fe8457d244ca0b4e815/cmd/gomobile/init.go#L83
         run: |
-          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260529142300-ecb4cd65260a
-          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260529142300-ecb4cd65260a
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260602190626-68735029466e
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260602190626-68735029466e
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 21
           cache: 'gradle'
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v4
-        with:
-          # https://github.com/golang/go/issues/79606
-          packages: 'platform-tools platforms;android-36'
       - name: Setup Android NDK
         id: setup-ndk
         uses: nttld/setup-ndk@v1
