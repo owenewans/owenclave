@@ -396,7 +396,7 @@
     <string name="flow">الگوریتم کنترل جریان</string>
     <string name="udp_over_tcp">UDP بیش از TCP</string>
     <string name="tuic_udp_relay_mode">حالت رله UDP</string>
-    <string name="congestion_control">کنترل کننده ازدحام</string>
+    <string name="congestion_control">کنترل تراکم</string>
     <string name="tuic_disable_sni">غیر فعال کردن SNI</string>
     <string name="action_flash_on">روشن کردن فلاش</string>
     <string name="action_camera_switch">عوض کردن دوربین</string>
@@ -565,4 +565,5 @@
     <string name="insecure_warn_sum">نمایش هشدار برای پروفایل‌هایی با امنیت مشابه متن ساده.</string>
     <string name="ech">ECH (سلام اولیه رمزنگاری‌شده)</string>
     <string name="require_socks">فعال کردن ورودی SOCKS5</string>
+    <string name="mieru_traffic_pattern">الگوی ترافیک</string>
 </resources>
