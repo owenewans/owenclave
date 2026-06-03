@@ -51,6 +51,13 @@
             app:title="@string/group_subscription_link"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_settings_password"
+            app:key="subscriptionAgePrivateKey"
+            app:title="@string/ssh_private_key"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreference
             app:icon="@drawable/ic_baseline_import_contacts_24"
             app:key="subscriptionDeduplication"
@@ -83,6 +90,11 @@
             app:icon="@drawable/ic_baseline_grid_3x3_24"
             app:key="subscriptionUserAgent"
             app:title="@string/subscription_user_agent"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="subscriptionHTTPHeaders"
+            app:title="@string/extra_headers"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
             app:icon="@drawable/ic_baseline_flip_camera_android_24"

@@ -315,6 +315,8 @@ object Key {
     const val SUBSCRIPTION_EXPIRY_DATE = "subscriptionExpiryDate"
     const val SUBSCRIPTION_NAME_FILTER = "subscriptionNameFilter"
     const val SUBSCRIPTION_NAME_FILTER1 = "subscriptionNameFilter1"
+    const val SUBSCRIPTION_HTTP_HEADERS = "subscriptionHTTPHeaders"
+    const val SUBSCRIPTION_AGE_PRIVATE_KEY = "subscriptionAgePrivateKey"
 
     const val EDITING_ASSET_NAME = "editingAssetName"
     const val ASSET_NAME = "assetName"
@@ -355,6 +357,7 @@ object SubscriptionType {
     const val RAW = 0
     const val OOCv1 = 1 // removed
     const val SIP008 = 2
+    const val AGE = 3
 }
 
 object ExtraType {

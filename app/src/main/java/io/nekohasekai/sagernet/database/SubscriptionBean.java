@@ -44,13 +44,15 @@ public class SubscriptionBean extends Serializable {
 
     public String nameFilter;
     public String nameFilter1;
+    public String httpHeaders;
+    public String agePrivateKey;
 
     public SubscriptionBean() {
     }
 
     @Override
     public void serializeToBuffer(ByteBufferOutput output) {
-        output.writeInt(8);
+        output.writeInt(9);
         output.writeInt(type);
         output.writeString(link);
         output.writeBoolean(deduplication);
@@ -64,10 +66,12 @@ public class SubscriptionBean extends Serializable {
         output.writeLong(expiryDate);
         output.writeString(nameFilter);
         output.writeString(nameFilter1);
+        output.writeString(httpHeaders);
+        output.writeString(agePrivateKey);
     }
 
     public void serializeForShare(ByteBufferOutput output) {
-        output.writeInt(7);
+        output.writeInt(8);
         output.writeInt(type);
         output.writeString(link);
         output.writeBoolean(deduplication);
@@ -78,6 +82,8 @@ public class SubscriptionBean extends Serializable {
         output.writeLong(expiryDate);
         output.writeString(nameFilter);
         output.writeString(nameFilter1);
+        output.writeString(httpHeaders);
+        output.writeString(agePrivateKey);
     }
 
     @Override
@@ -144,6 +150,16 @@ public class SubscriptionBean extends Serializable {
         if (version >= 8) {
             nameFilter1 = input.readString();
         }
+
+        if (version >= 9) {
+            httpHeaders = input.readString();
+            String s = input.readString();
+            if (type == SubscriptionType.AGE) {
+                agePrivateKey = s;
+            } else {
+                agePrivateKey = "";
+            }
+        }
     }
 
     public void deserializeFromShare(ByteBufferInput input) {
@@ -193,6 +209,21 @@ public class SubscriptionBean extends Serializable {
         if (version >= 7) {
             nameFilter1 = input.readString();
         }
+
+        if (version >= 8) {
+            String s = input.readString();
+            if (type == SubscriptionType.RAW || type == SubscriptionType.AGE) {
+                httpHeaders = s;
+            } else {
+                httpHeaders = "";
+            }
+            s = input.readString();
+            if (type == SubscriptionType.AGE) {
+                agePrivateKey = s;
+            } else {
+                agePrivateKey = "";
+            }
+        }
     }
 
     @Override
@@ -212,9 +243,12 @@ public class SubscriptionBean extends Serializable {
         if (nameFilter1 == null) nameFilter1 = "";
 
         if (expiryDate == null) expiryDate = 0L;
+
+        if (httpHeaders == null) httpHeaders = "";
+        if (agePrivateKey == null) agePrivateKey = "";
     }
 
-    public static final Creator<SubscriptionBean> CREATOR = new CREATOR<SubscriptionBean>() {
+    public static final Creator<SubscriptionBean> CREATOR = new CREATOR<>() {
         @NonNull
         @Override
         public SubscriptionBean newInstance() {

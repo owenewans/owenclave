@@ -79,6 +79,9 @@ class NaiveSettingsActivity : ProfileSettingsActivity<NaiveBean>() {
         findPreference<EditTextPreference>(Key.SERVER_INSECURE_CONCURRENCY)!!.apply {
             setOnBindEditTextListener(EditTextPreferenceModifiers.Number)
         }
+        findPreference<EditTextPreference>(Key.SERVER_HEADERS)!!.apply {
+            dialogMessage = getString(R.string.format, "\nKey1: Value1\nKey2: Value2")
+        }
 
         findPreference<PreferenceCategory>(Key.SERVER_SING_UOT_CATEGORY)!!.isVisible =
             DataStore.experimentalFlagsProperties.getBooleanProperty("singuot")

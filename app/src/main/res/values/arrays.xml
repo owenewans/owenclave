@@ -438,11 +438,13 @@
     <string-array name="subscription_types">
         <item>@string/raw</item>
         <item>SIP008</item>
+        <item>age</item>
     </string-array>
 
     <string-array name="subscription_types_value">
         <item>0</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
 
     <string-array name="socks_versions">

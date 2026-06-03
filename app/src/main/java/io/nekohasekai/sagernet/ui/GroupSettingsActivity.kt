@@ -38,12 +38,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.database.preference.OnPreferenceDataStoreChangeListener
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.ui.profile.ProfileSettingsActivity.PasswordSummaryProvider
 
 @Suppress("UNCHECKED_CAST")
 class GroupSettingsActivity(
@@ -94,6 +96,8 @@ class GroupSettingsActivity(
         DataStore.subscriptionExpiryDate = sub.expiryDate
         DataStore.subscriptionNameFilter = sub.nameFilter
         DataStore.subscriptionNameFilter1 = sub.nameFilter1
+        DataStore.subscriptionHTTPHeaders = sub.httpHeaders
+        DataStore.subscriptionAgePrivateKey = sub.agePrivateKey
         DataStore.frontProxyOutbound = frontProxy
         DataStore.landingProxyOutbound = landingProxy
         DataStore.frontProxy = if (frontProxy >= 0) 1 else 0
@@ -127,6 +131,8 @@ class GroupSettingsActivity(
                 expiryDate = DataStore.subscriptionExpiryDate
                 nameFilter = DataStore.subscriptionNameFilter
                 nameFilter1 = DataStore.subscriptionNameFilter1
+                httpHeaders = DataStore.subscriptionHTTPHeaders
+                agePrivateKey = DataStore.subscriptionAgePrivateKey
             }
         } else {
             subscription = SubscriptionBean().applyDefaultValues()
@@ -195,15 +201,33 @@ class GroupSettingsActivity(
         val groupType = findPreference<ListPreference>(Key.GROUP_TYPE)!!
         val groupSubscription = findPreference<PreferenceCategory>(Key.GROUP_SUBSCRIPTION)!!
         val subscriptionUpdate = findPreference<PreferenceCategory>(Key.SUBSCRIPTION_UPDATE)!!
+        val subscriptionType = findPreference<ListPreference>(Key.SUBSCRIPTION_TYPE)!!
+        val httpHeaders = findPreference<EditTextPreference>(Key.SUBSCRIPTION_HTTP_HEADERS)!!.apply {
+            dialogMessage = getString(R.string.format, "\nKey1: Value1\nKey2: Value2")
+        }
+        val agePrivateKey = findPreference<EditTextPreference>(Key.SUBSCRIPTION_AGE_PRIVATE_KEY)!!.apply {
+            summaryProvider = PasswordSummaryProvider
+        }
 
         fun updateGroupType(groupType: Int = DataStore.groupType) {
             val isSubscription = groupType == GroupType.SUBSCRIPTION
             groupSubscription.isVisible = isSubscription
             subscriptionUpdate.isVisible = isSubscription
+            httpHeaders.isVisible = isSubscription
+            agePrivateKey.isVisible = isSubscription && (subscriptionType.value as String).toInt() == SubscriptionType.AGE
         }
         updateGroupType()
         groupType.setOnPreferenceChangeListener { _, newValue ->
             updateGroupType((newValue as String).toInt())
+            true
+        }
+
+        fun updateSubscriptionType(subscriptionType: Int = DataStore.subscriptionType) {
+            agePrivateKey.isVisible = subscriptionType == SubscriptionType.AGE
+        }
+        updateSubscriptionType()
+        subscriptionType.setOnPreferenceChangeListener { _, newValue ->
+            updateSubscriptionType((newValue as String).toInt())
             true
         }
 

@@ -83,6 +83,7 @@ abstract class GroupUpdater {
                     when (subscription.type) {
                         SubscriptionType.RAW -> RawUpdater
                         SubscriptionType.SIP008 -> SIP008Updater
+                        SubscriptionType.AGE -> AgeUpdater
                         else -> error("unsupported")
                     }.doUpdate(proxyGroup, subscription, userInterface, byUser)
                     true

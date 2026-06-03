@@ -455,6 +455,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var subscriptionExpiryDate by profileCacheStore.long(Key.SUBSCRIPTION_EXPIRY_DATE)
     var subscriptionNameFilter by profileCacheStore.string(Key.SUBSCRIPTION_NAME_FILTER)
     var subscriptionNameFilter1 by profileCacheStore.string(Key.SUBSCRIPTION_NAME_FILTER1)
+    var subscriptionHTTPHeaders by profileCacheStore.string(Key.SUBSCRIPTION_HTTP_HEADERS)
+    var subscriptionAgePrivateKey by profileCacheStore.string(Key.SUBSCRIPTION_AGE_PRIVATE_KEY)
 
     var editingAssetName by profileCacheStore.string(Key.EDITING_ASSET_NAME)
     var assetName by profileCacheStore.string(Key.ASSET_NAME)
