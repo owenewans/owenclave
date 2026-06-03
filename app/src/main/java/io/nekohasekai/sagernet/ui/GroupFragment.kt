@@ -57,6 +57,7 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
     lateinit var layoutManager: LinearLayoutManager
     lateinit var groupAdapter: GroupAdapter
     lateinit var undoManager: UndoSnackbarManager<ProxyGroup>
+    val showBackup = DataStore.experimentalFlagsProperties.getBooleanProperty("enableProfileBackup")
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -489,6 +490,10 @@ class GroupFragment : ToolbarFragment(R.layout.layout_group),
                 if (group.type != GroupType.SUBSCRIPTION) {
                     popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_export_backup)
                     popup.menu.findItem(R.id.action_share).subMenu?.removeItem(R.id.action_subscription_link)
+                }
+
+                if (showBackup) {
+                    popup.menu.findItem(R.id.action_export_backup_of_all_profiles).isVisible = true
                 }
 
                 popup.setOnMenuItemClickListener(this)

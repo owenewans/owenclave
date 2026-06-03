@@ -1034,6 +1034,7 @@ class ConfigurationFragment @JvmOverloads constructor(
         lateinit var proxyGroup: ProxyGroup
         var selected = false
         var scrolled = false
+        val showBackup = DataStore.experimentalFlagsProperties.getBooleanProperty("enableProfileBackup")
 
         override fun onCreateView(
             inflater: LayoutInflater,
@@ -1102,6 +1103,11 @@ class ConfigurationFragment @JvmOverloads constructor(
             if (!DataStore.experimentalFlagsProperties.getBooleanProperty("shadowquic")) {
                 (parentFragment as? ToolbarFragment)
                     ?.toolbar?.menu?.findItem(R.id.action_new_shadowquic)?.isVisible  = false
+            }
+
+            if (showBackup) {
+                (parentFragment as? ToolbarFragment)
+                    ?.toolbar?.menu?.findItem(R.id.action_import_backup)?.isVisible = true
             }
 
             if (::configurationListView.isInitialized) {
@@ -1642,8 +1648,8 @@ class ConfigurationFragment @JvmOverloads constructor(
                             popup.menu.removeItem(R.id.action_qr)
                             popup.menu.removeItem(R.id.action_clipboard)
                         }
-                        if (!proxyEntity.canExportBackup()) {
-                            popup.menu.removeItem(R.id.action_export_backup)
+                        if (showBackup && proxyEntity.canExportBackup()) {
+                            popup.menu.findItem(R.id.action_export_backup).isVisible = true
                         }
 
                         popup.setOnMenuItemClickListener(this@ConfigurationHolder)

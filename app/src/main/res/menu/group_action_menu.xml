@@ -24,6 +24,7 @@
             </item>
             <item
                 android:id="@+id/action_export_backup_of_all_profiles"
+                android:visible="false"
                 android:title="@string/backup_all_profiles">
                 <menu>
                     <item
