@@ -32,7 +32,6 @@ import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.RouteMode
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.Shadowsocks2022Implementation
 import io.nekohasekai.sagernet.TLS_FRAGMENTATION_METHOD
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.bg.VpnService
@@ -91,7 +90,6 @@ import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject.BalancerObject.StrategyObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SSHOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ShadowsocksOutboundConfigurationObject
-import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.Shadowsocks_2022OutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SocksInboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SocksOutboundConfigurationObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SplitHTTPObject
@@ -746,23 +744,16 @@ fun buildV2RayConfig(
                                                 })
                                         })
                                 } else if (bean is ShadowsocksBean) {
-                                    if (bean.method.startsWith("2022-blake3-") && DataStore.shadowsocks2022Implementation == Shadowsocks2022Implementation.V2FLY_V2RAY_CORE) {
-                                        protocol = "shadowsocks2022"
-                                        settings = LazyOutboundConfigurationObject(this,
-                                            Shadowsocks_2022OutboundConfigurationObject().apply {
+                                    protocol = "shadowsocks"
+                                    settings = LazyOutboundConfigurationObject(this,
+                                        ShadowsocksOutboundConfigurationObject().apply {
+                                            servers = listOf(ShadowsocksOutboundConfigurationObject.ServerObject().apply {
                                                 address = bean.serverAddress
                                                 port = bean.serverPort
+                                                password = bean.password
                                                 method = bean.method
-                                                val keys = bean.password.split(":")
-                                                if (keys.size == 1) {
-                                                    psk = keys[0]
-                                                }
-                                                if (keys.size > 1) {
-                                                    ipsk = mutableListOf()
-                                                    for (i in 0..(keys.size - 2)) {
-                                                        ipsk.add(keys[i])
-                                                    }
-                                                    psk = keys[keys.size - 1]
+                                                if (!bean.method.startsWith("2022-blake3-") && bean.experimentReducedIvHeadEntropy) {
+                                                    experimentReducedIvHeadEntropy = bean.experimentReducedIvHeadEntropy
                                                 }
                                                 if (bean.plugin.isNotEmpty()) {
                                                     val pluginConfiguration = PluginConfiguration(bean.plugin)
@@ -805,65 +796,9 @@ fun buildV2RayConfig(
                                                 if (bean.singUoT && DataStore.experimentalFlagsProperties.getBooleanProperty( "singuot")) {
                                                     uot = bean.singUoT
                                                 }
-                                            }
-                                        )
-                                    } else {
-                                        protocol = "shadowsocks"
-                                        settings = LazyOutboundConfigurationObject(this,
-                                            ShadowsocksOutboundConfigurationObject().apply {
-                                                servers = listOf(ShadowsocksOutboundConfigurationObject.ServerObject().apply {
-                                                    address = bean.serverAddress
-                                                    port = bean.serverPort
-                                                    password = bean.password
-                                                        method = bean.method
-                                                    if (!bean.method.startsWith("2022-blake3-") && bean.experimentReducedIvHeadEntropy) {
-                                                        experimentReducedIvHeadEntropy = bean.experimentReducedIvHeadEntropy
-                                                    }
-                                                    if (bean.plugin.isNotEmpty()) {
-                                                        val pluginConfiguration = PluginConfiguration(bean.plugin)
-                                                        if (pluginConfiguration.selected.isNotEmpty()) {
-                                                            plugin = pluginConfiguration.selected
-                                                            pluginOpts = pluginConfiguration.getOptions().toString()
-                                                            if (!forExport
-                                                                && !(plugin == "v2ray-plugin" && DataStore.experimentalFlagsProperties.getBooleanProperty("useInternalV2RayPlugin"))
-                                                                && !(plugin == "obfs-local" && DataStore.experimentalFlagsProperties.getBooleanProperty("useInternalObfsLocal"))
-                                                            ) {
-                                                                try {
-                                                                    PluginManager.init(pluginConfiguration)?.let { (path, opts, isV2) ->
-                                                                        plugin = path
-                                                                        val shouldProtect = if (forTest) {
-                                                                            DataStore.serviceMode == Key.MODE_VPN && DataStore.tunImplementation == TunImplementation.SYSTEM && DataStore.startedProfile > 0 && SagerNet.started
-                                                                        } else {
-                                                                            DataStore.serviceMode == Key.MODE_VPN && DataStore.tunImplementation == TunImplementation.SYSTEM
-                                                                        }
-                                                                        if (shouldProtect) {
-                                                                            pluginWorkingDir = SagerNet.deviceStorage.noBackupFilesDir.toString()
-                                                                            if (isV2) {
-                                                                                opts["__android_vpn"] = ""
-                                                                            } else {
-                                                                                pluginArgs = listOf("-V")
-                                                                            }
-                                                                        }
-                                                                        pluginOpts = opts.toString()
-                                                                    }
-                                                                } catch (e: PluginManager.PluginNotFoundException) {
-                                                                    if (e.plugin in arrayOf("v2ray-plugin", "obfs-local")) {
-                                                                        plugin = e.plugin
-                                                                        pluginOpts = pluginConfiguration.getOptions().toString()
-                                                                    } else {
-                                                                        throw e
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    if (bean.singUoT && DataStore.experimentalFlagsProperties.getBooleanProperty( "singuot")) {
-                                                        uot = bean.singUoT
-                                                    }
-                                                })
-                                            }
-                                        )
-                                    }
+                                            })
+                                        }
+                                    )
                                 } else if (bean is SOCKSBean) {
                                     protocol = "socks"
                                     settings = LazyOutboundConfigurationObject(this,

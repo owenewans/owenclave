@@ -420,7 +420,6 @@
     <string name="reality_short_id">ID Pendek REALITY</string>
     <string name="reality_fingerprint">Sidik jari uTLS REALITY</string>
     <string name="wireguard_reserved">Cadangan</string>
-    <string name="shadowsocks_2022_implementation">Implementasi Shadowsocks 2022</string>
     <string name="bootstrap_dns">DNS bootstrap</string>
     <string name="use_local_dns_as_bootstrap_dns">Gunakan DNS sistem sebagai DNS bootstrap</string>
     <string name="brook_fragment">Fragmentasi</string>

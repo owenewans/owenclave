@@ -364,7 +364,6 @@ public class V2RayConfig {
         public String ip;
         public Integer timeout;
         public Integer userLevel;
-        public String packetEncoding;
         public Boolean deferLastReply;
 
         public static class AccountObject {
@@ -450,7 +449,6 @@ public class V2RayConfig {
         public String pluginOpts;
         public List<String> pluginArgs;
         public String pluginWorkingDir;
-        public String packetEncoding;
         public List<UserObject> clients;
         public List<UserObject> users;
 
@@ -471,7 +469,6 @@ public class V2RayConfig {
 
         public List<ClientObject> clients;
         public List<FallbackObject> fallbacks;
-        public String packetEncoding;
 
         public static class ClientObject {
 
@@ -503,7 +500,6 @@ public class V2RayConfig {
         public Integer timeout;
         public Integer userLevel;
         public Boolean allowTransparent;
-        public String packetEncoding;
         public Boolean deferLastReply;
 
         public static class AccountObject {
@@ -584,7 +580,6 @@ public class V2RayConfig {
     }
 
     public static class Hysteria2InboundConfigurationObject implements InboundConfigurationObject {
-        public String packetEncoding;
     }
 
     public static class AnyTLSInboundConfigurationObject implements InboundConfigurationObject {
@@ -692,8 +687,6 @@ public class V2RayConfig {
                     return SSHOutboundConfigurationObject.class;
                 case "shadowsocks-2022":
                     return Shadowsocks2022OutboundConfigurationObject.class;
-                case "shadowsocks2022":
-                    return Shadowsocks_2022OutboundConfigurationObject.class;
                 case "hysteria2":
                     return Hysteria2OutboundConfigurationObject.class;
                 case "tuic":
@@ -858,21 +851,6 @@ public class V2RayConfig {
         public Integer port;
         public String method;
         public String key;
-        public String plugin;
-        public String pluginOpts;
-        public List<String> pluginArgs;
-        public String pluginWorkingDir;
-        public Boolean uot;
-
-    }
-
-    public static class Shadowsocks_2022OutboundConfigurationObject implements OutboundConfigurationObject {
-
-        public String address;
-        public Integer port;
-        public String method;
-        public String psk;
-        public List<String> ipsk;
         public String plugin;
         public String pluginOpts;
         public List<String> pluginArgs;

@@ -445,7 +445,6 @@
     <string name="reality_short_id">REALITY Short ID</string>
     <string name="reality_fingerprint">REALITY uTLS fingerprint</string>
     <string name="wireguard_reserved">Reserved</string>
-    <string name="shadowsocks_2022_implementation">Shadowsocks 2022 implementation</string>
     <string name="bootstrap_dns">Bootstrap DNS</string>
     <string name="use_local_dns_as_bootstrap_dns">Use system DNS as Bootstrap DNS</string>
     <string name="brook_fragment">Fragment</string>

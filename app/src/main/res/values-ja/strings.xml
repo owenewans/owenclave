@@ -398,7 +398,6 @@
     <string name="reality_short_id">REALITY Short ID</string>
     <string name="reality_fingerprint">REALITY uTLS 指紋</string>
     <string name="wireguard_reserved">予約済</string>
-    <string name="shadowsocks_2022_implementation">Shadowsocks 2022 導入</string>
     <string name="bootstrap_dns">最初のDNS</string>
     <string name="use_local_dns_as_bootstrap_dns">システムDNSをブートストラップDNSとして使う</string>
     <string name="brook_fragment">断片</string>

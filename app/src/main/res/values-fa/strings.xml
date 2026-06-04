@@ -439,7 +439,6 @@
     <string name="reality_short_id">شناسه‌ی کوتاه REALITY</string>
     <string name="reality_fingerprint">اثر انگشت uTLS در REALITY</string>
     <string name="wireguard_reserved">فیلد رزرو‌شده</string>
-    <string name="shadowsocks_2022_implementation">پیاده‌سازی Shadowsocks 2022</string>
     <string name="bootstrap_dns">DNS راه‌انداز (Bootstrap DNS)</string>
     <string name="use_local_dns_as_bootstrap_dns">استفاده از DNS سیستم به‌عنوان DNS راه‌انداز (Bootstrap DNS)</string>
     <string name="brook_fragment">قطعه (Fragment)</string>

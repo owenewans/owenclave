@@ -103,7 +103,6 @@ object Key {
     const val ALWAYS_SHOW_ADDRESS = "alwaysShowAddress"
     const val SHOW_GROUP_NAME = "showGroupName"
 
-    const val SHADOWSOCKS_2022_IMPLEMENTATION = "shadowsocks2022Implementation"
     const val PROVIDER_ROOT_CA = "providerRootCA"
 
     const val INTERRUPT_REUSED_CONNECTIONS = "interruptReusedConnections0"
@@ -334,11 +333,6 @@ object Key {
 object TunImplementation {
     const val GVISOR = 0
     const val SYSTEM = 1
-}
-
-object Shadowsocks2022Implementation {
-    const val SAGERNET_SING_SHADOWSOCKS2 = 0
-    const val V2FLY_V2RAY_CORE = 1
 }
 
 object RootCAProvider {
