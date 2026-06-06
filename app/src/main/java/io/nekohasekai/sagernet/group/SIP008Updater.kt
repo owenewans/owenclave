@@ -64,7 +64,7 @@ object SIP008Updater : GroupUpdater() {
                         for (header in subscription.httpHeaders.replace("\r\n", "\n").split("\n")) {
                             if (header.isEmpty()) continue
                             if (!header.contains(":")) error("invalid http header")
-                            setHeader(header.substringBefore("："), header.substringAfter("：").trimStart())
+                            setHeader(header.substringBefore(":"), header.substringAfter(":").trimStart())
                         }
                     }
                 }
