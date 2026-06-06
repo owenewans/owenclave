@@ -51,9 +51,7 @@ fun parseShadowQUIC(url: String): ShadowQUICBean {
             "stream" -> true
             else -> true
         }
-        link.queryParameter("zero_rtt")?.also {
-            zeroRTT = true
-        }
+        zeroRTT = link.hasQueryParameter("zero_rtt")
         link.queryParameter("alpn")?.also {
             alpn = it.split(",").joinToString("\n")
         } ?: {
