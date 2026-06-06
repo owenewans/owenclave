@@ -33,7 +33,7 @@
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             android:layout_height="match_parent"
             app:defaultValue="https"
-            app:entries="@array/naive_proto_entry"
+            app:entries="@array/trusttunnel_protocol_entry"
             app:entryValues="@array/naive_proto_value"
             app:icon="@drawable/ic_baseline_layers_24"
             app:key="serverProtocol"

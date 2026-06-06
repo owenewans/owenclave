@@ -77,7 +77,11 @@ public class TrustTunnelBean extends AbstractBean {
         output.writeString(password);
         output.writeString(sni);
         output.writeString(certificate);
-        output.writeString(utlsFingerprint);
+        if (protocol.equals("https")) {
+            output.writeString(utlsFingerprint);
+        } else {
+            output.writeString("");
+        }
         output.writeBoolean(allowInsecure);
         output.writeString(pinnedPeerCertificateChainSha256);
         output.writeString(pinnedPeerCertificatePublicKeySha256);
@@ -98,7 +102,12 @@ public class TrustTunnelBean extends AbstractBean {
         password = input.readString();
         sni = input.readString();
         certificate = input.readString();
-        utlsFingerprint = input.readString();
+        if (protocol.equals("https")) {
+            utlsFingerprint = input.readString();
+        } else {
+            input.readString();
+            utlsFingerprint = "";
+        }
         if (version >= 1) {
             allowInsecure = input.readBoolean();
         }

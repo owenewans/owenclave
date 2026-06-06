@@ -1856,11 +1856,13 @@ fun buildV2RayConfig(
                                         if (bean.allowInsecure) {
                                             allowInsecure = true
                                         }
-                                        val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForTLS")
-                                        if (!overrideFingerprint.isNullOrEmpty()) {
-                                            fingerprint = overrideFingerprint
-                                        } else if (bean.utlsFingerprint.isNotEmpty()) {
-                                            fingerprint = bean.utlsFingerprint
+                                        if (protocol == "https") {
+                                            val overrideFingerprint = DataStore.experimentalFlagsProperties.getProperty("overrideUTLSFingerprintForTLS")
+                                            if (!overrideFingerprint.isNullOrEmpty()) {
+                                                fingerprint = overrideFingerprint
+                                            } else if (bean.utlsFingerprint.isNotEmpty()) {
+                                                fingerprint = bean.utlsFingerprint
+                                            }
                                         }
                                         if (bean.echEnabled) {
                                             ech = TLSObject.ECHObject().apply {

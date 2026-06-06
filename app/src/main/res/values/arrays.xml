@@ -360,6 +360,11 @@
         <item>quic</item>
     </string-array>
 
+    <string-array name="trusttunnel_protocol_entry">
+        <item>HTTP/2</item>
+        <item>HTTP/3</item>
+    </string-array>
+
     <string-array name="config_type_entry">
         <item>@string/custom_config</item>
         <item>@string/custom_outbound</item>
