@@ -27,9 +27,63 @@ import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
+import io.nekohasekai.sagernet.ktx.queryParameter
+import libexclavecore.Libexclavecore
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import java.io.File
+import kotlin.text.ifEmpty
+
+// https://github.com/RealBikiniBottom/QuicProxy/discussions/2
+// https://github.com/spongebob888/shadowquic/discussions/160
+// third-party share link standard endorsed by the ShadowQUIC author
+fun parseShadowQUIC(url: String): ShadowQUICBean {
+    val link = Libexclavecore.parseURL(url)
+    return ShadowQUICBean().apply {
+        name = link.fragment
+        serverAddress = link.host.ifEmpty { error("empty host") }
+        serverPort = link.port.takeIf { it > 0 } ?: 443
+        username = link.username.ifEmpty { error("missing username") }
+        password = link.password.ifEmpty { error("missing password") }
+        sni = link.queryParameter("sni")?.ifEmpty { error("missing sni") } ?: error("missing sni")
+        udpOverStream = when (link.queryParameter("udp_mode")) {
+            "datagram" -> false
+            "stream" -> true
+            else -> true
+        }
+        link.queryParameter("zero_rtt")?.also {
+            zeroRTT = true
+        }
+        link.queryParameter("alpn")?.also {
+            alpn = it.split(",").joinToString("\n")
+        } ?: {
+            disableALPN = true
+        }
+    }
+}
+
+fun ShadowQUICBean.toUri(): String? {
+    if (useSunnyQUIC) {
+        error("SunnyQUIC is not yet supported")
+    }
+    val builder = Libexclavecore.newURL("sq").apply {
+        if (name.isNotEmpty()) {
+            fragment = name
+        }
+        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
+        addQueryParameter("sni", sni.ifEmpty { error("missing sni") })
+        addQueryParameter("udp_mode", if (udpOverStream) "stream" else "datagram")
+        if (zeroRTT) {
+            addQueryParameter("zero_rtt", "true")
+        }
+        if (!disableALPN) {
+            addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
+        }
+    }
+    builder.username = username.ifEmpty { error("missing username") }
+    builder.password = password.ifEmpty { error("missing password") }
+    return builder.string
+}
 
 fun ShadowQUICBean.buildShadowQUICConfig(port: Int, username: String = "", password: String = "", cacheFile: (() -> File)? = null, forExport: Boolean = false): String {
     val confObject: MutableMap<String, Any> = HashMap()

@@ -143,6 +143,8 @@
                 <data android:scheme="quic" />
                 <data android:scheme="anytls" />
                 <data android:scheme="tt" />
+                <data android:scheme="sq" />
+                <data android:scheme="shadowquic" />
             </intent-filter>
 
             <meta-data

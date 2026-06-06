@@ -50,6 +50,7 @@ import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowquic.buildShadowQUICConfig
+import io.nekohasekai.sagernet.fmt.shadowquic.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
@@ -299,7 +300,7 @@ data class ProxyEntity(
 
     fun hasShareLink(): Boolean {
         return when (type) {
-            TYPE_SSH, TYPE_WG, TYPE_SHADOWTLS, TYPE_SHADOWQUIC -> false
+            TYPE_SSH, TYPE_WG, TYPE_SHADOWTLS -> false
             TYPE_CONFIG, TYPE_CHAIN, TYPE_BALANCER -> false
             else -> true
         }
@@ -322,6 +323,7 @@ data class ProxyEntity(
             is Http3Bean -> toUri()
             is AnyTLSBean -> toUri()
             is TrustTunnelBean -> toUri()
+            is ShadowQUICBean -> toUri()
             else -> null
         }
     }

@@ -19,6 +19,7 @@
 
 package io.nekohasekai.sagernet.ktx
 
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.Serializable
 import io.nekohasekai.sagernet.fmt.anytls.parseAnyTLS
@@ -29,6 +30,7 @@ import io.nekohasekai.sagernet.fmt.juicity.parseJuicity
 import io.nekohasekai.sagernet.fmt.mieru.parseMieru
 import io.nekohasekai.sagernet.fmt.naive.parseNaive
 import io.nekohasekai.sagernet.fmt.parseBackup
+import io.nekohasekai.sagernet.fmt.shadowquic.parseShadowQUIC
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocks
 import io.nekohasekai.sagernet.fmt.shadowsocksr.parseShadowsocksR
 import io.nekohasekai.sagernet.fmt.socks.parseSOCKS
@@ -53,6 +55,7 @@ fun String.decodeBase64(): String {
 }
 
 fun parseShareLinks(text: String): List<AbstractBean> {
+    val shadowQUICEnabled = DataStore.experimentalFlagsProperties.getBooleanProperty("shadowquic")
     val links = text.split('\n').flatMap { it.trim().split(' ') }
     val linksByLine = text.split('\n').map { it.trim() }
 
@@ -129,6 +132,11 @@ fun parseShareLinks(text: String): List<AbstractBean> {
         } else if (startsWith("tt://", ignoreCase = true)) {
             runCatching {
                 entities.addAll(parseTrustTunnel(this))
+            }
+        } else if (startsWith("sq://", ignoreCase = true) || startsWith("shadowquic://", ignoreCase = true)
+            && shadowQUICEnabled) {
+            runCatching {
+                entities.add(parseShadowQUIC(this))
             }
         }
     }
