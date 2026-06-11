@@ -55,6 +55,7 @@ fun parseShadowQUIC(url: String): ShadowQUICBean {
         link.queryParameter("alpn")?.also {
             alpn = it.split(",").joinToString("\n")
         } ?: {
+            // TODO: What is the meaning of "默认值为空"?
             disableALPN = true
         }
     }
@@ -75,7 +76,13 @@ fun ShadowQUICBean.toUri(): String? {
             addQueryParameter("zero_rtt", "true")
         }
         if (!disableALPN) {
-            addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
+            if (alpn.listByLineOrComma().isEmpty()) {
+                addQueryParameter("alpn", "h3")
+            } else {
+                addQueryParameter("alpn", alpn.listByLineOrComma().joinToString(","))
+            }
+        } else {
+            // TODO: What is the meaning of "默认值为空"?
         }
     }
     builder.username = username.ifEmpty { error("missing username") }

@@ -121,5 +121,12 @@ public class ShadowQUICBean extends AbstractBean {
         }
     };
 
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof ShadowQUICBean bean)) return;
+        bean.congestionControl = congestionControl;
+        bean.brutalUploadBandwidth = brutalUploadBandwidth;
+        bean.certificate = certificate;
+    }
 
 }
