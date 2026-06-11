@@ -55,7 +55,6 @@ fun parseSOCKS(link: String): SOCKSBean {
             "socks4" -> SOCKSBean.PROTOCOL_SOCKS4
             "socks4a" -> SOCKSBean.PROTOCOL_SOCKS4A
             "socks5", "socks5h" /* blame cURL for this */, "socks" -> SOCKSBean.PROTOCOL_SOCKS5
-            "socks+tls" -> SOCKSBean.PROTOCOL_SOCKS5 // Who TF invent this?
             else -> error("impossible")
         }
         serverAddress = url.host.ifEmpty { error("empty host") }

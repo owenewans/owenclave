@@ -23,7 +23,6 @@ import io.nekohasekai.sagernet.ktx.isValidHysteriaMultiPort
 import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
-import io.nekohasekai.sagernet.ktx.queryParameterNotBlank
 import libexclavecore.Libexclavecore
 
 fun parseHysteria2(rawURL: String): Hysteria2Bean {
@@ -77,16 +76,10 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
                 auth = link.username + ":" + link.password
             }
         }
-        link.queryParameterNotBlank("sni")?.also {
+        link.queryParameter("sni")?.also {
             sni = it
         }
-        link.queryParameter("insecure")?.takeIf { it == "1" || it == "true" }?.also {
-            allowInsecure = true
-        }
-        link.queryParameter("allow_insecure")?.takeIf { it == "1" || it == "true" }?.also {
-            allowInsecure = true
-        }
-        link.queryParameter("allowInsecure")?.takeIf { it == "1" || it == "true" }?.also {
+        link.queryParameter("insecure")?.takeIf { it == "1" }?.also {
             allowInsecure = true
         }
         link.queryParameter("pinSHA256")?.also {

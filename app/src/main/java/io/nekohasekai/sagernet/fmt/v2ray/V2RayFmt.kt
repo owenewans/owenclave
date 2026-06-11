@@ -161,7 +161,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
     when (bean.security) {
         "none" -> {
             if (bean is VLESSBean) {
-                url.queryParameterNotBlank("flow")?.let {
+                url.queryParameter("flow")?.let {
                     when (it) {
                         in supportedVlessFlow -> {
                             bean.flow = "xtls-rprx-vision-udp443"
@@ -174,18 +174,14 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
         }
         "tls" -> {
-            if (bean is TrojanBean) {
-                bean.sni = url.queryParameterNotBlank("sni") ?: url.queryParameter("peer")
-            } else {
-                url.queryParameterNotBlank("sni")?.let {
-                    bean.sni = it
-                }
+            url.queryParameter("sni")?.let {
+                bean.sni = it
             }
-            url.queryParameterNotBlank("alpn")?.let {
+            url.queryParameter("alpn")?.let {
                 bean.alpn = it.split(",").joinToString("\n")
             }
             if (bean is VLESSBean) {
-                url.queryParameterNotBlank("flow")?.let {
+                url.queryParameter("flow")?.let {
                     when (it) {
                         in supportedVlessFlow -> {
                             bean.flow = "xtls-rprx-vision-udp443"
@@ -212,7 +208,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     bean.allowInsecure = true // non-standard
                 }
             }
-            url.queryParameterNotBlank("pcs")?.takeIf { it.isNotEmpty() }?.let { pcs ->
+            url.queryParameter("pcs")?.takeIf { it.isNotEmpty() }?.let { pcs ->
                 bean.pinnedPeerCertificateSha256 =
                     pcs.split(if (pcs.contains("~")) "~" else ",")
                         .mapNotNull { it.trim().ifEmpty { null }?.replace(":", "") }
@@ -233,20 +229,20 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
         }
         "reality" -> {
-            url.queryParameterNotBlank("sni")?.let {
+            url.queryParameter("sni")?.let {
                 bean.sni = it
             }
-            url.queryParameterNotBlank("pbk")?.ifEmpty { error("empty reality public key") }?.let {
+            url.queryParameter("pbk")?.ifEmpty { error("empty reality public key") }?.let {
                 bean.realityPublicKey = it
             }
-            url.queryParameterNotBlank("sid")?.let {
+            url.queryParameter("sid")?.let {
                 bean.realityShortId = it
             }
-            url.queryParameterNotBlank("pqv")?.let {
+            url.queryParameter("pqv")?.let {
                 bean.realityMldsa65Verify = it
             }
             if (bean is VLESSBean) {
-                url.queryParameterNotBlank("flow")?.let {
+                url.queryParameter("flow")?.let {
                     when (it) {
                         in supportedVlessFlow -> {
                             bean.flow = "xtls-rprx-vision-udp443"
@@ -269,7 +265,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     "none" -> {}
                     "http" -> {
                         bean.headerType = headerType
-                        url.queryParameterNotBlank("host")?.let {
+                        url.queryParameter("host")?.let {
                             bean.host = it.split(",").joinToString("\n")
                         }
                     }
@@ -287,19 +283,19 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
         }
         "http" -> {
-            url.queryParameterNotBlank("host")?.let {
+            url.queryParameter("host")?.let {
                 // The proposal says "省略时复用 remote-host", but this is not correct except for the breaking change below.
                 // will not follow the breaking change in https://github.com/XTLS/Xray-core/commit/0a252ac15d34e7c23a1d3807a89bfca51cbb559b
                 // "若有多个域名，可使用英文逗号隔开，但中间及前后不可有空格。"
                 bean.host = it.split(",").joinToString("\n")
             }
-            url.queryParameterNotBlank("path")?.let {
+            url.queryParameter("path")?.let {
                 bean.path = it
             }
         }
         "xhttp", "splithttp" -> {
             bean.type = "splithttp"
-            url.queryParameterNotBlank("extra")?.let { extra ->
+            url.queryParameter("extra")?.let { extra ->
                 try {
                     val json = parseJson(extra).asJsonObject
                     if (!json.isEmpty) {
@@ -308,13 +304,13 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     }
                 } catch (_: Exception) {}
             }
-            url.queryParameterNotBlank("host")?.let {
+            url.queryParameter("host")?.let {
                 bean.host = it
             }
-            url.queryParameterNotBlank("path")?.let {
+            url.queryParameter("path")?.let {
                 bean.path = it
             }
-            url.queryParameterNotBlank("mode")?.let {
+            url.queryParameter("mode")?.let {
                 bean.splithttpMode = when (it) {
                     in supportedXhttpMode -> it
                     "" -> "auto"
@@ -326,12 +322,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             // Fuck Xray httpupgrade ALPN
             // https://github.com/XTLS/Xray-core/blob/1bdb488c9ec09ea51e6899697d5b7437f3cf6eb2/transport/internet/tls/tls.go#L94-L131
             bean.alpn = null
-            url.queryParameterNotBlank("host")?.let {
+            url.queryParameter("host")?.let {
                 // will not follow the breaking change in
                 // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
                 bean.host = it
             }
-            url.queryParameterNotBlank("path")?.let { path ->
+            url.queryParameter("path")?.let { path ->
                 bean.path = path
                 try {
                     // RPRX's smart-assed invention. This of course will break under some conditions.
@@ -353,12 +349,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             // Fuck Xray ws ALPN
             // https://github.com/XTLS/Xray-core/blob/1bdb488c9ec09ea51e6899697d5b7437f3cf6eb2/transport/internet/tls/tls.go#L94-L131
             bean.alpn = null
-            url.queryParameterNotBlank("host")?.let {
+            url.queryParameter("host")?.let {
                 // will not follow the breaking change in
                 // https://github.com/XTLS/Xray-core/commit/a2b773135a860f63e990874c551b099dfc888471
                 bean.host = it
             }
-            url.queryParameterNotBlank("path")?.let { path ->
+            url.queryParameter("path")?.let { path ->
                 bean.path = path
                 try {
                     // RPRX's smart-assed invention. This of course will break under some conditions.
@@ -383,22 +379,22 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 if (it !in supportedKcpQuicHeaderType) error("unsupported headerType")
                 bean.headerType = it
             }
-            url.queryParameterNotBlank("quicSecurity")?.let { quicSecurity ->
+            url.queryParameter("quicSecurity")?.let { quicSecurity ->
                 if (quicSecurity !in supportedQuicSecurity) error("unsupported quicSecurity")
                 bean.quicSecurity = quicSecurity
-                url.queryParameterNotBlank("key")?.let {
+                url.queryParameter("key")?.let {
                     bean.quicKey = it
                 }
             }
         }
         "grpc" -> {
-            url.queryParameterNotBlank("serviceName")?.let {
+            url.queryParameter("serviceName")?.let {
                 // Xray hijacks the share link standard, uses escaped `serviceName` and some other non-standard `serviceName`s and breaks the compatibility with other implementations.
                 // Fixing the compatibility with Xray will break the compatibility with V2Ray and others.
                 // So do not fix the compatibility with Xray.
                 bean.grpcServiceName = it
             }
-            url.queryParameterNotBlank("mode")?.takeIf { it == "multi" }?.let {
+            url.queryParameter("mode")?.takeIf { it == "multi" }?.let {
                 // Xray private
                 bean.grpcMultiMode = true
             }
@@ -524,8 +520,8 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
         else -> "tcp"
     }
     val type = json.getString("type")?.takeIf { it.isNotEmpty() }
-    val host = json.getString("host")?.takeIf { it.isNotBlank() }
-    val path = json.getString("path")?.takeIf { it.isNotBlank() }
+    val host = json.getString("host")?.takeIf { it.isNotEmpty() }
+    val path = json.getString("path")?.takeIf { it.isNotEmpty() }
 
     when (bean.type) {
         "tcp" -> {
@@ -610,8 +606,8 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             bean.security = security
             bean.name = json.getString("ps")?.takeIf { it.isNotEmpty() }
             // See https://github.com/2dust/v2rayNG/blob/5db2df77a01144b8f3d40116f8c183153f181d05/V2rayNG/app/src/main/java/com/v2ray/ang/handler/V2rayConfigManager.kt#L1077-L1242
-            bean.sni = json.getString("sni")?.takeIf { it.isNotBlank() } ?: host?.split(",")?.get(0)
-            bean.alpn = json.getString("alpn")?.takeIf { it.isNotBlank() }?.split(",")?.joinToString("\n")
+            bean.sni = json.getString("sni")?.takeIf { it.isNotEmpty() } ?: host?.split(",")?.get(0)
+            bean.alpn = json.getString("alpn")?.takeIf { it.isNotEmpty() }?.split(",")?.joinToString("\n")
             json.getString("insecure")?.takeIf { it == "1" }?.let {
                 bean.allowInsecure = true
             }

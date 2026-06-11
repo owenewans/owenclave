@@ -22,7 +22,6 @@ package io.nekohasekai.sagernet.fmt.tuic5
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
-import io.nekohasekai.sagernet.ktx.queryParameterNotBlank
 import libexclavecore.Libexclavecore
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -71,10 +70,10 @@ fun parseTuic(server: String): AbstractBean {
         }
         uuid = link.username
         password = link.password
-        link.queryParameterNotBlank("sni")?.let {
+        link.queryParameter("sni")?.let {
             sni = it
         }
-        link.queryParameterNotBlank("alpn")?.let {
+        link.queryParameter("alpn")?.let {
             alpn = it.split(",").joinToString("\n")
         }
         (link.queryParameter("congestion_controller") ?:

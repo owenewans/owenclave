@@ -127,7 +127,6 @@
                 <data android:scheme="socks4a" />
                 <data android:scheme="sock5" />
                 <data android:scheme="sock5h" />
-                <data android:scheme="socks+tls" />
                 <data android:scheme="vmess" />
                 <data android:scheme="vless" />
                 <data android:scheme="trojan" />

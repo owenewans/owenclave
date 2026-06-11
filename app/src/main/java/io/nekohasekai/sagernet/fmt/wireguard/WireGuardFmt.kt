@@ -26,7 +26,6 @@ import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
 import com.sshtools.jini.INI
 import com.sshtools.jini.INIWriter
-import io.nekohasekai.sagernet.ktx.queryParameterNotBlank
 import java.io.StringWriter
 import java.util.Base64
 import kotlin.jvm.optionals.getOrNull
@@ -63,7 +62,7 @@ fun parseWireGuard(server: String): WireGuardBean {
                 if (peerPublicKey.length == 43) peerPublicKey += "="
             }
         }
-        (link.queryParameterNotBlank("presharedkey") ?: link.queryParameterNotBlank("preSharedKey")) ?.let {
+        (link.queryParameter("presharedkey") ?: link.queryParameter("preSharedKey")) ?.let {
             if (peerPreSharedKey.length == 43) peerPreSharedKey += "="
             if (it.length == 64) {
                 peerPreSharedKey = Base64.getEncoder().encodeToString(it.chunked(2).map { it.toInt(16).toByte() }.toByteArray())

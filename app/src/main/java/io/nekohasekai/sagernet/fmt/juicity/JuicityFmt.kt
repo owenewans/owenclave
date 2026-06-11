@@ -34,8 +34,8 @@ fun parseJuicity(url: String): JuicityBean {
         link.queryParameter("sni")?.also {
             sni = it
         }
-        link.queryParameter("allow_insecure")?.also {
-            allowInsecure = (it == "1" || it == "true")
+        link.queryParameter("allow_insecure")?.takeIf { it == "1" }?.also {
+            allowInsecure = true
         }
         link.queryParameter("pinned_certchain_sha256")?.also {
             pinnedPeerCertificateChainSha256 = when {
