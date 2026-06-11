@@ -18,11 +18,6 @@
         app:title="Path"
         app:useSimpleSummaryProvider="true" />
     <EditTextPreference
-        app:key="serviceName"
-        app:persistent="false"
-        app:title="Service name"
-        app:useSimpleSummaryProvider="true" />
-    <EditTextPreference
         app:key="mux"
         app:persistent="false"
         app:title="Concurrent connections"
