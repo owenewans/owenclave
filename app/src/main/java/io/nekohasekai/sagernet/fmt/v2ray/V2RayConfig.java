@@ -1275,6 +1275,7 @@ public class V2RayConfig {
         public Integer health_check_timeout;
         public Boolean permit_without_stream;
         public Integer initial_windows_size;
+        public Boolean parseXForwardedFor;
         public Boolean multiMode;
         public Boolean serviceNameCompat;
 
