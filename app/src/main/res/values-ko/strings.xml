@@ -89,7 +89,6 @@
     <string name="obfs">Obfs</string>
     <string name="obfs_param">Obfs 매개변수</string>
     <string name="uuid">User ID</string>
-    <string name="alter_id">\"변경 ID\". 번역하지 않는 것이 더 나을까요? https://www.v2fly.org/config/protocols/vmess.html</string>
     <string name="security">전송 계층 보안</string>
     <string name="network">Network</string>
     <string name="header_type">난독화 헤더 유형</string>
