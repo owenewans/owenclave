@@ -152,7 +152,7 @@
     <string name="always_show_address">Всегда показывать адрес</string>
     <string name="unavailable">Недоступно</string>
     <string name="available">%d мс</string>
-    <string name="probe_interval">Интервал наблюдения балансировщика (с)</string>
+    <string name="probe_interval">Интервал между проверками (сек.)</string>
     <string name="random">Случайно</string>
     <string name="list">Список</string>
     <string name="auto">Авто</string>
