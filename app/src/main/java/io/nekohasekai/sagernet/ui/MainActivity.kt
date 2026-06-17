@@ -163,55 +163,37 @@ class MainActivity : ThemedActivity(),
             onNewIntent(intent)
         }
 
-        if (DataStore.configurationStore.getBoolean(
-                if (Libexclavecore.buildWithClash()) "gplv3OnlyAccepted"
-                else "gplv3OrLaterAccepted") != true) {
-            runOnMainDispatcher {
+        runOnMainDispatcher {
+            fun getLicenseKeyName(only: Boolean): String {
+                return if (only) "gplv3OnlyAccepted" else "gplv3OrLaterAccepted"
+            }
+            val only = Libexclavecore.buildWithClash()
+            if (DataStore.configurationStore.getBoolean(getLicenseKeyName(only)) != true) {
+                DataStore.configurationStore.putBoolean(getLicenseKeyName(only), true)
+                DataStore.configurationStore.remove(getLicenseKeyName(!only))
                 AlertDialog.Builder(this@MainActivity).apply {
                     setTitle(R.string.license)
                     setView(
                         TextView(this@MainActivity).apply {
                             setPadding(dp2px(16))
-                            text = getString(
-                                if (Libexclavecore.buildWithClash()) {
-                                    R.string.license_gpl_v3_only
-                                } else {
-                                    R.string.license_gpl_v3_or_later
-                                }
-                            )
+                            text = getString(if (only) {
+                                R.string.license_gpl_v3_only
+                            } else {
+                                R.string.license_gpl_v3_or_later
+                            })
                             setTextIsSelectable(true)
                             Linkify.addLinks(this, Linkify.EMAIL_ADDRESSES or Linkify.WEB_URLS)
                         }
                     )
                     setPositiveButton(android.R.string.ok) { _, _ ->
-                        DataStore.configurationStore.putBoolean(
-                            if (Libexclavecore.buildWithClash()) "gplv3OnlyAccepted"
-                            else "gplv3OrLaterAccepted", true)
-                        if (DataStore.configurationStore.getBoolean("permissionRequested") != true) {
-                            DataStore.configurationStore.putBoolean("permissionRequested", true)
-                            PackageCache.awaitLoadSync()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                if (app.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
-                                }
-                            }
-                        }
+                        requestPermissions()
                     }
                     setOnCancelListener { _ ->
-                        DataStore.configurationStore.putBoolean(
-                            if (Libexclavecore.buildWithClash()) "gplv3OnlyAccepted"
-                            else "gplv3OrLaterAccepted", true)
-                        if (DataStore.configurationStore.getBoolean("permissionRequested") != true) {
-                            DataStore.configurationStore.putBoolean("permissionRequested", true)
-                            PackageCache.awaitLoadSync()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                if (app.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                                    ActivityCompat.requestPermissions(this@MainActivity, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
-                                }
-                            }
-                        }
+                        requestPermissions()
                     }
                 }.show()
+            } else {
+                requestPermissions()
             }
         }
     }
@@ -229,6 +211,34 @@ class MainActivity : ThemedActivity(),
             } else {
                 importProfile(uri)
             }
+        }
+    }
+
+    private fun requestPermissions() {
+        if (DataStore.configurationStore.getBoolean("getInstalledPackagesInited") != true) {
+            // For bullshit Chinese OEMs
+            DataStore.configurationStore.putBoolean("getInstalledPackagesInited", true)
+            PackageCache.awaitLoadSync()
+        }
+        val permissions = mutableListOf<String>()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (DataStore.configurationStore.getBoolean("postNotificationsPermissionRequested") != true) {
+                DataStore.configurationStore.putBoolean("postNotificationsPermissionRequested", true)
+                if (app.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+            if (DataStore.configurationStore.getBoolean("accessLocalNetworkPermissionRequested") != true) {
+                DataStore.configurationStore.putBoolean("accessLocalNetworkPermissionRequested", true)
+                if (app.checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
+                    permissions.add(Manifest.permission.ACCESS_LOCAL_NETWORK)
+                }
+            }
+        }
+        if (permissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this@MainActivity, permissions.toTypedArray(), 0)
         }
     }
 
