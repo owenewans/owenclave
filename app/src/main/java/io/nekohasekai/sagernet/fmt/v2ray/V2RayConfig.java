@@ -333,7 +333,6 @@ public class V2RayConfig {
         public String address;
         public Integer port;
         public String network;
-        public Integer timeout;
         public Boolean followRedirect;
         public Integer userLevel;
 
@@ -341,7 +340,6 @@ public class V2RayConfig {
 
     public static class HTTPInboundConfigurationObject implements InboundConfigurationObject {
 
-        public Integer timeout;
         public List<AccountObject> accounts;
         public Boolean allowTransparent;
         public Integer userLevel;
@@ -362,7 +360,6 @@ public class V2RayConfig {
         public List<AccountObject> accounts;
         public Boolean udp;
         public String ip;
-        public Integer timeout;
         public Integer userLevel;
         public Boolean deferLastReply;
 
@@ -441,7 +438,6 @@ public class V2RayConfig {
         public String email;
         public String method;
         public String password;
-        public Boolean udp;
         public Integer level;
         public String network;
         public Boolean ivCheck;
@@ -497,7 +493,6 @@ public class V2RayConfig {
         public List<AccountObject> accounts;
         public Boolean udp;
         public String ip;
-        public Integer timeout;
         public Integer userLevel;
         public Boolean allowTransparent;
         public Boolean deferLastReply;
@@ -693,8 +688,6 @@ public class V2RayConfig {
                     return TUICOutboundConfigurationObject.class;
                 case "http3":
                     return HTTP3OutboundConfigurationObject.class;
-                case "shadowtls":
-                    return ShadowTLSOutboundConfigurationObject.class;
                 case "anytls":
                     return AnyTLSOutboundConfigurationObject.class;
                 case "juicity":
@@ -737,7 +730,6 @@ public class V2RayConfig {
     public static class FreedomOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public String domainStrategy;
-        public String timeout;
         public String redirect;
         public Integer userLevel;
         // SagerNet private
@@ -973,18 +965,6 @@ public class V2RayConfig {
 
     }
 
-
-    public static class ShadowTLSOutboundConfigurationObject implements OutboundConfigurationObject {
-
-        public String address;
-        public Integer port;
-        public String password;
-        public Integer version;
-        public Integer idleSessionTimeout;
-
-    }
-
-
     public static class AnyTLSOutboundConfigurationObject implements OutboundConfigurationObject {
 
         public String address;
@@ -1029,21 +1009,6 @@ public class V2RayConfig {
         public Boolean http3;
         public String serverNameToVerify;
         public String domainStrategy;
-
-    }
-
-    public TransportObject transport;
-
-    public static class TransportObject {
-
-        public TcpObject tcpSettings;
-        public KcpObject kcpSettings;
-        public WebSocketObject wsSettings;
-        public HttpObject httpSettings;
-        public QuicObject quicSettings;
-        public DomainSocketObject dsSettings;
-        public GrpcObject grpcSettings;
-        public GrpcObject gunSettings;
 
     }
 
@@ -1428,23 +1393,6 @@ public class V2RayConfig {
         public String listenAddr;
         public Integer listenPort;
 
-    }
-
-    public ReverseObject reverse;
-
-    public static class ReverseObject {
-        public List<BridgeObject> bridges;
-        public List<PortalObject> portals;
-
-        public static class BridgeObject {
-            public String tag;
-            public String domain;
-        }
-
-        public static class PortalObject {
-            public String tag;
-            public String domain;
-        }
     }
 
     public ObservatoryObject observatory;

@@ -40,7 +40,6 @@ import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceDataStore
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
@@ -108,8 +107,6 @@ class RouteSettingsActivity(
             -2L -> 2
             else -> 3
         }
-        DataStore.routeReverse = reverse
-        DataStore.routeRedirect = redirect
         DataStore.routePackages = packages.joinToString("\n")
         DataStore.routeCustomPackageNameOrUid = customPackageNames.joinToString("\n")
         DataStore.routeNetworkType = networkType
@@ -132,8 +129,6 @@ class RouteSettingsActivity(
             2 -> -2L
             else -> DataStore.routeOutboundRule
         }
-        reverse = DataStore.routeReverse
-        redirect = DataStore.routeRedirect
         packages = DataStore.routePackages.split("\n").filter { it.isNotEmpty() }
         customPackageNames = DataStore.routeCustomPackageNameOrUid.listByLineOrComma()
         networkType = DataStore.routeNetworkType
@@ -146,7 +141,7 @@ class RouteSettingsActivity(
 
     fun needSave(): Boolean {
         if (!dirty) return false
-        if (DataStore.routePackages.isEmpty() && DataStore.routeCustomPackageNameOrUid.isEmpty() && DataStore.routeDomain.isEmpty() && DataStore.routeIP.isEmpty() && DataStore.routePort.isEmpty() && DataStore.routeSourcePort.isEmpty() && DataStore.routeNetwork.isEmpty() && DataStore.routeSource.isEmpty() && DataStore.routeProtocol.isEmpty() && DataStore.routeAttrs.isEmpty() && !(DataStore.routeReverse && DataStore.routeRedirect.isEmpty()) && DataStore.routeNetworkType.isEmpty()) {
+        if (DataStore.routePackages.isEmpty() && DataStore.routeCustomPackageNameOrUid.isEmpty() && DataStore.routeDomain.isEmpty() && DataStore.routeIP.isEmpty() && DataStore.routePort.isEmpty() && DataStore.routeSourcePort.isEmpty() && DataStore.routeNetwork.isEmpty() && DataStore.routeSource.isEmpty() && DataStore.routeProtocol.isEmpty() && DataStore.routeAttrs.isEmpty() && DataStore.routeNetworkType.isEmpty()) {
             return false
         }
         return true
@@ -186,8 +181,6 @@ class RouteSettingsActivity(
     }
 
     lateinit var outbound: ListPreference
-    lateinit var reverse: SwitchPreference
-    lateinit var redirect: EditTextPreference
     lateinit var apps: AppListPreference
     lateinit var customPackageNames: EditTextPreference
     lateinit var networkType: MultiSelectListPreference
@@ -197,8 +190,6 @@ class RouteSettingsActivity(
         findPreference<EditTextPreference>(Key.ROUTE_SOURCE_PORT)!!.dialogMessage = getString(R.string.format, "53,443,1000-2000")
         findPreference<EditTextPreference>(Key.ROUTE_PORT)!!.dialogMessage = getString(R.string.format, "53,443,1000-2000")
         outbound = findPreference(Key.ROUTE_OUTBOUND)!!
-        reverse = findPreference(Key.ROUTE_REVERSE)!!
-        redirect = findPreference(Key.ROUTE_REDIRECT)!!
         apps = findPreference(Key.ROUTE_PACKAGES)!!
         customPackageNames = findPreference(Key.ROUTE_CUSTOM_PACKAGE_NAME_OR_UID)!!
         networkType = findPreference(Key.ROUTE_NETWORK_TYPE)!!
@@ -207,19 +198,6 @@ class RouteSettingsActivity(
         apps.isEnabled = customPackageNames.text.isNullOrEmpty()
         customPackageNames.setOnPreferenceChangeListener { _, newValue ->
             apps.isEnabled = (newValue as String).isEmpty()
-            true
-        }
-
-        fun updateReverse(enabled: Boolean = outbound.value == "3") {
-            reverse.isVisible = enabled
-            redirect.isVisible = enabled
-            redirect.isEnabled = reverse.isChecked
-        }
-
-        updateReverse()
-
-        reverse.setOnPreferenceChangeListener { _, newValue ->
-            redirect.isEnabled = newValue as Boolean
             true
         }
 
@@ -237,13 +215,11 @@ class RouteSettingsActivity(
             setEntryValues(R.array.outbound_value)
             setOnPreferenceChangeListener { _, newValue ->
                 if (newValue.toString() == "3") {
-                    updateReverse(true)
                     selectProfileForAdd.launch(
                         Intent(this@RouteSettingsActivity, ProfileSelectActivity::class.java)
                     )
                     false
                 } else {
-                    updateReverse(false)
                     setSummary(outboundEntries[newValue.toString().toInt()])
                     true
                 }

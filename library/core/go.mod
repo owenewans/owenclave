@@ -2,7 +2,7 @@ module libexclavecore
 
 go 1.26
 
-require github.com/exclavenetwork/libexclavecore v0.0.0-20260617170006-ddb9662fb486
+require github.com/exclavenetwork/libexclavecore v0.0.0-20260617174951-443a1d4b90e8
 
 require (
 	filippo.io/age v1.3.1 // indirect
@@ -17,7 +17,7 @@ require (
 	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
 	github.com/enfein/mieru/v3 v3.34.0 // indirect
-	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260617165752-07a14882390e // indirect
+	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260617165752-77b00051a618 // indirect
 	github.com/exclavenetwork/hysteria/core/v2 v2.9.2-1 // indirect
 	github.com/exclavenetwork/hysteria/extras/v2 v2.9.2-1 // indirect
 	github.com/exclavenetwork/sing-juicity v0.1.4 // indirect
@@ -43,7 +43,6 @@ require (
 	github.com/sagernet/sing-quic v0.6.1 // indirect
 	github.com/sagernet/sing-shadowsocks v0.2.9 // indirect
 	github.com/sagernet/sing-shadowsocks2 v0.2.2 // indirect
-	github.com/sagernet/sing-shadowtls v0.2.1 // indirect
 	github.com/sagernet/smux v1.5.50-sing-box-mod.1 // indirect
 	github.com/seiflotfy/cuckoofilter v0.0.0-20240715131351-a2f2c23f1771 // indirect
 	github.com/v2fly/BrowserBridge v0.0.0-20210430233438-0570fc1d7d08 // indirect

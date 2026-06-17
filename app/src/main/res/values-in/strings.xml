@@ -117,7 +117,6 @@
     <string name="route_asset_no_update">Sudah terbaru</string>
     <string name="route_asset_status">Versi lokal: %s</string>
     <string name="route_rules_official">Resmi</string>
-    <string name="route_reverse">Proksi terbalik</string>
     <string name="route_reset">Reset</string>
     <string name="empty_route">Rute kosong</string>
     <string name="route_profile">Pilih profil…</string>
@@ -156,7 +155,6 @@
     <string name="route_opt_bypass_lan">Lewati alamat privat</string>
     <string name="route_not_asset">Bukan file aset: diharapkan .dat, tetapi %s</string>
     <string name="route_rules_provider">Penyedia aset rute</string>
-    <string name="route_reverse_redirect">Alamat proksi terbalik</string>
     <string name="route_bypass_domain">Aturan domain untuk %s</string>
     <string name="empty_route_notice">Konfigurasikan beberapa aturan sebelum menyimpan</string>
     <string name="delete_route_prompt">Apakah Anda yakin ingin menghapus rute ini?</string>

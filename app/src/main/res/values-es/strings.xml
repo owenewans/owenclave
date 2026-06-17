@@ -80,8 +80,6 @@
     <string name="require_http">Activar HTTP de entrada</string>
     <string name="general_settings">Ajustes de la aplicación</string>
     <string name="hysteria_obfs">Contraseña de ofuscación</string>
-    <string name="route_reverse_redirect">Dirección de proxy inverso</string>
-    <string name="route_reverse">Proxy inverso</string>
     <string name="route_bypass_ip">Regla de IP para %s</string>
     <string name="route_block">Bloquear</string>
     <string name="hysteria_download_mbps">Velocidad máxima de descarga (Mbps)</string>

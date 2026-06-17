@@ -55,7 +55,6 @@ import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.toUri
-import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.socks.toUri
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
@@ -98,7 +97,6 @@ data class ProxyEntity(
     var hysteria2Bean: Hysteria2Bean? = null,
     var mieruBean: MieruBean? = null,
     var tuic5Bean: Tuic5Bean? = null,
-    var shadowtlsBean: ShadowTLSBean? = null,
     var sshBean: SSHBean? = null,
     var wgBean: WireGuardBean? = null,
     var juicityBean: JuicityBean? = null,
@@ -125,7 +123,6 @@ data class ProxyEntity(
         const val TYPE_WG = 18
         const val TYPE_MIERU = 19
         const val TYPE_TUIC5 = 23
-        const val TYPE_SHADOWTLS = 24
         const val TYPE_JUICITY = 25
         const val TYPE_HTTP3 = 26
         const val TYPE_ANYTLS = 27
@@ -218,7 +215,6 @@ data class ProxyEntity(
             TYPE_WG -> wgBean = KryoConverters.wireguardDeserialize(byteArray)
             TYPE_MIERU -> mieruBean = KryoConverters.mieruDeserialize(byteArray)
             TYPE_TUIC5 -> tuic5Bean = KryoConverters.tuic5Deserialize(byteArray)
-            TYPE_SHADOWTLS -> shadowtlsBean = KryoConverters.shadowtlsDeserialize(byteArray)
             TYPE_JUICITY -> juicityBean = KryoConverters.juicityDeserialize(byteArray)
             TYPE_HTTP3 -> http3Bean = KryoConverters.http3Deserialize(byteArray)
             TYPE_ANYTLS -> anytlsBean = KryoConverters.anytlsDeserialize(byteArray)
@@ -245,7 +241,6 @@ data class ProxyEntity(
         TYPE_WG -> "WireGuard"
         TYPE_MIERU -> "mieru"
         TYPE_TUIC5 -> "TUIC"
-        TYPE_SHADOWTLS -> "ShadowTLS"
         TYPE_JUICITY -> "Juicity"
         TYPE_HTTP3 -> "HTTP/3"
         TYPE_ANYTLS -> "AnyTLS"
@@ -276,7 +271,6 @@ data class ProxyEntity(
             TYPE_WG -> wgBean
             TYPE_MIERU -> mieruBean
             TYPE_TUIC5 -> tuic5Bean
-            TYPE_SHADOWTLS -> shadowtlsBean
             TYPE_JUICITY -> juicityBean
             TYPE_HTTP3 -> http3Bean
             TYPE_ANYTLS -> anytlsBean
@@ -300,7 +294,7 @@ data class ProxyEntity(
 
     fun hasShareLink(): Boolean {
         return when (type) {
-            TYPE_SSH, TYPE_WG, TYPE_SHADOWTLS -> false
+            TYPE_SSH, TYPE_WG -> false
             TYPE_CONFIG, TYPE_CHAIN, TYPE_BALANCER -> false
             else -> true
         }
@@ -383,7 +377,6 @@ data class ProxyEntity(
         wgBean = null
         mieruBean = null
         tuic5Bean = null
-        shadowtlsBean = null
         juicityBean = null
         http3Bean = null
         anytlsBean = null
@@ -447,10 +440,6 @@ data class ProxyEntity(
                 type = TYPE_TUIC5
                 tuic5Bean = bean
             }
-            is ShadowTLSBean -> {
-                type = TYPE_SHADOWTLS
-                shadowtlsBean = bean
-            }
             is JuicityBean -> {
                 type = TYPE_JUICITY
                 juicityBean = bean
@@ -504,7 +493,6 @@ data class ProxyEntity(
             TYPE_WG -> WireGuardSettingsActivity::class.java
             TYPE_MIERU -> MieruSettingsActivity::class.java
             TYPE_TUIC5 -> Tuic5SettingsActivity::class.java
-            TYPE_SHADOWTLS -> ShadowTLSSettingsActivity::class.java
             TYPE_JUICITY -> JuicitySettingsActivity::class.java
             TYPE_HTTP3 -> Http3SettingsActivity::class.java
             TYPE_ANYTLS -> AnyTLSSettingsActivity::class.java

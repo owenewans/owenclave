@@ -226,7 +226,6 @@ object Key {
     const val SERVER_DISABLE_SNI = "serverDisableSNI"
     const val SERVER_REDUCE_RTT= "serverReduceRTT"
 
-    const val SERVER_SHADOWTLS_PROTOCOL_VERSION = "serverShadowTLSProtocolVersion"
     const val SERVER_MIERU_MUX_LEVEL = "serverMieruMuxLevel"
     const val SERVER_MIERU_HANDSHAKE_MODE = "serverMieruHandshakeMode"
     const val SERVER_MIERU_TRAFFIC_PATTERN = "serverMieruTrafficPattern"
@@ -283,8 +282,6 @@ object Key {
     const val ROUTE_ATTRS = "routeAttrs"
     const val ROUTE_OUTBOUND = "routeOutbound"
     const val ROUTE_OUTBOUND_RULE = "routeOutboundRule"
-    const val ROUTE_REVERSE = "routeReverse"
-    const val ROUTE_REDIRECT = "routeRedirect"
     const val ROUTE_PACKAGES = "routePackages"
     const val ROUTE_CUSTOM_PACKAGE_NAME_OR_UID = "routeCustomPackageNameOrUid"
     const val ROUTE_NETWORK_TYPE = "routeNetworkType"

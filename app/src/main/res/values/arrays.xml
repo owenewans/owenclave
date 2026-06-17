@@ -774,11 +774,6 @@
         <item>Shadowsocks</item>
     </string-array>
 
-    <string-array name="shadowtls_protocol_version_value">
-        <item>2</item>
-        <item>3</item>
-    </string-array>
-
     <string-array name="language_entry">
         <item>@string/language_system_default</item>
         <item>@string/language_ar_display_name</item>

@@ -245,8 +245,6 @@
     <string name="route_rules_provider">قانون ارائه دهنده دارایی</string>
     <string name="route_assets">دارایی ها</string>
     <string name="route_manage_assets">مدیریت دارایی های مسیر</string>
-    <string name="route_reverse_redirect">تغییر مسیر وارونه</string>
-    <string name="route_reverse">وارونه کردن پروکسی</string>
     <string name="route_reset">تنظیم مجدد</string>
     <string name="route_bypass_ip">قانون IP برای %s</string>
     <string name="route_bypass_domain">قانون دامنه برای %s</string>

@@ -104,8 +104,6 @@
     <string name="enc_method">Şifreleme Metodu</string>
     <string name="password">Parola</string>
     <string name="menu_traffic">Trafik</string>
-    <string name="route_reverse_redirect">Ters Yönlendirme</string>
-    <string name="route_reverse">Ters Vekil Sunucu</string>
     <string name="route_reset">Sıfırla</string>
     <string name="route_bypass_ip">%s için IP kuralı</string>
     <string name="route_bypass_domain">%s için etki alanı kuralı</string>

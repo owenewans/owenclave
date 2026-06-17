@@ -494,9 +494,6 @@ class ConfigurationFragment @JvmOverloads constructor(
             R.id.action_new_wg -> {
                 startActivity(Intent(requireActivity(), WireGuardSettingsActivity::class.java))
             }
-            R.id.action_new_shadowtls -> {
-                startActivity(Intent(requireActivity(), ShadowTLSSettingsActivity::class.java))
-            }
             R.id.action_new_juicity -> {
                 startActivity(Intent(requireActivity(), JuicitySettingsActivity::class.java))
             }

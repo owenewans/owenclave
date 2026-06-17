@@ -42,8 +42,6 @@ data class RuleEntity(
     var protocol: String = "",
     var attrs: String = "",
     var outbound: Long = 0,
-    var reverse: Boolean = false,
-    var redirect: String = "",
     var packages: List<String> = listOf(),
     @ColumnInfo(defaultValue = "") var ssid: String = "",
     @ColumnInfo(defaultValue = "") var networkType: Set<String> = emptySet(),
@@ -51,7 +49,7 @@ data class RuleEntity(
 ) : Parcelable {
 
     fun isBypassRule(): Boolean {
-        return (domains.isNotEmpty() && ip.isEmpty() || ip.isNotEmpty() && domains.isEmpty()) && port.isEmpty() && sourcePort.isEmpty() && network.isEmpty() && source.isEmpty() && protocol.isEmpty() && attrs.isEmpty() && !reverse && redirect.isEmpty() && outbound == -1L && packages.isEmpty() && customPackageNames.isEmpty()  && ssid.isEmpty() && networkType.isEmpty()
+        return (domains.isNotEmpty() && ip.isEmpty() || ip.isNotEmpty() && domains.isEmpty()) && port.isEmpty() && sourcePort.isEmpty() && network.isEmpty() && source.isEmpty() && protocol.isEmpty() && attrs.isEmpty() && outbound == -1L && packages.isEmpty() && customPackageNames.isEmpty()  && ssid.isEmpty() && networkType.isEmpty()
     }
 
     fun isProxyRule(): Boolean {
@@ -72,7 +70,6 @@ data class RuleEntity(
         if (source.isNotEmpty()) summary += "$source\n"
         if (protocol.isNotEmpty()) summary += "$protocol\n"
         if (attrs.isNotEmpty()) summary += "$attrs\n"
-        if (reverse) summary += "$redirect\n"
         if (packages.isNotEmpty()) summary += app.resources.getQuantityString(
             R.plurals.apps_message, packages.size, packages.size
         ) + "\n"
@@ -97,9 +94,6 @@ data class RuleEntity(
     }
 
     fun displayOutbound(): String {
-        if (reverse) {
-            return app.getString(R.string.route_reverse)
-        }
         return when (outbound) {
             0L -> app.getString(R.string.route_proxy)
             -1L -> app.getString(R.string.route_bypass)

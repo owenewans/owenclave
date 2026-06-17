@@ -82,14 +82,5 @@
             app:icon="@drawable/ic_hardware_router"
             app:key="routeOutbound"
             app:title="outbound" />
-        <SwitchPreference
-            app:icon="@drawable/ic_baseline_domain_24"
-            app:key="routeReverse"
-            app:title="@string/route_reverse" />
-        <EditTextPreference
-            app:icon="@drawable/ic_baseline_flip_camera_android_24"
-            app:key="routeRedirect"
-            app:title="@string/route_reverse_redirect"
-            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 </PreferenceScreen>

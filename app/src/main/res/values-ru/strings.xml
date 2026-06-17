@@ -259,8 +259,6 @@
     <string name="route_rules_provider">Поставщик ресурсов правил</string>
     <string name="route_assets">Ресурсы</string>
     <string name="route_manage_assets">Управление ресурсами</string>
-    <string name="route_reverse_redirect">Обратное перенаправление</string>
-    <string name="route_reverse">Обратный прокси</string>
     <string name="route_reset">Сброс</string>
     <string name="route_bypass_ip">IP правило для %s</string>
     <string name="route_bypass_domain">Правило домена для %s</string>

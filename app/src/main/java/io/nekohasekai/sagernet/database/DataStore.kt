@@ -374,7 +374,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverDisableSNI by profileCacheStore.boolean(Key.SERVER_DISABLE_SNI)
     var serverReduceRTT by profileCacheStore.boolean(Key.SERVER_REDUCE_RTT)
 
-    var serverShadowTLSProtocolVersion by profileCacheStore.stringToInt(Key.SERVER_SHADOWTLS_PROTOCOL_VERSION) { 2 }
     var serverMieruMuxLevel by profileCacheStore.stringToInt(Key.SERVER_MIERU_MUX_LEVEL)
     var serverMieruHandshakeMode by profileCacheStore.stringToInt(Key.SERVER_MIERU_HANDSHAKE_MODE)
     var serverMieruTrafficPattern by profileCacheStore.string(Key.SERVER_MIERU_TRAFFIC_PATTERN)
@@ -422,8 +421,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var routeAttrs by profileCacheStore.string(Key.ROUTE_ATTRS)
     var routeOutbound by profileCacheStore.stringToInt(Key.ROUTE_OUTBOUND)
     var routeOutboundRule by profileCacheStore.long(Key.ROUTE_OUTBOUND_RULE)
-    var routeReverse by profileCacheStore.boolean(Key.ROUTE_REVERSE)
-    var routeRedirect by profileCacheStore.string(Key.ROUTE_REDIRECT)
     var routePackages by profileCacheStore.string(Key.ROUTE_PACKAGES)
     var routeCustomPackageNameOrUid by profileCacheStore.string(Key.ROUTE_CUSTOM_PACKAGE_NAME_OR_UID)
     var routeNetworkType by profileCacheStore.stringSet(Key.ROUTE_NETWORK_TYPE)

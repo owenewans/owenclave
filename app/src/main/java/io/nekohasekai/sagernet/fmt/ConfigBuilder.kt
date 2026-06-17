@@ -50,7 +50,6 @@ import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
-import io.nekohasekai.sagernet.fmt.shadowtls.ShadowTLSBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
@@ -85,7 +84,6 @@ import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.OutboundObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.PolicyObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.QuicObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RealityObject
-import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.ReverseObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.RoutingObject.BalancerObject.StrategyObject
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig.SSHOutboundConfigurationObject
@@ -1552,37 +1550,6 @@ fun buildV2RayConfig(
                                         }
                                     }
                                 }
-                            } else if (bean is ShadowTLSBean) {
-                                protocol = "shadowtls"
-                                settings = LazyOutboundConfigurationObject(this,
-                                    V2RayConfig.ShadowTLSOutboundConfigurationObject().apply {
-                                        address = bean.serverAddress
-                                        port = bean.serverPort
-                                        if (bean.password.isNotEmpty()) password = bean.password
-                                        version = bean.protocolVersion
-                                    }
-                                )
-                                streamSettings = StreamSettingsObject().apply {
-                                    security = "tls"
-                                    tlsSettings = TLSObject().apply {
-                                        if (bean.sni.isNotEmpty()) {
-                                            serverName = bean.sni
-                                        }
-                                        if (bean.alpn.isNotEmpty()) {
-                                            alpn = bean.alpn.listByLineOrComma()
-                                        }
-                                        if (bean.allowInsecure) {
-                                            allowInsecure = true
-                                        }
-                                        if (bean.certificates.isNotEmpty()) {
-                                            disableSystemRoot = true
-                                            certificates = listOf(TLSObject.CertificateObject().apply {
-                                                usage = "verify"
-                                                certificate = bean.certificates.lines()
-                                            })
-                                        }
-                                    }
-                                }
                             } else if (bean is AnyTLSBean) {
                                 protocol = "anytls"
                                 settings = LazyOutboundConfigurationObject(this,
@@ -2301,13 +2268,6 @@ fun buildV2RayConfig(
                     networkType = rule.networkType.toMutableList()
                 }
                 when {
-                    rule.reverse -> {
-                        inboundTag = listOf("reverse-${rule.id}")
-                        val outId = rule.outbound
-                        outboundTag = if (outId == proxy.id) tagProxy else {
-                            tagMap[outId] ?: error("outbound not found in rule ${rule.displayName()}")
-                        }
-                    }
                     balancerMap.containsKey(rule.outbound) -> {
                         balancerTag = balancerMap[rule.outbound]
                     }
@@ -2324,32 +2284,6 @@ fun buildV2RayConfig(
                     }
                 }
             })
-
-            if (rule.reverse) {
-                outbounds.add(OutboundObject().apply {
-                    tag = "reverse-out-${rule.id}"
-                    protocol = "freedom"
-                    settings = LazyOutboundConfigurationObject(this,
-                        FreedomOutboundConfigurationObject().apply {
-                            redirect = rule.redirect
-                        })
-                })
-                if (reverse == null) {
-                    reverse = ReverseObject().apply {
-                        bridges = ArrayList()
-                    }
-                }
-                reverse.bridges.add(ReverseObject.BridgeObject().apply {
-                    tag = "reverse-${rule.id}"
-                    domain = rule.domains.substringAfter("full:")
-                })
-                routing.rules.add(RoutingObject.RuleObject().apply {
-                    type = "field"
-                    inboundTag = listOf("reverse-${rule.id}")
-                    outboundTag = "reverse-out-${rule.id}"
-                })
-            }
-
         }
 
         if (requireWs) {
