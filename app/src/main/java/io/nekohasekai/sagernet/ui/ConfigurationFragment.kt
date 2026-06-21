@@ -1292,6 +1292,37 @@ class ConfigurationFragment @JvmOverloads constructor(
             override fun getItemCount(): Int {
                 return configurationIdList.size
             }
+            var activeSelectionId: Long = -1
+
+            fun refreshSelection() {
+                val newId = DataStore.selectedProxy
+                if (activeSelectionId == newId) return
+                val oldId = activeSelectionId
+                activeSelectionId = newId
+
+                listOf(oldId, newId).forEach { id ->
+                    val index = configurationIdList.indexOf(id)
+                    if (index != -1) notifyItemChanged(index, "PAYLOAD_SELECTION_CHANGE")
+                }
+            }
+
+            override fun onBindViewHolder(
+                holder: ConfigurationHolder,
+                position: Int,
+                payloads: MutableList<Any>
+            ) {
+                if (payloads.contains("PAYLOAD_SELECTION_CHANGE")) {
+                    val entityId = configurationIdList[position]
+
+                    val isSelected = (entityId == activeSelectionId)
+                    val isStarted = isSelected && SagerNet.started && DataStore.startedProfile == entityId
+
+                    holder.selectedView.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
+                    holder.deleteButton.isEnabled = !isStarted
+                } else {
+                    super.onBindViewHolder(holder, position, payloads)
+                }
+            }
 
             private val updated = HashSet<ProxyEntity>()
 
@@ -1443,6 +1474,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                     return
                 }
 
+                activeSelectionId = selectedItem?.id ?: DataStore.selectedProxy
 
                 var newProfiles = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
                 newProfiles = newProfiles.filter { it.id !in pendingDeletedIds }
@@ -1521,18 +1553,16 @@ class ConfigurationFragment @JvmOverloads constructor(
                     view.setOnClickListener {
                         runOnDefaultDispatcher {
                             var update: Boolean
-                            var lastSelected: Long
                             profileAccess.withLock {
                                 update = DataStore.selectedProxy != proxyEntity.id
-                                lastSelected = DataStore.selectedProxy
                                 DataStore.selectedProxy = proxyEntity.id
-                                onMainDispatcher {
-                                    selectedView.visibility = View.VISIBLE
-                                }
                             }
 
                             if (update) {
-                                ProfileManager.postUpdate(lastSelected)
+                                onMainDispatcher {
+                                    adapter.refreshSelection()
+                                }
+
                                 if (pa.state.canStop && reloadAccess.tryLock()) {
                                     SagerNet.reloadService()
                                     reloadAccess.unlock()
