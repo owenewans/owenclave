@@ -580,4 +580,5 @@
     <string name="custom_outbound">自定义出站</string>
     <string name="hysteria2_gecko_max_packet_size">最大包大小</string>
     <string name="hysteria2_gecko_min_packet_size">最小包大小</string>
+    <string name="nearby_devices_permission_notice">这需要“附近的设备”权限以工作，但是权限未被授予。</string>
 </resources>
