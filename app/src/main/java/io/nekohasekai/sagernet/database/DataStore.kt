@@ -464,6 +464,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var rulesFirstCreate by configurationStore.boolean(Key.RULES_FIRST_CREATE)
     var doNotShowRuleExportWarning by configurationStore.boolean(Key.DO_NOT_SHOW_RULE_EXPORT_WARNING)
 
+    var getInstalledPackagesInited by configurationStore.boolean("getInstalledPackagesInited")
+    var postNotificationsPermissionRequested by configurationStore.boolean("postNotificationsPermissionRequested")
+    var accessLocalNetworkPermissionRequested by configurationStore.boolean("accessLocalNetworkPermissionRequested")
+
     var experimentalFlagsProperties = Properties().apply {
         load(BufferedReader(StringReader(experimentalFlags)))
     }

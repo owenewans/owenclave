@@ -215,23 +215,25 @@ class MainActivity : ThemedActivity(),
     }
 
     private fun requestPermissions() {
-        if (DataStore.configurationStore.getBoolean("getInstalledPackagesInited") != true) {
+        if (!DataStore.getInstalledPackagesInited) {
             // For bullshit Chinese OEMs
-            DataStore.configurationStore.putBoolean("getInstalledPackagesInited", true)
-            PackageCache.awaitLoadSync()
+            DataStore.getInstalledPackagesInited = true
+            runOnDefaultDispatcher {
+                PackageCache.register()
+            }
         }
         val permissions = mutableListOf<String>()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (DataStore.configurationStore.getBoolean("postNotificationsPermissionRequested") != true) {
-                DataStore.configurationStore.putBoolean("postNotificationsPermissionRequested", true)
+            if (!DataStore.postNotificationsPermissionRequested) {
+                DataStore.postNotificationsPermissionRequested = true
                 if (app.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                     permissions.add(Manifest.permission.POST_NOTIFICATIONS)
                 }
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
-            if (DataStore.configurationStore.getBoolean("accessLocalNetworkPermissionRequested") != true) {
-                DataStore.configurationStore.putBoolean("accessLocalNetworkPermissionRequested", true)
+            if (!DataStore.accessLocalNetworkPermissionRequested) {
+                DataStore.accessLocalNetworkPermissionRequested = true
                 if (app.checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) != PackageManager.PERMISSION_GRANTED) {
                     permissions.add(Manifest.permission.ACCESS_LOCAL_NETWORK)
                 }
