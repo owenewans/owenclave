@@ -438,6 +438,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     "kcp" -> {
                         json.getArray("udp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also { udpMasks ->
                             if (udpMasks.size !in 1..2) error("unsupported")
+                            var isMkcpLegacy = false
                             when (udpMasks.last().getString("type", ignoreCase = true)) {
                                 "mkcp-original" -> {}
                                 "mkcp-aes128gcm" -> {
@@ -448,16 +449,42 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                                         }
                                     }
                                 }
+                                "mkcp-legacy" -> {
+                                    isMkcpLegacy = true
+                                    udpMasks.last().getObject("settings", ignoreCase = true)?.also { settings ->
+                                        settings.getString("header", ignoreCase = true).orEmpty().also {
+                                            if (it.isNotEmpty()) error("unsupported")
+                                        }
+                                        settings.getString("value", ignoreCase = true).orEmpty().also {
+                                            bean.mKcpSeed = it
+                                        }
+                                    }
+                                }
                                 else -> error("unsupported")
                             }
                             if (udpMasks.size == 2) {
-                                when (udpMasks.first().getString("type", ignoreCase = true)) {
+                                when (val type = udpMasks.first().getString("type", ignoreCase = true)) {
                                     null -> {}
-                                    "header-dtls" -> bean.headerType = "dtls"
-                                    "header-srtp" -> bean.headerType = "srtp"
-                                    "header-utp" -> bean.headerType = "utp"
-                                    "header-wechat" -> bean.headerType = "wechat-video"
-                                    "header-wireguard" -> bean.headerType = "wireguard"
+                                    "header-wechat" -> {
+                                        if (isMkcpLegacy) error("unsupported")
+                                        bean.headerType = "wechat-video"
+                                    }
+                                    "header-dtls", "header-srtp", "header-utp", "header-wireguard" -> {
+                                        if (isMkcpLegacy) error("unsupported")
+                                        bean.headerType = type.removePrefix("header-")
+                                    }
+                                    "mkcp-legacy" -> {
+                                        if (!isMkcpLegacy) error("unsupported")
+                                        udpMasks.first().getObject("settings", ignoreCase = true)?.also { settings ->
+                                            settings.getString("header", ignoreCase = true).orEmpty().lowercase().also {
+                                                when (it) {
+                                                    "dtls", "srtp", "utp", "wireguard" -> bean.headerType = it
+                                                    "wechat" -> bean.headerType = "wechat-video"
+                                                    else -> error("unsupported")
+                                                }
+                                            }
+                                        }
+                                    }
                                     else -> error("unsupported")
                                 }
                             }
@@ -740,27 +767,29 @@ fun StandardV2RayBean.toUri(): String? {
                         "none" -> {}
                         "srtp", "utp", "dtls", "wireguard" -> {
                             add(JsonObject().apply {
-                                addProperty("type", "header-${headerType}")
+                                addProperty("type", "mkcp-legacy")
+                                add("settings", JsonObject().apply {
+                                    addProperty("header", headerType)
+                                })
                             })
                         }
                         "wechat-video" -> {
                             add(JsonObject().apply {
-                                addProperty("type", "header-wechat")
+                                addProperty("type", "mkcp-legacy")
+                                add("settings", JsonObject().apply {
+                                    addProperty("header", "wechat")
+                                })
                             })
                         }
                     }
-                    if (mKcpSeed.isEmpty()) {
-                        add(JsonObject().apply {
-                            addProperty("type", "mkcp-original")
-                        })
-                    } else {
-                        add(JsonObject().apply {
-                            addProperty("type", "mkcp-aes128gcm")
+                    add(JsonObject().apply {
+                        addProperty("type", "mkcp-legacy")
+                        if (mKcpSeed.isNotEmpty()) {
                             add("settings", JsonObject().apply {
-                                addProperty("password", mKcpSeed)
+                                addProperty("value", mKcpSeed)
                             })
-                        })
-                    }
+                        }
+                    })
                 })
             }.toString())
         }

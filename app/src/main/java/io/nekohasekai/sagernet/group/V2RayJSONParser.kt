@@ -255,6 +255,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 // fuck RPRX
                                 finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also { udpMasks ->
                                     if (udpMasks.size !in 1..2) return listOf()
+                                    var isMkcpLegacy = false
                                     when (udpMasks.last().getString("type")) {
                                         "mkcp-original" -> {}
                                         "mkcp-aes128gcm" -> {
@@ -265,16 +266,42 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                                 }
                                             }
                                         }
+                                        "mkcp-legacy" -> {
+                                            isMkcpLegacy = true
+                                            udpMasks.last().getObject("settings")?.also { settings ->
+                                                settings.getString("header").orEmpty().also {
+                                                    if (it.isNotEmpty()) return listOf()
+                                                }
+                                                settings.getString("value").orEmpty().also {
+                                                    v2rayBean.mKcpSeed = it
+                                                }
+                                            }
+                                        }
                                         else -> return listOf()
                                     }
                                     if (udpMasks.size == 2) {
-                                        when (udpMasks.first().getString("type")) {
+                                        when (val type = udpMasks.first().getString("type")) {
                                             null -> {}
-                                            "header-dtls" -> v2rayBean.headerType = "dtls"
-                                            "header-srtp" -> v2rayBean.headerType = "srtp"
-                                            "header-utp" -> v2rayBean.headerType = "utp"
-                                            "header-wechat" -> v2rayBean.headerType = "wechat-video"
-                                            "header-wireguard" -> v2rayBean.headerType = "wireguard"
+                                            "header-wechat" -> {
+                                                if (isMkcpLegacy) return listOf()
+                                                v2rayBean.headerType = "wechat-video"
+                                            }
+                                            "header-dtls", "header-srtp", "header-utp", "header-wireguard" -> {
+                                                if (isMkcpLegacy) return listOf()
+                                                v2rayBean.headerType = type.removePrefix("header-")
+                                            }
+                                            "mkcp-legacy" -> {
+                                                if (!isMkcpLegacy) return listOf()
+                                                udpMasks.first().getObject("settings")?.also { settings ->
+                                                    settings.getString("header").orEmpty().lowercase().also {
+                                                        when (it) {
+                                                            "dtls", "srtp", "utp", "wireguard" -> v2rayBean.headerType = it
+                                                            "wechat" -> v2rayBean.headerType = "wechat-video"
+                                                            else -> return listOf()
+                                                        }
+                                                    }
+                                                }
+                                            }
                                             else -> return listOf()
                                         }
                                     }
