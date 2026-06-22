@@ -586,4 +586,5 @@
     <string name="hysteria2_gecko_max_packet_size">Максимальный размер пакета</string>
     <string name="hysteria2_gecko_min_packet_size">Минимальный размер пакета</string>
     <string name="enable_hysteria2_omit_max_datagram_frame_size">Включить Hysteria 2 OmitMaxDatagramFrameSize</string>
+    <string name="nearby_devices_permission_notice">Для работы требуется разрешение «Близлежащие устройства», но оно не предоставлено.</string>
 </resources>
