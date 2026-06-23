@@ -269,11 +269,12 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                         "mkcp-legacy" -> {
                                             isMkcpLegacy = true
                                             udpMasks.last().getObject("settings")?.also { settings ->
-                                                settings.getString("header").orEmpty().also {
-                                                    if (it.isNotEmpty()) return listOf()
-                                                }
-                                                settings.getString("value").orEmpty().also {
-                                                    v2rayBean.mKcpSeed = it
+                                                settings.getString("header").orEmpty().lowercase().also {
+                                                    when (it) {
+                                                        "dtls", "srtp", "utp", "wireguard" -> v2rayBean.headerType = it
+                                                        "wechat" -> v2rayBean.headerType = "wechat-video"
+                                                        else -> return listOf()
+                                                    }
                                                 }
                                             }
                                         }
@@ -293,12 +294,11 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                             "mkcp-legacy" -> {
                                                 if (!isMkcpLegacy) return listOf()
                                                 udpMasks.first().getObject("settings")?.also { settings ->
-                                                    settings.getString("header").orEmpty().lowercase().also {
-                                                        when (it) {
-                                                            "dtls", "srtp", "utp", "wireguard" -> v2rayBean.headerType = it
-                                                            "wechat" -> v2rayBean.headerType = "wechat-video"
-                                                            else -> return listOf()
-                                                        }
+                                                    settings.getString("header").orEmpty().also {
+                                                        if (it.isNotEmpty()) return listOf()
+                                                    }
+                                                    settings.getString("value").orEmpty().also {
+                                                        v2rayBean.mKcpSeed = it
                                                     }
                                                 }
                                             }

@@ -452,11 +452,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                                 "mkcp-legacy" -> {
                                     isMkcpLegacy = true
                                     udpMasks.last().getObject("settings", ignoreCase = true)?.also { settings ->
-                                        settings.getString("header", ignoreCase = true).orEmpty().also {
-                                            if (it.isNotEmpty()) error("unsupported")
-                                        }
-                                        settings.getString("value", ignoreCase = true).orEmpty().also {
-                                            bean.mKcpSeed = it
+                                        settings.getString("header", ignoreCase = true).orEmpty().lowercase().also {
+                                            when (it) {
+                                                "dtls", "srtp", "utp", "wireguard" -> bean.headerType = it
+                                                "wechat" -> bean.headerType = "wechat-video"
+                                                else -> error("unsupported")
+                                            }
                                         }
                                     }
                                 }
@@ -476,12 +477,11 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                                     "mkcp-legacy" -> {
                                         if (!isMkcpLegacy) error("unsupported")
                                         udpMasks.first().getObject("settings", ignoreCase = true)?.also { settings ->
-                                            settings.getString("header", ignoreCase = true).orEmpty().lowercase().also {
-                                                when (it) {
-                                                    "dtls", "srtp", "utp", "wireguard" -> bean.headerType = it
-                                                    "wechat" -> bean.headerType = "wechat-video"
-                                                    else -> error("unsupported")
-                                                }
+                                            settings.getString("header", ignoreCase = true).orEmpty().also {
+                                                if (it.isNotEmpty()) error("unsupported")
+                                            }
+                                            settings.getString("value", ignoreCase = true).orEmpty().also {
+                                                bean.mKcpSeed = it
                                             }
                                         }
                                     }
@@ -763,6 +763,14 @@ fun StandardV2RayBean.toUri(): String? {
             // fuck rprx finalmask
             builder.addQueryParameter("fm", JsonObject().apply {
                 add("udp", JsonArray().apply {
+                    add(JsonObject().apply {
+                        addProperty("type", "mkcp-legacy")
+                        if (mKcpSeed.isNotEmpty()) {
+                            add("settings", JsonObject().apply {
+                                addProperty("value", mKcpSeed)
+                            })
+                        }
+                    })
                     when (headerType) {
                         "none" -> {}
                         "srtp", "utp", "dtls", "wireguard" -> {
@@ -782,14 +790,6 @@ fun StandardV2RayBean.toUri(): String? {
                             })
                         }
                     }
-                    add(JsonObject().apply {
-                        addProperty("type", "mkcp-legacy")
-                        if (mKcpSeed.isNotEmpty()) {
-                            add("settings", JsonObject().apply {
-                                addProperty("value", mKcpSeed)
-                            })
-                        }
-                    })
                 })
             }.toString())
         }
@@ -920,7 +920,7 @@ fun StandardV2RayBean.toUri(): String? {
                 builder.addQueryParameter("allowInsecure", "1")
             }
             if (pinnedPeerCertificateSha256.isNotEmpty()) {
-                builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString(","))
+                builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString(":"))
             }
             if (this is VLESSBean && flow.isNotEmpty()) {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
