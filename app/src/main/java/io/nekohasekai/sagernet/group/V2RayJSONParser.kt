@@ -537,14 +537,26 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                         extra.addProperty("uplinkHTTPMethod", it)
                                     }
                                 }
-                                if (!extra.contains("sessionPlacement")) {
-                                    splithttpSettings.getString("sessionPlacement")?.also {
-                                        extra.addProperty("sessionPlacement", it)
+                                if (!extra.contains("sessionIDPlacement")) {
+                                    splithttpSettings.getString("sessionIDPlacement")?.also {
+                                        extra.addProperty("sessionIDPlacement", it)
                                     }
                                 }
-                                if (!extra.contains("sessionKey")) {
-                                    splithttpSettings.getString("sessionKey")?.also {
-                                        extra.addProperty("sessionKey", it)
+                                if (!extra.contains("sessionIDKey")) {
+                                    splithttpSettings.getString("sessionIDKey")?.also {
+                                        extra.addProperty("sessionIDKey", it)
+                                    }
+                                }
+                                if (!extra.contains("sessionIDTable")) {
+                                    splithttpSettings.getString("sessionIDTable")?.also {
+                                        extra.addProperty("sessionIDTable", it)
+                                    }
+                                }
+                                if (!extra.contains("sessionIDLength")) {
+                                    splithttpSettings.getInt("sessionIDLength")?.also {
+                                        extra.addProperty("sessionIDLength", it)
+                                    } ?: splithttpSettings.getString("sessionIDLength")?.also {
+                                        extra.addProperty("sessionIDLength", it)
                                     }
                                 }
                                 if (!extra.contains("seqPlacement")) {

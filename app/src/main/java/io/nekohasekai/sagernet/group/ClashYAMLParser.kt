@@ -468,10 +468,16 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                             addProperty("uplinkHTTPMethod", it)
                         }
                         opts.getString("session-placement")?.also {
-                            addProperty("sessionPlacement", it)
+                            addProperty("sessionIDPlacement", it)
                         }
                         opts.getString("session-key")?.also {
-                            addProperty("sessionKey", it)
+                            addProperty("sessionIDKey", it)
+                        }
+                        opts.getString("session-table")?.also {
+                            addProperty("sessionIDTable", it)
+                        }
+                        opts.getString("session-length")?.also {
+                            addProperty("sessionIDLength", it)
                         }
                         opts.getString("seq-placement")?.also {
                             addProperty("seqPlacement", it)

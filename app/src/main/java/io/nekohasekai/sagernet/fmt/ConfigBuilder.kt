@@ -1137,11 +1137,17 @@ fun buildV2RayConfig(
                                                             extra.getString("uplinkHTTPMethod", ignoreCase = true)?.also {
                                                                 uplinkHTTPMethod = it
                                                             }
-                                                            extra.getString("sessionPlacement", ignoreCase = true)?.also {
-                                                                sessionPlacement = it
+                                                            extra.getString("sessionIDPlacement", ignoreCase = true)?.also {
+                                                                sessionIDPlacement = it
                                                             }
-                                                            extra.getString("sessionKey", ignoreCase = true)?.also {
-                                                                sessionKey = it
+                                                            extra.getString("sessionIDKey", ignoreCase = true)?.also {
+                                                                sessionIDKey = it
+                                                            }
+                                                            extra.getString("sessionIDTable", ignoreCase = true)?.also {
+                                                                sessionIDTable = it
+                                                            }
+                                                            extra.getString("sessionIDLength", ignoreCase = true)?.also {
+                                                                sessionIDLength = it
                                                             }
                                                             extra.getString("seqPlacement", ignoreCase = true)?.also {
                                                                 seqPlacement = it

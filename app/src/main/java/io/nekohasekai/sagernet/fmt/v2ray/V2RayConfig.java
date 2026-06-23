@@ -1316,8 +1316,10 @@ public class V2RayConfig {
         public String xPaddingPlacement;
         public String xPaddingMethod;
         public String uplinkHTTPMethod;
-        public String sessionPlacement;
-        public String sessionKey;
+        public String sessionIDPlacement;
+        public String sessionIDKey;
+        public String sessionIDTable;
+        public String sessionIDLength;
         public String seqPlacement;
         public String seqKey;
         public String uplinkDataPlacement;
