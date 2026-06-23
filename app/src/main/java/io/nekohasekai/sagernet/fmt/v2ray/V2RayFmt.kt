@@ -210,7 +210,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             }
             url.queryParameter("pcs")?.takeIf { it.isNotEmpty() }?.let { pcs ->
                 bean.pinnedPeerCertificateSha256 =
-                    pcs.split(if (pcs.contains("~")) "~" else ",")
+                    pcs.split(",")
                         .mapNotNull { it.trim().ifEmpty { null }?.replace(":", "") }
                         .joinToString("\n")
                 if (!bean.pinnedPeerCertificateSha256.isNullOrEmpty()) {
@@ -646,7 +646,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             }
             json.getString("pcs")?.takeIf { it.isNotEmpty() }?.let { pcs ->
                 bean.pinnedPeerCertificateSha256 =
-                    pcs.split(if (pcs.contains("~")) "~" else ",")
+                    pcs.split(",")
                         .mapNotNull { it.trim().ifEmpty { null }?.replace(":", "") }
                         .joinToString("\n")
                 if (!bean.pinnedPeerCertificateSha256.isNullOrEmpty()) {
@@ -920,7 +920,7 @@ fun StandardV2RayBean.toUri(): String? {
                 builder.addQueryParameter("allowInsecure", "1")
             }
             if (pinnedPeerCertificateSha256.isNotEmpty()) {
-                builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString("~"))
+                builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString(","))
             }
             if (this is VLESSBean && flow.isNotEmpty()) {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
