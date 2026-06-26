@@ -582,4 +582,5 @@
     <string name="custom_outbound">Salida personalizada</string>
     <string name="hysteria2_gecko_max_packet_size">Tamaño máximo de paquete</string>
     <string name="hysteria2_gecko_min_packet_size">Tamaño mínimo de paquete</string>
+    <string name="nearby_devices_permission_notice">Para funcionar, se requiere el permiso \"dispositivos cercanos\", pero no se ha concedido.</string>
 </resources>
