@@ -183,9 +183,9 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                         && httpPassword.isVisible && httpPassword.text.isNullOrEmpty()
             }
             if (SagerNet.started) {
-                SagerNet.stopService()
-                runOnMainDispatcher {
-                    delay(300)
+                runOnDefaultDispatcher {
+                    SagerNet.stopService()
+                    delay(300) // FIXME: Why this is needed?
                     SagerNet.startService()
                 }
             }
@@ -210,11 +210,10 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                     setPositiveButton(android.R.string.ok, null)
                 }.show()
             }
-            enablePcap.isEnabled = serviceMode.value == MODE_VPN && (newValue as String).toInt() == TunImplementation.GVISOR
+            enablePcap.isEnabled = serviceMode.value == MODE_VPN && newValue.toInt() == TunImplementation.GVISOR
             if (SagerNet.started) {
-                SagerNet.stopService()
-                runOnMainDispatcher {
-                    SagerNet.startService()
+                runOnDefaultDispatcher {
+                    SagerNet.reloadService()
                 }
             }
             true
@@ -226,7 +225,7 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         enableVPNInterfaceIPv6Address.onPreferenceChangeListener = reloadListener
         allowAppsBypassVpn.isEnabled = serviceMode.value == MODE_VPN
         allowAppsBypassVpn.onPreferenceChangeListener = reloadListener
-        if (Build.VERSION.SDK_INT < 28) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
             meteredNetwork.remove()
         }
         meteredNetwork.isEnabled = serviceMode.value == MODE_VPN
