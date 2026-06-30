@@ -391,7 +391,7 @@ class ConfigurationFragment @JvmOverloads constructor(
             ).show()
 
             val group = SagerDatabase.groupDao.getById(targetId)!!
-            GroupManager.updateGroup(group)
+            GroupManager.updateGroup(group, reconfigureUpdater = false)
         }
 
     }
@@ -1136,7 +1136,7 @@ class ConfigurationFragment @JvmOverloads constructor(
                 if (proxyGroup.order == order) return
                 runOnDefaultDispatcher {
                     proxyGroup.order = order
-                    GroupManager.updateGroup(proxyGroup)
+                    GroupManager.updateGroup(proxyGroup, reconfigureUpdater = false)
                 }
             }
 
