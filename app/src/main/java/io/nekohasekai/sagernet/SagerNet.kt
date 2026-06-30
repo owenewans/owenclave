@@ -113,7 +113,7 @@ class SagerNet : Application(),
             }
         }
 
-        if (isMainProcess) runOnDefaultDispatcher {
+        if (!isMainProcess) runOnDefaultDispatcher {
             runCatching {
                 SubscriptionUpdater.reconfigureUpdater()
             }
