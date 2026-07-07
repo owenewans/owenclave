@@ -24,7 +24,7 @@ import android.util.AttributeSet
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
 
-class TaskerProfilePreference : SimpleMenuPreference {
+class TaskerProfilePreference : ReselectableSimpleMenuPreference {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
