@@ -78,7 +78,7 @@
             app:key="routeAttrs"
             app:title="attrs"
             app:useSimpleSummaryProvider="true" /-->
-        <ListPreference
+        <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:icon="@drawable/ic_hardware_router"
             app:entries="@array/outbound_entry"
             app:entryValues="@array/outbound_value"

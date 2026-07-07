@@ -21,11 +21,10 @@ package io.nekohasekai.sagernet.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.preference.ListPreference
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
 
-class TaskerProfilePreference : ListPreference {
+class TaskerProfilePreference : SimpleMenuPreference {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
