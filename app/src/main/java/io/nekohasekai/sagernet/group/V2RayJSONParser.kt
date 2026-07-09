@@ -200,7 +200,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         }
                     }
                 }
-                streamSettings.getString("network")?.lowercase()?.also { network ->
+                (streamSettings.getString("method") ?: streamSettings.getString("network"))?.lowercase()?.also { network ->
                     when (network) {
                         "tcp", "raw" -> {
                             v2rayBean.type = "tcp"
