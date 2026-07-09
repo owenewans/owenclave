@@ -43,6 +43,7 @@ import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5CongestionControl
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5RelayMode
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
+import io.nekohasekai.sagernet.fmt.v2ray.supportedKcpQuicHeaderType
 import io.nekohasekai.sagernet.fmt.v2ray.supportedVmessMethod
 import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
@@ -205,7 +206,19 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     "ws", "grpc" -> bean.type = network
                     else -> bean.type = "tcp"
                 }
-            } else {
+            } else if (bean is VMessBean) {
+                when (val network = proxy.getString("network")) {
+                    "h2" -> bean.type = "http"
+                    "http" -> {
+                        bean.type = "tcp"
+                        bean.headerType = "http"
+                    }
+                    "ws", "grpc", "mekya" -> bean.type = network
+                    "kcp", "mkcp" -> bean.type = "kcp"
+                    "tlsmirror" -> return listOf() // TODO
+                    else -> bean.type = "tcp"
+                }
+            } else { // bean is VLESSBean
                 when (val network = proxy.getString("network")) {
                     "h2" -> bean.type = "http"
                     "http" -> {
@@ -213,7 +226,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         bean.headerType = "http"
                     }
                     "ws", "grpc" -> bean.type = network
-                    "xhttp" -> if (bean is VLESSBean) bean.type = "splithttp"
+                    "xhttp" -> bean.type = "splithttp"
                     else -> bean.type = "tcp"
                 }
             }
@@ -496,6 +509,35 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         }
                     }.takeIf { !it.isEmpty }?.also {
                         bean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(it)
+                    }
+                }
+            }
+            if (bean.type == "kcp") {
+                proxy.getObject("mkcp-opts")?.also {
+                    bean.mKcpSeed = it.getString("seed")
+                    it.getString("type")?.let { type ->
+                        when (type) {
+                            in supportedKcpQuicHeaderType -> bean.headerType = type
+                            "", "noop" -> bean.headerType = "none"
+                            "wechat" -> bean.headerType = "wechat-video"
+                            else -> bean.headerType = "none"
+                        }
+                    }
+                }
+            }
+            if (bean.type == "mekya") {
+                proxy.getObject("mekya-opts")?.also {
+                    bean.mekyaUrl = it.getString("url")
+                    it.getObject("kcp")?.let { kcp ->
+                        bean.mekyaKcpSeed = it.getString("seed")
+                        kcp.getString("type")?.let { type ->
+                            when (type) {
+                                in supportedKcpQuicHeaderType -> bean.headerType = type
+                                "", "noop" -> bean.headerType = "none"
+                                "wechat" -> bean.headerType = "wechat-video"
+                                else -> bean.headerType = "none"
+                            }
+                        }
                     }
                 }
             }
