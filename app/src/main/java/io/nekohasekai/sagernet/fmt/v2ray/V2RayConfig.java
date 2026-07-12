@@ -1050,6 +1050,7 @@ public class V2RayConfig {
         public SplitHTTPObject splithttpSettings;
         public SplitHTTPObject xhttpSettings;
         public MekyaObject mekyaSettings;
+        public TLSMirrorObject tlsmirrorSettings;
         public SockoptObject sockopt;
 
         public static class SockoptObject {
@@ -1384,6 +1385,61 @@ public class V2RayConfig {
 
     }
 
+    public static class TLSMirrorObject {
+        public String forwardAddress;
+        public Integer forwardPort;
+        public String forwardTag;
+        public String carrierConnectionTag;
+        public EmbeddedTrafficGeneratorObject embeddedTrafficGenerator;
+        public String primaryKey;
+        public List<Integer> explicitNonceCiphersuites;
+        public TimeSpecObject deferInstanceDerivedWriteTime;
+        public TransportPaddingObject transportLayerPadding;
+        public ConnectionEnrolmentObject connectionEnrolment;
+        public Boolean sequenceWatermarkingEnabled;
+        public static class EmbeddedTrafficGeneratorObject {
+            public List<EmbeddedTrafficGeneratorStepObject> steps;
+            public TLSObject tlsSettings;
+            public UTLSObject utlsSettings;
+        }
+        public static class EmbeddedTrafficGeneratorStepObject {
+            public String name;
+            public String host;
+            public String path;
+            public String method;
+            public List<EmbeddedTrafficGeneratorTransferCandidateObject> nextStep;
+            public Boolean connectionReady;
+            public List<EmbeddedTrafficGeneratorHeaderObject> headers;
+            public Boolean connectionRecallExit;
+            public EmbeddedTrafficGeneratorTimeSpecObject waitTime;
+            public Boolean h2DoNotWaitForDownloadFinish;
+        }
+        public static class EmbeddedTrafficGeneratorTimeSpecObject {
+            public Long baseNanoseconds;
+            public Long uniformRandomMultiplierNanoseconds;
+        }
+        public static class EmbeddedTrafficGeneratorTransferCandidateObject {
+            public Integer weight;
+            public Long gotoLocation;
+        }
+        public static class EmbeddedTrafficGeneratorHeaderObject {
+            public String name;
+            public String value;
+            public List<String> values;
+        }
+        public static class ConnectionEnrolmentObject {
+            public String primaryIngressOutbound;
+            public String primaryEgressOutbound;
+            public String bootstrapEgressOutbound;
+        }
+        public static class TimeSpecObject {
+            public Long baseNanoseconds;
+            public Long uniformRandomMultiplierNanoseconds;
+        }
+        public static class TransportPaddingObject {
+            public Boolean enabled;
+        }
+    }
 
     public Map<String, Object> stats;
 
