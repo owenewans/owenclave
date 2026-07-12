@@ -269,7 +269,7 @@ object Key {
     const val SERVER_SING_MUX_MIN_STREAMS = "serverSingMuxMinStreams"
     const val SERVER_SING_MUX_MAX_STREAMS = "serverSingMuxMaxStreams"
     const val SERVER_SING_MUX_PADDING = "serverSingMuxPadding"
-
+    const val SERVER_SING_SNELL_CATEGORY = "serverSingSnellCategory"
     const val EXPERIMENTAL_FLAGS = "experimentalFlags"
 
     const val BALANCER_TYPE = "balancerType"

@@ -2,12 +2,14 @@ package io.nekohasekai.sagernet.ui.profile
 
 import android.os.Bundle
 import androidx.preference.EditTextPreference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import io.nekohasekai.sagernet.Key
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.preference.EditTextPreferenceModifiers
 import io.nekohasekai.sagernet.fmt.snell.SnellBean
+import io.nekohasekai.sagernet.ktx.getBooleanProperty
 import io.nekohasekai.sagernet.ktx.unwrapIDN
 import io.nekohasekai.sagernet.widget.SimpleMenuPreference
 
@@ -67,6 +69,8 @@ class SnellSettingsActivity : ProfileSettingsActivity<SnellBean>() {
         findPreference<EditTextPreference>(Key.SERVER_SNELL_USER_KEY)!!.apply {
             summaryProvider = PasswordSummaryProvider
         }
+        findPreference<PreferenceCategory>(Key.SERVER_SING_SNELL_CATEGORY)!!.isVisible =
+            DataStore.experimentalFlagsProperties.getBooleanProperty("singSnellUserKey")
         val versionPref = findPreference<SimpleMenuPreference>(Key.SERVER_SNELL_VERSION)!!
         val modePref = findPreference<SimpleMenuPreference>(Key.SERVER_SNELL_MODE)!!
         val obfsPref = findPreference<SimpleMenuPreference>(Key.SERVER_SNELL_OBFS_MODE)!!

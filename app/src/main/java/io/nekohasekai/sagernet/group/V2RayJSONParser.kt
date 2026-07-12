@@ -25,6 +25,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.anytls.AnyTLSBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
@@ -1712,8 +1713,10 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getString("psk")?.also {
                     snellBean.psk = it
                 }
-                settings.getString("userKey")?.also {
-                    snellBean.userKey = it
+                if (DataStore.experimentalFlagsProperties.getBooleanProperty("singSnellUserKey")) {
+                    settings.getString("userKey")?.also {
+                        snellBean.userKey = it
+                    }
                 }
                 settings.getBoolean("reuse")?.also {
                     snellBean.reuse = it

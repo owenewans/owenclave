@@ -1758,7 +1758,7 @@ fun buildV2RayConfig(
                                     if (version == SnellBean.VERSION_6) {
                                         mode = bean.mode
                                     }
-                                    if (bean.userKey.isNotEmpty()) {
+                                    if (DataStore.experimentalFlagsProperties.getBooleanProperty("singSnellUserKey") && bean.userKey.isNotEmpty()) {
                                         userKey = bean.userKey
                                     }
                                 })

@@ -59,6 +59,12 @@
             app:key="serverSnellMode"
             app:title="@string/snell_mode"
             app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="serverSingSnellCategory"
+        app:title="sing-snell settings">
         <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"
             app:icon="@drawable/ic_settings_password"

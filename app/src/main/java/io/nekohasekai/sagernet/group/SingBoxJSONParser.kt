@@ -23,6 +23,7 @@ import com.github.shadowsocks.plugin.PluginOptions
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.anytls.AnyTLSBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
@@ -852,8 +853,10 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                 outbound.getString("psk")?.also {
                     psk = it
                 }
-                outbound.getString("userkey")?.also {
-                    userKey = it
+                if (DataStore.experimentalFlagsProperties.getBooleanProperty("singSnellUserKey")) {
+                    outbound.getString("userkey")?.also {
+                        userKey = it
+                    }
                 }
                 outbound.getBoolean("reuse")?.also {
                     reuse = it
