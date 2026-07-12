@@ -57,6 +57,7 @@ public class Hysteria2Bean extends AbstractBean {
     public String obfsType;
     public Integer geckoMinPacketSize;
     public Integer geckoMaxPacketSize;
+    public String serverNameToVerify;
 
     @Override
     public void initializeDefaultValues() {
@@ -85,11 +86,12 @@ public class Hysteria2Bean extends AbstractBean {
         if (obfsType == null) obfsType = "";
         if (geckoMinPacketSize == null) geckoMinPacketSize = 0;
         if (geckoMaxPacketSize == null) geckoMaxPacketSize = 0;
+        if (serverNameToVerify == null) serverNameToVerify = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(9);
+        output.writeInt(10);
         super.serialize(output);
         output.writeString(auth);
         switch (obfsType) {
@@ -131,6 +133,7 @@ public class Hysteria2Bean extends AbstractBean {
                 output.writeInt(0); // geckoMaxPacketSize
                 break;
         }
+        output.writeString(serverNameToVerify);
     }
 
     @Override
@@ -220,6 +223,9 @@ public class Hysteria2Bean extends AbstractBean {
                     break;
             }
         }
+        if (version >= 10) {
+            serverNameToVerify = input.readString();
+        }
     }
 
     @Override
@@ -269,11 +275,6 @@ public class Hysteria2Bean extends AbstractBean {
         }
     }
 
-    @Override
-    public String network() {
-        return "udp";
-    }
-
     @NotNull
     @Override
     public Hysteria2Bean clone() {
@@ -315,6 +316,9 @@ public class Hysteria2Bean extends AbstractBean {
             return false;
         }
         if (!pinnedPeerCertificateSha256.isEmpty()) {
+            return false;
+        }
+        if (!serverNameToVerify.isEmpty()) {
             return false;
         }
         return true;

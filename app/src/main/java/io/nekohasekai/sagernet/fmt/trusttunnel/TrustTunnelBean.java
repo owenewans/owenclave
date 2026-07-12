@@ -176,6 +176,9 @@ public class TrustTunnelBean extends AbstractBean {
         if (!allowInsecure) {
             return false;
         }
+        if (!serverNameToVerify.isEmpty()) {
+            return false;
+        }
         return true;
     }
 }

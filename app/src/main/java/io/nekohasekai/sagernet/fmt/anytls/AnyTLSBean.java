@@ -53,6 +53,7 @@ public class AnyTLSBean extends AbstractBean {
     public Boolean realityDisableX25519Mlkem768;
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
+    public String serverNameToVerify;
 
     @Override
     public void initializeDefaultValues() {
@@ -78,11 +79,12 @@ public class AnyTLSBean extends AbstractBean {
         if (realityDisableX25519Mlkem768 == null) realityDisableX25519Mlkem768 = false;
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
+        if (serverNameToVerify == null) serverNameToVerify = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(5);
+        output.writeInt(6);
         super.serialize(output);
         output.writeString(password);
         output.writeInt(idleSessionCheckInterval);
@@ -106,6 +108,7 @@ public class AnyTLSBean extends AbstractBean {
         output.writeString(mtlsCertificatePrivateKey);
 
         output.writeBoolean(echEnabled);
+        output.writeString(serverNameToVerify);
     }
 
     @Override
@@ -151,6 +154,9 @@ public class AnyTLSBean extends AbstractBean {
         }
         if (version >= 5) {
             echEnabled = input.readBoolean();
+        }
+        if (version >= 6) {
+            serverNameToVerify = input.readString();
         }
     }
 
@@ -224,6 +230,9 @@ public class AnyTLSBean extends AbstractBean {
                     return false;
                 }
                 if (!pinnedPeerCertificateSha256.isEmpty()) {
+                    return false;
+                }
+                if (!serverNameToVerify.isEmpty()) {
                     return false;
                 }
                 break;

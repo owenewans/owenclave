@@ -88,6 +88,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         mtlsCertificate = cert
                         mtlsCertificatePrivateKey = key
                     }
+                    serverNameToVerify = proxy.getString("name-cert-verify")
                 }
                 name = proxy.getString("name")
             })
@@ -119,6 +120,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         mtlsCertificate = cert
                         mtlsCertificatePrivateKey = key
                     }
+                    serverNameToVerify = proxy.getString("name-cert-verify")
                 }
                 name = proxy.getString("name")
             })
@@ -262,6 +264,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     bean.mtlsCertificate = cert
                     bean.mtlsCertificatePrivateKey = key
                 }
+                bean.serverNameToVerify = proxy.getString("name-cert-verify")
                 if (bean is VLESSBean || bean is TrojanBean) {
                     // Only parse ECH for shit VLESS or Trojan free nodes
                     proxy.getObject("ech-opts")?.also {
@@ -630,6 +633,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     mtlsCertificate = cert
                     mtlsCertificatePrivateKey = key
                 }
+                serverNameToVerify = proxy.getString("name-cert-verify")
                 /*proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
@@ -724,6 +728,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         mtlsCertificate = cert
                         mtlsCertificatePrivateKey = key
                     }
+                    serverNameToVerify = proxy.getString("name-cert-verify")
                     /*proxy.getObject("ech-opts")?.also {
                         echEnabled = it.getBoolean("enable")
                         echConfig = it.getString("config")
@@ -827,6 +832,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     mtlsCertificate = cert
                     mtlsCertificatePrivateKey = key
                 }
+                serverNameToVerify = proxy.getString("name-cert-verify")
                 /*proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
@@ -857,6 +863,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     mtlsCertificate = cert
                     mtlsCertificatePrivateKey = key
                 }
+                serverNameToVerify = proxy.getString("name-cert-verify")
                 /*proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")

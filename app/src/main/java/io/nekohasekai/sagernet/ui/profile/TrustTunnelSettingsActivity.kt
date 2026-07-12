@@ -53,7 +53,7 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
         DataStore.serverEchEnabled = echEnabled
         DataStore.serverEchConfig = echConfig
-        DataStore.serverTrustTunnelServerNameToVerify = serverNameToVerify
+        DataStore.serverServerNameToVerify = serverNameToVerify
     }
 
     override fun TrustTunnelBean.serialize() {
@@ -74,7 +74,7 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
         echEnabled = DataStore.serverEchEnabled
         echConfig = DataStore.serverEchConfig
-        serverNameToVerify = DataStore.serverTrustTunnelServerNameToVerify
+        serverNameToVerify = DataStore.serverServerNameToVerify
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

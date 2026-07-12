@@ -61,6 +61,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public String utlsFingerprint;
     public Boolean echEnabled;
     public String echConfig;
+    public String serverNameToVerify;
 
     public Boolean wsUseBrowserForwarder;
     public Boolean shUseBrowserForwarder;
@@ -143,6 +144,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (utlsFingerprint == null) utlsFingerprint = "";
         if (echEnabled == null) echEnabled = false;
         if (echConfig == null) echConfig = "";
+        if (serverNameToVerify == null) serverNameToVerify = "";
 
         if (realityPublicKey == null) realityPublicKey = "";
         if (realityShortId == null) realityShortId = "";
@@ -172,7 +174,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(36);
+        output.writeInt(37);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -307,6 +309,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         output.writeBoolean(echEnabled);
 
         output.writeString(realityMldsa65Verify);
+        output.writeString(serverNameToVerify);
     }
 
     @Override
@@ -560,6 +563,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (version >= 36) {
             realityMldsa65Verify = input.readString();
         }
+        if (version >= 37) {
+            serverNameToVerify = input.readString();
+        }
     }
 
     @Override
@@ -643,6 +649,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
                     return false;
                 }
                 if (!pinnedPeerCertificateSha256.isEmpty()) {
+                    return false;
+                }
+                if (!serverNameToVerify.isEmpty()) {
                     return false;
                 }
                 break;

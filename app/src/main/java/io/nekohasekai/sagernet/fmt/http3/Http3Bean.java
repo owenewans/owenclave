@@ -44,6 +44,7 @@ public class Http3Bean extends AbstractBean {
     public String echConfig;
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
+    public String serverNameToVerify;
 
     @Override
     public void initializeDefaultValues() {
@@ -60,11 +61,12 @@ public class Http3Bean extends AbstractBean {
         if (echConfig == null) echConfig = "";
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
+        if (serverNameToVerify == null) serverNameToVerify = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(4);
+        output.writeInt(5);
         super.serialize(output);
         output.writeString(username);
         output.writeString(password);
@@ -80,6 +82,7 @@ public class Http3Bean extends AbstractBean {
         output.writeBoolean(false); // trustTunnelUot, removed
 
         output.writeBoolean(echEnabled);
+        output.writeString(serverNameToVerify);
     }
 
     @Override
@@ -112,6 +115,9 @@ public class Http3Bean extends AbstractBean {
         }
         if (version >= 4) {
             echEnabled = input.readBoolean();
+        }
+        if (version >= 5) {
+            serverNameToVerify = input.readString();
         }
     }
 
@@ -178,6 +184,9 @@ public class Http3Bean extends AbstractBean {
             return false;
         }
         if (!pinnedPeerCertificateSha256.isEmpty()) {
+            return false;
+        }
+        if (!serverNameToVerify.isEmpty()) {
             return false;
         }
         return true;

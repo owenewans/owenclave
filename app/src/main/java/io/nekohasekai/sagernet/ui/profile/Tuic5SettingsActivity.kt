@@ -57,6 +57,7 @@ class Tuic5SettingsActivity : ProfileSettingsActivity<Tuic5Bean>() {
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
         DataStore.serverEchEnabled = echEnabled
         DataStore.serverEchConfig = echConfig
+        DataStore.serverServerNameToVerify = serverNameToVerify
         DataStore.serverSingUot = singUDPOverStream
     }
 
@@ -81,6 +82,7 @@ class Tuic5SettingsActivity : ProfileSettingsActivity<Tuic5Bean>() {
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
         echEnabled = DataStore.serverEchEnabled
         echConfig = DataStore.serverEchConfig
+        serverNameToVerify = DataStore.serverServerNameToVerify
         singUDPOverStream = DataStore.serverSingUot
     }
 

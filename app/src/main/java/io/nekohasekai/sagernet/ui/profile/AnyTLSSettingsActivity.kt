@@ -62,6 +62,7 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverMtlsCertificate = mtlsCertificate
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
+        DataStore.serverServerNameToVerify = serverNameToVerify
     }
 
     override fun AnyTLSBean.serialize() {
@@ -89,6 +90,7 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
         allowInsecure = DataStore.serverAllowInsecure
         mtlsCertificate = DataStore.serverMtlsCertificate
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
+        serverNameToVerify = DataStore.serverServerNameToVerify
     }
 
     lateinit var password: EditTextPreference

@@ -50,6 +50,7 @@ class JuicitySettingsActivity : ProfileSettingsActivity<JuicityBean>() {
         DataStore.serverEchConfig = echConfig
         DataStore.serverMtlsCertificate = mtlsCertificate
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
+        DataStore.serverServerNameToVerify = serverNameToVerify
     }
 
     override fun JuicityBean.serialize() {
@@ -68,6 +69,7 @@ class JuicitySettingsActivity : ProfileSettingsActivity<JuicityBean>() {
         echConfig = DataStore.serverEchConfig
         mtlsCertificate = DataStore.serverMtlsCertificate
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
+        serverNameToVerify = DataStore.serverServerNameToVerify
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

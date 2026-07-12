@@ -900,6 +900,9 @@ fun buildV2RayConfig(
                                                         }
                                                     }
                                                 }
+                                                if (bean.serverNameToVerify.isNotEmpty()) {
+                                                    serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
+                                                }
                                             }
                                         }
                                         "reality" -> {
@@ -1429,6 +1432,9 @@ fun buildV2RayConfig(
                                                 }
                                             }
                                         }
+                                        if (bean.serverNameToVerify.isNotEmpty()) {
+                                            serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
+                                        }
                                     }
                                 }
                             } else if (bean is Tuic5Bean) {
@@ -1442,7 +1448,6 @@ fun buildV2RayConfig(
                                         congestionControl = bean.congestionControl
                                         udpRelayMode = bean.udpRelayMode
                                         if (bean.zeroRTTHandshake) zeroRTTHandshake = bean.zeroRTTHandshake
-                                        if (bean.disableSNI) disableSNI = bean.disableSNI
                                         if (bean.singUDPOverStream && DataStore.experimentalFlagsProperties.getBooleanProperty("singuot")) {
                                             udpOverStream = bean.singUDPOverStream
                                         }
@@ -1495,6 +1500,15 @@ fun buildV2RayConfig(
                                                 if (bean.echConfig.isNotEmpty()) {
                                                     config = bean.echConfig
                                                 }
+                                            }
+                                        }
+                                        if (bean.serverNameToVerify.isNotEmpty()) {
+                                            serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
+                                        }
+                                        if (bean.disableSNI) {
+                                            serverName = "127.0.0.1" // Golang syntax suger
+                                            if (allowInsecure != true && serverNameToVerify.isNullOrEmpty()) {
+                                                serverNameToVerify = listOf(bean.sni.ifEmpty { bean.serverAddress })
                                             }
                                         }
                                     }
@@ -1554,6 +1568,9 @@ fun buildV2RayConfig(
                                                     config = bean.echConfig
                                                 }
                                             }
+                                        }
+                                        if (bean.serverNameToVerify.isNotEmpty()) {
+                                            serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
                                         }
                                     }
                                 }
@@ -1627,6 +1644,9 @@ fun buildV2RayConfig(
                                                             config = bean.echConfig
                                                         }
                                                     }
+                                                }
+                                                if (bean.serverNameToVerify.isNotEmpty()) {
+                                                    serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
                                                 }
                                             }
                                         }
@@ -1739,6 +1759,9 @@ fun buildV2RayConfig(
                                                 }
                                             }
                                         }
+                                        if (bean.serverNameToVerify.isNotEmpty()) {
+                                            serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
+                                        }
                                     }
                                 }
                             } else if (bean is SnellBean) {
@@ -1808,9 +1831,6 @@ fun buildV2RayConfig(
                                             "quic" -> http3 = true
                                             else -> error("invalid")
                                         }
-                                        if (bean.serverNameToVerify.isNotEmpty()) {
-                                            serverNameToVerify = bean.serverNameToVerify
-                                        }
                                     }
                                 )
                                 streamSettings = StreamSettingsObject().apply {
@@ -1866,6 +1886,9 @@ fun buildV2RayConfig(
                                                     config = bean.echConfig
                                                 }
                                             }
+                                        }
+                                        if (bean.serverNameToVerify.isNotEmpty()) {
+                                            serverNameToVerify = bean.serverNameToVerify.listByLineOrComma()
                                         }
                                     }
                                 }

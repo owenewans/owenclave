@@ -135,6 +135,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         DataStore.serverEchConfig = echConfig
         DataStore.serverMtlsCertificate = mtlsCertificate
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
+        DataStore.serverServerNameToVerify = serverNameToVerify
 
         DataStore.serverRealityPublicKey = realityPublicKey
         DataStore.serverRealityShortId = realityShortId
@@ -242,6 +243,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
         echEnabled = DataStore.serverEchEnabled
         echConfig = DataStore.serverEchConfig
+        serverNameToVerify = DataStore.serverServerNameToVerify
 
         realityPublicKey = DataStore.serverRealityPublicKey
         realityShortId = DataStore.serverRealityShortId
@@ -305,6 +307,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var mtlsCertificatePrivateKey: EditTextPreference
     lateinit var echEnabled: SwitchPreference
     lateinit var echConfig: EditTextPreference
+    lateinit var serverNameToVerify: EditTextPreference
 
     lateinit var realityPublicKey: EditTextPreference
     lateinit var realityShortId: EditTextPreference
@@ -387,6 +390,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             echConfig.isEnabled = newValue as Boolean
             true
         }
+        serverNameToVerify = findPreference(Key.SERVER_SERVER_NAME_TO_VERIFY)!!
 
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
@@ -785,6 +789,7 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         mtlsCertificatePrivateKey.isVisible = security == "tls"
         echEnabled.isVisible = security == "tls"
         echConfig.isVisible = security == "tls"
+        serverNameToVerify.isVisible = security == "tls"
         realityFingerprint.isVisible = security == "reality"
         realityDisableX25519Mlkem768.isVisible = security == "reality"
     }

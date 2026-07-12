@@ -64,6 +64,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         DataStore.serverHysteria2ObfsType = obfsType
         DataStore.serverHysteria2GeckoMinPacketSize = geckoMinPacketSize
         DataStore.serverHysteria2GeckoMaxPacketSize = geckoMaxPacketSize
+        DataStore.serverServerNameToVerify = serverNameToVerify
     }
 
     override fun Hysteria2Bean.serialize() {
@@ -94,6 +95,7 @@ class Hysteria2SettingsActivity : ProfileSettingsActivity<Hysteria2Bean>() {
         obfsType = DataStore.serverHysteria2ObfsType
         geckoMinPacketSize = DataStore.serverHysteria2GeckoMinPacketSize
         geckoMaxPacketSize = DataStore.serverHysteria2GeckoMaxPacketSize
+        serverNameToVerify = DataStore.serverServerNameToVerify
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

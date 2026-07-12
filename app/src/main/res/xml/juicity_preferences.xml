@@ -81,6 +81,12 @@
             app:key="serverEchConfig"
             app:title="@string/ech_config"
             app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogMessage="@string/one_per_line"
+            app:icon="@drawable/ic_action_copyright"
+            app:key="serverServerNameToVerify"
+            app:title="@string/server_name_to_verify"
+            app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
 </PreferenceScreen>

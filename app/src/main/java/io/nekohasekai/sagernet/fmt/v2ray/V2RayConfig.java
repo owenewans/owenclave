@@ -962,7 +962,6 @@ public class V2RayConfig {
         public String udpRelayMode;
         public Integer heartbeat;
         public Boolean zeroRTTHandshake;
-        public Boolean disableSNI;
         public Boolean udpOverStream;
 
     }
@@ -999,6 +998,7 @@ public class V2RayConfig {
         public Integer version;
         public Boolean reuse;
         public String mode;
+        public String domainStrategy;
 
     }
 
@@ -1024,7 +1024,6 @@ public class V2RayConfig {
         public String username;
         public String password;
         public Boolean http3;
-        public String serverNameToVerify;
         public String domainStrategy;
 
     }
@@ -1094,6 +1093,7 @@ public class V2RayConfig {
         public String maxVersion;
         public Boolean allowInsecureIfPinnedPeerCertificate;
         public ECHObject ech;
+        public List<String> serverNameToVerify;
 
         public static class CertificateObject {
 

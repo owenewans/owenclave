@@ -26,6 +26,9 @@ import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.ktx.*
 import libexclavecore.Libexclavecore
 import java.util.Base64
+import kotlin.collections.filter
+import kotlin.collections.isNotEmpty
+import kotlin.text.isNotEmpty
 
 val supportedVmessMethod = arrayOf(
     "auto", "aes-128-gcm", "chacha20-poly1305", "none", "zero"
@@ -216,6 +219,11 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 if (!bean.pinnedPeerCertificateSha256.isNullOrEmpty()) {
                     bean.allowInsecure = true
                 }
+            }
+            url.queryParameter("vcn")?.takeIf { it.isNotEmpty() }?.let { vcn ->
+                bean.serverNameToVerify = vcn.split(",")
+                    .filter { it.isNotEmpty() }.takeIf { it.isNotEmpty() }
+                    ?.joinToString("\n")
             }
             if (url.scheme == "vless" || url.scheme == "trojan") {
                 // Only parse ECH for shit VLESS or Trojan free nodes
@@ -921,6 +929,9 @@ fun StandardV2RayBean.toUri(): String? {
             }
             if (pinnedPeerCertificateSha256.isNotEmpty()) {
                 builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString(":"))
+            }
+            if (serverNameToVerify.isNotEmpty()) {
+                builder.addQueryParameter("vcn", serverNameToVerify.listByLineOrComma().joinToString(","))
             }
             if (this is VLESSBean && flow.isNotEmpty()) {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))

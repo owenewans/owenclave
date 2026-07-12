@@ -50,6 +50,7 @@ class Http3SettingsActivity : ProfileSettingsActivity<Http3Bean>() {
         DataStore.serverAllowInsecure = allowInsecure
         DataStore.serverMtlsCertificate = mtlsCertificate
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
+        DataStore.serverServerNameToVerify = serverNameToVerify
     }
 
     override fun Http3Bean.serialize() {
@@ -68,6 +69,7 @@ class Http3SettingsActivity : ProfileSettingsActivity<Http3Bean>() {
         allowInsecure = DataStore.serverAllowInsecure
         mtlsCertificate = DataStore.serverMtlsCertificate
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
+        serverNameToVerify = DataStore.serverServerNameToVerify
     }
 
     override fun PreferenceFragmentCompat.createPreferences(

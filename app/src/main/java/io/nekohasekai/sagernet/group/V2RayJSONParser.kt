@@ -154,6 +154,14 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                         v2rayBean.allowInsecure = true
                                     }
                                 }
+                                tlsSettings.getString("verifyPeerCertByName")?.split(",")
+                                    ?.filter { it.isNotEmpty() }?.takeIf { it.isNotEmpty() }?.also {
+                                        // Xray verifyPeerCertByName
+                                    v2rayBean.serverNameToVerify = it.joinToString("\n")
+                                }
+                                tlsSettings.getStringArray("serverNameToVerify")?.also {
+                                    v2rayBean.serverNameToVerify = it.joinToString("\n")
+                                }
                                 if (v2rayBean is VLESSBean || v2rayBean is TrojanBean) {
                                     // Only parse ECH for shit VLESS or Trojan free nodes
                                     tlsSettings.getString("echDohServer")?.also {
@@ -1177,6 +1185,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                         hysteria2Bean.allowInsecure = allowInsecure
                                     }
                                 }
+                                tlsSettings.getStringArray("serverNameToVerify")?.also {
+                                    hysteria2Bean.serverNameToVerify = it.joinToString("\n")
+                                }
                                 /*tlsSettings.getString("echDohServer")?.also {
                                     hysteria2Bean.echEnabled = true
                                 }
@@ -1343,6 +1354,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         tuic5Bean.allowInsecure = allowInsecure
                     }
                 }
+                tlsSettings.getStringArray("serverNameToVerify")?.also {
+                    tuic5Bean.serverNameToVerify = it.joinToString("\n")
+                }
                 /*tlsSettings.getObject("ech")?.also {
                     tuic5Bean.echEnabled = it.getBoolean("enabled")
                     tuic5Bean.echConfig = it.getString("config")
@@ -1432,6 +1446,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
                         http3Bean.allowInsecure = allowInsecure
                     }
+                }
+                tlsSettings.getStringArray("serverNameToVerify")?.also {
+                    http3Bean.serverNameToVerify = it.joinToString("\n")
                 }
                 /*tlsSettings.getObject("ech")?.also {
                     http3Bean.echEnabled = it.getBoolean("enabled")
@@ -1528,6 +1545,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
                                     anytlsBean.allowInsecure = allowInsecure
                                 }
+                            }
+                            tlsSettings.getStringArray("serverNameToVerify")?.also {
+                                anytlsBean.serverNameToVerify = it.joinToString("\n")
                             }
                             /*tlsSettings.getObject("ech")?.also {
                                 anytlsBean.echEnabled = it.getBoolean("enabled")
@@ -1636,6 +1656,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
                         juicityBean.allowInsecure = allowInsecure
                     }
+                }
+                tlsSettings.getStringArray("serverNameToVerify")?.also {
+                    juicityBean.serverNameToVerify = it.joinToString("\n")
                 }
                 /*tlsSettings.getObject("ech")?.also {
                     juicityBean.echEnabled = it.getBoolean("enabled")
@@ -1998,6 +2021,10 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                         hysteria2Bean.allowInsecure = true
                                     }
                                 }
+                                tlsSettings.getString("verifyPeerCertByName")?.split(",")
+                                    ?.filter { it.isNotEmpty() }?.takeIf { it.isNotEmpty() }?.also {
+                                        hysteria2Bean.serverNameToVerify = it.joinToString("\n")
+                                    }
                                 /*tlsSettings.getString("echConfigList")?.also {
                                     hysteria2Bean.echEnabled = true
                                     try {
@@ -2032,6 +2059,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     trusttunnelBean.password = it
                 }
                 settings.getString("serverNameToVerify")?.also {
+                    // for old Exclave backward compatibility
                     trusttunnelBean.serverNameToVerify = it
                 }
                 settings.getBoolean("http3")?.also {
@@ -2099,6 +2127,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         tlsSettings.getBoolean("allowInsecureIfPinnedPeerCertificate")?.also { allowInsecure ->
                             trusttunnelBean.allowInsecure = allowInsecure
                         }
+                    }
+                    tlsSettings.getStringArray("serverNameToVerify")?.also {
+                        trusttunnelBean.serverNameToVerify = it.joinToString("\n")
                     }
                     /*tlsSettings.getObject("ech")?.also {
                         trusttunnelBean.echEnabled = it.getBoolean("enabled")
