@@ -696,6 +696,8 @@ public class V2RayConfig {
                     return MieruOutboundConfigurationObject.class;
                 case "trusttunnel":
                     return TrustTunnelOutboundConfigurationObject.class;
+                case "snell":
+                    return SnellOutboundConfigurationObject.class;
             }
             return null;
         }
@@ -982,6 +984,21 @@ public class V2RayConfig {
         public Integer port;
         public String uuid;
         public String password;
+
+    }
+
+    
+    public static class SnellOutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public String psk;
+        public String userKey;
+        public String obfsMode;
+        public String obfsHost;
+        public Integer version;
+        public Boolean reuse;
+        public String mode;
 
     }
 

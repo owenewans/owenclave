@@ -38,6 +38,7 @@ import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
+import io.nekohasekai.sagernet.fmt.snell.SnellBean
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5CongestionControl
 import io.nekohasekai.sagernet.fmt.tuic5.supportedTuic5RelayMode
@@ -769,6 +770,37 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     // How to validate its validity?
                     trafficPattern = it
                 }*/
+                name = proxy.getString("name")
+            })
+        }
+        "snell" -> {
+            return listOf(SnellBean().apply {
+                serverAddress = proxy.getString("server") ?: return listOf()
+                serverPort = proxy.getInt("port")?.takeIf { it > 0 } ?: return listOf()
+                psk = proxy.getString("psk")
+                version = proxy.getInt("version")
+                if (version != 4) return listOf()
+                proxy.getObject("obfs-opts")?.also { opts ->
+                     when (opts.getString("mode")) {
+                        "tls" -> {
+                            obfsMode = SnellBean.OBFS_TLS
+                            obfsHost = when (val host = opts.getString("host")) {
+                                // null -> "bing.com"
+                                else ->  host
+                            }
+                        }
+                         "http" -> {
+                             obfsMode = SnellBean.OBFS_HTTP
+                             obfsHost = when (val host = opts.getString("host")) {
+                                 null -> "bing.com" // https://github.com/MetaCubeX/mihomo/blob/75eeba429292d915691f61d89fc5e57a612c8844/adapter/outbound/snell.go#L158
+                                 else ->  host
+                             }
+                         }
+                        "shadow-tls" -> return listOf()
+                        else -> SnellBean.OBFS_NONE
+                    }
+                }
+                reuse = proxy.getBoolean("reuse")
                 name = proxy.getString("name")
             })
         }

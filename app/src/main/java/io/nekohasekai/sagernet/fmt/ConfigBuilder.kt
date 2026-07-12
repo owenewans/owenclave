@@ -54,6 +54,7 @@ import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
+import io.nekohasekai.sagernet.fmt.snell.SnellBean
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.v2ray.V2RayConfig
@@ -1740,6 +1741,27 @@ fun buildV2RayConfig(
                                         }
                                     }
                                 }
+                            } else if (bean is SnellBean) {
+                                protocol = "snell"
+                                settings = LazyOutboundConfigurationObject(this, V2RayConfig.SnellOutboundConfigurationObject().apply {
+                                    address = bean.serverAddress
+                                    port = bean.serverPort
+                                    psk = bean.psk
+                                    version = bean.version
+                                    reuse = bean.reuse
+                                    if (version == SnellBean.VERSION_4) {
+                                        obfsMode = bean.obfsMode
+                                        if (bean.obfsMode != SnellBean.OBFS_NONE && bean.obfsHost.isNotEmpty()) {
+                                            obfsHost = bean.obfsHost
+                                        }
+                                    }
+                                    if (version == SnellBean.VERSION_6) {
+                                        mode = bean.mode
+                                    }
+                                    if (bean.userKey.isNotEmpty()) {
+                                        userKey = bean.userKey
+                                    }
+                                })
                             } else if (bean is MieruBean) {
                                 protocol = "mieru"
                                 settings = LazyOutboundConfigurationObject(this,
