@@ -581,4 +581,9 @@
     <string name="hysteria2_gecko_max_packet_size">最大包大小</string>
     <string name="hysteria2_gecko_min_packet_size">最小包大小</string>
     <string name="nearby_devices_permission_notice">这需要“附近的设备”权限以工作，但是权限未被授予。</string>
+    <string name="snell_reuse">连接复用</string>
+    <string name="pre_shared_key">预共享密钥</string>
+    <string name="snell_obfs_mode">混淆模式</string>
+    <string name="snell_obfs_host">混淆主机</string>
+    <string name="snell_mode">模式</string>
 </resources>
