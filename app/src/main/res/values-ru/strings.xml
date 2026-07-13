@@ -587,4 +587,9 @@
     <string name="hysteria2_gecko_min_packet_size">Минимальный размер пакета</string>
     <string name="enable_hysteria2_omit_max_datagram_frame_size">Включить Hysteria 2 OmitMaxDatagramFrameSize</string>
     <string name="nearby_devices_permission_notice">Для работы требуется разрешение «Близлежащие устройства», но оно не предоставлено.</string>
+    <string name="snell_reuse">Повторное использование соединения</string>
+    <string name="pre_shared_key">Предварительно согласованный ключ</string>
+    <string name="snell_obfs_mode">Режим обфускации</string>
+    <string name="snell_obfs_host">Хост обфускации</string>
+    <string name="snell_mode">Режим</string>
 </resources>
