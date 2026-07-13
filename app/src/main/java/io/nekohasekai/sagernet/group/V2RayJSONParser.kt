@@ -1188,7 +1188,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 tlsSettings.getStringArray("serverNameToVerify")?.also {
                                     hysteria2Bean.serverNameToVerify = it.joinToString("\n")
                                 }
-                                /*tlsSettings.getString("echDohServer")?.also {
+                                tlsSettings.getString("echDohServer")?.also {
                                     hysteria2Bean.echEnabled = true
                                 }
                                 tlsSettings.getString("echConfig")?.also {
@@ -1205,7 +1205,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 tlsSettings.getObject("ech")?.also {
                                     hysteria2Bean.echEnabled = it.getBoolean("enabled")
                                     hysteria2Bean.echConfig = it.getString("config")
-                                }*/
+                                }
                             }
                         }
                         else -> return listOf()
@@ -2025,13 +2025,13 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     ?.filter { it.isNotEmpty() }?.takeIf { it.isNotEmpty() }?.also {
                                         hysteria2Bean.serverNameToVerify = it.joinToString("\n")
                                     }
-                                /*tlsSettings.getString("echConfigList")?.also {
+                                tlsSettings.getString("echConfigList")?.also {
                                     hysteria2Bean.echEnabled = true
                                     try {
                                         Base64.getDecoder().decode(it)
                                         hysteria2Bean.echConfig = it
                                     } catch (_: Exception) {}
-                                }*/
+                                }
                             }
                         }
                         else -> return listOf()

@@ -98,6 +98,10 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
                 else -> error("unsupported obfs")
             }
         }
+        link.queryParameter("ech")?.also {
+            echEnabled = true
+            echConfig = it
+        }
     }
 }
 
@@ -140,6 +144,9 @@ fun Hysteria2Bean.toUri(): String? {
             error("empty obfs password")
         }
         builder.addQueryParameter("obfs-password", obfsPassword)
+    }
+    if (echEnabled && echConfig.isNotEmpty()) {
+        builder.addQueryParameter("ech", echConfig)
     }
     if (name.isNotEmpty()) {
         builder.fragment = name

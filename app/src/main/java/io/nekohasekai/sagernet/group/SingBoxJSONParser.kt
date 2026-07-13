@@ -448,7 +448,7 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                         pinnedPeerCertificatePublicKeySha256 = Base64.encode(it)
                         allowInsecure = true
                     }
-                    /*tls.getObject("ech")?.also { ech ->
+                    tls.getObject("ech")?.also { ech ->
                         ech.getBoolean("enabled")?.also { enabled ->
                             if (enabled) {
                                 echEnabled = true
@@ -459,7 +459,7 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                             }
                         }
-                    }*/
+                    }
                 } ?: return listOf()
                 outbound.getObject("obfs")?.also { obfuscation ->
                     obfuscation.getString("type")?.takeIf { it.isNotEmpty() }?.also { type ->

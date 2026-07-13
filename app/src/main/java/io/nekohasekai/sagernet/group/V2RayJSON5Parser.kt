@@ -402,6 +402,13 @@ fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
                         ?: securitySettings.getString("server_name"))?.also {
                         hysteria2Bean.sni = it
                     }
+                    securitySettings.getString("echDohServer")?.also {
+                        hysteria2Bean.echEnabled = true
+                    }
+                    securitySettings.getString("echConfig")?.also {
+                        hysteria2Bean.echEnabled = true
+                        hysteria2Bean.echConfig = it
+                    }
                 }
                 streamSettings.getObject("transportSettings")?.also { transportSettings ->
                     transportSettings.getString("password")?.also {

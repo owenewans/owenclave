@@ -634,10 +634,10 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     mtlsCertificatePrivateKey = key
                 }
                 serverNameToVerify = proxy.getString("name-cert-verify")
-                /*proxy.getObject("ech-opts")?.also {
+                proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
-                }*/
+                }
                 (proxy.getString("obfs"))?.also {
                     when (it) {
                         "" -> {}
