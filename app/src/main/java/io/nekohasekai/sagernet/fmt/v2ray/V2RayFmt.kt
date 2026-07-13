@@ -225,15 +225,12 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     .filter { it.isNotEmpty() }.takeIf { it.isNotEmpty() }
                     ?.joinToString("\n")
             }
-            if (url.scheme == "vless" || url.scheme == "trojan") {
-                // Only parse ECH for shit VLESS or Trojan free nodes
-                url.queryParameter("ech")?.let {
-                    bean.echEnabled = true
-                    try {
-                        Base64.getDecoder().decode(it)
-                        bean.echConfig = it
-                    } catch (_: Exception) {}
-                }
+            url.queryParameter("ech")?.let {
+                bean.echEnabled = true
+                try {
+                    Base64.getDecoder().decode(it)
+                    bean.echConfig = it
+                } catch (_: Exception) {}
             }
         }
         "reality" -> {

@@ -23,11 +23,13 @@ package io.nekohasekai.sagernet.group
 import com.github.shadowsocks.plugin.PluginOptions
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.anytls.AnyTLSBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
+import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.supportedShadowsocksMethod
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
@@ -265,12 +267,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     bean.mtlsCertificatePrivateKey = key
                 }
                 bean.serverNameToVerify = proxy.getString("name-cert-verify")
-                if (bean is VLESSBean || bean is TrojanBean) {
-                    // Only parse ECH for shit VLESS or Trojan free nodes
-                    proxy.getObject("ech-opts")?.also {
-                        bean.echEnabled = it.getBoolean("enable")
-                        bean.echConfig = it.getString("config")
-                    }
+                proxy.getObject("ech-opts")?.also {
+                    bean.echEnabled = it.getBoolean("enable")
+                    bean.echConfig = it.getString("config")
                 }
             }
 
@@ -353,6 +352,10 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         bean.encryption = encryption
                     }
                 }
+            }
+
+            proxy.getObject("jls-opts")?.also {
+                return listOf()
             }
 
             proxy.getObject("reality-opts")?.also {
@@ -801,8 +804,8 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                                  else ->  host
                              }
                          }
-                        "shadow-tls" -> return listOf()
-                        else -> SnellBean.OBFS_NONE
+                         null, "" -> SnellBean.OBFS_NONE
+                         else -> return listOf()
                     }
                 }
                 reuse = proxy.getBoolean("reuse")
@@ -837,6 +840,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
                 }*/
+                proxy.getObject("jls-opts")?.also {
+                    return listOf()
+                }
                 name = proxy.getString("name")
             })
         }
@@ -944,6 +950,22 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 }
             }
             return beanList
+        }
+        "shadowquic" -> {
+            if (!DataStore.experimentalFlagsProperties.getBooleanProperty("shadowquic")) {
+                return listOf()
+            }
+            return listOf(ShadowQUICBean().apply {
+                serverAddress = proxy.getString("server") ?: return listOf()
+                serverPort = proxy.getInt("port")?.takeIf { it > 0 } ?: return listOf()
+                username = proxy.getString("username")
+                password = proxy.getString("password")
+                sni = proxy.getString("sni")
+                alpn = proxy.getStringArray("alpn")?.joinToString("\n")
+                udpOverStream = proxy.getBoolean("udp-over-stream")
+                zeroRTT = proxy.getBoolean("zero-rtt")
+                name = proxy.getString("name")
+            })
         }
         else -> return listOf()
     }

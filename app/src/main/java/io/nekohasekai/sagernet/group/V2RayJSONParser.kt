@@ -162,8 +162,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 tlsSettings.getStringArray("serverNameToVerify")?.also {
                                     v2rayBean.serverNameToVerify = it.joinToString("\n")
                                 }
-                                if (v2rayBean is VLESSBean || v2rayBean is TrojanBean) {
-                                    // Only parse ECH for shit VLESS or Trojan free nodes
+                                if (v2rayBean is VLESSBean || v2rayBean is TrojanBean || v2rayBean is VMessBean) {
                                     tlsSettings.getString("echDohServer")?.also {
                                         v2rayBean.echEnabled = true
                                     }
