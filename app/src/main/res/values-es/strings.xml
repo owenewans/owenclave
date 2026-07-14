@@ -69,7 +69,7 @@
     <string name="group_name">Nombre del grupo</string>
     <string name="group_create">Crear grupo</string>
     <string name="group_edit">Editar grupo</string>
-    <string name="raw">Crudo</string>
+    <string name="raw">Sin formato</string>
     <string name="deduplication_sum">Elimina configuraciones duplicadas al actualizar</string>
     <string name="clipboard_empty">El portapapeles está vacío</string>
     <string name="connect">Conectar</string>
@@ -245,7 +245,7 @@
     <string name="wireguard_local_address">Dirección local</string>
     <string name="wireguard_public_key">Clave pública del par</string>
     <string name="wireguard_psk">Clave precompartida del par</string>
-    <string name="copy_success">¡Copiado exitosamente!</string>
+    <string name="copy_success">¡Copiado correcto!</string>
     <string name="traffic_holder">Activa la VPN para registrar estadísticas de tráfico</string>
     <plurals name="udp_connections">
         <item quantity="one">%d conexión UDP</item>
@@ -583,4 +583,9 @@
     <string name="hysteria2_gecko_max_packet_size">Tamaño máximo de paquete</string>
     <string name="hysteria2_gecko_min_packet_size">Tamaño mínimo de paquete</string>
     <string name="nearby_devices_permission_notice">Para funcionar, se requiere el permiso \"dispositivos cercanos\", pero no se ha concedido.</string>
+    <string name="snell_reuse">Reutilizar conexión</string>
+    <string name="pre_shared_key">Clave pre-compartida</string>
+    <string name="snell_obfs_mode">Modo de ofuscación</string>
+    <string name="snell_obfs_host">Host de ofuscación</string>
+    <string name="snell_mode">Modo</string>
 </resources>
