@@ -354,9 +354,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 }
             }
 
-            proxy.getObject("jls-opts")?.also {
-                return listOf()
-            }
+            proxy.getObject("shadowtls-opts")?.also { return listOf() }
+            proxy.getObject("restls-opts")?.also { return listOf() }
+            proxy.getObject("jls-opts")?.also { return listOf() }
 
             proxy.getObject("reality-opts")?.also {
                 bean.security = "reality"
@@ -840,9 +840,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
                 }*/
-                proxy.getObject("jls-opts")?.also {
-                    return listOf()
-                }
+                proxy.getObject("shadowtls-opts")?.also { return listOf() }
+                proxy.getObject("restls-opts")?.also { return listOf() }
+                proxy.getObject("jls-opts")?.also { return listOf() }
                 name = proxy.getString("name")
             })
         }
