@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.trusttunnel
 
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.joinHostPort
+import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import libexclavecore.Libexclavecore
 import kotlin.io.encoding.Base64
 
@@ -84,8 +85,11 @@ fun TrustTunnelBean.toUri(): String {
     require(protocol == "https" || protocol == "quic")
     val byteArrayBuilder = ArrayList<Byte>().apply {
         writeTLV(Tag.Addresses.code, joinHostPort(serverAddress, serverPort).toByteArray())
-        if (serverNameToVerify.isNotEmpty()) {
-            writeTLV(Tag.Hostname.code, serverNameToVerify.toByteArray())
+        val serverNames = serverNameToVerify.listByLineOrComma()
+        require(serverNames.size <= 1) // only support one serverNameToVerify value
+        if (serverNames.size == 1 && serverNames[0].isNotEmpty()) {
+            // serverNameToVerify will always verify even if allowInsecure is true
+            writeTLV(Tag.Hostname.code, serverNames[0].toByteArray())
             writeTLV(Tag.CustomSNI.code, sni.ifEmpty { serverAddress }.toByteArray())
         } else {
             writeTLV(Tag.Hostname.code, sni.ifEmpty { serverAddress }.toByteArray())
@@ -200,7 +204,10 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         }
         if (customSNI.isNotEmpty()) {
             bean.sni = customSNI
-            bean.serverNameToVerify = hostname
+                // Do not verify if SkipVerification is true.
+            if (bean.allowInsecure != true) {
+                bean.serverNameToVerify = hostname
+            }
         } else {
             bean.sni = hostname
         }
