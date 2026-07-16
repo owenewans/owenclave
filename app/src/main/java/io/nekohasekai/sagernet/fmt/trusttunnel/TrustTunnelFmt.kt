@@ -78,18 +78,19 @@ private data class TLV(
 )
 
 fun TrustTunnelBean.toUri(): String {
-    require(serverAddress.isNotEmpty())
-    require(username.isNotEmpty())
-    require(password.isNotEmpty())
-    require(serverPort in 0..65535)
-    require(protocol == "https" || protocol == "quic")
+    require(serverAddress.isNotEmpty(), { "empty server address" })
+    require(username.isNotEmpty(), { "empty username" })
+    require(password.isNotEmpty(), { "empty password" })
+    require(serverPort in 0..65535, { "invalid port" })
+    require(protocol == "https" || protocol == "quic", { "invalid protocol" })
     val byteArrayBuilder = ArrayList<Byte>().apply {
         writeTLV(Tag.Addresses.code, joinHostPort(serverAddress, serverPort).toByteArray())
         val serverNames = serverNameToVerify.listByLineOrComma()
-        require(serverNames.size <= 1) // only support one serverNameToVerify value
+        require(serverNames.size <= 1, { "only one serverNameToVerify value is supported" })
         if (serverNames.size == 1 && serverNames[0].isNotEmpty()) {
             // serverNameToVerify will always verify even if allowInsecure is true
             writeTLV(Tag.Hostname.code, serverNames[0].toByteArray())
+            require(!Libexclavecore.isIP(sni.ifEmpty { serverAddress }), { "IP address can't be CustomSNI" })
             writeTLV(Tag.CustomSNI.code, sni.ifEmpty { serverAddress }.toByteArray())
         } else {
             writeTLV(Tag.Hostname.code, sni.ifEmpty { serverAddress }.toByteArray())
@@ -148,11 +149,11 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
             } + length
             when (tlv.tag) {
                 Tag.Version.code -> {
-                    require(length == 1)
+                    require(length == 1, { "invalid Version" })
                     require(value[0] == Version.Version0.code || value[0] == Version.Version1.code)
                 }
                 Tag.Hostname.code -> {
-                    require(value.isNotEmpty())
+                    require(value.isNotEmpty(), { "empty Hostname" })
                     hostname = String(value)
                     hasHostName = true
                 }
@@ -161,39 +162,39 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                     hasAddresses = true
                 }
                 Tag.CustomSNI.code -> {
-                    require(length > 0)
+                    require(length > 0, { "empty CustomSNI" })
                     customSNI = String(value)
                 }
                 Tag.HasIPv6.code -> {
-                    require(length == 1)
-                    require(value[0] == HasIPv6.False.code || value[0] == HasIPv6.True.code)
+                    require(length == 1, { "invalid HasIPv6" })
+                    require(value[0] == HasIPv6.False.code || value[0] == HasIPv6.True.code, { "invalid HasIPv6" })
                 }
                 Tag.Username.code -> {
-                    require(value.isNotEmpty())
+                    require(value.isNotEmpty(), { "empty Username" })
                     bean.username = String(value)
                     hasUsername = true
                 }
                 Tag.Password.code -> {
-                    require(value.isNotEmpty())
+                    require(value.isNotEmpty(), { "empty Password" })
                     bean.password = String(value)
                     hasPassword = true
                 }
                 Tag.SkipVerification.code -> {
-                    require(length == 1)
-                    require(value[0] == SkipVerification.False.code || value[0] == SkipVerification.True.code)
+                    require(length == 1, { "invalid SkipVerification" })
+                    require(value[0] == SkipVerification.False.code || value[0] == SkipVerification.True.code, { "invalid SkipVerification" })
                 }
                 Tag.Certificate.code -> {
                     val pem = Libexclavecore.derToPem(value)
-                    require(pem.isNotEmpty())
+                    require(pem.isNotEmpty(), { "invalid Certificate" })
                     bean.certificate = pem
                 }
                 Tag.UpstreamProtocol.code -> {
-                    require(length == 1)
-                    require(value[0] == UpstreamProtocol.HTTP2.code || value[0] == UpstreamProtocol.HTTP3.code)
+                    require(length == 1, { "invalid UpstreamProtocol" })
+                    require(value[0] == UpstreamProtocol.HTTP2.code || value[0] == UpstreamProtocol.HTTP3.code, { "invalid UpstreamProtocol" })
                 }
                 Tag.AntiDPI.code -> {
-                    require(length == 1)
-                    require(value[0] == AntiDPI.False.code || value[0] == AntiDPI.True.code)
+                    require(length == 1, { "invalid AntiDPI" })
+                    require(value[0] == AntiDPI.False.code || value[0] == AntiDPI.True.code, { "invalid AntiDPI" })
                 }
                 Tag.ClientRandomPrefix.code -> {
                     // ignored
@@ -209,10 +210,10 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 }
             }
         }
-        require(hasHostName)
-        require(hasAddresses)
-        require(hasUsername)
-        require(hasPassword)
+        require(hasHostName, { "missing hostname" })
+        require(hasAddresses, { "missing addresses" })
+        require(hasUsername, { "missing username" })
+        require(hasPassword, { "missing password" })
         if (customSNI.isNotEmpty()) {
             bean.sni = customSNI
                 // Do not verify if SkipVerification is true.
@@ -231,13 +232,13 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 })
                 return@forEach
             }
-            require(it.contains(":"))
+            require(it.contains(":"), { "missing colon in address" })
             val port = it.substringAfterLast(":").toIntOrNull()
-            require(port != null && port in 0..65535)
+            require(port != null && port in 0..65535, { "invalid port" })
             var host = it.substringBeforeLast(":")
             if (host.startsWith("[") && host.endsWith("]")) {
                 host = host.substringAfter("[").substringBeforeLast("]")
-                require(Libexclavecore.isIPv6(host))
+                require(Libexclavecore.isIPv6(host), { "non IPv6 address in brackets" })
             }
             beans.add(bean.applyDefaultValues().clone().apply {
                 serverAddress = host
