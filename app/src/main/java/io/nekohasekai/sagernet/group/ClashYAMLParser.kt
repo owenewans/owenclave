@@ -76,7 +76,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     if (proxy.getBoolean("skip-cert-verify") == true) {
                         allowInsecure = true
                     }
-                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificateSha256 = it
                         allowInsecure = true
                     }
@@ -108,7 +108,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     if (proxy.getBoolean("skip-cert-verify") == true) {
                         allowInsecure = true
                     }
-                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificateSha256 = it
                         allowInsecure = true
                     }
@@ -252,7 +252,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
             if (bean.security == "tls") {
                 bean.alpn = proxy.getStringArray("alpn")?.joinToString("\n")
                 bean.allowInsecure = proxy.getBoolean("skip-cert-verify") == true
-                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                     bean.pinnedPeerCertificateSha256 = it
                     bean.allowInsecure = true
                 }
@@ -616,7 +616,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 auth = proxy.getString("password")
                 sni = proxy.getString("sni")
                 allowInsecure = proxy.getBoolean("skip-cert-verify") == true
-                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                     pinnedPeerCertificateSha256 = it
                     allowInsecure = true
                 }
@@ -711,7 +711,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                         ?: (if (proxy.getString("ip") != null) proxy.getString("server") else null)
                     // https://github.com/MetaCubeX/mihomo/blob/d5243adf8911563677d3bd190b82623c93e554b7/adapter/outbound/tuic.go#L174-L178
                     alpn = if (!proxy.contains("alpn")) "h3" else proxy.getStringArray("alpn")?.joinToString("\n")
-                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificateSha256 = it
                         allowInsecure = true
                     }
@@ -821,7 +821,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 sni = proxy.getString("sni")
                 alpn = proxy.getStringArray("alpn")?.joinToString("\n")
                 allowInsecure = proxy.getBoolean("skip-cert-verify") == true
-                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                     pinnedPeerCertificateSha256 = it
                     allowInsecure = true
                 }
@@ -855,7 +855,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 sni = proxy.getString("sni")
                 allowInsecure = proxy.getBoolean("skip-cert-verify") == true
                 protocol = if (proxy.getBoolean("quic") == true) "quic" else "https"
-                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.also {
+                proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                     pinnedPeerCertificateSha256 = it
                     allowInsecure = true
                 }

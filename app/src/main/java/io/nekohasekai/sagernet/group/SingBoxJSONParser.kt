@@ -205,10 +205,10 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                         v2rayBean.mtlsCertificatePrivateKey = key
                                     }
                                 }
-                                tls.getByteArrayArray("certificate_public_key_sha256")?.also {
+                                tls.getByteArrayArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                                     v2rayBean.pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n") { Base64.encode(it) }
                                     v2rayBean.allowInsecure = true
-                                } ?: tls.getByteArray("certificate_public_key_sha256")?.also {
+                                } ?: tls.getByteArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                                     v2rayBean.pinnedPeerCertificatePublicKeySha256 = Base64.encode(it)
                                     v2rayBean.allowInsecure = true
                                 }
@@ -440,10 +440,10 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                             mtlsCertificatePrivateKey = key
                         }
                     }
-                    tls.getByteArrayArray("certificate_public_key_sha256")?.also {
+                    tls.getByteArrayArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n") { Base64.encode(it) }
                         allowInsecure = true
-                    } ?: tls.getByteArray("certificate_public_key_sha256")?.also {
+                    } ?: tls.getByteArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificatePublicKeySha256 = Base64.encode(it)
                         allowInsecure = true
                     }
@@ -576,10 +576,10 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                             mtlsCertificatePrivateKey = key
                         }
                     }
-                    tls.getByteArrayArray("certificate_public_key_sha256")?.also {
+                    tls.getByteArrayArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n") { Base64.encode(it) }
                         allowInsecure = true
-                    } ?: tls.getByteArray("certificate_public_key_sha256")?.also {
+                    } ?: tls.getByteArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificatePublicKeySha256 = Base64.encode(it)
                         allowInsecure = true
                     }
@@ -753,10 +753,10 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                     mtlsCertificatePrivateKey = key
                                 }
                             }
-                            tls.getByteArrayArray("certificate_public_key_sha256")?.also {
+                            tls.getByteArrayArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                                 pinnedPeerCertificatePublicKeySha256 = it.joinToString("\n") { Base64.encode(it) }
                                 allowInsecure = true
-                            } ?: tls.getByteArray("certificate_public_key_sha256")?.also {
+                            } ?: tls.getByteArray("certificate_public_key_sha256")?.takeIf { it.isNotEmpty() }?.also {
                                 pinnedPeerCertificatePublicKeySha256 = Base64.encode(it)
                                 allowInsecure = true
                             }
