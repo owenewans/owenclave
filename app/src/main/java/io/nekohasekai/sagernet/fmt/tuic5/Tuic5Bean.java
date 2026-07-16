@@ -138,7 +138,7 @@ public class Tuic5Bean extends AbstractBean {
         if (version >= 5) {
             echEnabled = input.readBoolean();
         }
-        if (version >= 5) {
+        if (version >= 6) {
             serverNameToVerify = input.readString();
         }
     }
