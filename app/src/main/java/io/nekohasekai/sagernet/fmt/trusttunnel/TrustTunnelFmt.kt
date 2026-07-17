@@ -87,7 +87,8 @@ fun TrustTunnelBean.toUri(): String {
         writeTLV(Tag.Addresses.code, joinHostPort(serverAddress, serverPort).toByteArray())
         val serverNames = serverNameToVerify.listByLineOrComma()
         require(serverNames.size <= 1, { "only one serverNameToVerify value is supported" })
-        if (serverNames.size == 1 && serverNames[0].isNotEmpty()) {
+        if (serverNames.size == 1) {
+            require(serverNames[0].isNotEmpty(), { "serverNameToVerify contains empty value" })
             // serverNameToVerify will always verify even if allowInsecure is true
             writeTLV(Tag.Hostname.code, serverNames[0].toByteArray())
             require(!Libexclavecore.isIP(sni.ifEmpty { serverAddress }), { "IP address can't be CustomSNI" })
@@ -97,7 +98,8 @@ fun TrustTunnelBean.toUri(): String {
         }
         writeTLV(Tag.Username.code, username.toByteArray())
         writeTLV(Tag.Password.code, password.toByteArray())
-        if (allowInsecure) {
+        if (pinnedPeerCertificateChainSha256.isEmpty() && pinnedPeerCertificatePublicKeySha256.isEmpty() &&
+            pinnedPeerCertificateSha256.isEmpty() && serverNames.isEmpty() && allowInsecure) {
             writeTLV(Tag.SkipVerification.code, byteArrayOf(SkipVerification.True.code))
         }
         when (protocol) {
@@ -182,6 +184,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                 Tag.SkipVerification.code -> {
                     require(length == 1, { "invalid SkipVerification" })
                     require(value[0] == SkipVerification.False.code || value[0] == SkipVerification.True.code, { "invalid SkipVerification" })
+                    bean.allowInsecure = value[0] == SkipVerification.True.code
                 }
                 Tag.Certificate.code -> {
                     val pem = Libexclavecore.derToPem(value)

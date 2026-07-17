@@ -85,7 +85,7 @@ fun JuicityBean.toUri(): String? {
     // only add `allow_insecure=1` if `pinnedPeerCertificate(PublicKey)Sha256` is not used
     if (pinnedPeerCertificateChainSha256.isNotEmpty() ||
         (allowInsecure && pinnedPeerCertificateSha256.isEmpty() &&
-                pinnedPeerCertificatePublicKeySha256.isEmpty())
+                pinnedPeerCertificatePublicKeySha256.isEmpty() && serverNameToVerify.listByLineOrComma().isEmpty())
         ) {
         builder.addQueryParameter("allow_insecure", "1")
     }

@@ -132,7 +132,8 @@ fun Hysteria2Bean.toUri(): String? {
     // as `pinnedPeerCertificate[Chain|PublicKey]Sha256` is not exportable,
     // only add `allow_insecure=1` if `pinnedPeerCertificate[Chain|PublicKey]Sha256` is not used
     if (allowInsecure &&
-        pinnedPeerCertificateChainSha256.isEmpty() && pinnedPeerCertificatePublicKeySha256.isEmpty()) {
+        pinnedPeerCertificateChainSha256.isEmpty() && pinnedPeerCertificatePublicKeySha256.isEmpty()
+        && serverNameToVerify.listByLineOrComma().isEmpty()) {
         builder.addQueryParameter("insecure", "1")
     }
     if (pinnedPeerCertificateSha256.isNotEmpty()) {

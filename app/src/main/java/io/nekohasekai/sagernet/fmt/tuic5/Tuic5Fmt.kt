@@ -143,7 +143,8 @@ fun Tuic5Bean.toUri(): String? {
     }
     // as pinned certificate is not exportable, only add `allow_insecure=1` if pinned certificate is not used
     if (allowInsecure && pinnedPeerCertificateSha256.isEmpty() &&
-        pinnedPeerCertificatePublicKeySha256.isEmpty() && pinnedPeerCertificateChainSha256.isEmpty()) {
+        pinnedPeerCertificatePublicKeySha256.isEmpty() && pinnedPeerCertificateChainSha256.isEmpty() &&
+        serverNameToVerify.listByLineOrComma().isEmpty()) {
         builder.addQueryParameter("allow_insecure", "1")
     }
     return builder.string
