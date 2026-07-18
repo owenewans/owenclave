@@ -106,6 +106,7 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
     lateinit var utlsFingerprint: ListPreference
     lateinit var mtlsCertificate: EditTextPreference
     lateinit var mtlsCertificatePrivateKey: EditTextPreference
+    lateinit var serverNameToVerify: EditTextPreference
     lateinit var echEnabled: SwitchPreference
     lateinit var echConfig: EditTextPreference
     lateinit var realityPublicKey: EditTextPreference
@@ -152,6 +153,7 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
         }
         mtlsCertificate = findPreference(Key.SERVER_MTLS_CERTIFICATE)!!
         mtlsCertificatePrivateKey = findPreference(Key.SERVER_MTLS_CERTIFICATE_PRIVATE_KEY)!!
+        serverNameToVerify = findPreference(Key.SERVER_SERVER_NAME_TO_VERIFY)!!
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
         realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
@@ -185,6 +187,7 @@ class AnyTLSSettingsActivity: ProfileSettingsActivity<AnyTLSBean>() {
         alpn.isVisible = security == "tls"
         mtlsCertificate.isVisible = security == "tls"
         mtlsCertificatePrivateKey.isVisible = security == "tls"
+        serverNameToVerify.isVisible = security == "tls"
         echEnabled.isVisible = security == "tls"
         echConfig.isVisible = security == "tls"
         realityPublicKey.isVisible = security == "reality"
