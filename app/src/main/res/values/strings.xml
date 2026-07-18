@@ -619,4 +619,5 @@
     <string name="snell_obfs_mode">Obfuscation mode</string>
     <string name="snell_obfs_host">Obfuscation host</string>
     <string name="snell_mode">Mode</string>
+    <string name="anytls_disable_reuse">Disable connection reuse</string>
 </resources>

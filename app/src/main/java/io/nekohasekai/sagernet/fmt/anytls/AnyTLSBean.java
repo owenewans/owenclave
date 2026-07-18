@@ -54,6 +54,7 @@ public class AnyTLSBean extends AbstractBean {
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
     public String serverNameToVerify;
+    public Boolean disableReuse;
 
     @Override
     public void initializeDefaultValues() {
@@ -80,11 +81,12 @@ public class AnyTLSBean extends AbstractBean {
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
         if (serverNameToVerify == null) serverNameToVerify = "";
+        if (disableReuse == null) disableReuse = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(6);
+        output.writeInt(7);
         super.serialize(output);
         output.writeString(password);
         output.writeInt(idleSessionCheckInterval);
@@ -109,6 +111,7 @@ public class AnyTLSBean extends AbstractBean {
 
         output.writeBoolean(echEnabled);
         output.writeString(serverNameToVerify);
+        output.writeBoolean(disableReuse);
     }
 
     @Override
@@ -158,6 +161,9 @@ public class AnyTLSBean extends AbstractBean {
         if (version >= 6) {
             serverNameToVerify = input.readString();
         }
+        if (version >= 7) {
+            disableReuse = input.readBoolean();
+        }
     }
 
     @Override
@@ -186,6 +192,7 @@ public class AnyTLSBean extends AbstractBean {
         bean.echConfig = echConfig;
         bean.realityFingerprint = realityFingerprint;
         bean.realityDisableX25519Mlkem768 = realityDisableX25519Mlkem768;
+        bean.disableReuse = disableReuse;
     }
 
     @NotNull

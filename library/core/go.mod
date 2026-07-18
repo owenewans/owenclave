@@ -2,7 +2,7 @@ module libexclavecore
 
 go 1.26
 
-require github.com/exclavenetwork/libexclavecore v0.0.0-20260716090720-9d5297f1fc8f
+require github.com/exclavenetwork/libexclavecore v0.0.0-20260718092645-f4c1cdd5b937
 
 require (
 	filippo.io/age v1.3.1 // indirect
@@ -11,13 +11,13 @@ require (
 	github.com/adrg/xdg v0.5.3 // indirect
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
 	github.com/andybalholm/brotli v1.0.6 // indirect
-	github.com/anytls/sing-anytls v0.0.11 // indirect
+	github.com/anytls/sing-anytls v0.0.13 // indirect
 	github.com/apernet/quic-go v0.60.1-0.20260618182935-599b15a1fa26 // indirect
 	github.com/ccding/go-stun v0.1.5 // indirect
 	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d // indirect
 	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
 	github.com/enfein/mieru/v3 v3.34.1 // indirect
-	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260716085203-57cc29ba9368 // indirect
+	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260718092345-3cdf5523b8a1 // indirect
 	github.com/exclavenetwork/hysteria/core/v2 v2.9.3-1 // indirect
 	github.com/exclavenetwork/hysteria/extras/v2 v2.9.3-1 // indirect
 	github.com/exclavenetwork/sing-juicity v0.1.5 // indirect

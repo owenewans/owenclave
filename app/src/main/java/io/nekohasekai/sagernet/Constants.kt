@@ -234,6 +234,7 @@ object Key {
     const val SERVER_ANYTLS_IDLE_SESSION_CHECK_INTERVAL = "serverAnyTLSIdleSessionCheckInterval"
     const val SERVER_ANYTLS_IDLE_SESSION_TIMEOUT = "serverAnyTLSIdleSessionTimeout"
     const val SERVER_ANYTLS_MIN_IDLE_SESSION = "serverAnyTLSMinIdleSession"
+    const val SERVER_ANYTLS_DISABLE_REUSE = "serverAnyTLSDisableReuse"
     const val SERVER_SERVER_NAME_TO_VERIFY = "serverServerNameToVerify"
     const val SERVER_HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE = "serverHysteria2OmitMaxDatagramFrameSize"
     const val SERVER_SSH_KEEPALIVE_INTERVAL = "serverSSHKeepaliveInterval"

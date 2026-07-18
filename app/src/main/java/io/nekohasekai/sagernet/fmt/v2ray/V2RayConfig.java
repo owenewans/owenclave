@@ -974,6 +974,7 @@ public class V2RayConfig {
         public Integer idleSessionCheckInterval;
         public Integer idleSessionTimeout;
         public Integer minIdleSession;
+        public Boolean disableReuse;
 
     }
 

@@ -1584,6 +1584,7 @@ fun buildV2RayConfig(
                                         idleSessionCheckInterval = bean.idleSessionCheckInterval
                                         idleSessionTimeout = bean.idleSessionTimeout
                                         minIdleSession = bean.minIdleSession
+                                        if (bean.disableReuse) disableReuse = bean.disableReuse
                                     }
                                 )
                                 streamSettings = StreamSettingsObject().apply {

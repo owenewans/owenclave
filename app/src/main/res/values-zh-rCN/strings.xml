@@ -586,4 +586,5 @@
     <string name="snell_obfs_mode">混淆模式</string>
     <string name="snell_obfs_host">混淆主机</string>
     <string name="snell_mode">模式</string>
+    <string name="anytls_disable_reuse">禁用连接复用</string>
 </resources>

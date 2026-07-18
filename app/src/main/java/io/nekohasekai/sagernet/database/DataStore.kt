@@ -396,6 +396,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverAnyTLSIdleSessionCheckInterval by profileCacheStore.stringToInt(Key.SERVER_ANYTLS_IDLE_SESSION_CHECK_INTERVAL) { 30 }
     var serverAnyTLSIdleSessionTimeout by profileCacheStore.stringToInt(Key.SERVER_ANYTLS_IDLE_SESSION_TIMEOUT) { 30 }
     var serverAnyTLSMinIdleSession by profileCacheStore.stringToInt(Key.SERVER_ANYTLS_MIN_IDLE_SESSION)
+    var serverAnyTLSDisableReuse by profileCacheStore.boolean(Key.SERVER_ANYTLS_DISABLE_REUSE)
     var serverServerNameToVerify by profileCacheStore.string(Key.SERVER_SERVER_NAME_TO_VERIFY)
     var serverHysteria2OmitMaxDatagramFrameSize by profileCacheStore.boolean(Key.SERVER_HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE)
     var serverSSHKeepaliveInterval by profileCacheStore.stringToInt(Key.SERVER_SSH_KEEPALIVE_INTERVAL)

@@ -42,6 +42,10 @@
             app:key="serverAnyTLSMinIdleSession"
             app:title="@string/anytls_min_idle_session"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverAnyTLSDisableReuse"
+            app:title="@string/anytls_disable_reuse" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:defaultValue="tls"
             app:entries="@array/transport_layer_encryption_entry"
