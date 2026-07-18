@@ -162,7 +162,8 @@ class AppManagerActivity : ThemedActivity() {
             }
 
             override fun publishResults(constraint: CharSequence, results: FilterResults) {
-                @Suppress("UNCHECKED_CAST") filteredApps = results.values as List<ProxiedApp>
+                @Suppress("UNCHECKED_CAST")
+                filteredApps = results.values as List<ProxiedApp>
                 notifyDataSetChanged()
             }
         }

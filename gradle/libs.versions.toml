@@ -1,9 +1,9 @@
 [versions]
-ksp = "2.3.9"
+ksp = "2.3.10"
 aboutlibraries = "15.0.3"
 protobuf = "0.10.0"
-android-gradle-plugin = "9.2.1"
-kotlin-gradle-plugin = "2.4.0"
+android-gradle-plugin = "9.3.0"
+kotlin-gradle-plugin = "2.4.10"
 github-api = "1.330"
 okhttp = "5.4.0"
 kotlinx-coroutines-android = "1.11.0"
