@@ -592,4 +592,5 @@
     <string name="snell_obfs_mode">Режим обфускации</string>
     <string name="snell_obfs_host">Хост обфускации</string>
     <string name="snell_mode">Режим</string>
+    <string name="anytls_disable_reuse">Отключить повторное использование соединения</string>
 </resources>
