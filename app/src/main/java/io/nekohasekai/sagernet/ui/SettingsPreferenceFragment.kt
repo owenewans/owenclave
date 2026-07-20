@@ -22,6 +22,7 @@ package io.nekohasekai.sagernet.ui
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.icu.util.ULocale
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -132,7 +133,11 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
                 "tr" -> getString(R.string.language_tr_display_name)
                 "zh-Hans-CN" -> getString(R.string.language_zh_Hans_CN_display_name)
                 "zh-Hant-TW" -> getString(R.string.language_zh_Hant_TW_display_name)
-                else -> Locale.forLanguageTag(code).displayName // just a fallback name from Java
+                else -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    ULocale.forLanguageTag(code).displayName
+                } else {
+                    Locale.forLanguageTag(code).displayName
+                }
             }
         }
         val appLanguage = findPreference<ListPreference>(Key.APP_LANGUAGE)!!
