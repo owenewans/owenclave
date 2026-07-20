@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.database
 
 import android.content.res.Resources
 import android.database.sqlite.SQLiteCantOpenDatabaseException
+import android.icu.util.ULocale
 import android.os.Build
 import android.os.LocaleList
 import androidx.appcompat.app.AppCompatDelegate
@@ -218,7 +219,11 @@ object ProfileManager {
                 else -> @Suppress("DEPRECATION") Resources.getSystem().configuration.locale
             }
             val country = systemLocale.country
-            val displayCountry = systemLocale.getDisplayCountry(appLocale)
+            val displayCountry = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                ULocale.getDisplayCountry(systemLocale.toLanguageTag(), appLocale.toLanguageTag())
+            } else {
+                systemLocale.getDisplayCountry(appLocale)
+            }
             when (country) {
                 "CN" -> {
                     createRule(
