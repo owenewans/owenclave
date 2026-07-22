@@ -380,6 +380,11 @@ class BaseService {
 
         suspend fun startProcesses() {
             data.proxy!!.launch()
+            // Keep the connecting phase until external engines (olcrtc, ...)
+            // are actually able to pass traffic, so the UI does not flip to
+            // "connected" and let the user hit "unavailable" while the
+            // transport is still coming up.
+            data.proxy!!.awaitReady()
         }
 
         fun startRunner() {

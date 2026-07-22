@@ -35,7 +35,7 @@
         <item name="chipStyle">@style/Widget.MaterialComponents.Chip.Choice.SagerNet</item>
 
         <item name="itemShapeAppearance">
-            @style/ShapeAppearance.Owenclave.MediumComponent
+            @style/ShapeAppearance.MaterialComponents.MediumComponent
         </item>
 
         <item name="alertDialogTheme">
@@ -83,7 +83,7 @@
         <item name="chipStyle">@style/Widget.MaterialComponents.Chip.Choice.SagerNet</item>
 
         <item name="itemShapeAppearance">
-            @style/ShapeAppearance.Owenclave.MediumComponent
+            @style/ShapeAppearance.MaterialComponents.MediumComponent
         </item>
 
         <item name="alertDialogTheme">
@@ -113,20 +113,14 @@
         <item name="buttonBarNeutralButtonStyle">
             @style/Widget.MaterialComponents.Button.TextButton.Dialog.Flush.Primary
         </item>
-        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.Dialog</item>
-        <item name="shapeAppearanceOverlay">@style/ShapeAppearance.Owenclave.Dialog</item>
     </style>
 
     <style name="Widget.MaterialComponents.Button.TextButton.Dialog.Primary">
         <item name="android:textColor">?primaryOrTextPrimary</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.SmallComponent</item>
-        <item name="cornerRadius">16dp</item>
     </style>
 
     <style name="Widget.MaterialComponents.Button.TextButton.Dialog.Flush.Primary">
         <item name="android:textColor">?primaryOrTextPrimary</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.SmallComponent</item>
-        <item name="cornerRadius">16dp</item>
     </style>
 
     <style name="Widget.MaterialComponents.Chip.Choice.SagerNet">
@@ -136,28 +130,24 @@
         <item name="android:textColor">@color/chip_text_color</item>
         <item name="checkedIconTint">?primaryOrTextPrimary</item>
         <item name="rippleColor">@color/chip_ripple_color</item>
-        <item name="chipCornerRadius">16dp</item>
     </style>
 
     <style name="Theme.SagerNet.Black">
-        <item name="colorPrimary">@color/owenclave_dark_primary</item>
-        <item name="colorPrimaryDark">@color/owenclave_dark_surface</item>
-        <item name="colorAccent">@color/owenclave_dark_primary</item>
+        <item name="colorPrimary">@color/material_light_black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/white</item>
         <item name="colorMaterial100">@color/fab_color_progress</item>
-        <item name="colorMaterial300">@color/owenclave_dark_surface_container</item>
+        <item name="colorMaterial300">@color/material_light_black</item>
 
         <item name="android:textColorLink">?attr/accentOrTextSecondary</item>
-        <item name="fabColorBackground">@color/owenclave_dark_surface_variant</item>
-        <item name="selectedColorPrimary">@color/owenclave_dark_primary</item>
-        <item name="itemShapeFillColor">@color/owenclave_dark_surface_container_high</item>
+        <item name="fabColorBackground">?colorPrimaryDark</item>
+        <item name="selectedColorPrimary">@color/white</item>
+        <item name="itemShapeFillColor">#616161</item>
 
-        <item name="android:windowBackground">@color/owenclave_dark_surface</item>
-        <item name="android:colorBackground">@color/owenclave_dark_surface</item>
-
-        <item name="accentOrTextSecondary">@color/owenclave_dark_on_surface_variant</item>
-        <item name="accentOrTextPrimary">@color/owenclave_dark_on_surface</item>
-        <item name="primaryOrTextSecondary">@color/owenclave_dark_on_surface_variant</item>
-        <item name="primaryOrTextPrimary">@color/owenclave_dark_on_surface</item>
+        <item name="accentOrTextSecondary">?android:textColorSecondary</item>
+        <item name="accentOrTextPrimary">?android:textColorPrimary</item>
+        <item name="primaryOrTextSecondary">?android:textColorSecondary</item>
+        <item name="primaryOrTextPrimary">?android:textColorPrimary</item>
     </style>
 
 
@@ -335,24 +325,21 @@
     </style>
 
     <style name="Theme.SagerNet.Dialog.Black">
-        <item name="colorPrimary">@color/owenclave_dark_primary</item>
-        <item name="colorPrimaryDark">@color/owenclave_dark_surface</item>
-        <item name="colorAccent">@color/owenclave_dark_primary</item>
+        <item name="colorPrimary">@color/material_light_black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorAccent">@color/white</item>
         <item name="colorMaterial100">@color/fab_color_progress</item>
-        <item name="colorMaterial300">@color/owenclave_dark_surface_container</item>
+        <item name="colorMaterial300">@color/material_light_black</item>
 
         <item name="android:textColorLink">?attr/accentOrTextSecondary</item>
-        <item name="fabColorBackground">@color/owenclave_dark_surface_variant</item>
-        <item name="selectedColorPrimary">@color/owenclave_dark_primary</item>
-        <item name="itemShapeFillColor">@color/owenclave_dark_surface_container_high</item>
+        <item name="fabColorBackground">?colorPrimaryDark</item>
+        <item name="selectedColorPrimary">@color/white</item>
+        <item name="itemShapeFillColor">#616161</item>
 
-        <item name="android:windowBackground">@color/owenclave_dark_surface_variant</item>
-        <item name="android:colorBackground">@color/owenclave_dark_surface_variant</item>
-
-        <item name="accentOrTextSecondary">@color/owenclave_dark_on_surface_variant</item>
-        <item name="accentOrTextPrimary">@color/owenclave_dark_on_surface</item>
-        <item name="primaryOrTextSecondary">@color/owenclave_dark_on_surface_variant</item>
-        <item name="primaryOrTextPrimary">@color/owenclave_dark_on_surface</item>
+        <item name="accentOrTextSecondary">?android:textColorSecondary</item>
+        <item name="accentOrTextPrimary">?android:textColorPrimary</item>
+        <item name="primaryOrTextSecondary">?android:textColorSecondary</item>
+        <item name="primaryOrTextPrimary">?android:textColorPrimary</item>
     </style>
 
 

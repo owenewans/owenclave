@@ -15,12 +15,8 @@
         android:id="@+id/bypassGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:gravity="center"
-        app:chipSpacingHorizontal="8dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
         app:selectionRequired="true"
         app:singleSelection="true">
 
@@ -28,23 +24,20 @@
             android:id="@+id/appProxyModeDisable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/off"
-            app:chipCornerRadius="20dp" />
+            android:text="@string/off" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/appProxyModeOn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/route_proxy"
-            app:chipCornerRadius="20dp" />
+            android:text="@string/route_proxy" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/appProxyModeBypass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="@string/bypass_apps"
-            app:chipCornerRadius="20dp" />
+            android:text="@string/bypass_apps" />
 
     </com.google.android.material.chip.ChipGroup>
 

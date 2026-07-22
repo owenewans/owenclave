@@ -25,4 +25,18 @@ interface AbstractInstance : Closeable {
 
     fun launch()
 
+    /**
+     * Suspends until the instance is actually ready to serve traffic.
+     *
+     * External proxy engines (e.g. olcrtc) launch as separate processes and
+     * need time to establish their transport (WebRTC ICE/negotiation) before
+     * their local SOCKS listener accepts connections. Until then the tunnel
+     * would report "connected" while every request fails as "unavailable".
+     * Implementations should block the connecting phase here so the UI stays
+     * in the Connecting state until the engine can really pass traffic.
+     *
+     * Default is a no-op for engines that are ready as soon as launched.
+     */
+    suspend fun awaitReady() {}
+
 }

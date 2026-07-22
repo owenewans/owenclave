@@ -33,6 +33,7 @@ object Executable {
     private val EXECUTABLES = setOf(
         "libnaive.so",
         "libshadowquic.so",
+        "libolcrtc.so",
     )
 
     fun killAll() {

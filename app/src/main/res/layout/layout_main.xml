@@ -40,9 +40,7 @@
             android:nextFocusDown="@+id/stats"
             app:backgroundTint="?fabColorBackground"
             app:layout_anchor="@id/stats"
-            app:maxImageSize="32dp"
             app:pressedTranslationZ="6dp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Owenclave.LargeComponent"
             app:srcCompat="@drawable/ic_service_idle" />
 
         <io.nekohasekai.sagernet.widget.StatsBar
@@ -54,8 +52,8 @@
             app:backgroundTint="?colorPrimary"
             app:contentInsetStart="0dp"
             app:fabAlignmentMode="center"
-            app:fabCradleMargin="8dp"
-            app:fabCradleRoundedCornerRadius="24dp"
+            app:fabCradleMargin="5dp"
+            app:fabCradleRoundedCornerRadius="6dp"
             app:fabCradleVerticalOffset="0dp"
             app:hideOnScroll="true"
             app:layout_scrollFlags="enterAlways|scroll">
@@ -111,7 +109,6 @@
         app:itemIconTint="@color/navigation_icon"
         app:itemTextColor="@color/navigation_icon"
         app:itemMaxLines="10"
-        app:itemShapeAppearance="@style/ShapeAppearance.Owenclave.SmallComponent"
         app:menu="@menu/main_drawer_menu" />
 
     <com.google.android.material.navigation.NavigationView
@@ -121,7 +118,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemIconTint="@color/navigation_icon"
-        app:itemShapeAppearance="@style/ShapeAppearance.Owenclave.SmallComponent"
+        app:itemShapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent"
         app:itemShapeFillColor="@color/navigation_item"
         app:itemTextColor="@color/navigation_icon"
         app:itemMaxLines="10"

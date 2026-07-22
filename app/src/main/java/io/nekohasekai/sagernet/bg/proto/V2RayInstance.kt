@@ -44,12 +44,25 @@ import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
 import libexclavecore.V2RayInstance
 import java.io.File
+import java.net.InetSocketAddress
+import java.net.Socket
 
     abstract class V2RayInstance(
         val profile: ProxyEntity,
     ) : AbstractInstance {
 
+        companion object {
+            // How long to keep the connecting phase while waiting for an
+            // external engine's local SOCKS port to come up.
+            private const val READINESS_TIMEOUT_MS = 30_000L
+            private const val READINESS_POLL_INTERVAL_MS = 250L
+            private const val READINESS_CONNECT_TIMEOUT_MS = 500
+        }
+
         protected fun buildOlcrtcYaml(bean: OLCRTCBean, port: Int, username: String, password: String): String {
+            // olcrtc resolves a relative `data` dir against the executable dir
+            // (read-only nativeLibraryDir on Android), so use an absolute writable path.
+            val dataDir = File(SagerNet.application.noBackupFilesDir, "olcrtc_data").apply { mkdirs() }
             return buildString {
                 appendLine("mode: cnc")
                 appendLine("auth:")
@@ -64,9 +77,12 @@ import java.io.File
                 appendLine("socks:")
                 appendLine("  host: \"127.0.0.1\"")
                 appendLine("  port: $port")
-                appendLine("  username: \"$username\"")
-                appendLine("  password: \"$password\"")
-                appendLine("data: data")
+                if (username.isNotEmpty()) appendLine("  user: \"$username\"")
+                if (password.isNotEmpty()) appendLine("  pass: \"$password\"")
+                appendLine("data: \"${dataDir.absolutePath}\"")
+                appendLine("debug: true")
+            }.also {
+                Logs.d("olcrtc yaml config for port $port:\n$it")
             }
         }
 
@@ -78,6 +94,11 @@ import java.io.File
     val pluginPath = hashMapOf<String, PluginManager.InitResult>()
     val pluginConfigs = hashMapOf<Int, Pair<Int, String>>()
     val externalInstances = hashMapOf<Int, AbstractInstance>()
+
+    // Local SOCKS ports of external engines that need to finish bringing up
+    // their transport before they can pass traffic (e.g. olcrtc WebRTC).
+    // awaitReady() waits for these to accept connections.
+    private val readinessPorts = mutableListOf<Int>()
     open lateinit var processes: GuardedProcessPool
     private var cacheFiles = ArrayList<File>()
     fun isInitialized(): Boolean {
@@ -209,11 +230,23 @@ import java.io.File
                         configFile.writeText(config)
                         cacheFiles.add(configFile)
                         val olcrtcBin = File(context.applicationInfo.nativeLibraryDir, "libolcrtc.so")
+                        Logs.i("olcrtc: nativeLibraryDir=${context.applicationInfo.nativeLibraryDir}")
+                        Logs.i("olcrtc: binary=${olcrtcBin.absolutePath} exists=${olcrtcBin.exists()} canExecute=${olcrtcBin.canExecute()} size=${if (olcrtcBin.exists()) olcrtcBin.length() else -1}")
+                        Logs.i("olcrtc: config file=${configFile.absolutePath} exists=${configFile.exists()}")
+                        Logs.d("olcrtc: config content:\n$config")
+                        if (!olcrtcBin.exists()) {
+                            Logs.e("olcrtc: binary libolcrtc.so NOT FOUND in nativeLibraryDir. " +
+                                "Check that jniLibs/<abi>/libolcrtc.so is packaged and extractNativeLibs/useLegacyPackaging is enabled.")
+                        }
                         val commands = mutableListOf(
                             olcrtcBin.absolutePath,
                             configFile.absolutePath
                         )
+                        Logs.i("olcrtc: launching: ${commands.joinToString(" ")}")
                         processes.start(commands, env)
+                        // olcrtc needs to negotiate WebRTC before its local
+                        // SOCKS listener is usable; awaitReady() waits on it.
+                        readinessPorts.add(port)
                     }
                 }
             }
@@ -269,6 +302,43 @@ import java.io.File
                     }
                 }
                 shForwarder.loadUrl(url)
+            }
+        }
+    }
+
+    /**
+     * Wait until every external engine's local SOCKS port accepts a TCP
+     * connection, so the service stays in the Connecting state until traffic
+     * can really flow (olcrtc must finish WebRTC negotiation first).
+     *
+     * Times out after [READINESS_TIMEOUT_MS] and returns anyway, so a stuck
+     * engine still surfaces to the user as connected-but-failing rather than
+     * hanging the connect flow forever.
+     */
+    override suspend fun awaitReady() {
+        if (readinessPorts.isEmpty()) return
+        withContext(Dispatchers.IO) {
+            for (port in readinessPorts) {
+                val deadline = SystemClock.elapsedRealtime() + READINESS_TIMEOUT_MS
+                Logs.i("readiness: waiting for local SOCKS 127.0.0.1:$port to come up (timeout ${READINESS_TIMEOUT_MS}ms)")
+                var ready = false
+                while (SystemClock.elapsedRealtime() < deadline) {
+                    if (!isActive) return@withContext
+                    try {
+                        Socket().use { sock ->
+                            sock.connect(InetSocketAddress(LOCALHOST, port), READINESS_CONNECT_TIMEOUT_MS)
+                        }
+                        ready = true
+                        break
+                    } catch (_: Exception) {
+                        delay(READINESS_POLL_INTERVAL_MS)
+                    }
+                }
+                if (ready) {
+                    Logs.i("readiness: local SOCKS 127.0.0.1:$port is up")
+                } else {
+                    Logs.w("readiness: local SOCKS 127.0.0.1:$port did not come up within ${READINESS_TIMEOUT_MS}ms; continuing anyway")
+                }
             }
         }
     }

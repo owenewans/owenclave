@@ -1,19 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!-- Based on: https://github.com/android/platform_frameworks_base/blob/505e3ab/core/res/res/layout/simple_list_item_2.xml -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="12dp"
-    android:layout_marginEnd="12dp"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
+    android:layout_margin="4dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:id="@+id/content_lin"
@@ -50,31 +45,30 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:paddingLeft="16dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp">
+                    android:paddingLeft="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
 
                     <TextView
                         android:id="@+id/profile_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textColor="?android:attr/textColorPrimary"
                         android:textStyle="bold"
                         tools:text="@string/profile_name" />
                 </LinearLayout>
 
-                <com.google.android.material.button.MaterialButton
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/edit"
-                    style="@style/Widget.Owenclave.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/edit"
                     android:focusable="true"
-                    app:icon="@drawable/ic_image_edit"
-                    app:iconTint="?attr/accentOrTextSecondary"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Owenclave.SmallComponent" />
+                    android:padding="12dp"
+                    app:srcCompat="@drawable/ic_image_edit" />
 
                 <LinearLayout
                     android:id="@+id/share"
@@ -101,17 +95,16 @@
 
                 </LinearLayout>
 
-                <com.google.android.material.button.MaterialButton
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/deleteIcon"
-                    style="@style/Widget.Owenclave.Button.IconButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
+                    android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="@string/delete"
                     android:focusable="true"
-                    app:icon="@drawable/ic_action_delete"
-                    app:iconTint="?attr/accentOrTextSecondary"
-                    app:shapeAppearanceOverlay="@style/ShapeAppearance.Owenclave.SmallComponent" />
+                    android:padding="12dp"
+                    app:srcCompat="@drawable/ic_action_delete" />
 
             </LinearLayout>
 
@@ -119,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
+                android:paddingStart="12dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="4dp"
                 android:visibility="gone"
@@ -131,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/server_address"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="?android:attr/textColorSecondary" />
 
                 <TextView
@@ -140,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/traffic"
-                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="?android:attr/textColorSecondary" />
 
             </LinearLayout>
@@ -149,16 +142,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
+                android:paddingStart="12dp"
                 android:paddingEnd="8dp"
-                android:paddingBottom="14dp">
+                android:paddingBottom="12dp">
 
                 <TextView
                     android:id="@+id/profile_type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="?colorAccent" />
 
                 <TextView
@@ -166,7 +159,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:textAppearance="?attr/textAppearanceLabelSmall"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="?colorAccent" />
 
             </LinearLayout>
