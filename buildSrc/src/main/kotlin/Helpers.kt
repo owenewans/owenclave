@@ -205,6 +205,7 @@ fun Project.setupApp() {
         buildFeatures.aidl = true
         buildFeatures.buildConfig = true
         buildFeatures.viewBinding = true
+        buildFeatures.compose = true
         compileOptions.isCoreLibraryDesugaringEnabled = true
         flavorDimensions.add("vendor")
         productFlavors.create("oss")
