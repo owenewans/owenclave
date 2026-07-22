@@ -19,11 +19,11 @@
 
 package io.nekohasekai.sagernet.fmt.ssh
 
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 
 fun parseSSH(link: String): SSHBean {
     // Warning: no public key pinning is insecure!
-    val url = Libexclavecore.parseURL(link)
+    val url = Libowenclavecore.parseURL(link)
     return SSHBean().apply {
         serverAddress = url.host.ifEmpty { error("empty host") }
         serverPort = url.port.takeIf { it > 0 } ?: 22

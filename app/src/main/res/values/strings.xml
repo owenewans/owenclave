@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Exclave</string>
+    <string name="app_name" translatable="false">Owenclave</string>
     <string name="project">Project</string>
     <string name="github">Source code</string>
     <string name="app_version">Version</string>
@@ -197,6 +197,7 @@
     <string name="action_tuic5" translatable="false">TUIC</string>
     <string name="action_http3" translatable="false">HTTP/3</string>
     <string name="action_anytls" translatable="false">AnyTLS</string>
+    <string name="action_olcrtc" translatable="false">olcrtc</string>
     <string name="proxy_chain">Proxy chain</string>
     <string name="custom_config">Custom config</string>
     <string name="balancer">Balancer</string>
@@ -620,4 +621,24 @@
     <string name="snell_obfs_host">Obfuscation host</string>
     <string name="snell_mode">Mode</string>
     <string name="anytls_disable_reuse">Disable connection reuse</string>
+    <string name="socks_proxy_chain">SOCKS proxy chaining</string>
+    <string name="socks_proxy_chain_sum">Route SOCKS traffic through another SOCKS proxy (proxy -> proxy -> site)</string>
+    <string name="socks_proxy_chain_host">Chain proxy host</string>
+    <string name="socks_proxy_chain_port">Chain proxy port</string>
+    <string name="socks_proxy_chain_username">Chain proxy username</string>
+    <string name="socks_proxy_chain_password">Chain proxy password</string>
+    <string name="enable_twps2">Enable twps2 (zapret2)</string>
+    <string name="enable_twps2_sum">Global DPI bypass using twps2 local proxy from zapret2</string>
+    <string name="twps2_strategy">twps2 strategy</string>
+    <string name="enable_unlock_ru">Unlock AI and EN services (Russia)</string>
+    <string name="enable_unlock_ru_sum">Apply routing rules to bypass blocks on AI and EN services in Russia</string>
+    <string name="direct_proxy_mode">Direct proxy mode</string>
+    <string name="direct_proxy_mode_sum">Direct traffic through the device itself using zapret2 and unlock rules</string>
+    <string name="olcrtc_auth_provider">Auth provider</string>
+    <string name="olcrtc_transport">Transport</string>
+    <string name="olcrtc_room_id">Room ID</string>
+    <string name="olcrtc_encryption_key">Encryption key (hex)</string>
+    <string name="olcrtc_dns">DNS server</string>
+    <string name="olcrtc_socks_host">SOCKS host</string>
+    <string name="olcrtc_socks_port">SOCKS port</string>
 </resources>

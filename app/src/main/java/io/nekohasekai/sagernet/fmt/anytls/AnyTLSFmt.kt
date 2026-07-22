@@ -20,10 +20,10 @@
 package io.nekohasekai.sagernet.fmt.anytls
 
 import io.nekohasekai.sagernet.ktx.*
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 
 fun parseAnyTLS(url: String): AnyTLSBean {
-    val link = Libexclavecore.parseURL(url)
+    val link = Libowenclavecore.parseURL(url)
     return AnyTLSBean().apply {
         name = link.fragment
         serverAddress = link.host.ifEmpty { error("empty host") }
@@ -43,7 +43,7 @@ fun AnyTLSBean.toUri(): String? {
     if (security != "tls") {
         error("anytls must use tls")
     }
-    val builder = Libexclavecore.newURL("anytls")
+    val builder = Libowenclavecore.newURL("anytls")
     builder.setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
     if (password.isNotEmpty()) {
         builder.username = password

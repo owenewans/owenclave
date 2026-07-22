@@ -55,11 +55,11 @@ import io.nekohasekai.sagernet.fmt.v2ray.supportedVmessMethod
 import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 import java.util.Base64
 
 fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
-    // v2ray JSONv4 config, Xray config and JSONv4 config of Exclave's v2ray fork only
+    // v2ray JSONv4 config, Xray config and JSONv4 config of Owenclave's v2ray fork only
     when (val proto = outbound.getString("protocol")?.lowercase()) {
         "vmess", "vless", "trojan", "shadowsocks", "socks", "http", "shadowsocks2022", "shadowsocks-2022" -> {
             val v2rayBean = when (proto) {
@@ -342,7 +342,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.path = path
                                     try {
                                         // RPRX's smart-assed invention. This of course will break under some conditions.
-                                        val u = Libexclavecore.parseURL(path)
+                                        val u = Libowenclavecore.parseURL(path)
                                         u.queryParameter("ed")?.also { ed ->
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string
@@ -417,7 +417,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.path = it
                                     try {
                                         // RPRX's smart-assed invention. This of course will break under some conditions.
-                                        val u = Libexclavecore.parseURL(it)
+                                        val u = Libowenclavecore.parseURL(it)
                                         u.queryParameter("ed")?.also {
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string
@@ -1288,7 +1288,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     tuic5Bean.zeroRTTHandshake = it
                 }
                 settings.getObject("tlsSettings")?.also {
-                    // old version of Exclave compatibility
+                    // old version of Owenclave compatibility
                     tlsSettingsObject = it
                 }
                 settings.getBoolean("disableSNI")?.also {
@@ -1389,7 +1389,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     http3Bean.password = it
                 }
                 settings.getObject("tlsSettings")?.also {
-                    // old version of Exclave compatibility
+                    // old version of Owenclave compatibility
                     tlsSettingsObject = it
                 }
             }
@@ -1599,7 +1599,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     juicityBean.password = it
                 }
                 settings.getObject("tlsSettings")?.also {
-                    // old version of Exclave compatibility
+                    // old version of Owenclave compatibility
                     tlsSettingsObject = it
                 }
             }
@@ -2058,7 +2058,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     trusttunnelBean.password = it
                 }
                 settings.getString("serverNameToVerify")?.also {
-                    // for old Exclave backward compatibility
+                    // for old Owenclave backward compatibility
                     trusttunnelBean.serverNameToVerify = it
                 }
                 settings.getBoolean("http3")?.also {

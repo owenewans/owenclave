@@ -44,9 +44,9 @@ import io.nekohasekai.sagernet.utils.PackageCache
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import libexclavecore.AppStats
-import libexclavecore.Libexclavecore
-import libexclavecore.TrafficListener
+import libowenclavecore.AppStats
+import libowenclavecore.Libowenclavecore
+import libowenclavecore.TrafficListener
 import java.net.UnknownHostException
 import com.github.shadowsocks.plugin.PluginManager as ShadowsocksPluginPluginManager
 import io.nekohasekai.sagernet.aidl.AppStats as AidlAppStats
@@ -268,7 +268,7 @@ class BaseService {
         override fun urlTest(): Int {
             val v2rayPoint = data?.proxy?.v2rayPoint ?: error("core not started")
             try {
-                return Libexclavecore.urlTest(
+                return Libowenclavecore.urlTest(
                     v2rayPoint, TAG_SOCKS, DataStore.connectionTestURL, 5000
                 )
             } catch (e: Exception) {

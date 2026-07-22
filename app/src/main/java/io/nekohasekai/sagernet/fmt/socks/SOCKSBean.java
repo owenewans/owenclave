@@ -75,6 +75,11 @@ public class SOCKSBean extends StandardV2RayBean {
 
     public Boolean singUoT;
 
+    public String chainHost;
+    public Integer chainPort;
+    public String chainUsername;
+    public String chainPassword;
+
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
@@ -83,16 +88,24 @@ public class SOCKSBean extends StandardV2RayBean {
         if (username == null) username = "";
         if (password == null) password = "";
         if (singUoT == null) singUoT = false;
+        if (chainHost == null) chainHost = "";
+        if (chainPort == null) chainPort = 0;
+        if (chainUsername == null) chainUsername = "";
+        if (chainPassword == null) chainPassword = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(4);
+        output.writeInt(5);
         super.serialize(output);
         output.writeInt(protocol);
         output.writeString(username);
         output.writeString(password);
         output.writeBoolean(singUoT);
+        output.writeString(chainHost);
+        output.writeInt(chainPort);
+        output.writeString(chainUsername);
+        output.writeString(chainPassword);
     }
 
     @Override
@@ -121,12 +134,24 @@ public class SOCKSBean extends StandardV2RayBean {
         if (version >= 4) {
             singUoT = input.readBoolean();
         }
+        if (version >= 5) {
+            chainHost = input.readString();
+            chainPort = input.readInt();
+            chainUsername = input.readString();
+            chainPassword = input.readString();
+        }
     }
 
     @Override
     public void applyFeatureSettings(AbstractBean other) {
         if (!(other instanceof SOCKSBean bean)) return;
         bean.singUoT = singUoT;
+        if (chainHost != null && !chainHost.isEmpty()) {
+            bean.chainHost = chainHost;
+            bean.chainPort = chainPort;
+            bean.chainUsername = chainUsername;
+            bean.chainPassword = chainPassword;
+        }
     }
 
     @NotNull

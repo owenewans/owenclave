@@ -58,6 +58,7 @@
             app:summary="@string/pcap_summary"
             app:title="@string/enable_pcap" />
         <SwitchPreference
+            app:defaultValue="true"
             app:icon="@drawable/baseline_delete_sweep_24"
             app:key="discardICMP"
             app:summary="@string/discard_icmp_sum"
@@ -74,7 +75,7 @@
             app:summary="@string/profile_traffic_statistics_summary"
             app:title="@string/profile_traffic_statistics" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
-            app:defaultValue="1000"
+            app:defaultValue="3000"
             app:entries="@array/notification_entry"
             app:entryValues="@array/notification_value"
             app:icon="@drawable/ic_baseline_shutter_speed_24"
@@ -88,7 +89,7 @@
             app:title="@string/show_direct_speed"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
-            app:defaultValue="2"
+            app:defaultValue="1"
             app:icon="@drawable/ic_baseline_bug_report_24"
             app:entries="@array/log_level_entry"
             app:entryValues="@array/log_level_value"
@@ -97,7 +98,7 @@
             app:useSimpleSummaryProvider="true"/>
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             android:icon="@drawable/ic_baseline_push_pin_24"
-            app:defaultValue="1"
+            app:defaultValue="0"
             app:entries="@array/root_ca_provider_entry"
             app:entryValues="@array/int_array_4"
             app:key="providerRootCA"
@@ -208,11 +209,52 @@
 
     <PreferenceCategory app:title="@string/protocol_settings">
         <io.nekohasekai.sagernet.widget.LinkPreference
-            app:defaultValue="https://www.google.com/generate_204"
+            app:defaultValue="https://own.owenewans.org/ip"
             app:icon="@drawable/ic_baseline_cast_connected_24"
             app:key="connectionTestURL"
             app:title="@string/connection_test_url"
             app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_texture_24"
+            app:key="socksProxyChainEnabled"
+            app:summary="@string/socks_proxy_chain_sum"
+            app:title="@string/socks_proxy_chain" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_domain_24"
+            app:key="socksProxyChainHost"
+            app:title="@string/socks_proxy_chain_host"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_maps_directions_boat"
+            app:key="socksProxyChainPort"
+            app:title="@string/socks_proxy_chain_port"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="socksProxyChainUsername"
+            app:title="@string/socks_proxy_chain_username"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogLayout="@layout/layout_password_dialog"
+            app:icon="@drawable/ic_baseline_person_24"
+            app:key="socksProxyChainPassword"
+            app:title="@string/socks_proxy_chain_password"
+            app:useSimpleSummaryProvider="true" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_security_24"
+            app:key="enableTwps2"
+            app:summary="@string/enable_twps2_sum"
+            app:title="@string/enable_twps2" />
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_lock_open_24"
+            app:key="enableUnlockRu"
+            app:summary="@string/enable_unlock_ru_sum"
+            app:title="@string/enable_unlock_ru" />
+        <SwitchPreference
+            app:icon="@drawable/baseline_flight_takeoff_24"
+            app:key="directProxyMode"
+            app:summary="@string/direct_proxy_mode_sum"
+            app:title="@string/direct_proxy_mode" />
         <SwitchPreference
             app:icon="@drawable/baseline_construction_24"
             app:key="realityDisableX25519Mlkem768"

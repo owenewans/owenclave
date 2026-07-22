@@ -44,7 +44,7 @@ import io.nekohasekai.sagernet.utils.Subnet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import libexclavecore.*
+import libowenclavecore.*
 import android.net.VpnService as BaseVpnService
 
 @SuppressLint("VpnServicePolicy")
@@ -318,7 +318,7 @@ class VpnService : BaseVpnService(),
             config.protectPath = SagerNet.deviceStorage.noBackupFilesDir.toString() + "/protect_path"
         }
 
-        tun = Libexclavecore.newTun2ray(config)
+        tun = Libowenclavecore.newTun2ray(config)
     }
 
     val appStats = mutableListOf<AppStats>()

@@ -48,13 +48,14 @@ import com.danielstone.materialaboutlibrary.items.MaterialAboutActionItem
 import com.danielstone.materialaboutlibrary.items.MaterialAboutTitleItem
 import com.danielstone.materialaboutlibrary.model.MaterialAboutCard
 import com.danielstone.materialaboutlibrary.model.MaterialAboutList
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.dp2px
 import io.nekohasekai.sagernet.ktx.dp2pxf
 import io.nekohasekai.sagernet.ktx.snackbar
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 
 class AboutFragment : ToolbarFragment(R.layout.layout_about) {
 
@@ -105,7 +106,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .icon(R.mipmap.ic_launcher)
                             .text(R.string.app_name)
                             .setOnLongClickAction {
-                                AlertDialog.Builder(activityContext).apply {
+                                MaterialAlertDialogBuilder(activityContext).apply {
                                     setView(NestedScrollView(activityContext).apply {
                                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                                         addView( HorizontalScrollView(activityContext).apply {
@@ -120,6 +121,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                         })
                                     })
                                     setPositiveButton(android.R.string.ok, null)
+                                    setNegativeButton(android.R.string.cancel, null)
                                 }.show()
                             }
                             .build())
@@ -130,7 +132,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://github.com/ExclaveNetwork/Exclave/releases".toUri()
+                                    "https://github.com/owenewans/owenclave/releases".toUri()
                                 ))
                             }
                             .setOnLongClickAction {
@@ -140,26 +142,26 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .build())
                         .addItem(MaterialAboutActionItem.Builder()
                             .icon(R.drawable.ic_baseline_airplanemode_active_24)
-                            .text(getString(R.string.version_x, "exclave-core"))
-                            .subText(Libexclavecore.getV2RayVersion())
+                            .text(getString(R.string.version_x, "owenclave-core"))
+                            .subText("xray=${Libowenclavecore.getV2RayVersion()}")
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://github.com/ExclaveNetwork/exclave-core".toUri()
+                                    "https://github.com/owenewans/owenclave-core".toUri()
                                 ))
                             }
                             .build())
                         .addItem(MaterialAboutActionItem.Builder()
                             .icon(R.drawable.ic_baseline_info_24)
                             .text(getString(R.string.version_x, "Go"))
-                            .subText(Libexclavecore.getGoVersion())
+                            .subText(Libowenclavecore.getGoVersion())
                             .setOnLongClickAction {
-                                AlertDialog.Builder(activityContext).apply {
+                                MaterialAlertDialogBuilder(activityContext).apply {
                                     setView(NestedScrollView(activityContext).apply {
                                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                                         addView( HorizontalScrollView(activityContext).apply {
                                             addView(TextView(activityContext).apply {
-                                                text = Libexclavecore.getDepInfo()
+                                                text = Libowenclavecore.getDepInfo()
                                                 textSize = dp2pxf(4)
                                                 typeface = Typeface.MONOSPACE
                                                 isSingleLine = false
@@ -169,6 +171,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                         })
                                     })
                                     setPositiveButton(android.R.string.ok, null)
+                                    setNegativeButton(android.R.string.cancel, null)
                                 }.show()
                             }
                             .build())
@@ -201,7 +204,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://github.com/ExclaveNetwork/Exclave".toUri()
+                                    "https://github.com/owenewans/owenclave".toUri()
                                 ))
                             }
                             .build())
@@ -211,7 +214,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnClickAction {
                                 startActivity(Intent(
                                     Intent.ACTION_VIEW,
-                                    "https://hosted.weblate.org/projects/exclave/".toUri()
+                                    "https://hosted.weblate.org/projects/owenclave/".toUri()
                                 ))
                             }
                             .build())
@@ -219,12 +222,12 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .icon(R.drawable.ic_action_copyleft)
                             .text(R.string.license)
                             .setOnClickAction {
-                                AlertDialog.Builder(activityContext).apply {
+                                MaterialAlertDialogBuilder(activityContext).apply {
                                     setView(
                                         TextView(activityContext).apply {
                                             setPadding(dp2px(16))
                                             text = getString(
-                                                if (Libexclavecore.buildWithClash()) {
+                                                if (Libowenclavecore.buildWithClash()) {
                                                     R.string.license_gpl_v3_only
                                                 } else {
                                                     R.string.license_gpl_v3_or_later
@@ -240,6 +243,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                     setPositiveButton(android.R.string.ok) { _, _ ->
                                         showLicenseAlertDialogFromAssets(activityContext, "license/GPL-3.0.txt")
                                     }
+                                    setNegativeButton(android.R.string.cancel, null)
                                 }.show()
                             }
                             .build())
@@ -247,7 +251,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .icon(R.drawable.ic_action_description)
                             .text(R.string.third_party_notices)
                             .setOnClickAction {
-                                AlertDialog.Builder(activityContext).apply {
+                                MaterialAlertDialogBuilder(activityContext).apply {
                                     setView(ListView(activityContext).apply {
                                         adapter = ArrayAdapter(activityContext, android.R.layout.simple_list_item_1,
                                             arrayOf(
@@ -278,6 +282,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                                         }
                                     })
                                     setPositiveButton(android.R.string.ok, null)
+                                    setNegativeButton(android.R.string.cancel, null)
                                 }.show()
                             }
                             .build())
@@ -289,7 +294,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
         }
 
         private fun showLicenseAlertDialogFromAssets(context: Context, asset: String) {
-            AlertDialog.Builder(context).apply {
+            MaterialAlertDialogBuilder(context).apply {
                 setView(NestedScrollView(context).apply {
                     setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                     addView( HorizontalScrollView(context).apply {
@@ -304,6 +309,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                     })
                 })
                 setPositiveButton(android.R.string.ok, null)
+                setNegativeButton(android.R.string.cancel, null)
             }.show()
         }
 

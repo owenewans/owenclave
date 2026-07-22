@@ -19,7 +19,7 @@
 
 package io.nekohasekai.sagernet.bg.proto
 
-import com.github.exclavenetwork.exclave.core.app.observatory.OutboundStatus
+import com.github.owenewans.owenclave.core.app.observatory.OutboundStatus
 import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.bg.BaseService
@@ -30,7 +30,7 @@ import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import libexclavecore.ObservatoryStatusUpdateListener
+import libowenclavecore.ObservatoryStatusUpdateListener
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap

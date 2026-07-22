@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <EditTextPreference
+        app:icon="@drawable/ic_social_emoji_symbols"
+        app:key="profileName"
+        app:title="@string/profile_name"
+        app:useSimpleSummaryProvider="true" />
+
+    <PreferenceCategory app:title="@string/proxy_cat">
+    <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+        app:icon="@drawable/ic_baseline_person_24"
+        app:key="serverOlcrtcAuthProvider"
+        app:title="@string/olcrtc_auth_provider"
+        app:useSimpleSummaryProvider="true" />
+    <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+        app:icon="@drawable/ic_baseline_flip_camera_android_24"
+        app:key="serverOlcrtcTransport"
+        app:title="@string/olcrtc_transport"
+        app:useSimpleSummaryProvider="true" />
+    <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+        app:icon="@drawable/ic_baseline_domain_24"
+        app:key="serverOlcrtcRoomId"
+        app:title="@string/olcrtc_room_id"
+        app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        app:icon="@drawable/ic_baseline_security_24"
+        app:key="serverOlcrtcEncryptionKey"
+        app:title="@string/olcrtc_encryption_key"
+        app:useSimpleSummaryProvider="true" />
+    <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+        app:icon="@drawable/ic_action_dns"
+        app:key="serverOlcrtcDnsServer"
+        app:title="@string/olcrtc_dns"
+        app:useSimpleSummaryProvider="true" />
+    <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
+        app:icon="@drawable/ic_maps_directions_boat"
+        app:key="serverOlcrtcSocksHost"
+        app:title="@string/olcrtc_socks_host"
+        app:useSimpleSummaryProvider="true" />
+    <EditTextPreference
+        app:icon="@drawable/ic_maps_directions_boat"
+        app:key="serverOlcrtcSocksPort"
+        app:title="@string/olcrtc_socks_port"
+        app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+</PreferenceScreen>

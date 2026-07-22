@@ -20,8 +20,8 @@
 package io.nekohasekai.sagernet.ktx
 
 import io.nekohasekai.sagernet.BuildConfig
-import libexclavecore.Libexclavecore
-import libexclavecore.URL
+import libowenclavecore.Libowenclavecore
+import libowenclavecore.URL
 import java.net.IDN
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -45,14 +45,14 @@ fun URL.addPathSegments(vararg segments: String) {
 }
 
 fun String.wrapIDN(): String {
-    if (Libexclavecore.isIP(this)) {
+    if (Libowenclavecore.isIP(this)) {
         return this
     }
     return IDN.toUnicode(this, IDN.ALLOW_UNASSIGNED)
 }
 
 fun String.unwrapIDN(): String {
-    if (Libexclavecore.isIP(this) || this.all { it.code < 128 }) {
+    if (Libowenclavecore.isIP(this) || this.all { it.code < 128 }) {
         return this
     }
     return try {
@@ -63,7 +63,7 @@ fun String.unwrapIDN(): String {
 }
 
 fun joinHostPort(host: String, port: Int): String {
-    if (Libexclavecore.isIPv6(host)) {
+    if (Libowenclavecore.isIPv6(host)) {
         return "[$host]:$port"
     }
     return "$host:$port"
@@ -78,7 +78,7 @@ fun String.unwrapHost(): String {
 
 fun isHTTPorHTTPSURL(url: String): Boolean {
     try {
-        val u = Libexclavecore.parseURL(url)
+        val u = Libowenclavecore.parseURL(url)
         return (u.scheme == "http" || u.scheme == "https")
     } catch (_: Exception) {
         return false
@@ -187,7 +187,7 @@ fun String.toHysteriaPort(disallowFromGreaterThanTo: Boolean = false): Int {
     error("invalid port range")
 }
 
-const val USER_AGENT = "Exclave/${BuildConfig.VERSION_NAME}"
+const val USER_AGENT = "Owenclave/${BuildConfig.VERSION_NAME}"
 
 // Taken from https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/blob/main/client/torrc with unsupported servers removed.
 val PUBLIC_STUN_SERVERS = arrayOf(

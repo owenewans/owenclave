@@ -21,10 +21,10 @@ package io.nekohasekai.sagernet.fmt.socks
 
 import io.nekohasekai.sagernet.ktx.decodeBase64
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 
 fun parseSOCKS(link: String): SOCKSBean {
-    val url = Libexclavecore.parseURL(link)
+    val url = Libowenclavecore.parseURL(link)
     if (url.scheme == "socks" && url.port == 0 && url.username.isEmpty() && url.password.isEmpty()) {
         // old v2rayNG format
         // This format is broken if username and/or password contains ":".
@@ -97,7 +97,7 @@ fun SOCKSBean.toUri(): String? {
     if (protocol == SOCKSBean.PROTOCOL_SOCKS4 || protocol == SOCKSBean.PROTOCOL_SOCKS4A && password.isNotEmpty()) {
         error("SOCKS4 and SOCKS4A do not have password field")
     }
-    val builder = Libexclavecore.newURL("socks${protocolVersion()}").apply {
+    val builder = Libowenclavecore.newURL("socks${protocolVersion()}").apply {
         setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         if (name.isNotEmpty()) fragment = name
     }

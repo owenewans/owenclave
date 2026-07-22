@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
-import libexclavecore.Libexclavecore;
+import libowenclavecore.Libowenclavecore;
 
 public class Tuic5Bean extends AbstractBean {
 
@@ -191,7 +191,7 @@ public class Tuic5Bean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libexclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libowenclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         if (echEnabled) {

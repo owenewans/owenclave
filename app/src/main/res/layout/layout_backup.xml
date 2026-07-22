@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -38,19 +39,24 @@
 
         <Button
             android:id="@+id/action_export"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:text="@string/action_export"
-            android:textColor="?whiteOrTextPrimary" />
+            android:textColor="?whiteOrTextPrimary"
+            app:cornerRadius="20dp"
+            app:strokeWidth="0dp" />
 
         <Button
             android:id="@+id/action_share"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/share"
-            android:textColor="?whiteOrTextPrimary" />
+            android:textColor="?whiteOrTextPrimary"
+            app:cornerRadius="20dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -61,12 +67,13 @@
 
         <Button
             android:id="@+id/action_import_file"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/action_import_file"
-            android:textColor="?whiteOrTextPrimary" />
+            android:textColor="?whiteOrTextPrimary"
+            app:cornerRadius="20dp" />
 
     </LinearLayout>
 

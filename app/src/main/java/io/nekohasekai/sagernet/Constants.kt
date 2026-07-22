@@ -19,7 +19,7 @@
 
 package io.nekohasekai.sagernet
 
-const val CONNECTION_TEST_URL = "https://www.google.com/generate_204"
+const val CONNECTION_TEST_URL = "https://own.owenewans.org/ip"
 
 object Key {
 
@@ -125,6 +125,18 @@ object Key {
     const val HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE = "hysteria2OmitMaxDatagramFrameSize"
     const val GRPC_SERVICE_NAME_COMPAT = "grpcServiceNameCompat"
     const val PROFILE_SECURITY_ADVISORY = "profileSecurityAdvisory"
+
+    const val SOCKS_PROXY_CHAIN_ENABLED = "socksProxyChainEnabled"
+    const val SOCKS_PROXY_CHAIN_HOST = "socksProxyChainHost"
+    const val SOCKS_PROXY_CHAIN_PORT = "socksProxyChainPort"
+    const val SOCKS_PROXY_CHAIN_USERNAME = "socksProxyChainUsername"
+    const val SOCKS_PROXY_CHAIN_PASSWORD = "socksProxyChainPassword"
+
+    const val ENABLE_TWPS2 = "enableTwps2"
+    const val TWPS2_STRATEGY = "twps2Strategy"
+
+    const val ENABLE_UNLOCK_RU = "enableUnlockRu"
+    const val DIRECT_PROXY_MODE = "directProxyMode"
 
     const val APP_TRAFFIC_STATISTICS = "appTrafficStatistics"
     const val PROFILE_TRAFFIC_STATISTICS = "profileTrafficStatistics"
@@ -256,6 +268,14 @@ object Key {
     const val SERVER_SNELL_OBFS_MODE = "serverSnellObfsMode"
     const val SERVER_SNELL_OBFS_HOST = "serverSnellObfsHost"
     const val SERVER_SNELL_MODE = "serverSnellMode"
+
+    const val SERVER_OLCRTC_AUTH_PROVIDER = "serverOlcrtcAuthProvider"
+    const val SERVER_OLCRTC_TRANSPORT = "serverOlcrtcTransport"
+    const val SERVER_OLCRTC_ROOM_ID = "serverOlcrtcRoomId"
+    const val SERVER_OLCRTC_ENCRYPTION_KEY = "serverOlcrtcEncryptionKey"
+    const val SERVER_OLCRTC_DNS_SERVER = "serverOlcrtcDnsServer"
+    const val SERVER_OLCRTC_SOCKS_HOST = "serverOlcrtcSocksHost"
+    const val SERVER_OLCRTC_SOCKS_PORT = "serverOlcrtcSocksPort"
 
     const val SERVER_NAIVE_NO_POST_QUANTUM = "serverNaiveNoPostQuantum"
     const val SERVER_SHADOWQUIC_DISABLE_ALPN = "serverShadowQUICDisableALPN"

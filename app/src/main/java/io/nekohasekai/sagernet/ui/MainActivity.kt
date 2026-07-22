@@ -65,7 +65,7 @@ import io.nekohasekai.sagernet.group.GroupInterfaceAdapter
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.utils.PackageCache
 import io.noties.markwon.Markwon
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 
 class MainActivity : ThemedActivity(),
     SagerConnection.Callback,
@@ -167,7 +167,7 @@ class MainActivity : ThemedActivity(),
             fun getLicenseKeyName(only: Boolean): String {
                 return if (only) "gplv3OnlyAccepted" else "gplv3OrLaterAccepted"
             }
-            val only = Libexclavecore.buildWithClash()
+            val only = Libowenclavecore.buildWithClash()
             if (DataStore.configurationStore.getBoolean(getLicenseKeyName(only)) != true) {
                 DataStore.configurationStore.putBoolean(getLicenseKeyName(only), true)
                 DataStore.configurationStore.remove(getLicenseKeyName(!only))
@@ -204,7 +204,7 @@ class MainActivity : ThemedActivity(),
         val uri = intent.data ?: return
 
         runOnDefaultDispatcher {
-            if (uri.scheme == "exclave" && uri.host == "subscription") {
+            if (uri.scheme == "owenclave" && uri.host == "subscription") {
                 uri.getQueryParameter("url")?.let {
                     importSubscription(it)
                 }

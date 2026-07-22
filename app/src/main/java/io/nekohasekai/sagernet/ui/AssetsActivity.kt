@@ -43,7 +43,7 @@ import io.nekohasekai.sagernet.databinding.LayoutAssetItemBinding
 import io.nekohasekai.sagernet.databinding.LayoutAssetsBinding
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.widget.UndoSnackbarManager
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 import java.io.File
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -323,11 +323,10 @@ class AssetsActivity : ThemedActivity() {
             }
             1 -> repo = "Loyalsoldier/v2ray-rules-dat"
             2 -> repo = "Chocolate4U/Iran-v2ray-rules"
-            4 -> repo = "runetfreedom/russia-v2ray-rules-dat"
             else -> error("invalid asset provider")
         }
 
-        val client = Libexclavecore.newHttpClient().apply {
+        val client = Libowenclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
                 useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
@@ -388,7 +387,7 @@ class AssetsActivity : ThemedActivity() {
     }
 
     suspend fun updateCustomAsset(file: File, url: String) {
-        val client = Libexclavecore.newHttpClient().apply {
+        val client = Libowenclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
                 useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")

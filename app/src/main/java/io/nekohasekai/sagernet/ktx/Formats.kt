@@ -138,6 +138,10 @@ fun parseShareLinks(text: String): List<AbstractBean> {
             runCatching {
                 entities.add(parseShadowQUIC(this))
             }
+        } else if (startsWith("olcrtc://", ignoreCase = true)) {
+            runCatching {
+                entities.add(io.nekohasekai.sagernet.fmt.olcrtc.parseOLCRTCLink(this))
+            }
         }
     }
 

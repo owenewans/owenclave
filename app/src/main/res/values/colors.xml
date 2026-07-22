@@ -280,6 +280,16 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="owenclave_dark_surface">#FF121212</color>
+    <color name="owenclave_dark_surface_variant">#FF1E1E1E</color>
+    <color name="owenclave_dark_surface_container">#FF242424</color>
+    <color name="owenclave_dark_surface_container_high">#FF2A2A2A</color>
+    <color name="owenclave_dark_on_surface">#FFE6E6E6</color>
+    <color name="owenclave_dark_on_surface_variant">#FFB0B0B0</color>
+    <color name="owenclave_dark_outline">#FF404040</color>
+    <color name="owenclave_dark_primary">#FF8AB4F8</color>
+    <color name="owenclave_dark_primary_container">#FF1A3A5C</color>
+
     <color name="fab_color_progress">@color/material_light_black</color>
     <color name="dropdown_color_background">@color/white</color>
     <color name="dropdown_color_selected">#EEEEEE</color>

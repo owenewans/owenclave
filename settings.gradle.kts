@@ -7,4 +7,4 @@ include(":plugin:naive")
 
 include(":app")
 
-rootProject.name = "Exclave"
+rootProject.name = "Owenclave"

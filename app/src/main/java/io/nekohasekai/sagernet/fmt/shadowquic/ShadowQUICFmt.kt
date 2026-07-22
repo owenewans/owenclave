@@ -28,7 +28,7 @@ import io.nekohasekai.sagernet.fmt.LOCALHOST
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.Yaml
 import java.io.File
@@ -38,7 +38,7 @@ import kotlin.text.ifEmpty
 // https://github.com/spongebob888/shadowquic/discussions/160
 // third-party share link standard endorsed by the ShadowQUIC author
 fun parseShadowQUIC(url: String): ShadowQUICBean {
-    val link = Libexclavecore.parseURL(url)
+    val link = Libowenclavecore.parseURL(url)
     return ShadowQUICBean().apply {
         name = link.fragment
         serverAddress = link.host.ifEmpty { error("empty host") }
@@ -65,7 +65,7 @@ fun ShadowQUICBean.toUri(): String? {
     if (useSunnyQUIC) {
         error("SunnyQUIC is not yet supported")
     }
-    val builder = Libexclavecore.newURL("sq").apply {
+    val builder = Libowenclavecore.newURL("sq").apply {
         if (name.isNotEmpty()) {
             fragment = name
         }

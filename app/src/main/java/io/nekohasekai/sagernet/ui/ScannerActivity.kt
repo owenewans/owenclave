@@ -55,7 +55,7 @@ import java.util.concurrent.Executors
 import androidx.core.net.toUri
 import androidx.room.util.query
 import io.nekohasekai.sagernet.utils.ZxingQRCodeAnalyzer
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 import java.net.URI
 
 class ScannerActivity : ThemedActivity() {
@@ -164,7 +164,7 @@ class ScannerActivity : ThemedActivity() {
                 if (results.isNullOrEmpty()) {
                     if (!value.contains("\n") && !value.contains("\r") && isHTTPorHTTPSURL(value)) {
                         val uri = Uri.Builder()
-                            .scheme("exclave")
+                            .scheme("owenclave")
                             .authority("subscription")
                             .appendQueryParameter("url", value)
                             .build()
@@ -256,7 +256,7 @@ class ScannerActivity : ThemedActivity() {
                             } else {
                                 if (!result.text.contains("\n") && !result.text.contains("\r") && isHTTPorHTTPSURL(result.text)) {
                                     val uri = Uri.Builder()
-                                        .scheme("exclave")
+                                        .scheme("owenclave")
                                         .authority("subscription")
                                         .appendQueryParameter("url", result.text)
                                         .build()

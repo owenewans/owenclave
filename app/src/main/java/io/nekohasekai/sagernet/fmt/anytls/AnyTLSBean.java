@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
-import libexclavecore.Libexclavecore;
+import libowenclavecore.Libowenclavecore;
 
 public class AnyTLSBean extends AbstractBean {
 
@@ -216,7 +216,7 @@ public class AnyTLSBean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libexclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libowenclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         switch(security) {

@@ -3,4 +3,47 @@
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>
+
+    <style name="ShapeAppearance.Owenclave.Dialog" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">28dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Owenclave.LargeComponent" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Owenclave.MediumComponent" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">20dp</item>
+    </style>
+
+    <style name="ShapeAppearance.Owenclave.SmallComponent" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="Widget.Owenclave.Button" parent="Widget.MaterialComponents.Button">
+        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.SmallComponent</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <style name="Widget.Owenclave.Button.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.SmallComponent</item>
+        <item name="cornerRadius">16dp</item>
+    </style>
+
+    <style name="Widget.Owenclave.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.MediumComponent</item>
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
+    <style name="Widget.Owenclave.Chip" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="shapeAppearance">@style/ShapeAppearance.Owenclave.SmallComponent</item>
+        <item name="chipCornerRadius">16dp</item>
+        <item name="textStartPadding">30dp</item>
+        <item name="textEndPadding">30dp</item>
+    </style>
 </resources>

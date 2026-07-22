@@ -26,7 +26,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean;
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean;
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean;
-import libexclavecore.Libexclavecore;
+import libowenclavecore.Libowenclavecore;
 
 public abstract class StandardV2RayBean extends AbstractBean {
 
@@ -630,7 +630,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libexclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libowenclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         switch (security) {

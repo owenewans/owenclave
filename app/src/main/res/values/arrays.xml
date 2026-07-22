@@ -390,7 +390,6 @@
     <string-array name="rules_dat_provider_entry">
         <item>v2fly</item>
         <item>Loyalsoldier/v2ray-rules-dat</item>
-        <item>runetfreedom/russia-v2ray-rules-dat</item>
         <item>Chocolate4U/Iran-v2ray-rules</item>
         <item>@string/route_rules_custom</item>
     </string-array>
@@ -398,7 +397,6 @@
     <string-array name="rules_dat_provider_value">
         <item>0</item>
         <item>1</item>
-        <item>4</item>
         <item>2</item>
         <item>3</item>
     </string-array>

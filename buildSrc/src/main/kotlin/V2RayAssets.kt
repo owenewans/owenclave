@@ -30,7 +30,7 @@ fun Project.downloadAssets(update: Boolean) {
 
     val github = GitHubBuilder().build()
 
-    val geoipVersion = File(assetsDir, "exclave-core/geoip.version.txt")
+    val geoipVersion = File(assetsDir, "owenclave-core/geoip.version.txt")
     val geoipRelease = if (update) {
         github.getRepository("v2fly/geoip").latestRelease
     } else {
@@ -39,7 +39,7 @@ fun Project.downloadAssets(update: Boolean) {
         }
     } ?: error("unable to list geoip release")
 
-    val geoipFile = File(assetsDir, "exclave-core/geoip.dat")
+    val geoipFile = File(assetsDir, "owenclave-core/geoip.dat")
 
     if (update) {
         geoipVersion.deleteRecursively()
@@ -96,7 +96,7 @@ fun Project.downloadAssets(update: Boolean) {
         break
     }
 
-    val geositeVersion = File(assetsDir, "exclave-core/geosite.version.txt")
+    val geositeVersion = File(assetsDir, "owenclave-core/geosite.version.txt")
     val geositeRelease = if (update) {
         github.getRepository("v2fly/domain-list-community").latestRelease
     } else {
@@ -105,7 +105,7 @@ fun Project.downloadAssets(update: Boolean) {
         }
     } ?: error("unable to list geosite release")
 
-    val geositeFile = File(assetsDir, "exclave-core/geosite.dat")
+    val geositeFile = File(assetsDir, "owenclave-core/geosite.dat")
 
     if (update) {
         geositeVersion.deleteRecursively()

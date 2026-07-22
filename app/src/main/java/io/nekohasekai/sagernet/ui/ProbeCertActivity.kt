@@ -45,7 +45,7 @@ import io.nekohasekai.sagernet.ktx.dp2px
 import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 
 class ProbeCertActivity : ThemedActivity() {
 
@@ -113,9 +113,9 @@ class ProbeCertActivity : ThemedActivity() {
         binding.certificate.doAfterTextChanged { text ->
             try {
                 binding.certHash.text = when (binding.certHashType.selectedItemPosition) {
-                    0 -> Libexclavecore.calculatePEMCertSHA256Hash(text.toString())
-                    1 -> Libexclavecore.calculatePEMCertPublicKeySHA256Hash(text.toString())
-                    2 -> Libexclavecore.calculatePEMCertChainSHA256Hash(text.toString())
+                    0 -> Libowenclavecore.calculatePEMCertSHA256Hash(text.toString())
+                    1 -> Libowenclavecore.calculatePEMCertPublicKeySHA256Hash(text.toString())
+                    2 -> Libowenclavecore.calculatePEMCertChainSHA256Hash(text.toString())
                     else -> error("impossible")
                 }
                 binding.showCertInfo.isVisible = true
@@ -131,9 +131,9 @@ class ProbeCertActivity : ThemedActivity() {
                 try {
                     val certificate = binding.certificate.text.toString()
                     val certHash = when (position) {
-                        0 -> Libexclavecore.calculatePEMCertSHA256Hash(certificate)
-                        1 -> Libexclavecore.calculatePEMCertPublicKeySHA256Hash(certificate)
-                        2 -> Libexclavecore.calculatePEMCertChainSHA256Hash(certificate)
+                        0 -> Libowenclavecore.calculatePEMCertSHA256Hash(certificate)
+                        1 -> Libowenclavecore.calculatePEMCertPublicKeySHA256Hash(certificate)
+                        2 -> Libowenclavecore.calculatePEMCertChainSHA256Hash(certificate)
                         else -> error("impossible")
                     }
                     binding.certHash.text = certHash
@@ -162,7 +162,7 @@ class ProbeCertActivity : ThemedActivity() {
                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                         addView( HorizontalScrollView(this@ProbeCertActivity).apply {
                             addView(TextView(this@ProbeCertActivity).apply {
-                                text = Libexclavecore.certificateToPrettyInfo(binding.certificate.text.toString())
+                                text = Libowenclavecore.certificateToPrettyInfo(binding.certificate.text.toString())
                                 isSingleLine = false
                                 typeface = Typeface.MONOSPACE
                                 setTextIsSelectable(true)
@@ -200,7 +200,7 @@ class ProbeCertActivity : ThemedActivity() {
         }
         binding.waitLayout.isVisible = true
         runOnDefaultDispatcher {
-            val certProber = Libexclavecore.newCertProber().apply {
+            val certProber = Libowenclavecore.newCertProber().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
                     useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
                 }

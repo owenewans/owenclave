@@ -122,7 +122,7 @@ import io.nekohasekai.sagernet.ktx.unescapeLineFeed
 import io.nekohasekai.sagernet.ktx.uuidOrGenerate
 import io.nekohasekai.sagernet.utils.PackageCache
 import kotlin.io.encoding.Base64
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 import java.io.File
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -528,10 +528,10 @@ fun buildV2RayConfig(
                     // but this is not the main function of this software, just keep it broken
                     if (bean.security == "none" && bean.host.isNotEmpty()) {
                         val host = try {
-                            val u = Libexclavecore.newURL("placeholder").apply {
-                                rawHost = if (Libexclavecore.isIPv6(bean.host)) "[${bean.host}]" else bean.host
+                            val u = Libowenclavecore.newURL("placeholder").apply {
+                                rawHost = if (Libowenclavecore.isIPv6(bean.host)) "[${bean.host}]" else bean.host
                             }.string
-                            Libexclavecore.parseURL(u).host
+                            Libowenclavecore.parseURL(u).host
                         } catch (_: Exception) {
                             bean.host
                         }
@@ -539,7 +539,7 @@ fun buildV2RayConfig(
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (Libexclavecore.isIP(host)) {
+                            if (Libowenclavecore.isIP(host)) {
                                 ip = listOf(host)
                                 if (DataStore.domainStrategy != "AsIs") {
                                     skipDomain = true
@@ -554,7 +554,7 @@ fun buildV2RayConfig(
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (!Libexclavecore.isIP(bean.sni)) {
+                            if (!Libowenclavecore.isIP(bean.sni)) {
                                 domains = listOf(bean.sni)
                             }
                         }
@@ -564,7 +564,7 @@ fun buildV2RayConfig(
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (Libexclavecore.isIP(bean.serverAddress)) {
+                            if (Libowenclavecore.isIP(bean.serverAddress)) {
                                 ip = listOf(bean.serverAddress)
                                 if (DataStore.domainStrategy != "AsIs") {
                                     skipDomain = true
@@ -2463,48 +2463,48 @@ fun buildV2RayConfig(
                     bean.serverAddresses.listByLineOrComma().forEach {
                         when {
                             it.isEmpty() -> {}
-                            !Libexclavecore.isIP(it) -> {
+                            !Libowenclavecore.isIP(it) -> {
                                 bypassDomainSkipFakeDns.add("full:$it")
                             }
                         }
                     }
                 } else {
-                    if (!Libexclavecore.isIP(serverAddress)) {
+                    if (!Libowenclavecore.isIP(serverAddress)) {
                         bypassDomainSkipFakeDns.add("full:$serverAddress")
                     }
                     when (bean) {
                         is StandardV2RayBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is AnyTLSBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is Http3Bean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is Hysteria2Bean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is JuicityBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is Tuic5Bean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
                         is TrustTunnelBean -> {
-                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libexclavecore.isIP(bean.sni)) {
+                            if (bean.echEnabled && bean.echConfig.isEmpty() && !Libowenclavecore.isIP(bean.sni)) {
                                 bypassDomainSkipFakeDns.add("full:${bean.sni}")
                             }
                         }
@@ -2544,11 +2544,11 @@ fun buildV2RayConfig(
             try {
                 if (it.lowercase() != "localhost" && it.lowercase() != "fakedns") {
                     if (it.contains("://")) {
-                        val url = Libexclavecore.parseURL(it)
-                        if (!Libexclavecore.isIP(url.host)) {
+                        val url = Libowenclavecore.parseURL(it)
+                        if (!Libowenclavecore.isIP(url.host)) {
                             bypassDomainSkipFakeDns.add("full:${url.host}")
                         }
-                    } else if (!Libexclavecore.isIP(it)) {
+                    } else if (!Libowenclavecore.isIP(it)) {
                         bypassDomainSkipFakeDns.add("full:$it")
                     }
                 }
@@ -2559,11 +2559,11 @@ fun buildV2RayConfig(
             try {
                 if (it.lowercase() != "localhost" && it.lowercase() != "fakedns") {
                     if (it.contains("://")) {
-                        val url = Libexclavecore.parseURL(it)
-                        if (!Libexclavecore.isIP(url.host)) {
+                        val url = Libowenclavecore.parseURL(it)
+                        if (!Libowenclavecore.isIP(url.host)) {
                             bootstrapDomain.add("full:${url.host}")
                         }
-                    } else if (!Libexclavecore.isIP(it)) {
+                    } else if (!Libowenclavecore.isIP(it)) {
                         bootstrapDomain.add("full:$it")
                     }
                 }
@@ -2738,6 +2738,67 @@ fun buildV2RayConfig(
         }
 
         if (rootBalancer != null) routing.rules.add(rootBalancer)
+
+        if (DataStore.enableUnlockRu) {
+            val unlockDomains = listOf(
+                "openai.com", "chat.openai.com", "chatgpt.com",
+                "claude.ai", "anthropic.com",
+                "perplexity.ai",
+                "x.com", "twitter.com",
+                "google.com", "youtube.com", "youtu.be",
+                "github.com", "githubusercontent.com",
+                "discord.com", "discord.gg", "discordapp.com",
+                "reddit.com", "medium.com",
+                "netflix.com", "spotify.com",
+                "twitch.tv", "steam.com", "steampowered.com",
+                "instagram.com", "facebook.com", "whatsapp.com",
+                "telegram.org", "web.telegram.org",
+                "vimeo.com", "dailymotion.com",
+                "bloomberg.com", "nytimes.com", "washingtonpost.com",
+                "bbc.com", "bbc.co.uk",
+                "wikipedia.org", "wikimedia.org"
+            )
+            for (domain in unlockDomains) {
+                routing.rules.add(RoutingObject.RuleObject().apply {
+                    type = "field"
+                    domain = listOf("domain:$domain")
+                    outboundTag = TAG_AGENT
+                })
+            }
+        }
+
+        if (DataStore.socksProxyChainEnabled && DataStore.socksProxyChainHost.isNotEmpty() && DataStore.socksProxyChainPort > 0) {
+            val chainTag = "socks-chain"
+            outbounds.add(V2RayConfig.OutboundObject().apply {
+                tag = chainTag
+                protocol = "socks"
+                settings = LazyOutboundConfigurationObject(this, SocksOutboundConfigurationObject().apply {
+                    servers = listOf(SocksOutboundConfigurationObject.ServerObject().apply {
+                        address = DataStore.socksProxyChainHost
+                        port = DataStore.socksProxyChainPort
+                        if (DataStore.socksProxyChainUsername.isNotEmpty()) {
+                            users = listOf(SocksOutboundConfigurationObject.ServerObject.UserObject().apply {
+                                user = DataStore.socksProxyChainUsername
+                                pass = DataStore.socksProxyChainPassword
+                            })
+                        }
+                    })
+                })
+            })
+        }
+
+        if (DataStore.directProxyMode) {
+            val directTag = "direct-proxy"
+            outbounds.add(V2RayConfig.OutboundObject().apply {
+                tag = directTag
+                protocol = "freedom"
+            })
+            routing.rules.add(0, RoutingObject.RuleObject().apply {
+                type = "field"
+                outboundTag = directTag
+                network = "tcp,udp"
+            })
+        }
 
         if (trafficStatistics) stats = emptyMap()
 

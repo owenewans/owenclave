@@ -130,8 +130,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
         return groups.find { it.type == GroupType.BASIC }!!.id
     }
 
-    var appTheme by configurationStore.int(Key.APP_THEME)
-    var nightTheme by configurationStore.stringToInt(Key.NIGHT_THEME)
+    var appTheme by configurationStore.int(Key.APP_THEME) { 20 }
+    var nightTheme by configurationStore.stringToInt(Key.NIGHT_THEME) { 1 }
     var serviceMode by configurationStore.string(Key.SERVICE_MODE) { Key.MODE_VPN }
 
     var domainStrategy by configurationStore.string(Key.DOMAIN_STRATEGY) { "AsIs" }
@@ -144,7 +144,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var bypassLan by configurationStore.boolean(Key.BYPASS_LAN) { true }
 
     var allowAccess by configurationStore.boolean(Key.ALLOW_ACCESS)
-    var speedInterval by configurationStore.stringToInt(Key.SPEED_INTERVAL)
+    var speedInterval by configurationStore.stringToInt(Key.SPEED_INTERVAL) { 3 }
 
     var remoteDns by configurationStore.stringNotBlack(Key.REMOTE_DNS) { "tcp://1.1.1.1" }
     var directDns by configurationStore.stringNotBlack(Key.DIRECT_DNS) {
@@ -175,7 +175,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var rulesProvider by configurationStore.stringToInt(Key.RULES_PROVIDER)
     var rulesGeositeUrl by configurationStore.string(Key.RULES_GEOSITE_URL) { "https://github.com/v2fly/domain-list-community/releases/latest/download/dlc.dat" }
     var rulesGeoipUrl by configurationStore.string(Key.RULES_GEOIP_URL) { "https://github.com/v2fly/geoip/releases/latest/download/geoip.dat" }
-    var logLevel by configurationStore.stringToInt(Key.LOG_LEVEL) { 2 }
+    var logLevel by configurationStore.stringToInt(Key.LOG_LEVEL) { 1 }
     var logLevelDebugWarningDisable by configurationStore.boolean(Key.LOG_LEVEL_DEBUG_WARNING_DISABLE)
     var enableDebug by configurationStore.boolean(Key.ENABLE_DEBUG) { BuildConfig.DEBUG }
     var pprofServer by configurationStore.string(Key.PPROF_SERVER)
@@ -194,6 +194,18 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var hysteria2OmitMaxDatagramFrameSize by configurationStore.boolean(Key.HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE)
     var grpcServiceNameCompat by configurationStore.boolean(Key.GRPC_SERVICE_NAME_COMPAT)
     var profileSecurityAdvisory by configurationStore.boolean(Key.PROFILE_SECURITY_ADVISORY) { true }
+
+    var socksProxyChainEnabled by configurationStore.boolean(Key.SOCKS_PROXY_CHAIN_ENABLED)
+    var socksProxyChainHost by configurationStore.string(Key.SOCKS_PROXY_CHAIN_HOST)
+    var socksProxyChainPort by configurationStore.stringToInt(Key.SOCKS_PROXY_CHAIN_PORT)
+    var socksProxyChainUsername by configurationStore.string(Key.SOCKS_PROXY_CHAIN_USERNAME)
+    var socksProxyChainPassword by configurationStore.string(Key.SOCKS_PROXY_CHAIN_PASSWORD)
+
+    var enableTwps2 by configurationStore.boolean(Key.ENABLE_TWPS2)
+    var twps2Strategy by configurationStore.string(Key.TWPS2_STRATEGY) { "auto" }
+
+    var enableUnlockRu by configurationStore.boolean(Key.ENABLE_UNLOCK_RU)
+    var directProxyMode by configurationStore.boolean(Key.DIRECT_PROXY_MODE)
 
     // hopefully hashCode = mHandle doesn't change, currently this is true from KitKat to Nougat
     private val userIndex by lazy { Binder.getCallingUserHandle().hashCode() }
@@ -279,13 +291,13 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var mtu by configurationStore.stringToInt(Key.MTU) { VpnService.DEFAULT_MTU }
 
-    var discardICMP by configurationStore.boolean(Key.DISCARD_ICMP)
+    var discardICMP by configurationStore.boolean(Key.DISCARD_ICMP) { true }
 
     var appTrafficStatistics by configurationStore.boolean(Key.APP_TRAFFIC_STATISTICS)
     var profileTrafficStatistics by configurationStore.boolean(Key.PROFILE_TRAFFIC_STATISTICS) { true }
 
     // protocol
-    var providerRootCA by configurationStore.stringToInt(Key.PROVIDER_ROOT_CA) { 1 }
+    var providerRootCA by configurationStore.stringToInt(Key.PROVIDER_ROOT_CA) { 0 }
     var interruptReusedConnections by configurationStore.boolean(Key.INTERRUPT_REUSED_CONNECTIONS) { true }
 
     // cache
@@ -364,6 +376,14 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverSnellObfsMode by profileCacheStore.string(Key.SERVER_SNELL_OBFS_MODE)
     var serverSnellObfsHost by profileCacheStore.string(Key.SERVER_SNELL_OBFS_HOST)
     var serverSnellMode by profileCacheStore.string(Key.SERVER_SNELL_MODE)
+
+    var serverOlcrtcAuthProvider by profileCacheStore.string(Key.SERVER_OLCRTC_AUTH_PROVIDER) { "jitsi" }
+    var serverOlcrtcTransport by profileCacheStore.string(Key.SERVER_OLCRTC_TRANSPORT) { "datachannel" }
+    var serverOlcrtcRoomId by profileCacheStore.string(Key.SERVER_OLCRTC_ROOM_ID)
+    var serverOlcrtcEncryptionKey by profileCacheStore.string(Key.SERVER_OLCRTC_ENCRYPTION_KEY)
+    var serverOlcrtcDnsServer by profileCacheStore.string(Key.SERVER_OLCRTC_DNS_SERVER) { "8.8.8.8:53" }
+    var serverOlcrtcSocksHost by profileCacheStore.string(Key.SERVER_OLCRTC_SOCKS_HOST) { "127.0.0.1" }
+    var serverOlcrtcSocksPort by profileCacheStore.stringToInt(Key.SERVER_OLCRTC_SOCKS_PORT) { 8808 }
 
     var serverVMessExperimentalAuthenticatedLength by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH)
     var serverVMessExperimentalNoTerminationSignal by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL)

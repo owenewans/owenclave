@@ -38,15 +38,37 @@ import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowquic.buildShadowQUICConfig
+import io.nekohasekai.sagernet.fmt.olcrtc.OLCRTCBean
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
-import libexclavecore.V2RayInstance
+import libowenclavecore.V2RayInstance
 import java.io.File
 
-abstract class V2RayInstance(
-    val profile: ProxyEntity,
-) : AbstractInstance {
+    abstract class V2RayInstance(
+        val profile: ProxyEntity,
+    ) : AbstractInstance {
+
+        protected fun buildOlcrtcYaml(bean: OLCRTCBean, port: Int, username: String, password: String): String {
+            return buildString {
+                appendLine("mode: cnc")
+                appendLine("auth:")
+                appendLine("  provider: ${bean.authProvider}")
+                appendLine("room:")
+                appendLine("  id: \"${bean.roomId}\"")
+                appendLine("crypto:")
+                appendLine("  key: \"${bean.encryptionKey}\"")
+                appendLine("net:")
+                appendLine("  transport: ${bean.transport}")
+                appendLine("  dns: \"${bean.dnsServer}\"")
+                appendLine("socks:")
+                appendLine("  host: \"127.0.0.1\"")
+                appendLine("  port: $port")
+                appendLine("  username: \"$username\"")
+                appendLine("  password: \"$password\"")
+                appendLine("data: data")
+            }
+        }
 
     lateinit var config: V2rayBuildResult
     lateinit var v2rayPoint: V2RayInstance
@@ -98,6 +120,10 @@ abstract class V2RayInstance(
                                 }
                             }
                         )
+                    }
+                    is OLCRTCBean -> {
+                        val yamlConfig = buildOlcrtcYaml(bean, port, username, password)
+                        pluginConfigs[port] = profile.type to yamlConfig
                     }
                 }
             }
@@ -171,6 +197,21 @@ abstract class V2RayInstance(
                             initPlugin("shadowquic-plugin").path,
                             "-c",
                             configFile.absolutePath,
+                        )
+                        processes.start(commands, env)
+                    }
+                    bean is OLCRTCBean -> {
+                        val configFile = File(
+                            context.noBackupFilesDir,
+                            "olcrtc_" + SystemClock.elapsedRealtime() + ".yaml"
+                        )
+                        configFile.parentFile?.mkdirs()
+                        configFile.writeText(config)
+                        cacheFiles.add(configFile)
+                        val olcrtcBin = File(context.applicationInfo.nativeLibraryDir, "libolcrtc.so")
+                        val commands = mutableListOf(
+                            olcrtcBin.absolutePath,
+                            configFile.absolutePath
                         )
                         processes.start(commands, env)
                     }

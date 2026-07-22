@@ -23,7 +23,7 @@ import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libexclavecore.Libexclavecore
+import libowenclavecore.Libowenclavecore
 import com.sshtools.jini.INI
 import com.sshtools.jini.INIWriter
 import java.io.StringWriter
@@ -31,7 +31,7 @@ import java.util.Base64
 import kotlin.jvm.optionals.getOrNull
 
 fun parseWireGuard(server: String): WireGuardBean {
-    val link = Libexclavecore.parseURL(server)
+    val link = Libowenclavecore.parseURL(server)
     return WireGuardBean().apply {
         serverAddress = link.host.ifEmpty { error("empty host") }
         serverPort = link.port.takeIf { it > 0 } ?: 51820

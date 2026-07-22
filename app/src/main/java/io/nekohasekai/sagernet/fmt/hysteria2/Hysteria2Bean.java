@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 import io.nekohasekai.sagernet.ktx.NetsKt;
-import libexclavecore.Libexclavecore;
+import libowenclavecore.Libowenclavecore;
 
 public class Hysteria2Bean extends AbstractBean {
 
@@ -268,7 +268,7 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public String displayAddress() {
-        if (Libexclavecore.isIPv6(serverAddress)) {
+        if (Libowenclavecore.isIPv6(serverAddress)) {
             return "[" + serverAddress + "]:" + serverPorts;
         } else {
             return NetsKt.wrapIDN(serverAddress) + ":" + serverPorts;
@@ -296,7 +296,7 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public boolean isInsecure() {
-        if (Libexclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
+        if (Libowenclavecore.isLoopbackIP(serverAddress) || serverAddress.equals("localhost")) {
             return false;
         }
         if (echEnabled) {
