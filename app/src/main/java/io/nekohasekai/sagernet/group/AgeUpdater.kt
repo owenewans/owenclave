@@ -31,7 +31,7 @@ import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.*
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 import org.yaml.snakeyaml.DumperOptions
 import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
@@ -53,10 +53,10 @@ object AgeUpdater : GroupUpdater() {
         var proxies: List<AbstractBean>
         if (link.startsWith("content://", ignoreCase = true)) {
             val content = app.contentResolver.openInputStream(link.toUri())?.readBytes()
-            val data = Libowenclavecore.ageArmerDecrypt(content, subscription.agePrivateKey)
+            val data = Libexclavecore.ageArmerDecrypt(content, subscription.agePrivateKey)
             proxies = data?.let { parseRaw(String(data)) } ?: error(app.getString(R.string.no_proxies_found_in_subscription))
         } else {
-            val response = Libowenclavecore.newHttpClient().apply {
+            val response = Libexclavecore.newHttpClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
                     useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
                 }
@@ -76,7 +76,7 @@ object AgeUpdater : GroupUpdater() {
                 }
             }.execute()
 
-            val data = Libowenclavecore.ageArmerDecrypt(response.content, subscription.agePrivateKey)
+            val data = Libexclavecore.ageArmerDecrypt(response.content, subscription.agePrivateKey)
             proxies = data?.let { parseRaw(String(data)) } ?: error(app.getString(R.string.no_proxies_found))
 
             val subscriptionUserinfo = response.getHeader("Subscription-Userinfo")

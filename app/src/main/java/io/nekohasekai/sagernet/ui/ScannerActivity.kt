@@ -55,7 +55,7 @@ import java.util.concurrent.Executors
 import androidx.core.net.toUri
 import androidx.room.util.query
 import io.nekohasekai.sagernet.utils.ZxingQRCodeAnalyzer
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 import java.net.URI
 
 class ScannerActivity : ThemedActivity() {

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 bin/plugin/naive/init.sh &&
   bin/plugin/naive/armeabi-v7a.sh &&

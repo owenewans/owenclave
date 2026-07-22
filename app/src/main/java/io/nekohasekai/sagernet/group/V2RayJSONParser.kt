@@ -55,7 +55,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.supportedVmessMethod
 import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 import java.util.Base64
 
 fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
@@ -342,7 +342,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.path = path
                                     try {
                                         // RPRX's smart-assed invention. This of course will break under some conditions.
-                                        val u = Libowenclavecore.parseURL(path)
+                                        val u = Libexclavecore.parseURL(path)
                                         u.queryParameter("ed")?.also { ed ->
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string
@@ -417,7 +417,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.path = it
                                     try {
                                         // RPRX's smart-assed invention. This of course will break under some conditions.
-                                        val u = Libowenclavecore.parseURL(it)
+                                        val u = Libexclavecore.parseURL(it)
                                         u.queryParameter("ed")?.also {
                                             u.deleteQueryParameter("ed")
                                             v2rayBean.path = u.string

@@ -42,7 +42,7 @@ import io.nekohasekai.sagernet.fmt.olcrtc.OLCRTCBean
 import io.nekohasekai.sagernet.ktx.*
 import io.nekohasekai.sagernet.plugin.PluginManager
 import kotlinx.coroutines.*
-import libowenclavecore.V2RayInstance
+import libexclavecore.V2RayInstance
 import java.io.File
 
     abstract class V2RayInstance(

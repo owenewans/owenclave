@@ -20,15 +20,15 @@ package io.nekohasekai.sagernet.bg.test
 
 import io.nekohasekai.sagernet.bg.AbstractInstance
 import io.nekohasekai.sagernet.database.DataStore
-import libowenclavecore.DebugInstance
-import libowenclavecore.Libowenclavecore
+import libexclavecore.DebugInstance
+import libexclavecore.Libexclavecore
 
 class DebugInstance : AbstractInstance {
 
     lateinit var instance: DebugInstance
 
     override fun launch() {
-        instance = Libowenclavecore.newDebugInstance(DataStore.pprofServer)
+        instance = Libexclavecore.newDebugInstance(DataStore.pprofServer)
     }
 
     override fun close() {

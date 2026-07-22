@@ -24,7 +24,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
 import io.nekohasekai.sagernet.ktx.*
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 import java.util.Base64
 import kotlin.collections.filter
 import kotlin.collections.isNotEmpty
@@ -65,7 +65,7 @@ val nonRawTransportName = arrayOf(
 fun parseV2Ray(link: String): StandardV2RayBean {
     // https://github.com/XTLS/Xray-core/issues/91
     // https://github.com/XTLS/Xray-core/discussions/716
-    val url = Libowenclavecore.parseURL(link)
+    val url = Libexclavecore.parseURL(link)
     val bean = when (url.scheme) {
         "vmess" -> VMessBean()
         "vless" -> VLESSBean()
@@ -337,7 +337,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 bean.path = path
                 try {
                     // RPRX's smart-assed invention. This of course will break under some conditions.
-                    val u = Libowenclavecore.parseURL(path)
+                    val u = Libexclavecore.parseURL(path)
                     u.queryParameter("ed")?.let {
                         u.deleteQueryParameter("ed")
                         bean.path = u.string
@@ -364,7 +364,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                 bean.path = path
                 try {
                     // RPRX's smart-assed invention. This of course will break under some conditions.
-                    val u = Libowenclavecore.parseURL(path)
+                    val u = Libexclavecore.parseURL(path)
                     u.queryParameter("ed")?.let { ed ->
                         u.deleteQueryParameter("ed")
                         bean.path = u.string
@@ -579,7 +579,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             bean.path = path
             try {
                 // RPRX's smart-assed invention. This of course will break under some conditions.
-                val u = Libowenclavecore.parseURL(bean.path)
+                val u = Libexclavecore.parseURL(bean.path)
                 u.queryParameter("ed")?.let { ed ->
                     u.deleteQueryParameter("ed")
                     bean.path = u.string
@@ -593,7 +593,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
             bean.path = path
             try {
                 // RPRX's smart-assed invention. This of course will break under some conditions.
-                val u = Libowenclavecore.parseURL(bean.path)
+                val u = Libexclavecore.parseURL(bean.path)
                 u.queryParameter("ed")?.let {
                     u.deleteQueryParameter("ed")
                     bean.path = u.string
@@ -695,7 +695,7 @@ private fun parseV2RayN(json: JsonObject): VMessBean {
 }
 
 fun StandardV2RayBean.toUri(): String? {
-    val builder = Libowenclavecore.newURL(
+    val builder = Libexclavecore.newURL(
         when (this) {
             is VMessBean -> "vmess"
             is VLESSBean -> "vless"

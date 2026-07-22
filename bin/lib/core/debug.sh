@@ -7,4 +7,4 @@ cd library/core
 ./debug.sh || exit 1
 
 mkdir -p "$PROJECT/app/libs"
-cp -f libowenclavecore.aar "$PROJECT/app/libs"
+cp -f libexclavecore.aar "$PROJECT/app/libs"

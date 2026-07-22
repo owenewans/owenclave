@@ -22,7 +22,7 @@ package io.nekohasekai.sagernet.fmt.tuic5
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -31,7 +31,7 @@ val supportedTuic5RelayMode = arrayOf("native", "quic")
 
 @OptIn(ExperimentalUuidApi::class)
 fun parseTuic(server: String): AbstractBean {
-    var link = Libowenclavecore.parseURL(server)
+    var link = Libexclavecore.parseURL(server)
     if (link.queryParameter("version") == "4") {
         error("unsupported")
     }
@@ -53,7 +53,7 @@ fun parseTuic(server: String): AbstractBean {
         } && server.substring(43, 46) == "%3A"
     ) {
         // v2rayN broken format
-        link = Libowenclavecore.parseURL(server.take(43) + ":" + server.substring(46, server.length))
+        link = Libexclavecore.parseURL(server.take(43) + ":" + server.substring(46, server.length))
     }
 
     try {
@@ -115,7 +115,7 @@ fun parseTuic(server: String): AbstractBean {
 }
 
 fun Tuic5Bean.toUri(): String? {
-    val builder = Libowenclavecore.newURL("tuic").apply {
+    val builder = Libexclavecore.newURL("tuic").apply {
         setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
         username = uuid.ifEmpty { error("empty uuid") }
         if (name.isNotEmpty()) {

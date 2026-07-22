@@ -46,4 +46,19 @@
         <item name="textStartPadding">30dp</item>
         <item name="textEndPadding">30dp</item>
     </style>
+
+    <style name="Widget.Owenclave.Button.IconButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="iconPadding">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="iconTint">?android:attr/textColorSecondary</item>
+        <item name="rippleColor">?attr/colorControlHighlight</item>
+    </style>
 </resources>

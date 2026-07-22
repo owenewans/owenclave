@@ -22,7 +22,7 @@ package io.nekohasekai.sagernet.fmt.trusttunnel
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 import kotlin.io.encoding.Base64
 
 // https://github.com/TrustTunnel/TrustTunnel/blob/8856e7ba83ae0c9faace78aaf9a95b1b291cd3ed/DEEP_LINK.md
@@ -91,7 +91,7 @@ fun TrustTunnelBean.toUri(): String {
             require(serverNames[0].isNotEmpty(), { "serverNameToVerify contains empty value" })
             // serverNameToVerify will always verify even if allowInsecure is true
             writeTLV(Tag.Hostname.code, serverNames[0].toByteArray())
-            require(!Libowenclavecore.isIP(sni.ifEmpty { serverAddress }), { "IP address can't be CustomSNI" })
+            require(!Libexclavecore.isIP(sni.ifEmpty { serverAddress }), { "IP address can't be CustomSNI" })
             writeTLV(Tag.CustomSNI.code, sni.ifEmpty { serverAddress }.toByteArray())
         } else {
             writeTLV(Tag.Hostname.code, sni.ifEmpty { serverAddress }.toByteArray())
@@ -107,7 +107,7 @@ fun TrustTunnelBean.toUri(): String {
             "quic" -> writeTLV(Tag.UpstreamProtocol.code, byteArrayOf(UpstreamProtocol.HTTP3.code))
         }
         if (certificate.isNotEmpty()) {
-            val der = Libowenclavecore.pemToDer(certificate)
+            val der = Libexclavecore.pemToDer(certificate)
             require(der.isNotEmpty())
             writeTLV(Tag.Certificate.code, der)
         }
@@ -187,7 +187,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                     bean.allowInsecure = value[0] == SkipVerification.True.code
                 }
                 Tag.Certificate.code -> {
-                    val pem = Libowenclavecore.derToPem(value)
+                    val pem = Libexclavecore.derToPem(value)
                     require(pem.isNotEmpty(), { "invalid Certificate" })
                     bean.certificate = pem
                 }
@@ -228,7 +228,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         }
         val beans = mutableListOf<TrustTunnelBean>()
         addresses.forEach {
-            if (Libowenclavecore.isIP(it)) {
+            if (Libexclavecore.isIP(it)) {
                 beans.add(bean.applyDefaultValues().clone().apply {
                     serverAddress = it
                     serverPort = 443
@@ -241,7 +241,7 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
             var host = it.substringBeforeLast(":")
             if (host.startsWith("[") && host.endsWith("]")) {
                 host = host.substringAfter("[").substringBeforeLast("]")
-                require(Libowenclavecore.isIPv6(host), { "non IPv6 address in brackets" })
+                require(Libexclavecore.isIPv6(host), { "non IPv6 address in brackets" })
             }
             beans.add(bean.applyDefaultValues().clone().apply {
                 serverAddress = host

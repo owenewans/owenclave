@@ -28,7 +28,7 @@ import io.nekohasekai.sagernet.database.*
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.parseShadowsocksConfig
 import io.nekohasekai.sagernet.ktx.*
-import libowenclavecore.Libowenclavecore
+import libexclavecore.Libexclavecore
 
 object SIP008Updater : GroupUpdater() {
 
@@ -50,7 +50,7 @@ object SIP008Updater : GroupUpdater() {
                 ?: error(app.getString(R.string.no_proxies_found_in_subscription))
         } else {
 
-            val response = Libowenclavecore.newHttpClient().apply {
+            val response = Libexclavecore.newHttpClient().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
                     useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
                 }
