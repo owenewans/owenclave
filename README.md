@@ -7,7 +7,7 @@
 \___/__,__/\__/_//_/_/  \__/\__/ 
 ```
 
-fork of owenclave (best proxy client in the world) with custom features
+fork of exclave (best proxy client in the world) with custom features
 <br>
 
 </div>
