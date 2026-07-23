@@ -18,7 +18,9 @@ import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.database.RuleEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
+import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.fmt.AbstractBean
+import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
@@ -45,6 +47,7 @@ import io.nekohasekai.sagernet.ui.compose.screens.AppItem
 import io.nekohasekai.sagernet.ui.compose.screens.AppListScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ConfigEditScreen
 import io.nekohasekai.sagernet.ui.compose.screens.GroupSettingsScreen
+import io.nekohasekai.sagernet.ui.compose.screens.SubscriptionSettings
 import io.nekohasekai.sagernet.ui.compose.screens.ProbeCertScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ProfileFieldState
 import io.nekohasekai.sagernet.ui.compose.screens.ProfileSelectScreen
@@ -187,6 +190,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
 
         var initialName = ""
         var initialType = GroupType.BASIC
+        var initialSubscription = SubscriptionSettings()
 
         if (editingGroupId > 0L) {
             runBlocking {
@@ -194,6 +198,16 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                 if (group != null) {
                     initialName = group.name ?: ""
                     initialType = group.type
+                    val sub = group.subscription
+                    if (sub != null) {
+                        initialSubscription = SubscriptionSettings(
+                            link = sub.link ?: "",
+                            deduplication = sub.deduplication ?: false,
+                            updateWhenConnectedOnly = sub.updateWhenConnectedOnly ?: false,
+                            autoUpdate = sub.autoUpdate ?: false,
+                            customUserAgent = sub.customUserAgent ?: "",
+                        )
+                    }
                 }
             }
         }
@@ -203,14 +217,26 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                 GroupSettingsScreen(
                     groupName = initialName,
                     groupType = initialType,
+                    initialSubscription = initialSubscription,
                     onBack = { finish() },
-                    onSave = { newName, newType ->
+                    onSave = { newName, newType, subSettings ->
                         runBlocking {
                             if (editingGroupId > 0L) {
                                 val group = SagerDatabase.groupDao.getById(editingGroupId)
                                 if (group != null) {
                                     group.name = newName.ifEmpty { if (newType == GroupType.SUBSCRIPTION) "Subscription" else "Group" }
                                     group.type = newType
+                                    if (newType == GroupType.SUBSCRIPTION) {
+                                        val sub = group.subscription ?: SubscriptionBean().applyDefaultValues()
+                                        sub.link = subSettings.link
+                                        sub.deduplication = subSettings.deduplication
+                                        sub.updateWhenConnectedOnly = subSettings.updateWhenConnectedOnly
+                                        sub.autoUpdate = subSettings.autoUpdate
+                                        sub.customUserAgent = subSettings.customUserAgent
+                                        group.subscription = sub
+                                    } else {
+                                        group.subscription = null
+                                    }
                                     GroupManager.updateGroup(group)
                                 }
                             } else {
@@ -218,7 +244,22 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                                     name = newName.ifEmpty { if (newType == GroupType.SUBSCRIPTION) "Subscription" else "Group" },
                                     type = newType,
                                 )
+                                if (newType == GroupType.SUBSCRIPTION) {
+                                    group.subscription = SubscriptionBean().applyDefaultValues().apply {
+                                        link = subSettings.link
+                                        deduplication = subSettings.deduplication
+                                        updateWhenConnectedOnly = subSettings.updateWhenConnectedOnly
+                                        autoUpdate = subSettings.autoUpdate
+                                        customUserAgent = subSettings.customUserAgent
+                                    }
+                                }
                                 GroupManager.createGroup(group)
+                                if (newType == GroupType.SUBSCRIPTION && subSettings.link.isNotEmpty()) {
+                                    val created = SagerDatabase.groupDao.getById(group.id)
+                                    if (created != null) {
+                                        GroupUpdater.executeUpdate(created, true)
+                                    }
+                                }
                             }
                         }
                         finish()
@@ -457,6 +498,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
             name = bean.name ?: "",
             serverAddress = bean.serverAddress ?: "",
             serverPort = bean.serverPort?.toString() ?: "",
+            iconIndex = entity.iconIndex,
         )
         return when (type) {
             ProxyEntity.TYPE_SOCKS -> {
@@ -866,6 +908,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 entity.olcrtcBean = b
             }
         }
+
+        entity.iconIndex = state.iconIndex
 
         if (profileId > 0L) {
             ProfileManager.updateProfile(entity)

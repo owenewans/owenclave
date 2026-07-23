@@ -79,10 +79,15 @@ fun ConfigurationScreen(
 
     var profiles by remember { mutableStateOf<List<ProxyEntity>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
-    var selectedProfileId by remember { mutableStateOf(DataStore.selectedProxy) }
+    var selectedProfileId by remember { mutableStateOf(0L) }
     var showProtocolPicker by remember { mutableStateOf(false) }
     var pingingIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
     var showDinoGame by remember { mutableStateOf(false) }
+    val reloadAccess = remember { kotlinx.coroutines.sync.Mutex() }
+
+    LaunchedEffect(Unit) {
+        selectedProfileId = withContext(Dispatchers.IO) { DataStore.selectedProxy }
+    }
 
     fun reloadProfiles() {
         scope.launch(Dispatchers.IO) {
@@ -269,14 +274,21 @@ fun ConfigurationScreen(
                             pinging = entity.id in pingingIds,
                             modifier = Modifier.animateItem(),
                             onClick = {
-                                val changed = selectedProfileId != entity.id
-                                selectedProfileId = entity.id
-                                DataStore.selectedProxy = entity.id
-                                // Only reload the running service when the selection
-                                // actually changed; reloading with the same profile
-                                // (or while stopped) is unnecessary and could race.
-                                if (changed && serviceRunning) {
-                                    SagerNet.reloadService()
+                                val entity = entity
+                                io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
+                                    val update = selectedProfileId != entity.id
+                                    if (!update) return@runOnDefaultDispatcher
+                                    DataStore.selectedProxy = entity.id
+                                    kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                        selectedProfileId = entity.id
+                                    }
+                                    if (serviceRunning && reloadAccess.tryLock()) {
+                                        try {
+                                            SagerNet.reloadService()
+                                        } finally {
+                                            reloadAccess.unlock()
+                                        }
+                                    }
                                 }
                             },
                             onEdit = {
@@ -289,13 +301,17 @@ fun ConfigurationScreen(
                             },
                             onShare = if (entity.hasShareLink()) {
                                 {
-                                    val link = entity.toLink()
-                                    if (link != null) {
-                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                            type = "text/plain"
-                                            putExtra(Intent.EXTRA_TEXT, link)
+                                    scope.launch(Dispatchers.IO) {
+                                        val link = entity.toLink()
+                                        if (link != null) {
+                                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                                type = "text/plain"
+                                                putExtra(Intent.EXTRA_TEXT, link)
+                                            }
+                                            withContext(Dispatchers.Main) {
+                                                context.startActivity(Intent.createChooser(shareIntent, "Share"))
+                                            }
                                         }
-                                        context.startActivity(Intent.createChooser(shareIntent, "Share"))
                                     }
                                 }
                             } else null,

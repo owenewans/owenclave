@@ -66,6 +66,7 @@ import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.bg.SagerConnection
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ui.compose.components.ServiceButton
 import io.nekohasekai.sagernet.ui.compose.components.ServiceState
 import io.nekohasekai.sagernet.ui.compose.components.StatsBar
@@ -147,7 +148,9 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     private fun handleViewIntent(intent: Intent) {
         val uri = intent.data ?: return
         val link = uri.toString()
-        kotlinx.coroutines.runBlocking {
+        // Run on a background thread — runBlocking here would freeze the UI
+        // and cause ANR crashes.
+        io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
                 val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(link)
                 if (beans.isNotEmpty()) {
@@ -158,17 +161,13 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
             }
         }
     }
-
     private fun toggleService() {
         val state = serviceState.value
-        // Ignore taps during transitional states to prevent race conditions
-        // and crashes from rapid start/stop toggling.
         when {
             state == BaseService.State.Idle || state == BaseService.State.Stopped ->
                 SagerNet.startService()
             state == BaseService.State.Connected ->
                 SagerNet.stopService()
-            // Connecting / Stopping — ignore, button is effectively debounced
         }
     }
 
@@ -265,8 +264,6 @@ fun MainScreen(
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             floatingActionButton = {
-                // Disable the button during transitional states to prevent
-                // rapid-tap crashes.
                 val transition = serviceState == BaseService.State.Connecting ||
                     serviceState == BaseService.State.Stopping
                 ServiceButton(

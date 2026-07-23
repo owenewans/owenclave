@@ -61,12 +61,13 @@ fun ConfigEditScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            OutlinedTextField(
+            io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                 value = content,
                 onValueChange = { content = it },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(8.dp),
+                singleLine = false,
                 textStyle = MaterialTheme.typography.bodySmall.copy(
                     fontFamily = FontFamily.Monospace,
                 ),

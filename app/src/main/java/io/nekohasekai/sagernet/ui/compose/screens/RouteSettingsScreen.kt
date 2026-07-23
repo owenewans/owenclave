@@ -92,11 +92,11 @@ fun RouteSettingsScreen(
             Column(modifier = Modifier.padding(bottom = 16.dp)) {
                 PreferenceHeader("General")
                 SectionCard {
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Name") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Name",
+                        modifier = Modifier.padding(16.dp),
                         singleLine = true,
                     )
                     DividerItem()
@@ -114,67 +114,71 @@ fun RouteSettingsScreen(
 
                 PreferenceHeader("Match Conditions")
                 SectionCard {
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = domains,
                         onValueChange = { domains = it },
-                        label = { Text("Domains (one per line)") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Domains (one per line)",
+                        modifier = Modifier.padding(16.dp),
+                        singleLine = false,
                     )
                     DividerItem()
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = ip,
                         onValueChange = { ip = it },
-                        label = { Text("IP / CIDR (one per line)") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "IP / CIDR (one per line)",
+                        modifier = Modifier.padding(16.dp),
+                        singleLine = false,
                     )
                     DividerItem()
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = port,
                         onValueChange = { port = it },
-                        label = { Text("Port (e.g. 53,443,1000-2000)") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Port (e.g. 53,443,1000-2000)",
+                        modifier = Modifier.padding(16.dp),
                         singleLine = true,
                     )
                     DividerItem()
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = sourcePort,
                         onValueChange = { sourcePort = it },
-                        label = { Text("Source Port") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Source Port",
+                        modifier = Modifier.padding(16.dp),
                         singleLine = true,
                     )
                     DividerItem()
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = network,
                         onValueChange = { network = it },
-                        label = { Text("Network (tcp/udp)") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Network (tcp/udp)",
+                        modifier = Modifier.padding(16.dp),
                         singleLine = true,
                     )
                     DividerItem()
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = source,
                         onValueChange = { source = it },
-                        label = { Text("Source IP / CIDR") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Source IP / CIDR",
+                        modifier = Modifier.padding(16.dp),
+                        singleLine = false,
                     )
                     DividerItem()
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = protocol,
                         onValueChange = { protocol = it },
-                        label = { Text("Protocol") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Protocol",
+                        modifier = Modifier.padding(16.dp),
                         singleLine = true,
                     )
                 }
 
                 PreferenceHeader("Apps")
                 SectionCard {
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = packages,
                         onValueChange = { packages = it },
-                        label = { Text("Package names (one per line)") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Package names (one per line)",
+                        modifier = Modifier.padding(16.dp),
+                        singleLine = false,
                     )
                 }
             }

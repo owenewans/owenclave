@@ -82,11 +82,10 @@ fun StunScreen(
                     shape = MaterialTheme.shapes.large,
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = stunServer,
                             onValueChange = { stunServer = it },
-                            label = { Text("STUN Server") },
-                            modifier = Modifier.fillMaxWidth(),
+                            label = "STUN Server",
                             singleLine = true,
                         )
                         Spacer(Modifier.height(12.dp))

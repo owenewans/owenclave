@@ -84,35 +84,34 @@ fun ProbeCertScreen(
                     shape = MaterialTheme.shapes.large,
                 ) {
                     Column(modifier = Modifier.padding(20.dp)) {
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = server,
                             onValueChange = { server = it; if (sni.isEmpty()) sni = it },
-                            label = { Text("Server") },
-                            modifier = Modifier.fillMaxWidth(),
+                            label = "Server",
                             singleLine = true,
                         )
                         Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = port,
                             onValueChange = { port = it.filter { c -> c.isDigit() } },
-                            label = { Text("Port") },
-                            modifier = Modifier.fillMaxWidth(),
+                            label = "Port",
                             singleLine = true,
+                            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                                keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                            ),
                         )
                         Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = sni,
                             onValueChange = { sni = it },
-                            label = { Text("SNI / Server Name") },
-                            modifier = Modifier.fillMaxWidth(),
+                            label = "SNI / Server Name",
                             singleLine = true,
                         )
                         Spacer(Modifier.height(8.dp))
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = alpn,
                             onValueChange = { alpn = it },
-                            label = { Text("ALPN") },
-                            modifier = Modifier.fillMaxWidth(),
+                            label = "ALPN",
                             singleLine = true,
                         )
                         Spacer(Modifier.height(8.dp))

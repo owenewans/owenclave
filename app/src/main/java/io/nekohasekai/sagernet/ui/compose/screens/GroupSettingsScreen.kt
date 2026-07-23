@@ -38,22 +38,31 @@ import io.nekohasekai.sagernet.ui.compose.components.PreferenceItem
 import io.nekohasekai.sagernet.ui.compose.components.SectionCard
 import io.nekohasekai.sagernet.ui.compose.components.SwitchPreferenceItem
 
+data class SubscriptionSettings(
+    val link: String = "",
+    val deduplication: Boolean = false,
+    val updateWhenConnectedOnly: Boolean = false,
+    val autoUpdate: Boolean = false,
+    val customUserAgent: String = "",
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupSettingsScreen(
     groupName: String,
     groupType: Int,
+    initialSubscription: SubscriptionSettings = SubscriptionSettings(),
     onBack: () -> Unit,
-    onSave: (name: String, type: Int) -> Unit,
+    onSave: (name: String, type: Int, subscription: SubscriptionSettings) -> Unit,
 ) {
     var name by remember { mutableStateOf(groupName) }
     var type by remember { mutableStateOf(groupType) }
     var order by remember { mutableStateOf(0) }
-    var dedup by remember { mutableStateOf(false) }
-    var autoUpdate by remember { mutableStateOf(false) }
-    var subscriptionLink by remember { mutableStateOf("") }
-    var userAgent by remember { mutableStateOf("") }
-    var updateWhenConnectedOnly by remember { mutableStateOf(false) }
+    var dedup by remember { mutableStateOf(initialSubscription.deduplication) }
+    var autoUpdate by remember { mutableStateOf(initialSubscription.autoUpdate) }
+    var subscriptionLink by remember { mutableStateOf(initialSubscription.link) }
+    var userAgent by remember { mutableStateOf(initialSubscription.customUserAgent) }
+    var updateWhenConnectedOnly by remember { mutableStateOf(initialSubscription.updateWhenConnectedOnly) }
     var frontProxy by remember { mutableStateOf("") }
     var landingProxy by remember { mutableStateOf("") }
 
@@ -69,7 +78,15 @@ fun GroupSettingsScreen(
                 onNavigationClick = onBack,
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    Button(onClick = { onSave(name, type) }) { Text("Save") }
+                    Button(onClick = {
+                        onSave(name, type, SubscriptionSettings(
+                            link = subscriptionLink,
+                            deduplication = dedup,
+                            updateWhenConnectedOnly = updateWhenConnectedOnly,
+                            autoUpdate = autoUpdate,
+                            customUserAgent = userAgent,
+                        ))
+                    }) { Text("Save") }
                 },
             )
         },
@@ -83,11 +100,11 @@ fun GroupSettingsScreen(
             Column(modifier = Modifier.padding(bottom = 16.dp)) {
                 PreferenceHeader("General")
                 SectionCard {
-                    OutlinedTextField(
+                    io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                         value = name,
                         onValueChange = { name = it },
-                        label = { Text("Group Name") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        label = "Group Name",
+                        modifier = Modifier.padding(16.dp),
                         singleLine = true,
                     )
                     DividerItem()
@@ -112,11 +129,11 @@ fun GroupSettingsScreen(
                 if (type == GroupType.SUBSCRIPTION) {
                     PreferenceHeader("Subscription")
                     SectionCard {
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = subscriptionLink,
                             onValueChange = { subscriptionLink = it },
-                            label = { Text("Subscription Link") },
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            label = "Subscription Link",
+                            modifier = Modifier.padding(16.dp),
                             singleLine = true,
                         )
                         DividerItem()
@@ -138,11 +155,11 @@ fun GroupSettingsScreen(
                             onCheckedChange = { autoUpdate = it },
                         )
                         DividerItem()
-                        OutlinedTextField(
+                        io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                             value = userAgent,
                             onValueChange = { userAgent = it },
-                            label = { Text("User Agent") },
-                            modifier = Modifier.fillMaxWidth().padding(16.dp),
+                            label = "User Agent",
+                            modifier = Modifier.padding(16.dp),
                             singleLine = true,
                         )
                     }

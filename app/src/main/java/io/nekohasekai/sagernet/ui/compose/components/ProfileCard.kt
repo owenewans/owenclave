@@ -4,10 +4,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,7 +27,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.NetworkCheck
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularWavyProgressIndicator
@@ -41,8 +39,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -135,45 +133,37 @@ fun ProfileCard(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Morphing shaped icon — the signature M3E flourish. The container
-            // spins while the selected server is actively connected, then
-            // smoothly decelerates to a stop when disconnected.
-            val spinTransition = rememberInfiniteTransition(label = "iconSpin")
-            val spinSpeed by spinTransition.animateFloat(
-                initialValue = 0f,
-                targetValue = 360f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 6000, easing = LinearEasing),
-                    repeatMode = RepeatMode.Restart,
-                ),
-                label = "spinAngle",
-            )
-            // When connected, rotation tracks the infinite spin. When
-            // disconnected, animateFloatAsState springs back the last value
-            // toward a nearby resting angle, giving a decelerate effect.
-            var lastSpin by remember { mutableFloatStateOf(0f) }
-            val targetRotation = if (connected) {
-                lastSpin = spinSpeed
-                spinSpeed
-            } else {
-                lastSpin
+            // Icon spins while connected, decelerates to rest when disconnected.
+            val rotation = remember { Animatable(0f) }
+            LaunchedEffect(connected) {
+                if (connected) {
+                    rotation.animateTo(
+                        targetValue = 360f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(6000, easing = LinearEasing),
+                            repeatMode = RepeatMode.Restart,
+                        ),
+                    )
+                } else {
+                    val current = rotation.value
+                    val target = if (current > 180f) 360f else 0f
+                    rotation.animateTo(
+                        targetValue = target,
+                        animationSpec = spring(
+                            dampingRatio = Spring.DampingRatioMediumBouncy,
+                            stiffness = Spring.StiffnessLow,
+                        ),
+                    )
+                }
             }
-            val rotation by animateFloatAsState(
-                targetValue = targetRotation,
-                animationSpec = spring(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessVeryLow,
-                ),
-                label = "spinDecel",
-            )
             ShapedIcon(
-                icon = Icons.Filled.Bolt,
+                icon = profileIconFor(entity.iconIndex, entity.displayName()),
                 containerColor = iconContainer,
                 contentColor = iconContent,
                 size = 48.dp,
                 shape = seedShape,
                 pressed = pressed,
-                modifier = Modifier.graphicsLayer { rotationZ = rotation },
+                modifier = Modifier.graphicsLayer { rotationZ = rotation.value },
             )
             Spacer(Modifier.width(14.dp))
 

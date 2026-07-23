@@ -493,7 +493,7 @@ class BaseService {
             }
 
             data.changeState(State.Connecting)
-            runOnMainDispatcher {
+            data.connectingJob = runOnMainDispatcher {
                 try {
                     Executable.killAll()    // clean up old processes
                     preInit()

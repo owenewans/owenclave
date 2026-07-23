@@ -20,6 +20,7 @@
 package io.nekohasekai.sagernet.bg.proto
 
 import android.annotation.SuppressLint
+import android.os.Looper
 import android.os.SystemClock
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -54,7 +55,7 @@ import java.net.Socket
         companion object {
             // How long to keep the connecting phase while waiting for an
             // external engine's local SOCKS port to come up.
-            private const val READINESS_TIMEOUT_MS = 30_000L
+            private const val READINESS_TIMEOUT_MS = 15_000L
             private const val READINESS_POLL_INTERVAL_MS = 250L
             private const val READINESS_CONNECT_TIMEOUT_MS = 500
         }
@@ -358,19 +359,29 @@ import java.net.Socket
         cacheFiles.removeAll { it.delete(); true }
 
         if (::wsForwarder.isInitialized) {
-            runBlocking {
-                onMainDispatcher {
-                    wsForwarder.loadUrl("about:blank")
-                    wsForwarder.destroy()
+            if (Thread.currentThread() === Looper.getMainLooper().thread) {
+                wsForwarder.loadUrl("about:blank")
+                wsForwarder.destroy()
+            } else {
+                runBlocking {
+                    onMainDispatcher {
+                        wsForwarder.loadUrl("about:blank")
+                        wsForwarder.destroy()
+                    }
                 }
             }
         }
 
         if (::shForwarder.isInitialized) {
-            runBlocking {
-                onMainDispatcher {
-                    shForwarder.loadUrl("about:blank")
-                    shForwarder.destroy()
+            if (Thread.currentThread() === Looper.getMainLooper().thread) {
+                shForwarder.loadUrl("about:blank")
+                shForwarder.destroy()
+            } else {
+                runBlocking {
+                    onMainDispatcher {
+                        shForwarder.loadUrl("about:blank")
+                        shForwarder.destroy()
+                    }
                 }
             }
         }

@@ -30,7 +30,6 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,7 +45,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.graphics.shapes.Morph
 
 enum class ServiceState {
     IDLE,
@@ -98,20 +96,6 @@ fun ServiceButton(
         label = "pressScale",
     )
 
-    // Signature M3E morph: the FAB container morphs from a circle to a cookie
-    // while connecting, then settles. Longer, deliberate motion.
-    val morph = remember { Morph(MaterialShapes.Circle, MaterialShapes.Cookie9Sided) }
-    val active = state == ServiceState.CONNECTING || state == ServiceState.CONNECTED
-    val morphProgress = animateFloatAsState(
-        targetValue = if (active) 1f else 0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioLowBouncy,
-            stiffness = Spring.StiffnessVeryLow,
-        ),
-        label = "fabMorph",
-    )
-    val fabShape = MorphPolygonShape(morph, morphProgress.value)
-
     FloatingActionButton(
         onClick = onClick,
         modifier = modifier
@@ -120,7 +104,7 @@ fun ServiceButton(
                 scaleX = pressScale.value
                 scaleY = pressScale.value
             },
-        shape = fabShape,
+        shape = CircleShape,
         containerColor = color,
         contentColor = contentColor,
         elevation = FloatingActionButtonDefaults.elevation(

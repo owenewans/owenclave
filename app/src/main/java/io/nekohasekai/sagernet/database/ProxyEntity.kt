@@ -112,7 +112,10 @@ data class ProxyEntity(
     var olcrtcBean: OLCRTCBean? = null,
     var configBean: ConfigBean? = null,
     var chainBean: ChainBean? = null,
-    var balancerBean: BalancerBean? = null
+    var balancerBean: BalancerBean? = null,
+    /** Icon index for the profile card. -1 = auto (random/derived from name). */
+    @androidx.room.ColumnInfo(defaultValue = "-1")
+    var iconIndex: Int = -1
 ) : Serializable() {
 
     companion object {

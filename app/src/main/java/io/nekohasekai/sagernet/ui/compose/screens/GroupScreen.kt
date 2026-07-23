@@ -3,6 +3,7 @@ package io.nekohasekai.sagernet.ui.compose.screens
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,18 +18,19 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -44,10 +47,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.SagerNet
+import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.GroupManager
 import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.database.SagerDatabase
+import io.nekohasekai.sagernet.database.SubscriptionBean
+import io.nekohasekai.sagernet.group.GroupUpdater
+import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ui.compose.ComposeGroupSettingsActivity
 import io.nekohasekai.sagernet.ui.compose.components.EmptyState
 import io.nekohasekai.sagernet.ui.compose.components.GroupCard
@@ -71,6 +78,8 @@ fun GroupScreen(
     var selectedGroupId by remember { mutableStateOf(DataStore.selectedGroup) }
     var deleteGroup by remember { mutableStateOf<ProxyGroup?>(null) }
     var clearGroup by remember { mutableStateOf<ProxyGroup?>(null) }
+    var showQuickAdd by remember { mutableStateOf(false) }
+    var quickAddUrl by remember { mutableStateOf("") }
 
     fun reloadGroups() {
         scope.launch(Dispatchers.IO) {
@@ -139,6 +148,59 @@ fun GroupScreen(
         }
     }
 
+    if (showQuickAdd) {
+        AlertDialog(
+            onDismissRequest = { showQuickAdd = false; quickAddUrl = "" },
+            title = { Text("Add subscription") },
+            text = {
+                Column {
+                    Text(
+                        text = "Paste subscription link to download and add automatically",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(bottom = 16.dp),
+                    )
+                    OutlinedTextField(
+                        value = quickAddUrl,
+                        onValueChange = { quickAddUrl = it },
+                        label = { Text("Subscription URL") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = quickAddUrl.isNotBlank(),
+                    onClick = {
+                        val url = quickAddUrl.trim()
+                        showQuickAdd = false
+                        quickAddUrl = ""
+                        scope.launch(Dispatchers.IO) {
+                            val group = ProxyGroup(
+                                name = "Subscription",
+                                type = GroupType.SUBSCRIPTION,
+                            )
+                            group.subscription = SubscriptionBean().applyDefaultValues().apply {
+                                link = url
+                                type = SubscriptionType.RAW
+                            }
+                            GroupManager.createGroup(group)
+                            val created = SagerDatabase.groupDao.getById(group.id)
+                            if (created != null) {
+                                GroupUpdater.executeUpdate(created, true)
+                            }
+                            withContext(Dispatchers.Main) { reloadGroups() }
+                        }
+                    },
+                ) { Text("Add & Download") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showQuickAdd = false; quickAddUrl = "" }) { Text("Cancel") }
+            },
+        )
+    }
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -151,17 +213,43 @@ fun GroupScreen(
                 onNavigationClick = onMenuClick,
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    IconButton(onClick = { /* update all subscriptions */ }) {
+                    IconButton(onClick = {
+                        scope.launch(Dispatchers.IO) {
+                            val subs = SagerDatabase.groupDao.subscriptions()
+                                .filter { it.subscription?.autoUpdate == true }
+                            subs.forEach { GroupUpdater.startUpdate(it, true) }
+                        }
+                    }) {
                         Icon(Icons.Filled.Refresh, contentDescription = "Update all")
                     }
-                    IconButton(onClick = {
-                        DataStore.groupName = ""
-                        DataStore.groupType = GroupType.BASIC
-                        context.startActivity(
-                            Intent(context, ComposeGroupSettingsActivity::class.java)
-                        )
-                    }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add")
+                    var addMenuExpanded by remember { mutableStateOf(false) }
+                    Box {
+                        IconButton(onClick = { addMenuExpanded = true }) {
+                            Icon(Icons.Filled.Add, contentDescription = "Add")
+                        }
+                        DropdownMenu(
+                            expanded = addMenuExpanded,
+                            onDismissRequest = { addMenuExpanded = false },
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("New group") },
+                                onClick = {
+                                    addMenuExpanded = false
+                                    DataStore.groupName = ""
+                                    DataStore.groupType = GroupType.BASIC
+                                    context.startActivity(
+                                        Intent(context, ComposeGroupSettingsActivity::class.java)
+                                    )
+                                },
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Add subscription from URL") },
+                                onClick = {
+                                    addMenuExpanded = false
+                                    showQuickAdd = true
+                                },
+                            )
+                        }
                     }
                 },
             )
@@ -205,7 +293,14 @@ fun GroupScreen(
                                 )
                             },
                             onUpdate = if (group.type == GroupType.SUBSCRIPTION) {
-                                { /* update subscription */ }
+                                {
+                                    scope.launch(Dispatchers.IO) {
+                                        val g = SagerDatabase.groupDao.getById(group.id)
+                                        if (g != null) {
+                                            GroupUpdater.startUpdate(g, true)
+                                        }
+                                    }
+                                }
                             } else null,
                             menuItems = { menuScope ->
                                 if (group.type == GroupType.SUBSCRIPTION) {

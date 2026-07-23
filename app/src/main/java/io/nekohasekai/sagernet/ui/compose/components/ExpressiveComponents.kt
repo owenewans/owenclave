@@ -14,6 +14,19 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Cloud
+import androidx.compose.material.icons.filled.FlightTakeoff
+import androidx.compose.material.icons.filled.Hub
+import androidx.compose.material.icons.filled.Lan
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Security
+import androidx.compose.material.icons.filled.Shield
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.VpnKey
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.toShape
@@ -76,19 +89,10 @@ fun ShapedIcon(
     pressedShape: RoundedPolygon = MaterialShapes.Cookie12Sided,
     pressed: Boolean = false,
 ) {
-    val morph = remember(shape, pressedShape) { Morph(shape, pressedShape) }
-    val progress by animateFloatAsState(
-        targetValue = if (pressed) 1f else 0f,
-        animationSpec = spring(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow,
-        ),
-        label = "shapedIconMorph",
-    )
     Box(
         modifier = modifier
             .size(size)
-            .clip(MorphPolygonShape(morph, progress))
+            .clip(RoundedCornerShape(14.dp))
             .background(containerColor),
         contentAlignment = Alignment.Center,
     ) {
@@ -116,7 +120,7 @@ fun ShapedIconStatic(
     Box(
         modifier = modifier
             .size(size)
-            .clip(shape.toShape())
+            .clip(RoundedCornerShape(14.dp))
             .background(containerColor),
         contentAlignment = Alignment.Center,
     ) {
@@ -180,6 +184,34 @@ fun shapeForSeed(seed: String): RoundedPolygon {
 }
 
 /**
+ * A curated set of Material icons suitable for proxy/server profiles.
+ * Indexed by [ProxyEntity.iconIndex]; -1 means "auto" (derived from name hash).
+ */
+val ProfileIconSet: List<ImageVector> = listOf(
+    Icons.Filled.Bolt,
+    Icons.Filled.Cloud,
+    Icons.Filled.Public,
+    Icons.Filled.Shield,
+    Icons.Filled.Lock,
+    Icons.Filled.VpnKey,
+    Icons.Filled.Wifi,
+    Icons.Filled.FlightTakeoff,
+    Icons.Filled.Speed,
+    Icons.Filled.Hub,
+    Icons.Filled.Lan,
+    Icons.Filled.Security,
+)
+
+/** Returns the icon for a profile, using its stored index or a name-derived fallback. */
+fun profileIconFor(iconIndex: Int, name: String): ImageVector {
+    return if (iconIndex in ProfileIconSet.indices) {
+        ProfileIconSet[iconIndex]
+    } else {
+        ProfileIconSet[(name.hashCode() % ProfileIconSet.size + ProfileIconSet.size) % ProfileIconSet.size]
+    }
+}
+
+/**
  * An M3E-flavoured text field: a soft, fully-rounded tonal field with no harsh
  * outline box. Replaces the default boxy [androidx.compose.material3.OutlinedTextField]
  * look used across the app's dialogs and forms.
@@ -195,6 +227,7 @@ fun ExpressiveTextField(
     leadingIcon: ImageVector? = null,
     keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default,
     visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
+    textStyle: androidx.compose.ui.text.TextStyle? = null,
 ) {
     androidx.compose.material3.OutlinedTextField(
         value = value,
@@ -211,13 +244,16 @@ fun ExpressiveTextField(
         shape = RoundedCornerShape(20.dp),
         keyboardOptions = keyboardOptions,
         visualTransformation = visualTransformation,
+        textStyle = textStyle ?: androidx.compose.material3.MaterialTheme.typography.bodyLarge,
         colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            // A subtle always-on outline so the field stays visible even when
+            // it sits on a same-tone dialog/popup surface.
             focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = Color.Transparent,
-            disabledBorderColor = Color.Transparent,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+            disabledBorderColor = MaterialTheme.colorScheme.outlineVariant,
         ),
     )
 }
