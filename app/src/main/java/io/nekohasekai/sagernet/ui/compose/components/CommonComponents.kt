@@ -32,11 +32,14 @@ fun OwenclaveTopAppBar(
         modifier = modifier,
         navigationIcon = {
             if (navigationIcon != null && onNavigationClick != null) {
-                IconButton(onClick = onNavigationClick) {
+                IconButton(
+                    onClick = onNavigationClick,
+                    modifier = Modifier.size(48.dp),
+                ) {
                     Icon(
                         imageVector = navigationIcon,
                         contentDescription = "Navigate back",
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }

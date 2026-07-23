@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,10 +15,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,27 +29,37 @@ import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceHeader
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceItem
 import io.nekohasekai.sagernet.ui.compose.components.SectionCard
-import io.nekohasekai.sagernet.ui.compose.components.SwitchPreferenceItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RouteSettingsScreen(
+    routeName: String = "",
+    routeDomain: String = "",
+    routeIP: String = "",
+    routePort: String = "",
+    routeSourcePort: String = "",
+    routeNetwork: String = "",
+    routeSource: String = "",
+    routeProtocol: String = "",
+    routeOutbound: Int = 0,
+    routePackages: String = "",
     onBack: () -> Unit,
-    onSave: () -> Unit,
+    onSave: (
+        name: String, domains: String, ip: String, port: String,
+        sourcePort: String, network: String, source: String, protocol: String,
+        outbound: Int, packages: String,
+    ) -> Unit,
 ) {
-    var name by remember { mutableStateOf("") }
-    var domains by remember { mutableStateOf("") }
-    var ip by remember { mutableStateOf("") }
-    var port by remember { mutableStateOf("") }
-    var sourcePort by remember { mutableStateOf("") }
-    var network by remember { mutableStateOf("") }
-    var source by remember { mutableStateOf("") }
-    var protocol by remember { mutableStateOf("") }
-    var outbound by remember { mutableStateOf(0) }
-    var enabled by remember { mutableStateOf(true) }
-    var packages by remember { mutableStateOf("") }
-    var ssid by remember { mutableStateOf("") }
-    var networkType by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf(routeName) }
+    var domains by remember { mutableStateOf(routeDomain) }
+    var ip by remember { mutableStateOf(routeIP) }
+    var port by remember { mutableStateOf(routePort) }
+    var sourcePort by remember { mutableStateOf(routeSourcePort) }
+    var network by remember { mutableStateOf(routeNetwork) }
+    var source by remember { mutableStateOf(routeSource) }
+    var protocol by remember { mutableStateOf(routeProtocol) }
+    var outbound by remember { mutableIntStateOf(routeOutbound) }
+    var packages by remember { mutableStateOf(routePackages) }
 
     Scaffold(
         topBar = {
@@ -59,7 +68,9 @@ fun RouteSettingsScreen(
                 navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 onNavigationClick = onBack,
                 actions = {
-                    Button(onClick = onSave) { Text("Save") }
+                    Button(onClick = {
+                        onSave(name, domains, ip, port, sourcePort, network, source, protocol, outbound, packages)
+                    }) { Text("Save") }
                 },
             )
         },
@@ -81,21 +92,15 @@ fun RouteSettingsScreen(
                         singleLine = true,
                     )
                     DividerItem()
-                    SwitchPreferenceItem(
-                        title = "Enabled",
-                        checked = enabled,
-                        onCheckedChange = { enabled = it },
-                    )
-                    DividerItem()
                     PreferenceItem(
                         title = "Outbound",
                         subtitle = when (outbound) {
                             0 -> "Proxy"
-                            -1 -> "Bypass"
-                            -2 -> "Block"
-                            else -> "Profile $outbound"
+                            1 -> "Bypass"
+                            2 -> "Block"
+                            else -> "Profile"
                         },
-                        onClick = { /* select outbound */ },
+                        onClick = { outbound = (outbound + 1) % 4 },
                     )
                 }
 
@@ -104,21 +109,21 @@ fun RouteSettingsScreen(
                     OutlinedTextField(
                         value = domains,
                         onValueChange = { domains = it },
-                        label = { Text("Domains") },
+                        label = { Text("Domains (one per line)") },
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                     )
                     DividerItem()
                     OutlinedTextField(
                         value = ip,
                         onValueChange = { ip = it },
-                        label = { Text("IP / CIDR") },
+                        label = { Text("IP / CIDR (one per line)") },
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                     )
                     DividerItem()
                     OutlinedTextField(
                         value = port,
                         onValueChange = { port = it },
-                        label = { Text("Port") },
+                        label = { Text("Port (e.g. 53,443,1000-2000)") },
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
                         singleLine = true,
                     )
@@ -155,28 +160,13 @@ fun RouteSettingsScreen(
                     )
                 }
 
-                PreferenceHeader("App & Network")
+                PreferenceHeader("Apps")
                 SectionCard {
-                    PreferenceItem(
-                        title = "Apps",
-                        subtitle = packages.ifEmpty { "All apps" },
-                        onClick = { /* open app list */ },
-                    )
-                    DividerItem()
                     OutlinedTextField(
-                        value = ssid,
-                        onValueChange = { ssid = it },
-                        label = { Text("SSID") },
+                        value = packages,
+                        onValueChange = { packages = it },
+                        label = { Text("Package names (one per line)") },
                         modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        singleLine = true,
-                    )
-                    DividerItem()
-                    OutlinedTextField(
-                        value = networkType,
-                        onValueChange = { networkType = it },
-                        label = { Text("Network Type") },
-                        modifier = Modifier.fillMaxWidth().padding(16.dp),
-                        singleLine = true,
                     )
                 }
             }

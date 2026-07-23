@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+    <style name="TabTextAppearance" parent="TextAppearance.Material3.TitleSmall">
         <item name="textAllCaps">false</item>
     </style>
 </resources>

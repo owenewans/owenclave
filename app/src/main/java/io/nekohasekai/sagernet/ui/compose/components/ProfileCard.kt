@@ -16,15 +16,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.NetworkCheck
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +49,9 @@ fun ProfileCard(
     onEdit: () -> Unit,
     onShare: (() -> Unit)? = null,
     onDelete: () -> Unit,
+    onPing: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
+    pinging: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val containerColor by animateColorAsState(
@@ -59,6 +69,8 @@ fun ProfileCard(
             MaterialTheme.colorScheme.onSurface,
         label = "cardContentColor"
     )
+
+    var showMenu by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
@@ -120,7 +132,12 @@ fun ProfileCard(
                             color = onContainerColor.copy(alpha = 0.6f),
                         )
                     }
-                    if (entity.ping > 0) {
+                    if (pinging) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(12.dp),
+                            strokeWidth = 2.dp,
+                        )
+                    } else if (entity.ping > 0) {
                         Text(
                             text = "${entity.ping}ms",
                             style = MaterialTheme.typography.labelSmall,
@@ -130,37 +147,56 @@ fun ProfileCard(
                                 else -> onContainerColor.copy(alpha = 0.6f)
                             },
                         )
+                    } else if (entity.ping == -1) {
+                        Text(
+                            text = "failed",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color(0xFFF44336),
+                        )
                     }
                 }
             }
 
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(4.dp))
 
-            IconButton(onClick = onEdit, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    Icons.Default.Edit,
-                    contentDescription = "Edit",
-                    tint = onContainerColor.copy(alpha = 0.7f),
-                    modifier = Modifier.size(20.dp),
-                )
-            }
-            if (onShare != null) {
-                IconButton(onClick = onShare, modifier = Modifier.size(36.dp)) {
+            Box {
+                IconButton(onClick = { showMenu = true }, modifier = Modifier.size(36.dp)) {
                     Icon(
-                        Icons.Default.Share,
-                        contentDescription = "Share",
+                        Icons.Default.MoreVert,
+                        contentDescription = "Menu",
                         tint = onContainerColor.copy(alpha = 0.7f),
                         modifier = Modifier.size(20.dp),
                     )
                 }
-            }
-            IconButton(onClick = onDelete, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    Icons.Default.Delete,
-                    contentDescription = "Delete",
-                    tint = onContainerColor.copy(alpha = 0.7f),
-                    modifier = Modifier.size(20.dp),
-                )
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                ) {
+                    DropdownMenuItem(
+                        text = { Text("Edit") },
+                        onClick = { showMenu = false; onEdit() },
+                        leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                    )
+                    if (onShare != null) {
+                        DropdownMenuItem(
+                            text = { Text("Share") },
+                            onClick = { showMenu = false; onShare() },
+                            leadingIcon = { Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                        )
+                    }
+                    if (onPing != null) {
+                        DropdownMenuItem(
+                            text = { Text("Test Latency") },
+                            onClick = { showMenu = false; onPing() },
+                            leadingIcon = { Icon(Icons.Default.NetworkCheck, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                        )
+                    }
+                    DropdownMenuItem(
+                        text = { Text("Delete") },
+                        onClick = { showMenu = false; onDelete() },
+                        leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(20.dp)) },
+                    )
+                }
             }
         }
     }
@@ -173,32 +209,5 @@ private fun formatTraffic(tx: Long, rx: Long): String {
         total < 1024 * 1024 -> "%.1fKB".format(total / 1024.0)
         total < 1024 * 1024 * 1024 -> "%.1fMB".format(total / (1024.0 * 1024))
         else -> "%.2fGB".format(total / (1024.0 * 1024 * 1024))
-    }
-}
-
-@Composable
-fun ProfileStatusBadge(status: Int, ping: Int) {
-    val (color, text) = when (status) {
-        1 -> Color(0xFF4CAF50) to "OK"
-        2 -> Color(0xFFFF9800) to "Testing"
-        3 -> Color(0xFFF44336) to "Error"
-        else -> MaterialTheme.colorScheme.onSurfaceVariant to "Unknown"
-    }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-    ) {
-        Box(
-            modifier = Modifier
-                .size(8.dp)
-                .clip(RoundedCornerShape(50))
-                .background(color)
-        )
-        Text(
-            text = if (ping > 0 && status == 1) "${ping}ms" else text,
-            style = MaterialTheme.typography.labelSmall,
-            color = color,
-        )
     }
 }

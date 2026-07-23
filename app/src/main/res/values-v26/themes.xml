@@ -1,15 +1,35 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Theme.SagerNet" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Solid</item>
+    <!-- Base application theme (Material 3 Expressive) - API 26+ overrides -->
+    <style name="Theme.SagerNet" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="actionBarStyle">@style/Widget.Material3.ActionBar.Solid</item>
         <item name="actionModeCloseDrawable">@drawable/ic_navigation_close</item>
-        <item name="colorButtonNormal">?colorAccent</item>
+        <item name="colorButtonNormal">?colorPrimary</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="colorPrimary">@color/material_pink_500</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/material_pink_100</item>
+        <item name="colorOnPrimaryContainer">@color/material_pink_900</item>
         <item name="colorPrimaryDark">@color/material_pink_700</item>
         <item name="colorAccent">@color/material_pink_accent_200</item>
+        <item name="colorSecondary">@color/material_pink_500</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/material_pink_100</item>
+        <item name="colorOnSecondaryContainer">@color/material_pink_900</item>
+        <item name="colorTertiary">@color/material_purple_accent_200</item>
+        <item name="colorOnTertiary">@color/white</item>
+        <item name="colorTertiaryContainer">@color/material_purple_100</item>
+        <item name="colorOnTertiaryContainer">@color/material_purple_900</item>
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurfaceVariant">@color/material_pink_100</item>
+        <item name="colorOnSurfaceVariant">@color/material_pink_300</item>
+        <item name="colorOutline">@color/material_pink_300</item>
+        <item name="colorError">@color/material_red_accent_200</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
+        <item name="colorOnBackground">@color/black</item>
         <item name="colorMaterial100">@color/material_pink_100</item>
         <item name="colorMaterial300">@color/material_pink_300</item>
         <item name="accentOrTextSecondary">?colorAccent</item>
@@ -28,15 +48,15 @@
         <!-- Remove ActionBar but keep styles and themes -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="chipStyle">@style/Widget.MaterialComponents.Chip.Choice.SagerNet</item>
+        <item name="chipStyle">@style/Widget.Material3.Chip.Choice.SagerNet</item>
         <item name="itemShapeAppearance">
-            @style/ShapeAppearance.MaterialComponents.MediumComponent
+            @style/ShapeAppearance.Material3.MediumComponent
         </item>
         <item name="alertDialogTheme">
-            @style/ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet
+            @style/ThemeOverlay.Material3.MaterialAlertDialog.SagerNet
         </item>
         <item name="materialAlertDialogTheme">
-            @style/ThemeOverlay.MaterialComponents.MaterialAlertDialog.SagerNet
+            @style/ThemeOverlay.Material3.MaterialAlertDialog.SagerNet
         </item>
     </style>
 </resources>

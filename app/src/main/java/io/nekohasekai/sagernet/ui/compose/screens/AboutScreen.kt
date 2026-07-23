@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
@@ -25,10 +25,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.BuildConfig
-import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,11 +55,19 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Image(
-                    painter = painterResource(R.mipmap.ic_launcher),
-                    contentDescription = "App icon",
-                    modifier = Modifier.size(96.dp),
-                )
+                Box(
+                    modifier = Modifier
+                        .size(96.dp)
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(24.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "O",
+                        style = MaterialTheme.typography.displayLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
                 Spacer(Modifier.height(16.dp))
                 Text(
                     text = "Owenclave",

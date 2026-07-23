@@ -130,7 +130,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
         return groups.find { it.type == GroupType.BASIC }!!.id
     }
 
-    var appTheme by configurationStore.int(Key.APP_THEME) { 20 }
+    var appTheme by configurationStore.int(Key.APP_THEME) { 21 }
     var nightTheme by configurationStore.stringToInt(Key.NIGHT_THEME) { 1 }
     var serviceMode by configurationStore.string(Key.SERVICE_MODE) { Key.MODE_VPN }
 
@@ -268,7 +268,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var individual by configurationStore.string(Key.INDIVIDUAL)
     var showDirectSpeed by configurationStore.boolean(Key.SHOW_DIRECT_SPEED)
 
-    val persistAcrossReboot by configurationStore.boolean(Key.PERSIST_ACROSS_REBOOT)
+    var persistAcrossReboot by configurationStore.boolean(Key.PERSIST_ACROSS_REBOOT)
 
     var requireSocks by configurationStore.boolean(Key.REQUIRE_SOCKS) { true }
     var socksUsername by configurationStore.string(Key.SOCKS_USERNAME)

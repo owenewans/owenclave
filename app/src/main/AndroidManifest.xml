@@ -162,6 +162,11 @@
             android:name="io.nekohasekai.sagernet.ui.MainActivity"
             android:exported="false"
             android:launchMode="singleTask" />
+        <activity
+            android:name="io.nekohasekai.sagernet.ui.AppManagerActivity"
+            android:exported="false"
+            android:label="@string/proxied_apps"
+            android:launchMode="singleTask" />
 
         <!-- Compose Activities -->
         <activity

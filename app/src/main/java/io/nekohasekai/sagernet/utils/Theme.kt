@@ -53,6 +53,8 @@ object Theme {
 
     const val DYNAMIC = 21
 
+    const val UNRECOVERY = 22
+
     private fun defaultTheme() = PINK
 
     fun apply(context: Context) {

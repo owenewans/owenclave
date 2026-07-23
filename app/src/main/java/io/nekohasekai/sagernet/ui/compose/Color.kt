@@ -33,6 +33,7 @@ fun colorSchemeFor(themeId: Int): ThemeColors = when (themeId) {
     Theme.BLUE_GREY -> ThemeColors(LightBlueGrey, DarkBlueGrey)
     Theme.BLACK -> ThemeColors(LightBlack, DarkBlack)
     Theme.DYNAMIC -> ThemeColors(LightPink, DarkPink)
+    Theme.UNRECOVERY -> ThemeColors(LightUnrecovery, DarkUnrecovery)
     else -> ThemeColors(LightPink, DarkPink)
 }
 
@@ -600,4 +601,39 @@ val DarkBlack = darkColorScheme(
     surface = Color(0xFF000000), onSurface = Color(0xFFE3E3E3),
     surfaceVariant = Color(0xFF2E2E2E), onSurfaceVariant = Color(0xFFCACACA),
     outline = Color(0xFF929292), surfaceTint = Color(0xFFFFFFFF),
+)
+
+// ── Unrecovery ──
+// Dark: deep reddish-black bg, bright blue primary, proper tonal layers
+val LightUnrecovery = lightColorScheme(
+    primary = Color(0xFF0F1F40), onPrimary = Color(0xFFF2F2F2),
+    primaryContainer = Color(0xFFDDE4FF), onPrimaryContainer = Color(0xFF001A41),
+    secondary = Color(0xFF0E2440), onSecondary = Color(0xFFF2F2F2),
+    secondaryContainer = Color(0xFFDBC8CC), onSecondaryContainer = Color(0xFF26191C),
+    tertiary = Color(0xFF6B6870), onTertiary = Color(0xFFF2F2F2),
+    tertiaryContainer = Color(0xFFEDE0E4), onTertiaryContainer = Color(0xFF26191C),
+    error = Color(0xFFBA1A1A), onError = Color.White,
+    errorContainer = Color(0xFFFFDAD6), onErrorContainer = Color(0xFF410002),
+    background = Color(0xFFF5F2F2), onBackground = Color(0xFF26191C),
+    surface = Color(0xFFF5F2F2), onSurface = Color(0xFF26191C),
+    surfaceVariant = Color(0xFFE0DCDC), onSurfaceVariant = Color(0xFF4A3F43),
+    outline = Color(0xFF7A6F73), outlineVariant = Color(0xFFCCC8C8),
+    surfaceTint = Color(0xFF0F1F40), inverseSurface = Color(0xFF26191C),
+    inverseOnSurface = Color(0xFFF2F2F2), inversePrimary = Color(0xFF6B8FD4),
+)
+val DarkUnrecovery = darkColorScheme(
+    primary = Color(0xFF6B8FD4), onPrimary = Color(0xFF0F1F40),
+    primaryContainer = Color(0xFF2D3D5C), onPrimaryContainer = Color(0xFFD0D8F0),
+    secondary = Color(0xFF8B9BB0), onSecondary = Color(0xFF0E2440),
+    secondaryContainer = Color(0xFF2E2428), onSecondaryContainer = Color(0xFFD0C8CC),
+    tertiary = Color(0xFFB0A0A4), onTertiary = Color(0xFF26191C),
+    tertiaryContainer = Color(0xFF3A2A2E), onTertiaryContainer = Color(0xFFD0C8CC),
+    error = Color(0xFFFFB4AB), onError = Color(0xFF690005),
+    errorContainer = Color(0xFF93000A), onErrorContainer = Color(0xFFFFDAD6),
+    background = Color(0xFF1E1518), onBackground = Color(0xFFF2F2F2),
+    surface = Color(0xFF1E1518), onSurface = Color(0xFFF2F2F2),
+    surfaceVariant = Color(0xFF4A3A3E), onSurfaceVariant = Color(0xFFC0B0B4),
+    outline = Color(0xFF8B7B7F), outlineVariant = Color(0xFF4A3A3E),
+    surfaceTint = Color(0xFF6B8FD4), inverseSurface = Color(0xFFF2F2F2),
+    inverseOnSurface = Color(0xFF26191C), inversePrimary = Color(0xFF0F1F40),
 )

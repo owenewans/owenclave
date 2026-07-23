@@ -102,7 +102,7 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        style="@style/Widget.Design.NavigationView"
+        style="@style/Widget.Material3.NavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
@@ -113,12 +113,12 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view_black"
-        style="@style/Widget.Design.NavigationView"
+        style="@style/Widget.Material3.NavigationView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:itemIconTint="@color/navigation_icon"
-        app:itemShapeAppearance="@style/ShapeAppearance.MaterialComponents.MediumComponent"
+        app:itemShapeAppearance="@style/ShapeAppearance.Material3.MediumComponent"
         app:itemShapeFillColor="@color/navigation_item"
         app:itemTextColor="@color/navigation_icon"
         app:itemMaxLines="10"

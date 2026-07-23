@@ -14,7 +14,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,7 +22,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.database.RuleEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
@@ -42,15 +46,26 @@ fun RouteScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     var rules by remember { mutableStateOf<List<RuleEntity>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
 
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
+    fun reloadRules() {
+        scope.launch(Dispatchers.IO) {
             rules = SagerDatabase.rulesDao.allRules()
             loading = false
         }
+    }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                reloadRules()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     Scaffold(
@@ -61,6 +76,7 @@ fun RouteScreen(
                 onNavigationClick = onMenuClick,
                 actions = {
                     IconButton(onClick = {
+                        DataStore.routeName = ""
                         context.startActivity(
                             Intent(context, ComposeRouteSettingsActivity::class.java)
                         )
@@ -92,6 +108,7 @@ fun RouteScreen(
                             type = rule.mkSummary().take(50),
                             outbound = rule.displayOutbound(),
                             enabled = rule.enabled,
+                            modifier = Modifier.animateItem(),
                             onEnabledChange = { enabled ->
                                 scope.launch(Dispatchers.IO) {
                                     rule.enabled = enabled

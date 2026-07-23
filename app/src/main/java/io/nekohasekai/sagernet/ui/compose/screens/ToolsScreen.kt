@@ -1,5 +1,7 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,17 +10,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
-import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NetworkCheck
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -26,6 +28,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +36,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import io.nekohasekai.sagernet.ui.compose.ComposeProbeCertActivity
+import io.nekohasekai.sagernet.ui.compose.ComposeStunActivity
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,8 +47,26 @@ import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 fun ToolsScreen(
     onMenuClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     var selectedTab by remember { mutableStateOf(0) }
+    var showResetDialog by remember { mutableStateOf(false) }
     val tabs = listOf("Backup", "Network", "Debug")
+
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = { Text("Reset Settings") },
+            text = { Text("Are you sure you want to reset all settings to defaults?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showResetDialog = false
+                }) { Text("Reset") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
+            },
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -67,8 +91,11 @@ fun ToolsScreen(
 
                 when (selectedTab) {
                     0 -> BackupTab()
-                    1 -> NetworkTab()
-                    2 -> DebugTab()
+                    1 -> NetworkTab(
+                        onStunTest = { context.startActivity(Intent(context, ComposeStunActivity::class.java)) },
+                        onProbeCert = { context.startActivity(Intent(context, ComposeProbeCertActivity::class.java)) },
+                    )
+                    2 -> DebugTab(onReset = { showResetDialog = true })
                 }
             }
         }
@@ -99,13 +126,17 @@ private fun BackupTab() {
 
         Spacer(Modifier.height(24.dp))
 
-        Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Button(onClick = { /* export */ }) { Text("Export") }
+            Spacer(Modifier.width(12.dp))
             OutlinedButton(onClick = { /* share */ }) { Text("Share") }
+            Spacer(Modifier.width(12.dp))
+            OutlinedButton(onClick = { /* import */ }) { Text("Import") }
         }
-
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(onClick = { /* import */ }) { Text("Import from file") }
     }
 }
 
@@ -122,7 +153,10 @@ private fun BackupItem(label: String, checked: Boolean, onCheckedChange: (Boolea
 }
 
 @Composable
-private fun NetworkTab() {
+private fun NetworkTab(
+    onStunTest: () -> Unit,
+    onProbeCert: () -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -142,7 +176,7 @@ private fun NetworkTab() {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(onClick = { /* start STUN test */ }) { Text("Start") }
+                Button(onClick = onStunTest) { Text("Start") }
             }
         }
 
@@ -159,21 +193,21 @@ private fun NetworkTab() {
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Spacer(Modifier.height(16.dp))
-                Button(onClick = { /* start cert probe */ }) { Text("Start") }
+                Button(onClick = onProbeCert) { Text("Start") }
             }
         }
     }
 }
 
 @Composable
-private fun DebugTab() {
+private fun DebugTab(onReset: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Spacer(Modifier.height(32.dp))
         OutlinedButton(
-            onClick = { /* reset settings */ },
+            onClick = onReset,
             colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.error
             ),

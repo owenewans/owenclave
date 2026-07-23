@@ -68,7 +68,7 @@ fun Project.setupCommon(projectName: String = "") {
     android.apply {
         buildToolsVersion = "37.0.0"
         compileSdk = 37
-        defaultConfig.minSdk = if (projectName.lowercase() == "naive") 24 else 21
+        defaultConfig.minSdk = if (projectName.lowercase() == "naive") 24 else 23
         compileOptions.sourceCompatibility = JavaVersion.VERSION_21
         compileOptions.targetCompatibility = JavaVersion.VERSION_21
         lint.showAll = true

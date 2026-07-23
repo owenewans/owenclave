@@ -40,27 +40,28 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.SagerNet
-import io.nekohasekai.sagernet.aidl.ISagerNetService
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.bg.SagerConnection
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ui.compose.components.ServiceButton
 import io.nekohasekai.sagernet.ui.compose.components.ServiceState
 import io.nekohasekai.sagernet.ui.compose.components.StatsBar
@@ -86,7 +87,6 @@ enum class NavDestination(
     LOGCAT("logcat", R.string.menu_log, Icons.Filled.BugReport),
     TRAFFIC("traffic", R.string.menu_traffic, Icons.Filled.Transform),
     TOOLS("tools", R.string.menu_tools, Icons.Filled.Construction),
-    ABOUT("about", R.string.menu_about, Icons.Filled.Info),
 }
 
 class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
@@ -104,13 +104,22 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
         connection.connect(this, this)
 
         setContent {
-            OwenclaveTheme {
-                MainScreen(
-                    serviceState = serviceState.value,
-                    onServiceToggle = { toggleService() },
-                    uplinkSpeed = uplinkSpeed.value,
-                    downlinkSpeed = downlinkSpeed.value,
-                )
+            var themeId by remember { mutableIntStateOf(DataStore.appTheme) }
+            var nightTheme by remember { mutableIntStateOf(DataStore.nightTheme) }
+            OwenclaveTheme(themeId = themeId, nightTheme = nightTheme) {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background,
+                ) {
+                    MainScreen(
+                        serviceState = serviceState.value,
+                        onServiceToggle = { toggleService() },
+                        uplinkSpeed = uplinkSpeed.value,
+                        downlinkSpeed = downlinkSpeed.value,
+                        onThemeChanged = { newId -> themeId = newId },
+                        onNightThemeChanged = { newNight -> nightTheme = newNight },
+                    )
+                }
             }
         }
 
@@ -155,7 +164,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     override fun statsUpdated(stats: List<io.nekohasekai.sagernet.aidl.AppStats>) {
     }
 
-    override fun onServiceConnected(service: ISagerNetService) {
+    override fun onServiceConnected(service: io.nekohasekai.sagernet.aidl.ISagerNetService) {
     }
 
     override fun onServiceDisconnected() {
@@ -192,11 +201,14 @@ fun MainScreen(
     onServiceToggle: () -> Unit,
     uplinkSpeed: String,
     downlinkSpeed: String,
+    onThemeChanged: (Int) -> Unit = {},
+    onNightThemeChanged: (Int) -> Unit = {},
 ) {
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var currentDestination by remember { mutableStateOf(NavDestination.CONFIGURATION) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val stateForButton = when (serviceState) {
         BaseService.State.Idle -> ServiceState.IDLE
@@ -227,6 +239,8 @@ fun MainScreen(
         },
     ) {
         Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            containerColor = MaterialTheme.colorScheme.background,
             bottomBar = {
                 StatsBar(
                     statusText = statusText,
@@ -242,11 +256,12 @@ fun MainScreen(
             },
             floatingActionButtonPosition = FabPosition.End,
             snackbarHost = { SnackbarHost(snackbarHostState) },
+            contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0),
         ) { paddingValues ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
+                    .padding(bottom = paddingValues.calculateBottomPadding())
             ) {
                 AnimatedContent(
                     targetState = currentDestination,
@@ -268,6 +283,8 @@ fun MainScreen(
                         )
                         NavDestination.SETTINGS -> SettingsScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
+                            onThemeChanged = onThemeChanged,
+                            onNightThemeChanged = onNightThemeChanged,
                         )
                         NavDestination.LOGCAT -> LogcatScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
@@ -276,9 +293,6 @@ fun MainScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
                         )
                         NavDestination.TOOLS -> ToolsScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                        )
-                        NavDestination.ABOUT -> AboutScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
                         )
                     }
@@ -293,14 +307,12 @@ private fun DrawerContent(
     currentDestination: NavDestination,
     onDestinationSelected: (NavDestination) -> Unit,
 ) {
-    ModalDrawerSheet(
-        modifier = Modifier.padding(16.dp),
-    ) {
+    ModalDrawerSheet {
         Text(
             text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 24.dp),
+            modifier = Modifier.padding(start = 28.dp, top = 24.dp, bottom = 24.dp),
         )
 
         val groups = listOf(
@@ -314,9 +326,6 @@ private fun DrawerContent(
             NavDestination.TRAFFIC,
             NavDestination.TOOLS,
         )
-        val about = listOf(
-            NavDestination.ABOUT,
-        )
 
         groups.forEach { destination ->
             DrawerItem(
@@ -327,22 +336,10 @@ private fun DrawerContent(
         }
 
         HorizontalDivider(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp),
+            modifier = Modifier.padding(vertical = 12.dp, horizontal = 28.dp),
         )
 
         misc.forEach { destination ->
-            DrawerItem(
-                destination = destination,
-                selected = currentDestination == destination,
-                onClick = { onDestinationSelected(destination) },
-            )
-        }
-
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 24.dp),
-        )
-
-        about.forEach { destination ->
             DrawerItem(
                 destination = destination,
                 selected = currentDestination == destination,
@@ -368,6 +365,6 @@ private fun DrawerItem(
             selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
             selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
         ),
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp),
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 3.dp),
     )
 }
