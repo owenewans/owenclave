@@ -1,9 +1,15 @@
 package io.nekohasekai.sagernet.ui.compose.components
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +42,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -59,6 +66,7 @@ fun ProfileCard(
     onPing: (() -> Unit)? = null,
     onLongClick: (() -> Unit)? = null,
     pinging: Boolean = false,
+    connected: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     val containerColor by animateColorAsState(
@@ -127,7 +135,37 @@ fun ProfileCard(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Morphing shaped icon — the signature M3E flourish.
+            // Morphing shaped icon — the signature M3E flourish. The container
+            // spins while the selected server is actively connected, then
+            // smoothly decelerates to a stop when disconnected.
+            val spinTransition = rememberInfiniteTransition(label = "iconSpin")
+            val spinSpeed by spinTransition.animateFloat(
+                initialValue = 0f,
+                targetValue = 360f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 6000, easing = LinearEasing),
+                    repeatMode = RepeatMode.Restart,
+                ),
+                label = "spinAngle",
+            )
+            // When connected, rotation tracks the infinite spin. When
+            // disconnected, animateFloatAsState springs back the last value
+            // toward a nearby resting angle, giving a decelerate effect.
+            var lastSpin by remember { mutableFloatStateOf(0f) }
+            val targetRotation = if (connected) {
+                lastSpin = spinSpeed
+                spinSpeed
+            } else {
+                lastSpin
+            }
+            val rotation by animateFloatAsState(
+                targetValue = targetRotation,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioMediumBouncy,
+                    stiffness = Spring.StiffnessVeryLow,
+                ),
+                label = "spinDecel",
+            )
             ShapedIcon(
                 icon = Icons.Filled.Bolt,
                 containerColor = iconContainer,
@@ -135,6 +173,7 @@ fun ProfileCard(
                 size = 48.dp,
                 shape = seedShape,
                 pressed = pressed,
+                modifier = Modifier.graphicsLayer { rotationZ = rotation },
             )
             Spacer(Modifier.width(14.dp))
 

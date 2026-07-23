@@ -69,6 +69,7 @@ import kotlinx.coroutines.withContext
 fun ConfigurationScreen(
     onMenuClick: () -> Unit,
     serviceRunning: Boolean = false,
+    serviceConnected: Boolean = false,
     batchTestProgress: Pair<Int, Int>? = null,
     onBatchTestProgress: (Pair<Int, Int>?) -> Unit = {},
 ) {
@@ -264,6 +265,7 @@ fun ConfigurationScreen(
                         ProfileCard(
                             entity = entity,
                             selected = entity.id == selectedProfileId,
+                            connected = entity.id == selectedProfileId && serviceConnected,
                             pinging = entity.id in pingingIds,
                             modifier = Modifier.animateItem(),
                             onClick = {

@@ -78,7 +78,7 @@ fun DinoGame(modifier: Modifier = Modifier) {
     val surface = MaterialTheme.colorScheme.surfaceContainerHighest
     val ground = MaterialTheme.colorScheme.outline
     val dinoColor = MaterialTheme.colorScheme.primary
-    val cactusColor = MaterialTheme.colorScheme.tertiary
+    val cactusColor = MaterialTheme.colorScheme.onSurfaceVariant
     val onSurface = MaterialTheme.colorScheme.onSurface
 
     var running by remember { mutableStateOf(false) }
@@ -252,16 +252,26 @@ private fun DrawScope.drawGame(
         cornerRadius = androidx.compose.ui.geometry.CornerRadius(dinoW * 0.3f),
     )
 
-    // cactuses — single rounded black blocks.
+    // cactuses — single rounded blocks (top corners only).
     for (ox in obstacles) {
         val cx = w * ox
         val cw = h * 0.07f
         val ch = h * 0.15f
-        drawRoundRect(
-            color = cactus,
-            topLeft = Offset(cx, gy - ch),
-            size = Size(cw, ch),
-            cornerRadius = androidx.compose.ui.geometry.CornerRadius(cw * 0.3f),
-        )
+        val r = cw * 0.35f
+        val path = androidx.compose.ui.graphics.Path().apply {
+            addRoundRect(
+                androidx.compose.ui.geometry.RoundRect(
+                    left = cx,
+                    top = gy - ch,
+                    right = cx + cw,
+                    bottom = gy,
+                    topLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
+                    topRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
+                    bottomLeftCornerRadius = androidx.compose.ui.geometry.CornerRadius(0f),
+                    bottomRightCornerRadius = androidx.compose.ui.geometry.CornerRadius(0f),
+                ),
+            )
+        }
+        drawPath(path, color = cactus)
     }
 }

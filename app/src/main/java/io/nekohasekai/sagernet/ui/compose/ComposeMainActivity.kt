@@ -55,6 +55,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -159,10 +160,15 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     }
 
     private fun toggleService() {
-        if (serviceState.value.canStop) {
-            SagerNet.stopService()
-        } else {
-            SagerNet.startService()
+        val state = serviceState.value
+        // Ignore taps during transitional states to prevent race conditions
+        // and crashes from rapid start/stop toggling.
+        when {
+            state == BaseService.State.Idle || state == BaseService.State.Stopped ->
+                SagerNet.startService()
+            state == BaseService.State.Connected ->
+                SagerNet.stopService()
+            // Connecting / Stopping — ignore, button is effectively debounced
         }
     }
 
@@ -259,9 +265,14 @@ fun MainScreen(
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             floatingActionButton = {
+                // Disable the button during transitional states to prevent
+                // rapid-tap crashes.
+                val transition = serviceState == BaseService.State.Connecting ||
+                    serviceState == BaseService.State.Stopping
                 ServiceButton(
                     state = stateForButton,
-                    onClick = onServiceToggle,
+                    onClick = { if (!transition) onServiceToggle() },
+                    modifier = if (transition) Modifier.graphicsLayer { alpha = 0.7f } else Modifier,
                 )
             },
             floatingActionButtonPosition = FabPosition.End,
@@ -286,6 +297,7 @@ fun MainScreen(
                         NavDestination.CONFIGURATION -> ConfigurationScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
                             serviceRunning = serviceState.canStop,
+                            serviceConnected = serviceState == BaseService.State.Connected,
                             batchTestProgress = batchTestProgress,
                             onBatchTestProgress = { batchTestProgress = it },
                         )
