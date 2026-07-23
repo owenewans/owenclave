@@ -17,11 +17,15 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,7 +41,7 @@ data class AssetItem(
     val updating: Boolean = false,
 )
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun AssetsScreen(
     assets: List<AssetItem>,
@@ -47,12 +51,17 @@ fun AssetsScreen(
     onDelete: (AssetItem) -> Unit,
     onUpdate: (AssetItem) -> Unit = {},
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             OwenclaveTopAppBar(
                 title = "Route Assets",
                 navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 onNavigationClick = onBack,
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = onAdd) {
                         Icon(Icons.Filled.Add, contentDescription = "Add")
@@ -88,7 +97,7 @@ fun AssetsScreen(
                         ) {
                             Column {
                                 if (asset.updating) {
-                                    LinearProgressIndicator(
+                                    LinearWavyProgressIndicator(
                                         modifier = Modifier.fillMaxSize(),
                                         color = MaterialTheme.colorScheme.primary,
                                     )

@@ -17,13 +17,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NetworkCheck
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -53,27 +55,36 @@ fun ToolsScreen(
     val tabs = listOf("Backup", "Network", "Debug")
 
     if (showResetDialog) {
-        AlertDialog(
-            onDismissRequest = { showResetDialog = false },
-            title = { Text("Reset Settings") },
-            text = { Text("Are you sure you want to reset all settings to defaults?") },
-            confirmButton = {
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { showResetDialog = false }) {
+            Text(
+                text = "Reset Settings",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
+            Text("Are you sure you want to reset all settings to defaults?")
+            Spacer(Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
+                Spacer(Modifier.width(8.dp))
                 TextButton(onClick = {
                     showResetDialog = false
                 }) { Text("Reset") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
-            },
-        )
+            }
+        }
     }
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             OwenclaveTopAppBar(
                 title = "Tools",
                 navigationIcon = Icons.Filled.Menu,
                 onNavigationClick = onMenuClick,
+                scrollBehavior = scrollBehavior,
             )
         },
     ) { paddingValues ->

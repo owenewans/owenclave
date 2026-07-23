@@ -6,19 +6,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.LoadingIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun OwenclaveTopAppBar(
     title: String,
@@ -26,20 +31,38 @@ fun OwenclaveTopAppBar(
     navigationIcon: ImageVector? = null,
     onNavigationClick: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
-    TopAppBar(
-        title = { Text(title, style = MaterialTheme.typography.titleLarge) },
+    // Fade the nav-icon container out as the bar collapses so it doesn't look
+    // "stuck" against the scrolled background.
+    val collapsedFraction = scrollBehavior?.state?.collapsedFraction ?: 0f
+    val navContainer = MaterialTheme.colorScheme.surfaceBright.copy(
+        alpha = 1f - collapsedFraction,
+    )
+    LargeFlexibleTopAppBar(
+        title = {
+            Text(
+                title,
+                style = MaterialTheme.typography.headlineSmall,
+                maxLines = 1,
+                softWrap = false,
+                modifier = Modifier.padding(vertical = 4.dp),
+            )
+        },
         modifier = modifier,
         navigationIcon = {
             if (navigationIcon != null && onNavigationClick != null) {
                 IconButton(
                     onClick = onNavigationClick,
                     modifier = Modifier.size(48.dp),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = navContainer,
+                    ),
                 ) {
                     Icon(
                         imageVector = navigationIcon,
                         contentDescription = "Navigate back",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
@@ -47,13 +70,16 @@ fun OwenclaveTopAppBar(
         actions = actions,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
             titleContentColor = MaterialTheme.colorScheme.onSurface,
             navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
             actionIconContentColor = MaterialTheme.colorScheme.onSurface,
         ),
+        scrollBehavior = scrollBehavior,
     )
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun LoadingState(
     modifier: Modifier = Modifier,
@@ -67,9 +93,8 @@ fun LoadingState(
             androidx.compose.foundation.layout.Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                androidx.compose.material3.CircularProgressIndicator(
+                LoadingIndicator(
                     modifier = Modifier.size(48.dp),
-                    strokeWidth = 4.dp,
                     color = MaterialTheme.colorScheme.primary,
                 )
                 Text(
@@ -80,9 +105,8 @@ fun LoadingState(
                 )
             }
         } else {
-            androidx.compose.material3.CircularProgressIndicator(
+            LoadingIndicator(
                 modifier = Modifier.size(48.dp),
-                strokeWidth = 4.dp,
                 color = MaterialTheme.colorScheme.primary,
             )
         }
@@ -103,18 +127,18 @@ fun EmptyState(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                ShapedIconStatic(
+                    icon = icon,
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    size = 96.dp,
                 )
             }
             Text(
                 text = message,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = 20.dp),
             )
         }
     }

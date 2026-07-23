@@ -3,6 +3,7 @@ package io.nekohasekai.sagernet.ui.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -61,6 +62,7 @@ import kotlinx.coroutines.withContext
 class ComposeAssetsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             OwenclaveTheme {
                 AssetsScreen(
@@ -78,6 +80,7 @@ class ComposeAssetsActivity : ComponentActivity() {
 class ComposeAppListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         if (!DataStore.proxyApps) {
             DataStore.proxyApps = true
@@ -159,6 +162,7 @@ class ComposeAppListActivity : ComponentActivity() {
 class ComposeScannerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             OwenclaveTheme {
                 ScannerScreen(
@@ -178,6 +182,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         editingGroupId = intent.getLongExtra("groupId", 0L)
 
         var initialName = ""
@@ -230,6 +235,7 @@ class ComposeRouteSettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         editingRuleId = intent.getLongExtra("ruleId", 0L)
 
         var initialName = ""
@@ -320,6 +326,7 @@ class ComposeRouteSettingsActivity : ComponentActivity() {
 class ComposeConfigEditActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val content = intent.getStringExtra("content") ?: ""
         setContent {
             OwenclaveTheme {
@@ -336,6 +343,7 @@ class ComposeConfigEditActivity : ComponentActivity() {
 class ComposeStunActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             OwenclaveTheme {
                 StunScreen(onBack = { finish() })
@@ -347,6 +355,7 @@ class ComposeStunActivity : ComponentActivity() {
 class ComposeProbeCertActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             OwenclaveTheme {
                 ProbeCertScreen(onBack = { finish() })
@@ -363,6 +372,7 @@ class ComposeProfileSelectActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val selectedId = intent.getLongExtra(EXTRA_SELECTED, 0L)
         setContent {
             OwenclaveTheme {
@@ -383,6 +393,7 @@ class ComposeProfileSelectActivity : ComponentActivity() {
 class ComposeQuickToggleActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             OwenclaveTheme {
                 QuickSwitchScreen(
@@ -407,6 +418,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         val profileId = intent.getLongExtra(EXTRA_PROFILE_ID, 0L)
         val profileType = intent.getIntExtra(EXTRA_PROFILE_TYPE, ProxyEntity.TYPE_SOCKS)
 

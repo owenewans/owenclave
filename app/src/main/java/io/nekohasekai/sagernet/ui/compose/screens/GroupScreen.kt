@@ -1,9 +1,15 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
 import android.content.Intent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -11,13 +17,16 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -81,11 +90,18 @@ fun GroupScreen(
     }
 
     if (deleteGroup != null) {
-        AlertDialog(
-            onDismissRequest = { deleteGroup = null },
-            title = { Text("Delete group") },
-            text = { Text("Are you sure you want to delete \"${deleteGroup!!.displayName()}\" and all its profiles?") },
-            confirmButton = {
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { deleteGroup = null }) {
+            Text(
+                text = "Delete group",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
+            Text("Are you sure you want to delete \"${deleteGroup!!.displayName()}\" and all its profiles?")
+            Spacer(Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { deleteGroup = null }) { Text("Cancel") }
+                Spacer(Modifier.width(8.dp))
                 TextButton(onClick = {
                     val g = deleteGroup!!
                     deleteGroup = null
@@ -94,17 +110,23 @@ fun GroupScreen(
                         withContext(Dispatchers.Main) { reloadGroups() }
                     }
                 }) { Text("Delete") }
-            },
-            dismissButton = { TextButton(onClick = { deleteGroup = null }) { Text("Cancel") } },
-        )
+            }
+        }
     }
 
     if (clearGroup != null) {
-        AlertDialog(
-            onDismissRequest = { clearGroup = null },
-            title = { Text("Clear profiles") },
-            text = { Text("Remove all profiles from \"${clearGroup!!.displayName()}\"?") },
-            confirmButton = {
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { clearGroup = null }) {
+            Text(
+                text = "Clear profiles",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
+            Text("Remove all profiles from \"${clearGroup!!.displayName()}\"?")
+            Spacer(Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { clearGroup = null }) { Text("Cancel") }
+                Spacer(Modifier.width(8.dp))
                 TextButton(onClick = {
                     val g = clearGroup!!
                     clearGroup = null
@@ -113,17 +135,21 @@ fun GroupScreen(
                         withContext(Dispatchers.Main) { reloadGroups() }
                     }
                 }) { Text("Clear") }
-            },
-            dismissButton = { TextButton(onClick = { clearGroup = null }) { Text("Cancel") } },
-        )
+            }
+        }
     }
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             OwenclaveTopAppBar(
                 title = "Groups",
                 navigationIcon = Icons.Filled.Menu,
                 onNavigationClick = onMenuClick,
+                scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { /* update all subscriptions */ }) {
                         Icon(Icons.Filled.Refresh, contentDescription = "Update all")

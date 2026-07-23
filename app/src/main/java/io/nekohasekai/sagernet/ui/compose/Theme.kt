@@ -2,6 +2,7 @@ package io.nekohasekai.sagernet.ui.compose
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MotionScheme
@@ -21,11 +22,12 @@ import io.nekohasekai.sagernet.utils.Theme
 val LocalAppThemeId = staticCompositionLocalOf { Theme.PINK }
 
 val OwenclaveShapes = Shapes(
-    extraSmall = androidx.compose.foundation.shape.RoundedCornerShape(4.dp),
-    small = androidx.compose.foundation.shape.RoundedCornerShape(8.dp),
-    medium = androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-    large = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-    extraLarge = androidx.compose.foundation.shape.RoundedCornerShape(28.dp),
+    extraSmall = RoundedCornerShape(6.dp),
+    small = RoundedCornerShape(10.dp),
+    medium = RoundedCornerShape(14.dp),
+    large = RoundedCornerShape(20.dp),
+    extraLarge = RoundedCornerShape(28.dp),
+    extraExtraLarge = RoundedCornerShape(32.dp),
 )
 
 private fun ColorScheme.applyPitchBlack(): ColorScheme = copy(
@@ -36,6 +38,8 @@ private fun ColorScheme.applyPitchBlack(): ColorScheme = copy(
     surfaceContainerLow = Color.Black,
     surfaceContainerHigh = Color.Black,
     surfaceContainerHighest = Color.Black,
+    surfaceBright = Color(0xFF141414),
+    surfaceDim = Color.Black,
     surfaceVariant = Color.Black,
 )
 

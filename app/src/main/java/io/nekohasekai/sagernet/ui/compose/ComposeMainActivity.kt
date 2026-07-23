@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,6 +30,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Transform
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -52,6 +54,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -106,19 +109,31 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
         setContent {
             var themeId by remember { mutableIntStateOf(DataStore.appTheme) }
             var nightTheme by remember { mutableIntStateOf(DataStore.nightTheme) }
+            val scrim = remember { io.nekohasekai.sagernet.ui.compose.components.ScrimController() }
+            val blurRadius by androidx.compose.animation.core.animateDpAsState(
+                targetValue = scrim.blurRadiusDp.dp,
+                animationSpec = androidx.compose.animation.core.tween(220),
+                label = "rootBlur",
+            )
             OwenclaveTheme(themeId = themeId, nightTheme = nightTheme) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
+                androidx.compose.runtime.CompositionLocalProvider(
+                    io.nekohasekai.sagernet.ui.compose.components.LocalScrimController provides scrim,
                 ) {
-                    MainScreen(
-                        serviceState = serviceState.value,
-                        onServiceToggle = { toggleService() },
-                        uplinkSpeed = uplinkSpeed.value,
-                        downlinkSpeed = downlinkSpeed.value,
-                        onThemeChanged = { newId -> themeId = newId },
-                        onNightThemeChanged = { newNight -> nightTheme = newNight },
-                    )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .blur(blurRadius),
+                        color = MaterialTheme.colorScheme.surface,
+                    ) {
+                        MainScreen(
+                            serviceState = serviceState.value,
+                            onServiceToggle = { toggleService() },
+                            uplinkSpeed = uplinkSpeed.value,
+                            downlinkSpeed = downlinkSpeed.value,
+                            onThemeChanged = { newId -> themeId = newId },
+                            onNightThemeChanged = { newNight -> nightTheme = newNight },
+                        )
+                    }
                 }
             }
         }
@@ -194,7 +209,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(
     serviceState: BaseService.State,
@@ -208,7 +223,6 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var currentDestination by remember { mutableStateOf(NavDestination.CONFIGURATION) }
     val snackbarHostState = remember { SnackbarHostState() }
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     val stateForButton = when (serviceState) {
         BaseService.State.Idle -> ServiceState.IDLE
@@ -226,6 +240,8 @@ fun MainScreen(
         BaseService.State.Stopped -> "Stopped"
     }
 
+    val EmphasizedEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -239,13 +255,13 @@ fun MainScreen(
         },
     ) {
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             bottomBar = {
                 StatsBar(
                     statusText = statusText,
                     uplinkSpeed = uplinkSpeed,
                     downlinkSpeed = downlinkSpeed,
+                    connected = serviceState == BaseService.State.Connected,
                 )
             },
             floatingActionButton = {
@@ -266,8 +282,10 @@ fun MainScreen(
                 AnimatedContent(
                     targetState = currentDestination,
                     transitionSpec = {
-                        (fadeIn(tween(200)) + slideInHorizontally(tween(200)) { it / 4 }) togetherWith
-                            (fadeOut(tween(200)) + slideOutHorizontally(tween(200)) { -it / 4 })
+                        (fadeIn(tween(380, easing = EmphasizedEasing)) +
+                            slideInHorizontally(tween(380, easing = EmphasizedEasing)) { it / 4 }) togetherWith
+                            (fadeOut(tween(380, easing = EmphasizedEasing)) +
+                            slideOutHorizontally(tween(380, easing = EmphasizedEasing)) { -it / 4 })
                     },
                     label = "screenTransition",
                 ) { destination ->
@@ -307,12 +325,14 @@ private fun DrawerContent(
     currentDestination: NavDestination,
     onDestinationSelected: (NavDestination) -> Unit,
 ) {
-    ModalDrawerSheet {
+    ModalDrawerSheet(
+        drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    ) {
         Text(
             text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 28.dp, top = 24.dp, bottom = 24.dp),
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 28.dp, top = 28.dp, bottom = 20.dp),
         )
 
         val groups = listOf(
@@ -356,14 +376,34 @@ private fun DrawerItem(
     onClick: () -> Unit,
 ) {
     NavigationDrawerItem(
-        label = { Text(stringResource(destination.labelRes)) },
-        icon = { Icon(destination.icon, contentDescription = null) },
+        label = {
+            Text(
+                stringResource(destination.labelRes),
+                style = MaterialTheme.typography.labelLarge,
+            )
+        },
+        icon = {
+            io.nekohasekai.sagernet.ui.compose.components.ShapedIcon(
+                icon = destination.icon,
+                containerColor = if (selected)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = if (selected)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onSecondaryContainer,
+                size = 40.dp,
+                pressed = selected,
+            )
+        },
         selected = selected,
         onClick = onClick,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
         colors = NavigationDrawerItemDefaults.colors(
             selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
             selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            unselectedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
         ),
         modifier = Modifier.padding(horizontal = 12.dp, vertical = 3.dp),
     )

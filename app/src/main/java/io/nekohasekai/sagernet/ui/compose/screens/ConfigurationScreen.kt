@@ -8,24 +8,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.NetworkCheck
-import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -49,7 +56,6 @@ import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.ktx.parseShareLinks
 import io.nekohasekai.sagernet.ui.compose.ComposeProfileSettingsActivity
-import io.nekohasekai.sagernet.ui.compose.ComposeScannerActivity
 import io.nekohasekai.sagernet.ui.compose.components.EmptyState
 import io.nekohasekai.sagernet.ui.compose.components.LoadingState
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
@@ -58,7 +64,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ConfigurationScreen(
     onMenuClick: () -> Unit,
@@ -70,7 +76,6 @@ fun ConfigurationScreen(
     var profiles by remember { mutableStateOf<List<ProxyEntity>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var selectedProfileId by remember { mutableStateOf(DataStore.selectedProxy) }
-    var showAddMenu by remember { mutableStateOf(false) }
     var showProtocolPicker by remember { mutableStateOf(false) }
     var pingingIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
     var batchTestProgress by remember { mutableStateOf<Pair<Int, Int>?>(null) }
@@ -146,50 +151,6 @@ fun ConfigurationScreen(
         }
     }
 
-    if (showAddMenu) {
-        AlertDialog(
-            onDismissRequest = { showAddMenu = false },
-            title = { Text("Add Profile") },
-            text = {
-                Column {
-                    TextButton(
-                        onClick = {
-                            showAddMenu = false
-                            showProtocolPicker = true
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(Icons.Filled.Add, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                        Text("Manual Input")
-                    }
-                    TextButton(
-                        onClick = {
-                            showAddMenu = false
-                            importFromClipboard()
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(Icons.Filled.ContentCopy, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                        Text("Import from Clipboard")
-                    }
-                    TextButton(
-                        onClick = {
-                            showAddMenu = false
-                            context.startActivity(Intent(context, ComposeScannerActivity::class.java))
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(Icons.Filled.QrCodeScanner, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-                        Text("Scan QR Code")
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { showAddMenu = false }) { Text("Cancel") }
-            },
-        )
-    }
-
     if (showProtocolPicker) {
         ProtocolPickerDialog(
             onSelect = { type ->
@@ -204,22 +165,47 @@ fun ConfigurationScreen(
         )
     }
 
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
             OwenclaveTopAppBar(
                 title = "Configuration",
                 navigationIcon = Icons.Filled.Menu,
                 onNavigationClick = onMenuClick,
+                scrollBehavior = scrollBehavior,
                 actions = {
-                    IconButton(onClick = { batchUrlTest() }, enabled = batchTestProgress == null && profiles.isNotEmpty()) {
+                    IconButton(
+                        onClick = { batchUrlTest() },
+                        enabled = batchTestProgress == null && profiles.isNotEmpty(),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceBright,
+                        ),
+                    ) {
                         Icon(Icons.Filled.NetworkCheck, contentDescription = "Test all")
                     }
-                    IconButton(onClick = { importFromClipboard() }) {
-                        Icon(Icons.Filled.ContentCopy, contentDescription = "Import from clipboard")
+                    Spacer(Modifier.width(6.dp))
+                    IconButton(
+                        onClick = { importFromClipboard() },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceBright,
+                        ),
+                    ) {
+                        Icon(Icons.Filled.ContentPaste, contentDescription = "Import subscription from clipboard")
                     }
-                    IconButton(onClick = { showAddMenu = true }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add")
+                    Spacer(Modifier.width(6.dp))
+                    IconButton(
+                        onClick = { showProtocolPicker = true },
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        ),
+                    ) {
+                        Icon(Icons.Filled.Add, contentDescription = "Add profile")
                     }
+                    Spacer(Modifier.width(8.dp))
                 },
             )
         },
@@ -251,7 +237,7 @@ fun ConfigurationScreen(
                                         style = MaterialTheme.typography.labelMedium,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
-                                    LinearProgressIndicator(
+                                    LinearWavyProgressIndicator(
                                         progress = { if (total > 0) done.toFloat() / total else 0f },
                                         modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                                     )
@@ -367,27 +353,59 @@ private fun ProtocolPickerDialog(
         "Custom Config" to ProxyEntity.TYPE_CONFIG,
     )
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Select Protocol") },
-        text = {
-            LazyColumn {
-                items(protocols) { (name, type) ->
-                    TextButton(
-                        onClick = { onSelect(type) },
-                        modifier = Modifier.fillMaxWidth(),
+    io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = onDismiss) {
+        Text(
+            text = "New profile",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(bottom = 4.dp),
+        )
+        Text(
+            text = "Choose a protocol",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 16.dp),
+        )
+        LazyColumn(
+            modifier = Modifier.heightIn(max = 420.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            items(protocols.size) { index ->
+                val (name, type) = protocols[index]
+                val shape = io.nekohasekai.sagernet.ui.compose.components.groupedItemShape(index, protocols.size)
+                androidx.compose.material3.Surface(
+                    onClick = { onSelect(type) },
+                    shape = shape,
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
                     ) {
+                        io.nekohasekai.sagernet.ui.compose.components.ShapedIconStatic(
+                            icon = Icons.Filled.Add,
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                            size = 40.dp,
+                            shape = io.nekohasekai.sagernet.ui.compose.components.shapeForSeed(name),
+                        )
                         Text(
                             text = name,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.fillMaxWidth(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 }
             }
-        },
-        confirmButton = {
+        }
+        Spacer(Modifier.height(12.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+        ) {
             TextButton(onClick = onDismiss) { Text("Cancel") }
-        },
-    )
+        }
+    }
 }

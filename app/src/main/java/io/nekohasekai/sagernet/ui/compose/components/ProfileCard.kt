@@ -1,7 +1,11 @@
 package io.nekohasekai.sagernet.ui.compose.components
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,20 +16,22 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.NetworkCheck
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.CircularWavyProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,12 +41,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.database.ProxyEntity
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ProfileCard(
     entity: ProxyEntity,
@@ -58,7 +65,7 @@ fun ProfileCard(
         targetValue = if (selected)
             MaterialTheme.colorScheme.primaryContainer
         else
-            MaterialTheme.colorScheme.surfaceContainerLow,
+            MaterialTheme.colorScheme.surface,
         label = "cardColor"
     )
 
@@ -70,32 +77,66 @@ fun ProfileCard(
         label = "cardContentColor"
     )
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val pressed by interactionSource.collectIsPressedAsState()
+
+    val cardScale by animateFloatAsState(
+        targetValue = if (pressed) 0.97f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium,
+        ),
+        label = "cardScale",
+    )
+
     var showMenu by remember { mutableStateOf(false) }
+
+    // Distinctive per-profile MaterialShape derived from the profile name.
+    val seedShape = remember(entity.displayName()) { shapeForSeed(entity.displayName()) }
+
+    val iconContainer by animateColorAsState(
+        targetValue = if (selected)
+            MaterialTheme.colorScheme.primary
+        else
+            MaterialTheme.colorScheme.secondaryContainer,
+        label = "iconContainer",
+    )
+    val iconContent by animateColorAsState(
+        targetValue = if (selected)
+            MaterialTheme.colorScheme.onPrimary
+        else
+            MaterialTheme.colorScheme.onSecondaryContainer,
+        label = "iconContent",
+    )
 
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
-        shape = MaterialTheme.shapes.large,
+            .padding(horizontal = 16.dp, vertical = 3.dp)
+            .graphicsLayer {
+                scaleX = cardScale
+                scaleY = cardScale
+            },
+        shape = MaterialTheme.shapes.extraLarge,
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 2.dp else 0.5.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (selected) 3.dp else 0.dp),
+        interactionSource = interactionSource,
         onClick = onClick,
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(
-                modifier = Modifier
-                    .width(4.dp)
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(
-                        if (selected) MaterialTheme.colorScheme.primary
-                        else Color.Transparent
-                    )
+            // Morphing shaped icon — the signature M3E flourish.
+            ShapedIcon(
+                icon = Icons.Filled.Bolt,
+                containerColor = iconContainer,
+                contentColor = iconContent,
+                size = 48.dp,
+                shape = seedShape,
+                pressed = pressed,
             )
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(14.dp))
 
             Column(
                 modifier = Modifier.weight(1f),
@@ -133,9 +174,8 @@ fun ProfileCard(
                         )
                     }
                     if (pinging) {
-                        CircularProgressIndicator(
+                        CircularWavyProgressIndicator(
                             modifier = Modifier.size(12.dp),
-                            strokeWidth = 2.dp,
                         )
                     } else if (entity.ping > 0) {
                         Text(
@@ -160,7 +200,13 @@ fun ProfileCard(
             Spacer(Modifier.width(4.dp))
 
             Box {
-                IconButton(onClick = { showMenu = true }, modifier = Modifier.size(36.dp)) {
+                IconButton(
+                    onClick = { showMenu = true },
+                    modifier = Modifier.size(40.dp),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceBright,
+                    ),
+                ) {
                     Icon(
                         Icons.Default.MoreVert,
                         contentDescription = "Menu",
@@ -171,6 +217,8 @@ fun ProfileCard(
                 DropdownMenu(
                     expanded = showMenu,
                     onDismissRequest = { showMenu = false },
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(24.dp),
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                 ) {
                     DropdownMenuItem(
                         text = { Text("Edit") },
