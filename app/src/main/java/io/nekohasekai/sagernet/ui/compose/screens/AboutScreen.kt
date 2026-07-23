@@ -63,19 +63,12 @@ fun AboutScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(96.dp)
-                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(24.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(
-                        text = "O",
-                        style = MaterialTheme.typography.displayLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    )
-                }
+                io.nekohasekai.sagernet.ui.compose.components.AppLogo(
+                    style = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.fromId(
+                        io.nekohasekai.sagernet.database.DataStore.appLogo
+                    ),
+                    size = 108.dp,
+                )
                 Spacer(Modifier.height(16.dp))
                 Text(
                     text = "Owenclave",

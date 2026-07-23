@@ -28,6 +28,7 @@ object Key {
 
     const val PERSIST_ACROSS_REBOOT = "isAutoConnect"
     const val APP_THEME = "appTheme"
+    const val APP_LOGO = "appLogo"
     const val NIGHT_THEME = "nightTheme"
     const val APP_LANGUAGE = "appLanguage"
     const val SERVICE_MODE = "serviceMode"

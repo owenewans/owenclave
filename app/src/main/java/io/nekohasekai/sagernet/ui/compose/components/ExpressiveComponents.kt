@@ -178,3 +178,46 @@ fun shapeForSeed(seed: String): RoundedPolygon {
     val idx = (seed.hashCode() % ExpressiveShapePalette.size + ExpressiveShapePalette.size) % ExpressiveShapePalette.size
     return ExpressiveShapePalette[idx]
 }
+
+/**
+ * An M3E-flavoured text field: a soft, fully-rounded tonal field with no harsh
+ * outline box. Replaces the default boxy [androidx.compose.material3.OutlinedTextField]
+ * look used across the app's dialogs and forms.
+ */
+@Composable
+fun ExpressiveTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    placeholder: String? = null,
+    singleLine: Boolean = true,
+    leadingIcon: ImageVector? = null,
+    keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default,
+    visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
+) {
+    androidx.compose.material3.OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier.fillMaxWidth(),
+        label = label?.let { { androidx.compose.material3.Text(it) } },
+        placeholder = placeholder?.let { { androidx.compose.material3.Text(it) } },
+        leadingIcon = leadingIcon?.let {
+            {
+                androidx.compose.material3.Icon(it, contentDescription = null)
+            }
+        },
+        singleLine = singleLine,
+        shape = RoundedCornerShape(20.dp),
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
+        colors = androidx.compose.material3.OutlinedTextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = Color.Transparent,
+            disabledBorderColor = Color.Transparent,
+        ),
+    )
+}

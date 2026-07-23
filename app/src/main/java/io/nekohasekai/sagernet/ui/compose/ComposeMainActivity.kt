@@ -223,6 +223,8 @@ fun MainScreen(
     val scope = rememberCoroutineScope()
     var currentDestination by remember { mutableStateOf(NavDestination.CONFIGURATION) }
     val snackbarHostState = remember { SnackbarHostState() }
+    // Hoisted here so the bottom StatsBar can morph to show batch-test progress.
+    var batchTestProgress by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
     val stateForButton = when (serviceState) {
         BaseService.State.Idle -> ServiceState.IDLE
@@ -256,14 +258,6 @@ fun MainScreen(
     ) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            bottomBar = {
-                StatsBar(
-                    statusText = statusText,
-                    uplinkSpeed = uplinkSpeed,
-                    downlinkSpeed = downlinkSpeed,
-                    connected = serviceState == BaseService.State.Connected,
-                )
-            },
             floatingActionButton = {
                 ServiceButton(
                     state = stateForButton,
@@ -274,11 +268,10 @@ fun MainScreen(
             snackbarHost = { SnackbarHost(snackbarHostState) },
             contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0),
         ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = paddingValues.calculateBottomPadding())
-            ) {
+            // StatsBar is drawn as an OVERLAY (not a bottomBar) so the screen
+            // content fills the whole area and truly shows through the bar's
+            // rounded top corners — no reserved grey rectangle behind it.
+            Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
                 AnimatedContent(
                     targetState = currentDestination,
                     transitionSpec = {
@@ -292,6 +285,9 @@ fun MainScreen(
                     when (destination) {
                         NavDestination.CONFIGURATION -> ConfigurationScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
+                            serviceRunning = serviceState.canStop,
+                            batchTestProgress = batchTestProgress,
+                            onBatchTestProgress = { batchTestProgress = it },
                         )
                         NavDestination.GROUP -> GroupScreen(
                             onMenuClick = { scope.launch { drawerState.open() } },
@@ -315,6 +311,15 @@ fun MainScreen(
                         )
                     }
                 }
+
+                StatsBar(
+                    statusText = statusText,
+                    uplinkSpeed = uplinkSpeed,
+                    downlinkSpeed = downlinkSpeed,
+                    connected = serviceState == BaseService.State.Connected,
+                    testProgress = batchTestProgress,
+                    modifier = Modifier.align(androidx.compose.ui.Alignment.BottomCenter),
+                )
             }
         }
     }
@@ -328,12 +333,23 @@ private fun DrawerContent(
     ModalDrawerSheet(
         drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
     ) {
-        Text(
-            text = stringResource(R.string.app_name),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 28.dp, top = 28.dp, bottom = 20.dp),
-        )
+        androidx.compose.foundation.layout.Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 20.dp),
+        ) {
+            io.nekohasekai.sagernet.ui.compose.components.AppLogo(
+                style = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.fromId(
+                    DataStore.appLogo
+                ),
+                size = 40.dp,
+            )
+            androidx.compose.foundation.layout.Spacer(Modifier.padding(start = 12.dp))
+            Text(
+                text = stringResource(R.string.app_name),
+                style = MaterialTheme.typography.headlineMedium,
+                color = MaterialTheme.colorScheme.primary,
+            )
+        }
 
         val groups = listOf(
             NavDestination.CONFIGURATION,

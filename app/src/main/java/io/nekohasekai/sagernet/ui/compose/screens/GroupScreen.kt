@@ -180,7 +180,7 @@ fun GroupScreen(
                 )
                 else -> LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(top = 8.dp, bottom = io.nekohasekai.sagernet.ui.compose.components.StatsBarBottomInset),
                 ) {
                     items(groups, key = { it.id }) { group ->
                         GroupCard(

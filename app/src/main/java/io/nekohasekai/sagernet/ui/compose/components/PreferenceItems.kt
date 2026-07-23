@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
@@ -169,18 +170,26 @@ fun PreferenceGroup(
     content: PreferenceGroupScope.() -> Unit,
 ) {
     val scope = PreferenceGroupScope().apply(content)
-    val count = scope.entries.size
+    // The whole group is clipped as ONE soft rounded container (like the
+    // protocol picker). Items inside get a uniform small radius and a 2dp gap,
+    // so the outer clip defines the group's rounded silhouette — no harsh
+    // squared corners on the first/last rows.
+    val itemShape = RoundedCornerShape(6.dp)
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = 16.dp)
+            .clip(GroupContainerShape),
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        scope.entries.forEachIndexed { index, entry ->
-            entry(groupedItemShape(index, count))
+        scope.entries.forEach { entry ->
+            entry(itemShape)
         }
     }
 }
+
+/** Shared outer rounding used to group runs of items into one soft container. */
+val GroupContainerShape = RoundedCornerShape(24.dp)
 
 /** Legacy card wrapper kept for source compatibility; now just a group container. */
 @Composable
@@ -191,7 +200,8 @@ fun SectionCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .clip(GroupContainerShape),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         content = content,
     )

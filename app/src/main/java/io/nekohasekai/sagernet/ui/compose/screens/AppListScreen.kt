@@ -117,7 +117,10 @@ fun AppListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(
+                    8.dp,
+                    Alignment.CenterHorizontally,
+                ),
             ) {
                 FilterChip(
                     selected = !bypass,
@@ -138,14 +141,12 @@ fun AppListScreen(
                 }
             }
 
-            OutlinedTextField(
+            io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("Search apps...") },
-                leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                placeholder = "Search apps...",
+                leadingIcon = Icons.Filled.Search,
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 singleLine = true,
             )
 
@@ -153,7 +154,10 @@ fun AppListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(
+                    8.dp,
+                    Alignment.CenterHorizontally,
+                ),
             ) {
                 FilterChip(
                     selected = filterMode == 0,

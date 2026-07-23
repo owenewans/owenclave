@@ -21,13 +21,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.NetworkCheck
+import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -44,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -68,6 +68,9 @@ import kotlinx.coroutines.withContext
 @Composable
 fun ConfigurationScreen(
     onMenuClick: () -> Unit,
+    serviceRunning: Boolean = false,
+    batchTestProgress: Pair<Int, Int>? = null,
+    onBatchTestProgress: (Pair<Int, Int>?) -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -78,7 +81,7 @@ fun ConfigurationScreen(
     var selectedProfileId by remember { mutableStateOf(DataStore.selectedProxy) }
     var showProtocolPicker by remember { mutableStateOf(false) }
     var pingingIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
-    var batchTestProgress by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var showDinoGame by remember { mutableStateOf(false) }
 
     fun reloadProfiles() {
         scope.launch(Dispatchers.IO) {
@@ -107,9 +110,10 @@ fun ConfigurationScreen(
             if (toTest.isEmpty()) return@launch
             val total = toTest.size
             var done = 0
+            var anyWorking = false
             val link = DataStore.connectionTestURL
             val timeout = 5000
-            withContext(Dispatchers.Main) { batchTestProgress = Pair(0, total) }
+            withContext(Dispatchers.Main) { onBatchTestProgress(Pair(0, total)) }
             for (entity in toTest) {
                 withContext(Dispatchers.Main) { pingingIds = pingingIds + entity.id }
                 try {
@@ -118,6 +122,7 @@ fun ConfigurationScreen(
                     entity.ping = result
                     entity.status = 1
                     entity.error = null
+                    if (result > 0) anyWorking = true
                 } catch (e: Exception) {
                     entity.ping = -1
                     entity.status = 3
@@ -128,10 +133,14 @@ fun ConfigurationScreen(
                 withContext(Dispatchers.Main) {
                     pingingIds = pingingIds - entity.id
                     profiles = profiles.map { if (it.id == entity.id) entity else it }
-                    batchTestProgress = Pair(done, total)
+                    onBatchTestProgress(Pair(done, total))
                 }
             }
-            withContext(Dispatchers.Main) { batchTestProgress = null }
+            withContext(Dispatchers.Main) {
+                onBatchTestProgress(null)
+                // If not a single server responded, cheer the user up with a game.
+                if (!anyWorking) showDinoGame = true
+            }
         }
     }
 
@@ -165,6 +174,12 @@ fun ConfigurationScreen(
         )
     }
 
+    if (showDinoGame) {
+        io.nekohasekai.sagernet.ui.compose.components.DinoGameDialog(
+            onDismiss = { showDinoGame = false }
+        )
+    }
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(
@@ -177,16 +192,19 @@ fun ConfigurationScreen(
                 onNavigationClick = onMenuClick,
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    IconButton(
-                        onClick = { batchUrlTest() },
-                        enabled = batchTestProgress == null && profiles.isNotEmpty(),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        ),
-                    ) {
-                        Icon(Icons.Filled.NetworkCheck, contentDescription = "Test all")
+                    // Only offer "test all" when there is at least one profile to test.
+                    if (profiles.isNotEmpty()) {
+                        IconButton(
+                            onClick = { batchUrlTest() },
+                            enabled = batchTestProgress == null,
+                            colors = IconButtonDefaults.iconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceBright,
+                            ),
+                        ) {
+                            Icon(Icons.Filled.Speed, contentDescription = "Test all")
+                        }
+                        Spacer(Modifier.width(6.dp))
                     }
-                    Spacer(Modifier.width(6.dp))
                     IconButton(
                         onClick = { importFromClipboard() },
                         colors = IconButtonDefaults.iconButtonColors(
@@ -217,29 +235,27 @@ fun ConfigurationScreen(
             ) {
                 when {
                     loading -> LoadingState()
-                    profiles.isEmpty() -> EmptyState(
-                        message = "No profiles. Tap + to add one.",
-                        icon = Icons.Filled.Add,
-                    )
+                    // Keep the LazyColumn always composed (even when empty) so that
+                    // adding/removing the only profile animates the card in/out via
+                    // animateItem() instead of hard-swapping the whole screen.
                     else -> LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                            top = if (batchTestProgress != null) 48.dp else 8.dp,
-                            bottom = 8.dp,
+                            top = 8.dp,
+                            bottom = io.nekohasekai.sagernet.ui.compose.components.StatsBarBottomInset,
                         ),
                     ) {
-                        if (batchTestProgress != null) {
-                            val (done, total) = batchTestProgress!!
-                            item {
-                                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
-                                    Text(
-                                        text = "Testing $done/$total",
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                    LinearWavyProgressIndicator(
-                                        progress = { if (total > 0) done.toFloat() / total else 0f },
-                                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                        if (profiles.isEmpty()) {
+                            item(key = "__empty__") {
+                                Box(
+                                    modifier = Modifier
+                                        .fillParentMaxSize()
+                                        .animateItem(),
+                                    contentAlignment = androidx.compose.ui.Alignment.Center,
+                                ) {
+                                    EmptyState(
+                                        message = "No profiles. Tap + to add one.",
+                                        icon = Icons.Filled.Add,
                                     )
                                 }
                             }
@@ -251,9 +267,15 @@ fun ConfigurationScreen(
                             pinging = entity.id in pingingIds,
                             modifier = Modifier.animateItem(),
                             onClick = {
+                                val changed = selectedProfileId != entity.id
                                 selectedProfileId = entity.id
                                 DataStore.selectedProxy = entity.id
-                                SagerNet.reloadService()
+                                // Only reload the running service when the selection
+                                // actually changed; reloading with the same profile
+                                // (or while stopped) is unnecessary and could race.
+                                if (changed && serviceRunning) {
+                                    SagerNet.reloadService()
+                                }
                             },
                             onEdit = {
                                 context.startActivity(
@@ -367,15 +389,19 @@ private fun ProtocolPickerDialog(
             modifier = Modifier.padding(bottom = 16.dp),
         )
         LazyColumn(
-            modifier = Modifier.heightIn(max = 420.dp),
+            modifier = Modifier
+                .heightIn(max = 420.dp)
+                .clip(androidx.compose.foundation.shape.RoundedCornerShape(24.dp)),
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             items(protocols.size) { index ->
                 val (name, type) = protocols[index]
-                val shape = io.nekohasekai.sagernet.ui.compose.components.groupedItemShape(index, protocols.size)
+                // Uniform small radius: the outer LazyColumn clip (24dp) defines the
+                // overall rounded group, so the first/last items no longer get their
+                // corners harshly squared off by the scroll clip.
                 androidx.compose.material3.Surface(
                     onClick = { onSelect(type) },
-                    shape = shape,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
                     color = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.fillMaxWidth(),
                 ) {

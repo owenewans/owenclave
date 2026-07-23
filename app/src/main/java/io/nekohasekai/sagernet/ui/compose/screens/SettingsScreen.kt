@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Palette
@@ -39,7 +40,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
@@ -53,6 +53,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.GroupOrder
@@ -80,6 +81,8 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     var showThemePicker by remember { mutableStateOf(false) }
+    var showLogoPicker by remember { mutableStateOf(false) }
+    var currentLogo by remember { mutableStateOf(DataStore.appLogo) }
     var showNightModePicker by remember { mutableStateOf(false) }
     var showServiceModePicker by remember { mutableStateOf(false) }
     var showTunPicker by remember { mutableStateOf(false) }
@@ -168,6 +171,18 @@ fun SettingsScreen(
         )
     }
 
+    if (showLogoPicker) {
+        LogoPickerDialog(
+            selected = currentLogo,
+            onSelect = {
+                DataStore.appLogo = it
+                currentLogo = it
+                showLogoPicker = false
+            },
+            onDismiss = { showLogoPicker = false },
+        )
+    }
+
     if (showNightModePicker) {
         SingleChoiceDialog(
             title = "Night Mode",
@@ -207,11 +222,13 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
-            OutlinedTextField(
+            io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                 value = mtuValue,
                 onValueChange = { mtuValue = it.filter { c -> c.isDigit() } },
                 singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
+                    keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                ),
             )
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -266,30 +283,20 @@ fun SettingsScreen(
     }
 
     if (showSpeedIntervalPicker) {
-        var speedValue by remember { mutableStateOf(DataStore.speedInterval.toString()) }
-        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { showSpeedIntervalPicker = false }) {
-            Text(
-                text = "Speed Interval (seconds)",
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-            OutlinedTextField(
-                value = speedValue,
-                onValueChange = { speedValue = it.filter { c -> c.isDigit() } },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
-            )
-            Spacer(Modifier.height(16.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = { showSpeedIntervalPicker = false }) { Text("Cancel") }
-                Spacer(Modifier.width(8.dp))
-                TextButton(onClick = {
-                    DataStore.speedInterval = speedValue.toIntOrNull() ?: 3
-                    showSpeedIntervalPicker = false
-                }) { Text("OK") }
-            }
-        }
+        SingleChoiceDialog(
+            title = "Speed Interval",
+            items = listOf(
+                "0.5s" to 500,
+                "1s" to 1000,
+                "3s" to 3000,
+                "10s" to 10000,
+                "60s" to 60000,
+                "180s" to 180000,
+            ),
+            selected = DataStore.speedInterval,
+            onSelect = { DataStore.speedInterval = it; showSpeedIntervalPicker = false },
+            onDismiss = { showSpeedIntervalPicker = false },
+        )
     }
 
     if (showOutboundStrategyPicker) {
@@ -380,11 +387,10 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
-            OutlinedTextField(
+            io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                 value = editingTextValue,
                 onValueChange = { editingTextValue = it },
                 singleLine = editingTextKey != "hosts" && editingTextKey != "httpProxyException",
-                modifier = Modifier.fillMaxWidth(),
             )
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -444,7 +450,7 @@ fun SettingsScreen(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
         ) {
-            Column(modifier = Modifier.padding(bottom = 16.dp)) {
+            Column(modifier = Modifier.padding(bottom = io.nekohasekai.sagernet.ui.compose.components.StatsBarBottomInset)) {
                 // ── General ──
                 PreferenceHeader("General")
                 PreferenceGroup {
@@ -463,6 +469,15 @@ fun SettingsScreen(
                             subtitle = "Choose app color theme",
                             icon = Icons.Filled.Palette,
                             onClick = { showThemePicker = true },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "App Logo",
+                            subtitle = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.fromId(currentLogo).label,
+                            icon = Icons.Filled.Face,
+                            onClick = { showLogoPicker = true },
                             shape = shape,
                         )
                     }
@@ -574,7 +589,15 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Speed Interval",
-                            subtitle = "${DataStore.speedInterval}s",
+                            subtitle = when (DataStore.speedInterval) {
+                                500 -> "0.5s"
+                                1000 -> "1s"
+                                3000 -> "3s"
+                                10000 -> "10s"
+                                60000 -> "60s"
+                                180000 -> "180s"
+                                else -> "${DataStore.speedInterval}ms"
+                            },
                             icon = Icons.Filled.Speed,
                             onClick = { showSpeedIntervalPicker = true },
                             shape = shape,
@@ -1339,15 +1362,15 @@ fun <T> SingleChoiceDialog(
         Column(
             modifier = Modifier
                 .heightIn(max = 420.dp)
+                .clip(io.nekohasekai.sagernet.ui.compose.components.GroupContainerShape)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(2.dp),
         ) {
             items.forEachIndexed { index, (label, value) ->
                 val isSelected = value == selected
-                val shape = io.nekohasekai.sagernet.ui.compose.components.groupedItemShape(index, items.size)
                 androidx.compose.material3.Surface(
                     onClick = { onSelect(value) },
-                    shape = shape,
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
                     color = if (isSelected)
                         MaterialTheme.colorScheme.primaryContainer
                     else
@@ -1380,6 +1403,90 @@ fun <T> SingleChoiceDialog(
             }
         }
         Spacer(Modifier.height(12.dp))
+        androidx.compose.foundation.layout.Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End,
+        ) {
+            TextButton(onClick = onDismiss) { Text("Close") }
+        }
+    }
+}
+
+@Composable
+private fun LogoPickerDialog(
+    selected: Int,
+    onSelect: (Int) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = onDismiss) {
+        Text(
+            text = "App Logo",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(bottom = 4.dp),
+        )
+        Text(
+            text = "Pick a logo shape",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 16.dp),
+        )
+        val styles = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.entries
+        Column(
+            modifier = Modifier
+                .heightIn(max = 440.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
+        ) {
+            styles.chunked(3).forEach { rowStyles ->
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
+                ) {
+                    rowStyles.forEach { style ->
+                        val isSelected = style.id == selected
+                        androidx.compose.material3.Surface(
+                            onClick = { onSelect(style.id) },
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+                            color = if (isSelected)
+                                MaterialTheme.colorScheme.primaryContainer
+                            else
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                            border = if (isSelected)
+                                androidx.compose.foundation.BorderStroke(
+                                    2.dp, MaterialTheme.colorScheme.primary,
+                                )
+                            else null,
+                            modifier = Modifier.weight(1f),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(vertical = 14.dp),
+                                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+                            ) {
+                                io.nekohasekai.sagernet.ui.compose.components.AppLogo(
+                                    style = style,
+                                    size = 56.dp,
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    text = style.label,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = if (isSelected)
+                                        MaterialTheme.colorScheme.onPrimaryContainer
+                                    else
+                                        MaterialTheme.colorScheme.onSurface,
+                                )
+                            }
+                        }
+                    }
+                    // pad incomplete rows so cells keep equal width
+                    repeat(3 - rowStyles.size) {
+                        Spacer(Modifier.weight(1f))
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(16.dp))
         androidx.compose.foundation.layout.Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End,

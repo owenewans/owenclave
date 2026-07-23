@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.components
 
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -52,6 +54,12 @@ enum class ServiceState {
     CONNECTED,
     ERROR,
 }
+
+/**
+ * Bottom inset that scrollable screens should reserve so their last items are
+ * not hidden behind the overlay [StatsBar].
+ */
+val StatsBarBottomInset = 76.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -162,6 +170,7 @@ private fun ConnectingIndicator(tint: Color) {
     }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun StatsBar(
     statusText: String,
@@ -171,50 +180,116 @@ fun StatsBar(
     directUplink: String = "",
     directDownlink: String = "",
     connected: Boolean = false,
+    testProgress: Pair<Int, Int>? = null,
     modifier: Modifier = Modifier,
 ) {
+    // While a batch test runs, the bar morphs its content to a progress readout —
+    // the "connected" row is replaced by the test state. The bar grows taller
+    // (via AnimatedContent) and gains elevation to read as "lifting", WITHOUT
+    // translating it (which would leave a gap of Scaffold background below it).
+    val testing = testProgress != null
+    val containerColor by androidx.compose.animation.animateColorAsState(
+        targetValue = if (testing)
+            MaterialTheme.colorScheme.primaryContainer
+        else
+            MaterialTheme.colorScheme.surfaceContainerHighest,
+        label = "statsContainer",
+    )
+
+    // Full-width bottom bar that sits flush against the bottom edge (like a real
+    // nav bar). Only the top corners are rounded so screen content appears to
+    // "drop into" it; there is NO side gap or square backing peeking through.
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, top = 10.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+        modifier = modifier.fillMaxWidth(),
+        color = containerColor,
         tonalElevation = 6.dp,
-        shadowElevation = 6.dp,
+        shadowElevation = if (testing) 12.dp else 6.dp,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.weight(1f),
-            ) {
-                // Pulsing status dot for expressive feedback.
-                StatusDot(connected = connected)
-                Text(
-                    text = statusText,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                )
-            }
-
-            if (uplinkSpeed.isNotEmpty() || downlinkSpeed.isNotEmpty()) {
-                Spacer(Modifier.width(16.dp))
+        androidx.compose.animation.AnimatedContent(
+            targetState = testProgress,
+            transitionSpec = {
+                (androidx.compose.animation.fadeIn(tween(200)) +
+                    androidx.compose.animation.expandVertically()) togetherWith
+                    (androidx.compose.animation.fadeOut(tween(160)) +
+                        androidx.compose.animation.shrinkVertically())
+            },
+            // Colored surface fills under the system nav bar; content is inset
+            // so it never hides behind the gesture/nav bar.
+            modifier = Modifier.navigationBarsPadding(),
+            label = "statsContent",
+        ) { progress ->
+            if (progress != null) {
+                TestingContent(done = progress.first, total = progress.second)
+            } else {
                 Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 14.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    SpeedIndicator(label = "↑", value = uplinkSpeed, color = MaterialTheme.colorScheme.primary)
-                    SpeedIndicator(label = "↓", value = downlinkSpeed, color = MaterialTheme.colorScheme.tertiary)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        // Pulsing status dot for expressive feedback.
+                        StatusDot(connected = connected)
+                        Text(
+                            text = statusText,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            maxLines = 1,
+                        )
+                    }
+
+                    if (uplinkSpeed.isNotEmpty() || downlinkSpeed.isNotEmpty()) {
+                        Spacer(Modifier.width(16.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        ) {
+                            SpeedIndicator(label = "↑", value = uplinkSpeed, color = MaterialTheme.colorScheme.primary)
+                            SpeedIndicator(label = "↓", value = downlinkSpeed, color = MaterialTheme.colorScheme.tertiary)
+                        }
+                    }
                 }
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun TestingContent(done: Int, total: Int) {
+    androidx.compose.foundation.layout.Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            androidx.compose.material3.CircularWavyProgressIndicator(
+                modifier = Modifier.size(18.dp),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+            Text(
+                text = "Testing $done / $total",
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                maxLines = 1,
+            )
+        }
+        androidx.compose.material3.LinearWavyProgressIndicator(
+            progress = { if (total > 0) done.toFloat() / total else 0f },
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+            trackColor = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.2f),
+        )
     }
 }
 

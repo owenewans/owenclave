@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.ui.compose.ComposeProbeCertActivity
 import io.nekohasekai.sagernet.ui.compose.ComposeStunActivity
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,13 +64,19 @@ fun ToolsScreen(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
-            Text("Are you sure you want to reset all settings to defaults?")
+            Text("Are you sure you want to reset all settings to defaults? The app will restart.")
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 TextButton(onClick = { showResetDialog = false }) { Text("Cancel") }
                 Spacer(Modifier.width(8.dp))
                 TextButton(onClick = {
                     showResetDialog = false
+                    io.nekohasekai.sagernet.SagerNet.stopService()
+                    io.nekohasekai.sagernet.ui.compose.BackupUtil.resetSettings()
+                    com.jakewharton.processphoenix.ProcessPhoenix.triggerRebirth(
+                        context,
+                        Intent(context, io.nekohasekai.sagernet.ui.compose.ComposeMainActivity::class.java),
+                    )
                 }) { Text("Reset") }
             }
         }
@@ -115,9 +123,110 @@ fun ToolsScreen(
 
 @Composable
 private fun BackupTab() {
+    val context = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+
     var backupConfig by remember { mutableStateOf(true) }
     var backupRules by remember { mutableStateOf(true) }
     var backupSettings by remember { mutableStateOf(true) }
+
+    // Content produced on demand and consumed by the export/save launcher.
+    var pendingContent by remember { mutableStateOf("") }
+    var pendingImport by remember { mutableStateOf<com.google.gson.JsonObject?>(null) }
+
+    fun toast(msg: String) {
+        android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
+    }
+
+    val exportLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                try {
+                    context.contentResolver.openOutputStream(uri)!!.bufferedWriter().use {
+                        it.write(pendingContent)
+                    }
+                    withContext(kotlinx.coroutines.Dispatchers.Main) { toast("Exported") }
+                } catch (e: Exception) {
+                    withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        toast(e.message ?: "Export failed")
+                    }
+                }
+            }
+        }
+    }
+
+    val importLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                val text = try {
+                    (context.contentResolver.openInputStream(uri) ?: return@launch).use {
+                        it.bufferedReader().readText()
+                    }
+                } catch (_: Exception) {
+                    withContext(kotlinx.coroutines.Dispatchers.Main) { toast("Cannot read file") }
+                    return@launch
+                }
+                val parsed = io.nekohasekai.sagernet.ui.compose.BackupUtil.parseBackup(text)
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    if (parsed == null) toast("Invalid backup file")
+                    else pendingImport = parsed
+                }
+            }
+        }
+    }
+
+    // Import confirmation dialog.
+    pendingImport?.let { content ->
+        val hasProfiles = content.has("profiles")
+        val hasRules = content.has("rules")
+        val hasSettings = content.has("settings")
+        var impProfiles by remember { mutableStateOf(true) }
+        var impRules by remember { mutableStateOf(true) }
+        var impSettings by remember { mutableStateOf(true) }
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { pendingImport = null }) {
+            Text(
+                text = "Import Backup",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+            Text(
+                text = "Existing data for the selected sections will be replaced. The app will restart.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+            if (hasProfiles) BackupItem(label = "Configurations", checked = impProfiles, onCheckedChange = { impProfiles = it })
+            if (hasRules) BackupItem(label = "Rules", checked = impRules, onCheckedChange = { impRules = it })
+            if (hasSettings) BackupItem(label = "Settings", checked = impSettings, onCheckedChange = { impSettings = it })
+            Spacer(Modifier.height(16.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { pendingImport = null }) { Text("Cancel") }
+                Spacer(Modifier.width(8.dp))
+                TextButton(onClick = {
+                    pendingImport = null
+                    io.nekohasekai.sagernet.SagerNet.stopService()
+                    scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                        runCatching {
+                            io.nekohasekai.sagernet.ui.compose.BackupUtil.finishImport(
+                                content, impProfiles, impRules, impSettings,
+                            )
+                        }
+                        withContext(kotlinx.coroutines.Dispatchers.Main) {
+                            com.jakewharton.processphoenix.ProcessPhoenix.triggerRebirth(
+                                context,
+                                Intent(context, io.nekohasekai.sagernet.ui.compose.ComposeMainActivity::class.java),
+                            )
+                        }
+                    }
+                }) { Text("Import") }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -142,11 +251,43 @@ private fun BackupTab() {
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Button(onClick = { /* export */ }) { Text("Export") }
+            Button(onClick = {
+                scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    pendingContent = io.nekohasekai.sagernet.ui.compose.BackupUtil.doBackup(
+                        backupConfig, backupRules, backupSettings,
+                    )
+                    withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        exportLauncher.launch("owenclave_backup_${System.currentTimeMillis()}.json")
+                    }
+                }
+            }) { Text("Export") }
             Spacer(Modifier.width(12.dp))
-            OutlinedButton(onClick = { /* share */ }) { Text("Share") }
+            OutlinedButton(onClick = {
+                scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    val content = io.nekohasekai.sagernet.ui.compose.BackupUtil.doBackup(
+                        backupConfig, backupRules, backupSettings,
+                    )
+                    val app = io.nekohasekai.sagernet.SagerNet.application
+                    app.cacheDir.mkdirs()
+                    val cacheFile = java.io.File(app.cacheDir, "owenclave_backup_${System.currentTimeMillis()}.json")
+                    cacheFile.writeText(content)
+                    withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        val uri = androidx.core.content.FileProvider.getUriForFile(
+                            app, io.nekohasekai.sagernet.BuildConfig.APPLICATION_ID + ".cache", cacheFile,
+                        )
+                        context.startActivity(
+                            Intent.createChooser(
+                                Intent(Intent.ACTION_SEND).setType("application/json")
+                                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    .putExtra(Intent.EXTRA_STREAM, uri),
+                                "Share",
+                            )
+                        )
+                    }
+                }
+            }) { Text("Share") }
             Spacer(Modifier.width(12.dp))
-            OutlinedButton(onClick = { /* import */ }) { Text("Import") }
+            OutlinedButton(onClick = { importLauncher.launch("*/*") }) { Text("Import") }
         }
     }
 }
