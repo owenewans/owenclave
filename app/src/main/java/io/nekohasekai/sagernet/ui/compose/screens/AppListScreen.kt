@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,8 +37,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.drawable.toBitmap
 import io.nekohasekai.sagernet.ui.compose.components.EmptyState
 import io.nekohasekai.sagernet.ui.compose.components.LoadingState
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
@@ -54,11 +57,14 @@ data class AppItem(
 fun AppListScreen(
     apps: List<AppItem>,
     loading: Boolean,
+    bypass: Boolean = false,
+    onBypassChange: (Boolean) -> Unit = {},
     onBack: () -> Unit,
     onToggle: (AppItem) -> Unit,
     onInvert: () -> Unit,
     onClear: () -> Unit,
     onCopy: () -> Unit,
+    onDisable: (() -> Unit)? = null,
 ) {
     var searchQuery by remember { mutableStateOf("") }
     var filterMode by remember { mutableStateOf(0) }
@@ -99,6 +105,31 @@ fun AppListScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+            ) {
+                FilterChip(
+                    selected = !bypass,
+                    onClick = { onBypassChange(false) },
+                    label = { Text("Proxy") },
+                )
+                FilterChip(
+                    selected = bypass,
+                    onClick = { onBypassChange(true) },
+                    label = { Text("Bypass") },
+                )
+                if (onDisable != null) {
+                    FilterChip(
+                        selected = false,
+                        onClick = { onDisable() },
+                        label = { Text("Off") },
+                    )
+                }
+            }
+
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
@@ -151,6 +182,7 @@ fun AppListScreen(
                             colors = CardDefaults.cardColors(
                                 containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                             ),
+                            onClick = { onToggle(app) },
                         ) {
                             Row(
                                 modifier = Modifier
@@ -162,11 +194,20 @@ fun AppListScreen(
                                     modifier = Modifier.size(40.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
-                                    Text(
-                                        text = app.label.take(1).uppercase(),
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = MaterialTheme.colorScheme.primary,
-                                    )
+                                    val drawable = app.icon as? Drawable
+                                    if (drawable != null) {
+                                        Image(
+                                            bitmap = drawable.toBitmap(40, 40).asImageBitmap(),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(40.dp),
+                                        )
+                                    } else {
+                                        Text(
+                                            text = app.label.take(1).uppercase(),
+                                            style = MaterialTheme.typography.titleMedium,
+                                            color = MaterialTheme.colorScheme.primary,
+                                        )
+                                    }
                                 }
                                 Spacer(Modifier.width(12.dp))
                                 Column(modifier = Modifier.weight(1f)) {

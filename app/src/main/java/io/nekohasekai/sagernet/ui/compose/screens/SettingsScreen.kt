@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Apps
 import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Dashboard
@@ -545,12 +546,17 @@ fun SettingsScreen(
                         onCheckedChange = { enableVPNIPv6 = it; DataStore.enableVPNInterfaceIPv6Address = it },
                     )
                     DividerItem()
-                    SwitchPreferenceItem(
+                    PreferenceItem(
                         title = "Per-App Proxy",
-                        checked = proxyApps,
-                        onCheckedChange = {
-                            proxyApps = it; DataStore.proxyApps = it
-                            if (it) context.startActivity(Intent(context, io.nekohasekai.sagernet.ui.AppManagerActivity::class.java))
+                        subtitle = if (proxyApps) {
+                            if (DataStore.bypass) "Bypass mode" else "Proxy mode"
+                        } else {
+                            "Disabled"
+                        },
+                        icon = Icons.Filled.Apps,
+                        onClick = {
+                            proxyApps = true; DataStore.proxyApps = true
+                            context.startActivity(Intent(context, io.nekohasekai.sagernet.ui.compose.ComposeAppListActivity::class.java))
                         },
                     )
                     DividerItem()

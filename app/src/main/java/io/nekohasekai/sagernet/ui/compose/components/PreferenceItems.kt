@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,54 +49,48 @@ fun PreferenceItem(
 ) {
     val alpha = if (enabled) 1f else 0.38f
 
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = androidx.compose.ui.graphics.Color.Transparent,
-        enabled = enabled && onClick != null,
-        onClick = onClick ?: {},
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .then(if (enabled && onClick != null) Modifier.clickable { onClick() } else Modifier)
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(Modifier.width(16.dp))
-            }
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(Modifier.width(16.dp))
+        }
 
-            Column(
-                modifier = Modifier.weight(1f),
-            ) {
+        Column(
+            modifier = Modifier.weight(1f),
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            if (subtitle != null) {
+                Spacer(Modifier.height(2.dp))
                 Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
-                    maxLines = 1,
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
-                if (subtitle != null) {
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
             }
+        }
 
-            if (trailingContent != null) {
-                Spacer(Modifier.width(16.dp))
-                trailingContent()
-            }
+        if (trailingContent != null) {
+            Spacer(Modifier.width(16.dp))
+            trailingContent()
         }
     }
 }

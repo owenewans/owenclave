@@ -163,7 +163,7 @@
         <item name="android:textColor">?primaryOrTextPrimary</item>
     </style>
 
-    <style name="Widget.Material3.Chip.Choice.SagerNet" parent="Widget.Material3.Chip.Choice">
+    <style name="Widget.Material3.Chip.Choice.SagerNet" parent="Widget.Material3.Chip.Filter">
         <item name="textStartPadding">30dp</item>
         <item name="textEndPadding">30dp</item>
         <item name="chipBackgroundColor">@color/chip_background</item>

@@ -60,7 +60,6 @@ fun GroupScreen(
     var groups by remember { mutableStateOf<List<ProxyGroup>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var selectedGroupId by remember { mutableStateOf(DataStore.selectedGroup) }
-    var menuGroup by remember { mutableStateOf<ProxyGroup?>(null) }
     var deleteGroup by remember { mutableStateOf<ProxyGroup?>(null) }
     var clearGroup by remember { mutableStateOf<ProxyGroup?>(null) }
 
@@ -117,56 +116,6 @@ fun GroupScreen(
             },
             dismissButton = { TextButton(onClick = { clearGroup = null }) { Text("Cancel") } },
         )
-    }
-
-    menuGroup?.let { group ->
-        DropdownMenu(
-            expanded = true,
-            onDismissRequest = { menuGroup = null },
-        ) {
-            if (group.type == GroupType.SUBSCRIPTION) {
-                DropdownMenuItem(
-                    text = { Text("Copy subscription link") },
-                    onClick = {
-                        menuGroup = null
-                        val link = group.subscription?.link ?: ""
-                        if (link.isNotEmpty()) {
-                            SagerNet.trySetPrimaryClip(link)
-                        }
-                    },
-                )
-            }
-            DropdownMenuItem(
-                text = { Text("Export profiles to clipboard") },
-                onClick = {
-                    menuGroup = null
-                    scope.launch(Dispatchers.IO) {
-                        val profiles = SagerDatabase.proxyDao.getByGroup(group.id)
-                        val links = profiles.mapNotNull {
-                            try { it.toLink() } catch (_: Exception) { null }
-                        }.joinToString("\n")
-                        withContext(Dispatchers.Main) {
-                            SagerNet.trySetPrimaryClip(links)
-                        }
-                    }
-                },
-            )
-            DropdownMenuItem(
-                text = { Text("Clear profiles") },
-                onClick = {
-                    clearGroup = group
-                    menuGroup = null
-                },
-            )
-            DropdownMenuItem(
-                text = { Text("Delete group") },
-                onClick = {
-                    deleteGroup = group
-                    menuGroup = null
-                },
-                leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
-            )
-        }
     }
 
     Scaffold(
@@ -229,10 +178,53 @@ fun GroupScreen(
                                     }
                                 )
                             },
-                            onMenu = { menuGroup = group },
                             onUpdate = if (group.type == GroupType.SUBSCRIPTION) {
                                 { /* update subscription */ }
                             } else null,
+                            menuItems = { menuScope ->
+                                if (group.type == GroupType.SUBSCRIPTION) {
+                                    DropdownMenuItem(
+                                        text = { Text("Copy subscription link") },
+                                        onClick = {
+                                            menuScope.dismiss()
+                                            val link = group.subscription?.link ?: ""
+                                            if (link.isNotEmpty()) {
+                                                SagerNet.trySetPrimaryClip(link)
+                                            }
+                                        },
+                                    )
+                                }
+                                DropdownMenuItem(
+                                    text = { Text("Export profiles to clipboard") },
+                                    onClick = {
+                                        menuScope.dismiss()
+                                        scope.launch(Dispatchers.IO) {
+                                            val profiles = SagerDatabase.proxyDao.getByGroup(group.id)
+                                            val links = profiles.mapNotNull {
+                                                try { it.toLink() } catch (_: Exception) { null }
+                                            }.joinToString("\n")
+                                            withContext(Dispatchers.Main) {
+                                                SagerNet.trySetPrimaryClip(links)
+                                            }
+                                        }
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Clear profiles") },
+                                    onClick = {
+                                        menuScope.dismiss()
+                                        clearGroup = group
+                                    },
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Delete group") },
+                                    onClick = {
+                                        menuScope.dismiss()
+                                        deleteGroup = group
+                                    },
+                                    leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
+                                )
+                            },
                         )
                     }
                 }

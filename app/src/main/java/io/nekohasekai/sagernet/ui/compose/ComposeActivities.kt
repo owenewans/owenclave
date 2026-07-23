@@ -3,7 +3,13 @@ package io.nekohasekai.sagernet.ui.compose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.lifecycleScope
+import io.nekohasekai.sagernet.BuildConfig
 import io.nekohasekai.sagernet.GroupType
+import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.GroupManager
 import io.nekohasekai.sagernet.database.ProfileManager
@@ -34,6 +40,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ui.compose.screens.AssetsScreen
+import io.nekohasekai.sagernet.ui.compose.screens.AppItem
 import io.nekohasekai.sagernet.ui.compose.screens.AppListScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ConfigEditScreen
 import io.nekohasekai.sagernet.ui.compose.screens.GroupSettingsScreen
@@ -45,7 +52,11 @@ import io.nekohasekai.sagernet.ui.compose.screens.RouteSettingsScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ScannerScreen
 import io.nekohasekai.sagernet.ui.compose.screens.StunScreen
 import io.nekohasekai.sagernet.ui.compose.screens.UniversalProfileSettingsScreen
+import io.nekohasekai.sagernet.utils.PackageCache
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class ComposeAssetsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,16 +78,78 @@ class ComposeAssetsActivity : ComponentActivity() {
 class ComposeAppListActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!DataStore.proxyApps) {
+            DataStore.proxyApps = true
+        }
+
+        val pm = packageManager
+        var apps by mutableStateOf<List<AppItem>>(emptyList())
+        var loading by mutableStateOf(true)
+        var bypass by mutableStateOf(DataStore.bypass)
+
+        fun loadApps() {
+            lifecycleScope.launch {
+                loading = true
+                val loaded = withContext(Dispatchers.IO) {
+                    PackageCache.awaitLoadSync()
+                    val individual = DataStore.individual
+                        .split("\n").filter { it.isNotBlank() }.toSet()
+                    PackageCache.installedPackages.toMutableMap().apply {
+                        remove(BuildConfig.APPLICATION_ID)
+                    }.map { (packageName, packageInfo) ->
+                        val appInfo = packageInfo.applicationInfo!!
+                        AppItem(
+                            packageName = packageName,
+                            label = appInfo.loadLabel(pm).toString(),
+                            icon = appInfo.loadIcon(pm),
+                            enabled = individual.contains(packageName),
+                        )
+                    }.sortedWith(compareBy({ !it.enabled }, { it.label }))
+                }
+                apps = loaded
+                loading = false
+            }
+        }
+
+        fun saveApps(updated: List<AppItem>) {
+            apps = updated
+            DataStore.individual = updated.filter { it.enabled }
+                .joinToString("\n") { it.packageName }
+        }
+
+        loadApps()
+
         setContent {
             OwenclaveTheme {
                 AppListScreen(
-                    apps = emptyList(),
-                    loading = false,
+                    apps = apps,
+                    loading = loading,
+                    bypass = bypass,
+                    onBypassChange = { bypass = it; DataStore.bypass = it },
                     onBack = { finish() },
-                    onToggle = {},
-                    onInvert = {},
-                    onClear = {},
-                    onCopy = {},
+                    onToggle = { app ->
+                        saveApps(apps.map {
+                            if (it.packageName == app.packageName) it.copy(enabled = !it.enabled)
+                            else it
+                        }.sortedWith(compareBy({ !it.enabled }, { it.label })))
+                    },
+                    onInvert = {
+                        saveApps(apps.map { it.copy(enabled = !it.enabled) }
+                            .sortedWith(compareBy({ !it.enabled }, { it.label })))
+                    },
+                    onClear = {
+                        saveApps(apps.map { it.copy(enabled = false) }
+                            .sortedWith(compareBy({ !it.enabled }, { it.label })))
+                    },
+                    onCopy = {
+                        val text = "${DataStore.bypass}\n${DataStore.individual}"
+                        SagerNet.trySetPrimaryClip(text)
+                    },
+                    onDisable = {
+                        DataStore.proxyApps = false
+                        finish()
+                    },
                 )
             }
         }

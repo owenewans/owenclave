@@ -223,37 +223,42 @@ fun ConfigurationScreen(
                 },
             )
         },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            if (batchTestProgress != null) {
-                val (done, total) = batchTestProgress!!
-                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
-                    Text(
-                        text = "Testing $done/$total",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        ) { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+            ) {
+                when {
+                    loading -> LoadingState()
+                    profiles.isEmpty() -> EmptyState(
+                        message = "No profiles. Tap + to add one.",
+                        icon = Icons.Filled.Add,
                     )
-                    LinearProgressIndicator(
-                        progress = { if (total > 0) done.toFloat() / total else 0f },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-            }
-            when {
-                loading -> LoadingState()
-                profiles.isEmpty() -> EmptyState(
-                    message = "No profiles. Tap + to add one.",
-                    icon = Icons.Filled.Add,
-                )
-                else -> LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp),
-                ) {
-                    items(profiles, key = { it.id }) { entity ->
+                    else -> LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                            top = if (batchTestProgress != null) 48.dp else 8.dp,
+                            bottom = 8.dp,
+                        ),
+                    ) {
+                        if (batchTestProgress != null) {
+                            val (done, total) = batchTestProgress!!
+                            item {
+                                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)) {
+                                    Text(
+                                        text = "Testing $done/$total",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                    LinearProgressIndicator(
+                                        progress = { if (total > 0) done.toFloat() / total else 0f },
+                                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                                    )
+                                }
+                            }
+                        }
+                        items(profiles, key = { it.id }) { entity ->
                         ProfileCard(
                             entity = entity,
                             selected = entity.id == selectedProfileId,

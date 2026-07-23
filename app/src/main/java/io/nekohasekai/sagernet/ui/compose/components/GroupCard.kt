@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -24,6 +25,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -38,8 +42,8 @@ fun GroupCard(
     updating: Boolean = false,
     onClick: () -> Unit,
     onEdit: () -> Unit,
-    onMenu: () -> Unit,
     onUpdate: (() -> Unit)? = null,
+    menuItems: @Composable (MenuScope) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val containerColor by animateColorAsState(
@@ -57,6 +61,8 @@ fun GroupCard(
             MaterialTheme.colorScheme.onSurface,
         label = "groupContentColor"
     )
+
+    var menuExpanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = modifier
@@ -129,18 +135,28 @@ fun GroupCard(
                         modifier = Modifier.size(20.dp),
                     )
                 }
-                IconButton(onClick = onMenu, modifier = Modifier.size(36.dp)) {
-                    Icon(
-                        Icons.Default.MoreVert,
-                        contentDescription = "More",
-                        tint = onContainerColor.copy(alpha = 0.7f),
-                        modifier = Modifier.size(20.dp),
-                    )
+                Box {
+                    IconButton(onClick = { menuExpanded = true }, modifier = Modifier.size(36.dp)) {
+                        Icon(
+                            Icons.Default.MoreVert,
+                            contentDescription = "More",
+                            tint = onContainerColor.copy(alpha = 0.7f),
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false },
+                    ) {
+                        menuItems(MenuScope { menuExpanded = false })
+                    }
                 }
             }
         }
     }
 }
+
+class MenuScope(val dismiss: () -> Unit)
 
 @Composable
 fun RouteCard(
