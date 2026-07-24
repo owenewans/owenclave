@@ -154,7 +154,7 @@ fun StatsBar(
         targetValue = if (testing)
             MaterialTheme.colorScheme.primaryContainer
         else
-            MaterialTheme.colorScheme.surfaceContainerHighest,
+            MaterialTheme.colorScheme.surface,
         label = "statsContainer",
     )
 
@@ -164,8 +164,8 @@ fun StatsBar(
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = containerColor,
-        tonalElevation = 6.dp,
-        shadowElevation = if (testing) 12.dp else 6.dp,
+        tonalElevation = 0.dp,
+        shadowElevation = if (testing) 8.dp else 0.dp,
         shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
     ) {
         androidx.compose.animation.AnimatedContent(
