@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Dns
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lan
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.RocketLaunch
@@ -78,6 +77,7 @@ fun SettingsScreen(
     onMenuClick: () -> Unit,
     onThemeChanged: (Int) -> Unit = {},
     onNightThemeChanged: (Int) -> Unit = {},
+    onServiceModeChanged: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var showThemePicker by remember { mutableStateOf(false) }
@@ -92,6 +92,7 @@ fun SettingsScreen(
     var showDomainStrategyPicker by remember { mutableStateOf(false) }
     var showRouteModePicker by remember { mutableStateOf(false) }
     var showSpeedIntervalPicker by remember { mutableStateOf(false) }
+    var showConnectionTimeoutPicker by remember { mutableStateOf(false) }
     var showOutboundStrategyPicker by remember { mutableStateOf(false) }
     var showOutboundDirectStrategyPicker by remember { mutableStateOf(false) }
     var showOutboundServerStrategyPicker by remember { mutableStateOf(false) }
@@ -150,6 +151,50 @@ fun SettingsScreen(
     var useIECUnit by remember { mutableStateOf(DataStore.useIECUnit) }
     var queryAllPackagesAlternativeMethod by remember { mutableStateOf(DataStore.queryAllPackagesAlternativeMethod) }
 
+    // Reactive state for preference subtitles — DataStore reads are synchronous
+    // but don't trigger recomposition, so we mirror values into State here.
+    var serviceMode by remember { mutableStateOf(DataStore.serviceMode) }
+    var tunImplementation by remember { mutableStateOf(DataStore.tunImplementation) }
+    var mtu by remember { mutableStateOf(DataStore.mtu) }
+    var speedInterval by remember { mutableStateOf(DataStore.speedInterval) }
+    var logLevel by remember { mutableStateOf(DataStore.logLevel) }
+    var providerRootCA by remember { mutableStateOf(DataStore.providerRootCA) }
+    var domainStrategy by remember { mutableStateOf(DataStore.domainStrategy) }
+    var routeMode by remember { mutableStateOf(DataStore.routeMode) }
+    var outboundDomainStrategy by remember { mutableStateOf(DataStore.outboundDomainStrategy) }
+    var outboundDomainStrategyForDirect by remember { mutableStateOf(DataStore.outboundDomainStrategyForDirect) }
+    var outboundDomainStrategyForServer by remember { mutableStateOf(DataStore.outboundDomainStrategyForServer) }
+    var remoteDnsQueryStrategy by remember { mutableStateOf(DataStore.remoteDnsQueryStrategy) }
+    var directDnsQueryStrategy by remember { mutableStateOf(DataStore.directDnsQueryStrategy) }
+    var rulesProvider by remember { mutableStateOf(DataStore.rulesProvider) }
+    var fabStyle by remember { mutableStateOf(DataStore.fabStyle) }
+    var fragmentMethod by remember { mutableStateOf(DataStore.fragmentMethod) }
+    var connectionTestURL by remember { mutableStateOf(DataStore.connectionTestURL) }
+    var connectionTestTimeout by remember { mutableStateOf(DataStore.connectionTestTimeout) }
+    var remoteDns by remember { mutableStateOf(DataStore.remoteDns) }
+    var directDns by remember { mutableStateOf(DataStore.directDns) }
+    var bootstrapDns by remember { mutableStateOf(DataStore.bootstrapDns ?: "") }
+    var ednsClientIp by remember { mutableStateOf(DataStore.ednsClientIp ?: "") }
+    var hosts by remember { mutableStateOf(DataStore.hosts ?: "") }
+    var socksPort by remember { mutableStateOf(DataStore.socksPort) }
+    var httpPort by remember { mutableStateOf(DataStore.httpPort) }
+    var transproxyPort by remember { mutableStateOf(DataStore.transproxyPort) }
+    var localDNSPort by remember { mutableStateOf(DataStore.localDNSPort) }
+    var socksUsername by remember { mutableStateOf(DataStore.socksUsername ?: "") }
+    var socksPassword by remember { mutableStateOf(DataStore.socksPassword ?: "") }
+    var httpUsername by remember { mutableStateOf(DataStore.httpUsername ?: "") }
+    var httpPassword by remember { mutableStateOf(DataStore.httpPassword ?: "") }
+    var httpProxyException by remember { mutableStateOf(DataStore.httpProxyException ?: "") }
+    var stunServers by remember { mutableStateOf(DataStore.stunServers ?: "") }
+    var pprofServer by remember { mutableStateOf(DataStore.pprofServer ?: "") }
+    var experimentalFlags by remember { mutableStateOf(DataStore.experimentalFlags ?: "") }
+    var rulesGeositeUrl by remember { mutableStateOf(DataStore.rulesGeositeUrl) }
+    var rulesGeoipUrl by remember { mutableStateOf(DataStore.rulesGeoipUrl) }
+    var socksProxyChainHost by remember { mutableStateOf(DataStore.socksProxyChainHost ?: "") }
+    var socksProxyChainPort by remember { mutableStateOf(DataStore.socksProxyChainPort) }
+    var socksProxyChainUsername by remember { mutableStateOf(DataStore.socksProxyChainUsername ?: "") }
+    var socksProxyChainPassword by remember { mutableStateOf(DataStore.socksProxyChainPassword ?: "") }
+
     // ── Dialogs ──
     if (showThemePicker) {
         val themes = listOf(
@@ -198,7 +243,7 @@ fun SettingsScreen(
             title = "Service Mode",
             items = listOf("VPN" to "vpn", "Proxy" to "proxy"),
             selected = DataStore.serviceMode,
-            onSelect = { DataStore.serviceMode = it; showServiceModePicker = false },
+            onSelect = { DataStore.serviceMode = it; serviceMode = it; showServiceModePicker = false; onServiceModeChanged() },
             onDismiss = { showServiceModePicker = false },
         )
     }
@@ -208,7 +253,7 @@ fun SettingsScreen(
             title = "TUN Implementation",
             items = listOf("gVisor" to TunImplementation.GVISOR, "System" to TunImplementation.SYSTEM),
             selected = DataStore.tunImplementation,
-            onSelect = { DataStore.tunImplementation = it; showTunPicker = false },
+            onSelect = { DataStore.tunImplementation = it; tunImplementation = it; showTunPicker = false },
             onDismiss = { showTunPicker = false },
         )
     }
@@ -236,6 +281,7 @@ fun SettingsScreen(
                 Spacer(Modifier.width(8.dp))
                 TextButton(onClick = {
                     DataStore.mtu = mtuValue.toIntOrNull() ?: 1500
+                    mtu = DataStore.mtu
                     showMtuPicker = false
                 }) { Text("OK") }
             }
@@ -247,7 +293,7 @@ fun SettingsScreen(
             title = "Log Level",
             items = listOf("None" to LogLevel.NONE, "Error" to LogLevel.ERROR, "Warning" to LogLevel.WARNING, "Info" to LogLevel.INFO, "Debug" to LogLevel.DEBUG),
             selected = DataStore.logLevel,
-            onSelect = { DataStore.logLevel = it; showLogLevelPicker = false },
+            onSelect = { DataStore.logLevel = it; logLevel = it; showLogLevelPicker = false },
             onDismiss = { showLogLevelPicker = false },
         )
     }
@@ -257,7 +303,7 @@ fun SettingsScreen(
             title = "Root CA Provider",
             items = listOf("Mozilla" to 0, "System" to 1, "System & User" to 2, "Custom" to 3),
             selected = DataStore.providerRootCA,
-            onSelect = { DataStore.providerRootCA = it; showRootCaPicker = false },
+            onSelect = { DataStore.providerRootCA = it; providerRootCA = it; showRootCaPicker = false },
             onDismiss = { showRootCaPicker = false },
         )
     }
@@ -267,7 +313,7 @@ fun SettingsScreen(
             title = "Domain Strategy",
             items = listOf("AsIs" to "AsIs", "IPIfNonMatch" to "IPIfNonMatch", "IPOnDemand" to "IPOnDemand"),
             selected = DataStore.domainStrategy,
-            onSelect = { DataStore.domainStrategy = it; showDomainStrategyPicker = false },
+            onSelect = { DataStore.domainStrategy = it; domainStrategy = it; showDomainStrategyPicker = false },
             onDismiss = { showDomainStrategyPicker = false },
         )
     }
@@ -277,7 +323,7 @@ fun SettingsScreen(
             title = "Route Mode",
             items = listOf("Rule" to RouteMode.RULE, "Global" to RouteMode.GLOBAL, "Direct" to RouteMode.DIRECT),
             selected = DataStore.routeMode,
-            onSelect = { DataStore.routeMode = it; showRouteModePicker = false },
+            onSelect = { DataStore.routeMode = it; routeMode = it; showRouteModePicker = false },
             onDismiss = { showRouteModePicker = false },
         )
     }
@@ -294,8 +340,24 @@ fun SettingsScreen(
                 "180s" to 180000,
             ),
             selected = DataStore.speedInterval,
-            onSelect = { DataStore.speedInterval = it; showSpeedIntervalPicker = false },
+            onSelect = { DataStore.speedInterval = it; speedInterval = it; showSpeedIntervalPicker = false },
             onDismiss = { showSpeedIntervalPicker = false },
+        )
+    }
+
+    if (showConnectionTimeoutPicker) {
+        SingleChoiceDialog(
+            title = "Connection Test Timeout",
+            items = listOf(
+                "2s" to 2000,
+                "5s" to 5000,
+                "10s" to 10000,
+                "15s" to 15000,
+                "30s" to 30000,
+            ),
+            selected = connectionTestTimeout,
+            onSelect = { DataStore.connectionTestTimeout = it; connectionTestTimeout = it; showConnectionTimeoutPicker = false },
+            onDismiss = { showConnectionTimeoutPicker = false },
         )
     }
 
@@ -304,7 +366,7 @@ fun SettingsScreen(
             title = "Resolve Destination",
             items = listOf("Disable" to "AsIs", "IPv4 only" to "UseIPv4", "Prefer IPv4" to "PreferIPv4", "IPv4 and IPv6" to "UseIP", "Prefer IPv6" to "PreferIPv6", "IPv6 only" to "UseIPv6"),
             selected = DataStore.outboundDomainStrategy,
-            onSelect = { DataStore.outboundDomainStrategy = it; showOutboundStrategyPicker = false },
+            onSelect = { DataStore.outboundDomainStrategy = it; outboundDomainStrategy = it; showOutboundStrategyPicker = false },
             onDismiss = { showOutboundStrategyPicker = false },
         )
     }
@@ -314,7 +376,7 @@ fun SettingsScreen(
             title = "Resolve Destination (direct)",
             items = listOf("Disable" to "AsIs", "IPv4 only" to "UseIPv4", "Prefer IPv4" to "PreferIPv4", "IPv4 and IPv6" to "UseIP", "Prefer IPv6" to "PreferIPv6", "IPv6 only" to "UseIPv6"),
             selected = DataStore.outboundDomainStrategyForDirect,
-            onSelect = { DataStore.outboundDomainStrategyForDirect = it; showOutboundDirectStrategyPicker = false },
+            onSelect = { DataStore.outboundDomainStrategyForDirect = it; outboundDomainStrategyForDirect = it; showOutboundDirectStrategyPicker = false },
             onDismiss = { showOutboundDirectStrategyPicker = false },
         )
     }
@@ -324,7 +386,7 @@ fun SettingsScreen(
             title = "Resolve Destination (server)",
             items = listOf("Disable" to "AsIs", "IPv4 only" to "UseIPv4", "Prefer IPv4" to "PreferIPv4", "IPv4 and IPv6" to "UseIP", "Prefer IPv6" to "PreferIPv6", "IPv6 only" to "UseIPv6"),
             selected = DataStore.outboundDomainStrategyForServer,
-            onSelect = { DataStore.outboundDomainStrategyForServer = it; showOutboundServerStrategyPicker = false },
+            onSelect = { DataStore.outboundDomainStrategyForServer = it; outboundDomainStrategyForServer = it; showOutboundServerStrategyPicker = false },
             onDismiss = { showOutboundServerStrategyPicker = false },
         )
     }
@@ -334,7 +396,7 @@ fun SettingsScreen(
             title = "Remote DNS Query Strategy",
             items = listOf("IPv4 and IPv6" to "UseIP", "IPv4 only" to "UseIPv4", "IPv6 only" to "UseIPv6"),
             selected = DataStore.remoteDnsQueryStrategy,
-            onSelect = { DataStore.remoteDnsQueryStrategy = it; showRemoteDnsQueryPicker = false },
+            onSelect = { DataStore.remoteDnsQueryStrategy = it; remoteDnsQueryStrategy = it; showRemoteDnsQueryPicker = false },
             onDismiss = { showRemoteDnsQueryPicker = false },
         )
     }
@@ -344,7 +406,7 @@ fun SettingsScreen(
             title = "Direct DNS Query Strategy",
             items = listOf("IPv4 and IPv6" to "UseIP", "IPv4 only" to "UseIPv4", "IPv6 only" to "UseIPv6"),
             selected = DataStore.directDnsQueryStrategy,
-            onSelect = { DataStore.directDnsQueryStrategy = it; showDirectDnsQueryPicker = false },
+            onSelect = { DataStore.directDnsQueryStrategy = it; directDnsQueryStrategy = it; showDirectDnsQueryPicker = false },
             onDismiss = { showDirectDnsQueryPicker = false },
         )
     }
@@ -354,7 +416,7 @@ fun SettingsScreen(
             title = "Route Assets Provider",
             items = listOf("v2fly" to 0, "Loyalsoldier/v2ray-rules-dat" to 1, "Chocolate4U/Iran-v2ray-rules" to 2, "Custom" to 3),
             selected = DataStore.rulesProvider,
-            onSelect = { DataStore.rulesProvider = it; showRulesProviderPicker = false },
+            onSelect = { DataStore.rulesProvider = it; rulesProvider = it; showRulesProviderPicker = false },
             onDismiss = { showRulesProviderPicker = false },
         )
     }
@@ -364,7 +426,7 @@ fun SettingsScreen(
             title = "FAB Style",
             items = listOf("SagerNet" to 0, "Shadowsocks" to 1),
             selected = DataStore.fabStyle,
-            onSelect = { DataStore.fabStyle = it; showFabStylePicker = false },
+            onSelect = { DataStore.fabStyle = it; fabStyle = it; showFabStylePicker = false },
             onDismiss = { showFabStylePicker = false },
         )
     }
@@ -374,7 +436,7 @@ fun SettingsScreen(
             title = "Fragmentation Method",
             items = listOf("TLS record" to 0, "TCP segmentation" to 1, "TLS + TCP" to 2),
             selected = DataStore.fragmentMethod,
-            onSelect = { DataStore.fragmentMethod = it; showFragmentMethodPicker = false },
+            onSelect = { DataStore.fragmentMethod = it; fragmentMethod = it; showFragmentMethodPicker = false },
             onDismiss = { showFragmentMethodPicker = false },
         )
     }
@@ -398,30 +460,30 @@ fun SettingsScreen(
                 Spacer(Modifier.width(8.dp))
                 TextButton(onClick = {
                     when (editingTextKey) {
-                        "connectionTestURL" -> DataStore.connectionTestURL = editingTextValue
-                        "remoteDns" -> DataStore.remoteDns = editingTextValue
-                        "directDns" -> DataStore.directDns = editingTextValue
-                        "bootstrapDns" -> DataStore.bootstrapDns = editingTextValue
-                        "ednsClientIp" -> DataStore.ednsClientIp = editingTextValue
-                        "hosts" -> DataStore.hosts = editingTextValue
-                        "socksUsername" -> DataStore.socksUsername = editingTextValue
-                        "socksPassword" -> DataStore.socksPassword = editingTextValue
-                        "httpUsername" -> DataStore.httpUsername = editingTextValue
-                        "httpPassword" -> DataStore.httpPassword = editingTextValue
-                        "httpProxyException" -> DataStore.httpProxyException = editingTextValue
-                        "socksPort" -> DataStore.socksPort = editingTextValue.toIntOrNull() ?: 2080
-                        "httpPort" -> DataStore.httpPort = editingTextValue.toIntOrNull() ?: 9080
-                        "transproxyPort" -> DataStore.transproxyPort = editingTextValue.toIntOrNull() ?: 9200
-                        "localDNSPort" -> DataStore.localDNSPort = editingTextValue.toIntOrNull() ?: 6450
-                        "stunServers" -> DataStore.stunServers = editingTextValue
-                        "pprofServer" -> DataStore.pprofServer = editingTextValue
-                        "experimentalFlags" -> DataStore.experimentalFlags = editingTextValue
-                        "rulesGeositeUrl" -> DataStore.rulesGeositeUrl = editingTextValue
-                        "rulesGeoipUrl" -> DataStore.rulesGeoipUrl = editingTextValue
-                        "socksProxyChainHost" -> DataStore.socksProxyChainHost = editingTextValue
-                        "socksProxyChainPort" -> DataStore.socksProxyChainPort = editingTextValue.toIntOrNull() ?: 0
-                        "socksProxyChainUsername" -> DataStore.socksProxyChainUsername = editingTextValue
-                        "socksProxyChainPassword" -> DataStore.socksProxyChainPassword = editingTextValue
+                        "connectionTestURL" -> { DataStore.connectionTestURL = editingTextValue; connectionTestURL = editingTextValue }
+                        "remoteDns" -> { DataStore.remoteDns = editingTextValue; remoteDns = editingTextValue }
+                        "directDns" -> { DataStore.directDns = editingTextValue; directDns = editingTextValue }
+                        "bootstrapDns" -> { DataStore.bootstrapDns = editingTextValue; bootstrapDns = editingTextValue }
+                        "ednsClientIp" -> { DataStore.ednsClientIp = editingTextValue; ednsClientIp = editingTextValue }
+                        "hosts" -> { DataStore.hosts = editingTextValue; hosts = editingTextValue }
+                        "socksUsername" -> { DataStore.socksUsername = editingTextValue; socksUsername = editingTextValue }
+                        "socksPassword" -> { DataStore.socksPassword = editingTextValue; socksPassword = editingTextValue }
+                        "httpUsername" -> { DataStore.httpUsername = editingTextValue; httpUsername = editingTextValue }
+                        "httpPassword" -> { DataStore.httpPassword = editingTextValue; httpPassword = editingTextValue }
+                        "httpProxyException" -> { DataStore.httpProxyException = editingTextValue; httpProxyException = editingTextValue }
+                        "socksPort" -> { DataStore.socksPort = editingTextValue.toIntOrNull() ?: 2080; socksPort = DataStore.socksPort }
+                        "httpPort" -> { DataStore.httpPort = editingTextValue.toIntOrNull() ?: 9080; httpPort = DataStore.httpPort }
+                        "transproxyPort" -> { DataStore.transproxyPort = editingTextValue.toIntOrNull() ?: 9200; transproxyPort = DataStore.transproxyPort }
+                        "localDNSPort" -> { DataStore.localDNSPort = editingTextValue.toIntOrNull() ?: 6450; localDNSPort = DataStore.localDNSPort }
+                        "stunServers" -> { DataStore.stunServers = editingTextValue; stunServers = editingTextValue }
+                        "pprofServer" -> { DataStore.pprofServer = editingTextValue; pprofServer = editingTextValue }
+                        "experimentalFlags" -> { DataStore.experimentalFlags = editingTextValue; experimentalFlags = editingTextValue }
+                        "rulesGeositeUrl" -> { DataStore.rulesGeositeUrl = editingTextValue; rulesGeositeUrl = editingTextValue }
+                        "rulesGeoipUrl" -> { DataStore.rulesGeoipUrl = editingTextValue; rulesGeoipUrl = editingTextValue }
+                        "socksProxyChainHost" -> { DataStore.socksProxyChainHost = editingTextValue; socksProxyChainHost = editingTextValue }
+                        "socksProxyChainPort" -> { DataStore.socksProxyChainPort = editingTextValue.toIntOrNull() ?: 0; socksProxyChainPort = DataStore.socksProxyChainPort }
+                        "socksProxyChainUsername" -> { DataStore.socksProxyChainUsername = editingTextValue; socksProxyChainUsername = editingTextValue }
+                        "socksProxyChainPassword" -> { DataStore.socksProxyChainPassword = editingTextValue; socksProxyChainPassword = editingTextValue }
                         "subscriptionAutoUpdateDelay" -> {}
                     }
                     showTextEditDialog = false
@@ -438,8 +500,6 @@ fun SettingsScreen(
         topBar = {
             OwenclaveTopAppBar(
                 title = "Settings",
-                navigationIcon = Icons.Filled.Menu,
-                onNavigationClick = onMenuClick,
                 scrollBehavior = scrollBehavior,
             )
         },
@@ -509,7 +569,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Service Mode",
-                            subtitle = DataStore.serviceMode,
+                            subtitle = serviceMode,
                             icon = Icons.Filled.Dashboard,
                             onClick = { showServiceModePicker = true },
                             shape = shape,
@@ -518,7 +578,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "TUN Implementation",
-                            subtitle = if (DataStore.tunImplementation == TunImplementation.GVISOR) "gVisor" else "System",
+                            subtitle = if (tunImplementation == TunImplementation.GVISOR) "gVisor" else "System",
                             icon = Icons.Filled.Lan,
                             onClick = { showTunPicker = true },
                             shape = shape,
@@ -527,7 +587,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "MTU",
-                            subtitle = "${DataStore.mtu}",
+                            subtitle = "$mtu",
                             icon = Icons.Filled.Public,
                             onClick = { showMtuPicker = true },
                             shape = shape,
@@ -589,14 +649,14 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Speed Interval",
-                            subtitle = when (DataStore.speedInterval) {
+                            subtitle = when (speedInterval) {
                                 500 -> "0.5s"
                                 1000 -> "1s"
                                 3000 -> "3s"
                                 10000 -> "10s"
                                 60000 -> "60s"
                                 180000 -> "180s"
-                                else -> "${DataStore.speedInterval}ms"
+                                else -> "${speedInterval}ms"
                             },
                             icon = Icons.Filled.Speed,
                             onClick = { showSpeedIntervalPicker = true },
@@ -606,7 +666,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Log Level",
-                            subtitle = when (DataStore.logLevel) { 0 -> "None"; 1 -> "Error"; 2 -> "Warning"; 3 -> "Info"; 4 -> "Debug"; else -> "Unknown" },
+                            subtitle = when (logLevel) { 0 -> "None"; 1 -> "Error"; 2 -> "Warning"; 3 -> "Info"; 4 -> "Debug"; else -> "Unknown" },
                             icon = Icons.Filled.Tune,
                             onClick = { showLogLevelPicker = true },
                             shape = shape,
@@ -615,7 +675,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Root CA Provider",
-                            subtitle = when (DataStore.providerRootCA) { 0 -> "Mozilla"; 1 -> "System"; 2 -> "System & User"; 3 -> "Custom"; else -> "Unknown" },
+                            subtitle = when (providerRootCA) { 0 -> "Mozilla"; 1 -> "System"; 2 -> "System & User"; 3 -> "Custom"; else -> "Unknown" },
                             icon = Icons.Filled.Security,
                             onClick = { showRootCaPicker = true },
                             shape = shape,
@@ -693,7 +753,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Domain Strategy",
-                            subtitle = DataStore.domainStrategy,
+                            subtitle = domainStrategy,
                             onClick = { showDomainStrategyPicker = true },
                             shape = shape,
                         )
@@ -701,7 +761,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Resolve Destination",
-                            subtitle = DataStore.outboundDomainStrategy,
+                            subtitle = outboundDomainStrategy,
                             onClick = { showOutboundStrategyPicker = true },
                             shape = shape,
                         )
@@ -709,7 +769,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Resolve Destination (direct)",
-                            subtitle = DataStore.outboundDomainStrategyForDirect,
+                            subtitle = outboundDomainStrategyForDirect,
                             onClick = { showOutboundDirectStrategyPicker = true },
                             shape = shape,
                         )
@@ -717,7 +777,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Resolve Destination (server)",
-                            subtitle = DataStore.outboundDomainStrategyForServer,
+                            subtitle = outboundDomainStrategyForServer,
                             onClick = { showOutboundServerStrategyPicker = true },
                             shape = shape,
                         )
@@ -725,7 +785,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Route Assets Provider",
-                            subtitle = when (DataStore.rulesProvider) { 0 -> "v2fly"; 1 -> "Loyalsoldier"; 2 -> "Iran-v2ray-rules"; 3 -> "Custom"; else -> "Unknown" },
+                            subtitle = when (rulesProvider) { 0 -> "v2fly"; 1 -> "Loyalsoldier"; 2 -> "Iran-v2ray-rules"; 3 -> "Custom"; else -> "Unknown" },
                             onClick = { showRulesProviderPicker = true },
                             shape = shape,
                         )
@@ -733,7 +793,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Route Mode",
-                            subtitle = when (DataStore.routeMode) { 0 -> "Rule"; 1 -> "Global"; 2 -> "Direct"; else -> "Unknown" },
+                            subtitle = when (routeMode) { 0 -> "Rule"; 1 -> "Global"; 2 -> "Direct"; else -> "Unknown" },
                             icon = Icons.Filled.Route,
                             onClick = { showRouteModePicker = true },
                             shape = shape,
@@ -747,14 +807,30 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Connection Test URL",
-                            subtitle = DataStore.connectionTestURL,
+                            subtitle = connectionTestURL,
                             icon = Icons.Filled.Public,
                             onClick = {
                                 editingTextKey = "connectionTestURL"
                                 editingText = Pair("Connection Test URL", DataStore.connectionTestURL)
-                                editingTextValue = DataStore.connectionTestURL
+                                editingTextValue = connectionTestURL
                                 showTextEditDialog = true
                             },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Connection Test Timeout",
+                            subtitle = when (connectionTestTimeout) {
+                                2000 -> "2s"
+                                5000 -> "5s"
+                                10000 -> "10s"
+                                15000 -> "15s"
+                                30000 -> "30s"
+                                else -> "${connectionTestTimeout}ms"
+                            },
+                            icon = Icons.Filled.Speed,
+                            onClick = { showConnectionTimeoutPicker = true },
                             shape = shape,
                         )
                     }
@@ -771,10 +847,10 @@ fun SettingsScreen(
                         item { shape ->
                             PreferenceItem(
                                 title = "Chain Host",
-                                subtitle = DataStore.socksProxyChainHost ?: "None",
+                                subtitle = socksProxyChainHost.ifEmpty { "None" },
                                 onClick = {
                                     editingTextKey = "socksProxyChainHost"
-                                    editingTextValue = DataStore.socksProxyChainHost ?: ""
+                                    editingTextValue = socksProxyChainHost
                                     editingText = Pair("Chain Host", editingTextValue)
                                     showTextEditDialog = true
                                 },
@@ -784,10 +860,10 @@ fun SettingsScreen(
                         item { shape ->
                             PreferenceItem(
                                 title = "Chain Port",
-                                subtitle = "${DataStore.socksProxyChainPort}",
+                                subtitle = "$socksProxyChainPort",
                                 onClick = {
                                     editingTextKey = "socksProxyChainPort"
-                                    editingTextValue = DataStore.socksProxyChainPort.toString()
+                                    editingTextValue = socksProxyChainPort.toString()
                                     editingText = Pair("Chain Port", editingTextValue)
                                     showTextEditDialog = true
                                 },
@@ -797,10 +873,10 @@ fun SettingsScreen(
                         item { shape ->
                             PreferenceItem(
                                 title = "Chain Username",
-                                subtitle = DataStore.socksProxyChainUsername ?: "None",
+                                subtitle = socksProxyChainUsername.ifEmpty { "None" },
                                 onClick = {
                                     editingTextKey = "socksProxyChainUsername"
-                                    editingTextValue = DataStore.socksProxyChainUsername ?: ""
+                                    editingTextValue = socksProxyChainUsername
                                     editingText = Pair("Chain Username", editingTextValue)
                                     showTextEditDialog = true
                                 },
@@ -810,10 +886,10 @@ fun SettingsScreen(
                         item { shape ->
                             PreferenceItem(
                                 title = "Chain Password",
-                                subtitle = if (DataStore.socksProxyChainPassword.isNullOrEmpty()) "None" else "****",
+                                subtitle = if (socksProxyChainPassword.isEmpty()) "None" else "****",
                                 onClick = {
                                     editingTextKey = "socksProxyChainPassword"
-                                    editingTextValue = DataStore.socksProxyChainPassword ?: ""
+                                    editingTextValue = socksProxyChainPassword
                                     editingText = Pair("Chain Password", editingTextValue)
                                     showTextEditDialog = true
                                 },
@@ -884,7 +960,7 @@ fun SettingsScreen(
                         item { shape ->
                             PreferenceItem(
                                 title = "Fragmentation Method",
-                                subtitle = when (DataStore.fragmentMethod) { 0 -> "TLS record"; 1 -> "TCP segmentation"; 2 -> "TLS + TCP"; else -> "Unknown" },
+                                subtitle = when (fragmentMethod) { 0 -> "TLS record"; 1 -> "TCP segmentation"; 2 -> "TLS + TCP"; else -> "Unknown" },
                                 onClick = { showFragmentMethodPicker = true },
                                 shape = shape,
                             )
@@ -922,11 +998,11 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Remote DNS",
-                            subtitle = DataStore.remoteDns,
+                            subtitle = remoteDns,
                             icon = Icons.Filled.Dns,
                             onClick = {
                                 editingTextKey = "remoteDns"
-                                editingTextValue = DataStore.remoteDns
+                                editingTextValue = remoteDns
                                 editingText = Pair("Remote DNS", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -936,7 +1012,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Remote DNS Query Strategy",
-                            subtitle = DataStore.remoteDnsQueryStrategy,
+                            subtitle = remoteDnsQueryStrategy,
                             onClick = { showRemoteDnsQueryPicker = true },
                             shape = shape,
                         )
@@ -944,10 +1020,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "EDNS Client IP",
-                            subtitle = DataStore.ednsClientIp ?: "None",
+                            subtitle = ednsClientIp.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "ednsClientIp"
-                                editingTextValue = DataStore.ednsClientIp ?: ""
+                                editingTextValue = ednsClientIp
                                 editingText = Pair("EDNS Client IP", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -957,10 +1033,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Direct DNS",
-                            subtitle = DataStore.directDns,
+                            subtitle = directDns,
                             onClick = {
                                 editingTextKey = "directDns"
-                                editingTextValue = DataStore.directDns
+                                editingTextValue = directDns
                                 editingText = Pair("Direct DNS", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -970,7 +1046,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Direct DNS Query Strategy",
-                            subtitle = DataStore.directDnsQueryStrategy,
+                            subtitle = directDnsQueryStrategy,
                             onClick = { showDirectDnsQueryPicker = true },
                             shape = shape,
                         )
@@ -978,10 +1054,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Bootstrap DNS",
-                            subtitle = DataStore.bootstrapDns ?: "Auto",
+                            subtitle = bootstrapDns.ifEmpty { "Auto" },
                             onClick = {
                                 editingTextKey = "bootstrapDns"
-                                editingTextValue = DataStore.bootstrapDns ?: ""
+                                editingTextValue = bootstrapDns
                                 editingText = Pair("Bootstrap DNS", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -991,10 +1067,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Domain Rewriting",
-                            subtitle = DataStore.hosts ?: "None",
+                            subtitle = hosts.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "hosts"
-                                editingTextValue = DataStore.hosts ?: ""
+                                editingTextValue = hosts
                                 editingText = Pair("Domain Rewriting", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1059,11 +1135,11 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "SOCKS Port",
-                            subtitle = "${DataStore.socksPort}",
+                            subtitle = "$socksPort",
                             icon = Icons.Filled.Cable,
                             onClick = {
                                 editingTextKey = "socksPort"
-                                editingTextValue = DataStore.socksPort.toString()
+                                editingTextValue = socksPort.toString()
                                 editingText = Pair("SOCKS Port", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1073,10 +1149,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "SOCKS Username",
-                            subtitle = DataStore.socksUsername ?: "None",
+                            subtitle = socksUsername.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "socksUsername"
-                                editingTextValue = DataStore.socksUsername ?: ""
+                                editingTextValue = socksUsername
                                 editingText = Pair("SOCKS Username", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1086,10 +1162,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "SOCKS Password",
-                            subtitle = if (DataStore.socksPassword.isNullOrEmpty()) "None" else "****",
+                            subtitle = if (socksPassword.isEmpty()) "None" else "****",
                             onClick = {
                                 editingTextKey = "socksPassword"
-                                editingTextValue = DataStore.socksPassword ?: ""
+                                editingTextValue = socksPassword
                                 editingText = Pair("SOCKS Password", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1117,10 +1193,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "HTTP Port",
-                            subtitle = "${DataStore.httpPort}",
+                            subtitle = "$httpPort",
                             onClick = {
                                 editingTextKey = "httpPort"
-                                editingTextValue = DataStore.httpPort.toString()
+                                editingTextValue = httpPort.toString()
                                 editingText = Pair("HTTP Port", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1130,10 +1206,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "HTTP Username",
-                            subtitle = DataStore.httpUsername ?: "None",
+                            subtitle = httpUsername.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "httpUsername"
-                                editingTextValue = DataStore.httpUsername ?: ""
+                                editingTextValue = httpUsername
                                 editingText = Pair("HTTP Username", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1143,10 +1219,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "HTTP Password",
-                            subtitle = if (DataStore.httpPassword.isNullOrEmpty()) "None" else "****",
+                            subtitle = if (httpPassword.isEmpty()) "None" else "****",
                             onClick = {
                                 editingTextKey = "httpPassword"
-                                editingTextValue = DataStore.httpPassword ?: ""
+                                editingTextValue = httpPassword
                                 editingText = Pair("HTTP Password", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1156,11 +1232,11 @@ fun SettingsScreen(
                     if (requireHttp) {
                         item { shape ->
                             PreferenceItem(
-                                title = "HTTP Proxy Exception",
-                                subtitle = DataStore.httpProxyException ?: "None",
+                            title = "HTTP Proxy Exception",
+                            subtitle = httpProxyException.ifEmpty { "None" },
                                 onClick = {
                                     editingTextKey = "httpProxyException"
-                                    editingTextValue = DataStore.httpProxyException ?: ""
+                                    editingTextValue = httpProxyException
                                     editingText = Pair("HTTP Proxy Exception", editingTextValue)
                                     showTextEditDialog = true
                                 },
@@ -1180,10 +1256,10 @@ fun SettingsScreen(
                         item { shape ->
                             PreferenceItem(
                                 title = "Transproxy Port",
-                                subtitle = "${DataStore.transproxyPort}",
+                                subtitle = "$transproxyPort",
                                 onClick = {
                                     editingTextKey = "transproxyPort"
-                                    editingTextValue = DataStore.transproxyPort.toString()
+                                    editingTextValue = transproxyPort.toString()
                                     editingText = Pair("Transproxy Port", editingTextValue)
                                     showTextEditDialog = true
                                 },
@@ -1202,10 +1278,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Local DNS Port",
-                            subtitle = "${DataStore.localDNSPort}",
+                            subtitle = "$localDNSPort",
                             onClick = {
                                 editingTextKey = "localDNSPort"
-                                editingTextValue = DataStore.localDNSPort.toString()
+                                editingTextValue = localDNSPort.toString()
                                 editingText = Pair("Local DNS Port", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1268,10 +1344,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "STUN Servers",
-                            subtitle = DataStore.stunServers ?: "None",
+                            subtitle = stunServers.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "stunServers"
-                                editingTextValue = DataStore.stunServers ?: ""
+                                editingTextValue = stunServers
                                 editingText = Pair("STUN Servers", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1281,10 +1357,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "pprof Server",
-                            subtitle = DataStore.pprofServer ?: "None",
+                            subtitle = pprofServer.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "pprofServer"
-                                editingTextValue = DataStore.pprofServer ?: ""
+                                editingTextValue = pprofServer
                                 editingText = Pair("pprof Server", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1294,7 +1370,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "FAB Style",
-                            subtitle = when (DataStore.fabStyle) { 0 -> "SagerNet"; 1 -> "Shadowsocks"; else -> "Unknown" },
+                            subtitle = when (fabStyle) { 0 -> "SagerNet"; 1 -> "Shadowsocks"; else -> "Unknown" },
                             onClick = { showFabStylePicker = true },
                             shape = shape,
                         )
@@ -1302,10 +1378,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "geosite.dat URL",
-                            subtitle = DataStore.rulesGeositeUrl,
+                            subtitle = rulesGeositeUrl,
                             onClick = {
                                 editingTextKey = "rulesGeositeUrl"
-                                editingTextValue = DataStore.rulesGeositeUrl
+                                editingTextValue = rulesGeositeUrl
                                 editingText = Pair("geosite.dat URL", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1315,10 +1391,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "geoip.dat URL",
-                            subtitle = DataStore.rulesGeoipUrl,
+                            subtitle = rulesGeoipUrl,
                             onClick = {
                                 editingTextKey = "rulesGeoipUrl"
-                                editingTextValue = DataStore.rulesGeoipUrl
+                                editingTextValue = rulesGeoipUrl
                                 editingText = Pair("geoip.dat URL", editingTextValue)
                                 showTextEditDialog = true
                             },
@@ -1328,10 +1404,10 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Experimental Flags",
-                            subtitle = DataStore.experimentalFlags ?: "None",
+                            subtitle = experimentalFlags.ifEmpty { "None" },
                             onClick = {
                                 editingTextKey = "experimentalFlags"
-                                editingTextValue = DataStore.experimentalFlags ?: ""
+                                editingTextValue = experimentalFlags
                                 editingText = Pair("Experimental Flags", editingTextValue)
                                 showTextEditDialog = true
                             },

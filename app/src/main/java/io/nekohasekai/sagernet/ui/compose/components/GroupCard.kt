@@ -87,6 +87,12 @@ fun GroupCard(
     val isSubscription = group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION
     val seedShape = remember(group.displayName()) { shapeForSeed(group.displayName()) }
 
+    val groupIcon = if (group.iconIndex > 0 && group.iconIndex - 1 in ProfileIconSet.indices) {
+        ProfileIconSet[group.iconIndex - 1]
+    } else {
+        if (isSubscription) Icons.Filled.Refresh else Icons.Filled.Folder
+    }
+
     val iconContainer by animateColorAsState(
         targetValue = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiaryContainer,
         label = "gIconContainer",
@@ -124,7 +130,7 @@ fun GroupCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ShapedIcon(
-                    icon = if (isSubscription) Icons.Filled.Refresh else Icons.Filled.Folder,
+                    icon = groupIcon,
                     containerColor = iconContainer,
                     contentColor = iconContent,
                     size = 48.dp,

@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ContentPaste
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
@@ -118,7 +117,7 @@ fun ConfigurationScreen(
             var done = 0
             var anyWorking = false
             val link = DataStore.connectionTestURL
-            val timeout = 5000
+            val timeout = DataStore.connectionTestTimeout
             withContext(Dispatchers.Main) { onBatchTestProgress(Pair(0, total)) }
             for (entity in toTest) {
                 withContext(Dispatchers.Main) { pingingIds = pingingIds + entity.id }
@@ -194,8 +193,6 @@ fun ConfigurationScreen(
         topBar = {
             OwenclaveTopAppBar(
                 title = "Configuration",
-                navigationIcon = Icons.Filled.Menu,
-                onNavigationClick = onMenuClick,
                 scrollBehavior = scrollBehavior,
                 actions = {
                     // Only offer "test all" when there is at least one profile to test.
@@ -329,7 +326,7 @@ fun ConfigurationScreen(
                                     pingingIds = pingingIds + entity.id
                                     try {
                                         val link = DataStore.connectionTestURL
-                                        val timeout = 5000
+                                        val timeout = DataStore.connectionTestTimeout
                                         val instance = io.nekohasekai.sagernet.bg.test.V2RayTestInstance(
                                             entity, link, timeout
                                         )

@@ -1,33 +1,44 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.GroupOrder
 import io.nekohasekai.sagernet.GroupType
@@ -35,7 +46,9 @@ import io.nekohasekai.sagernet.ui.compose.components.DividerItem
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceHeader
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceItem
+import io.nekohasekai.sagernet.ui.compose.components.ProfileIconSet
 import io.nekohasekai.sagernet.ui.compose.components.SectionCard
+import io.nekohasekai.sagernet.ui.compose.components.ShapedIconStatic
 import io.nekohasekai.sagernet.ui.compose.components.SwitchPreferenceItem
 
 data class SubscriptionSettings(
@@ -51,12 +64,14 @@ data class SubscriptionSettings(
 fun GroupSettingsScreen(
     groupName: String,
     groupType: Int,
+    initialIconIndex: Int = 0,
     initialSubscription: SubscriptionSettings = SubscriptionSettings(),
     onBack: () -> Unit,
-    onSave: (name: String, type: Int, subscription: SubscriptionSettings) -> Unit,
+    onSave: (name: String, type: Int, iconIndex: Int, subscription: SubscriptionSettings) -> Unit,
 ) {
     var name by remember { mutableStateOf(groupName) }
     var type by remember { mutableStateOf(groupType) }
+    var iconIndex by remember { mutableIntStateOf(initialIconIndex) }
     var order by remember { mutableStateOf(0) }
     var dedup by remember { mutableStateOf(initialSubscription.deduplication) }
     var autoUpdate by remember { mutableStateOf(initialSubscription.autoUpdate) }
@@ -79,7 +94,7 @@ fun GroupSettingsScreen(
                 scrollBehavior = scrollBehavior,
                 actions = {
                     Button(onClick = {
-                        onSave(name, type, SubscriptionSettings(
+                        onSave(name, type, iconIndex, SubscriptionSettings(
                             link = subscriptionLink,
                             deduplication = dedup,
                             updateWhenConnectedOnly = updateWhenConnectedOnly,
@@ -106,6 +121,11 @@ fun GroupSettingsScreen(
                         label = "Group Name",
                         modifier = Modifier.padding(16.dp),
                         singleLine = true,
+                    )
+                    DividerItem()
+                    GroupIconPicker(
+                        selected = iconIndex,
+                        onSelect = { iconIndex = it },
                     )
                     DividerItem()
                     PreferenceItem(
@@ -178,6 +198,95 @@ fun GroupSettingsScreen(
                         subtitle = landingProxy.ifEmpty { "None" },
                         onClick = { /* select landing proxy */ },
                     )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun GroupIconPicker(
+    selected: Int,
+    onSelect: (Int) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val currentIcon = if (selected > 0 && selected - 1 in ProfileIconSet.indices) {
+        ProfileIconSet[selected - 1]
+    } else {
+        Icons.Filled.Folder
+    }
+    Box {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .clip(MaterialTheme.shapes.medium)
+                .clickable { expanded = true }
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            ShapedIconStatic(
+                icon = currentIcon,
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer,
+                size = 40.dp,
+            )
+            Column {
+                Text(
+                    text = "Group Icon",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = if (selected == 0) "Auto" else "Custom",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = RoundedCornerShape(24.dp),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ) {
+            androidx.compose.foundation.layout.FlowRow(
+                modifier = Modifier.width(220.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Surface(
+                    onClick = { onSelect(0); expanded = false },
+                    shape = if (selected == 0) RoundedCornerShape(12.dp) else CircleShape,
+                    color = if (selected == 0) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest,
+                    modifier = Modifier.size(44.dp),
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            "Auto",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = if (selected == 0) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
+                }
+                ProfileIconSet.forEachIndexed { index, icon ->
+                    val isSelected = selected == index + 1
+                    Surface(
+                        onClick = { onSelect(index + 1); expanded = false },
+                        shape = if (isSelected) RoundedCornerShape(12.dp) else CircleShape,
+                        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHighest,
+                        modifier = Modifier.size(44.dp),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            androidx.compose.material3.Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                                tint = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+                    }
                 }
             }
         }

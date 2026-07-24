@@ -190,6 +190,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
 
         var initialName = ""
         var initialType = GroupType.BASIC
+        var initialIconIndex = 0
         var initialSubscription = SubscriptionSettings()
 
         if (editingGroupId > 0L) {
@@ -198,6 +199,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                 if (group != null) {
                     initialName = group.name ?: ""
                     initialType = group.type
+                    initialIconIndex = group.iconIndex
                     val sub = group.subscription
                     if (sub != null) {
                         initialSubscription = SubscriptionSettings(
@@ -217,15 +219,17 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                 GroupSettingsScreen(
                     groupName = initialName,
                     groupType = initialType,
+                    initialIconIndex = initialIconIndex,
                     initialSubscription = initialSubscription,
                     onBack = { finish() },
-                    onSave = { newName, newType, subSettings ->
+                    onSave = { newName, newType, newIconIndex, subSettings ->
                         runBlocking {
                             if (editingGroupId > 0L) {
                                 val group = SagerDatabase.groupDao.getById(editingGroupId)
                                 if (group != null) {
                                     group.name = newName.ifEmpty { if (newType == GroupType.SUBSCRIPTION) "Subscription" else "Group" }
                                     group.type = newType
+                                    group.iconIndex = newIconIndex
                                     if (newType == GroupType.SUBSCRIPTION) {
                                         val sub = group.subscription ?: SubscriptionBean().applyDefaultValues()
                                         sub.link = subSettings.link
@@ -243,6 +247,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                                 val group = ProxyGroup(
                                     name = newName.ifEmpty { if (newType == GroupType.SUBSCRIPTION) "Subscription" else "Group" },
                                     type = newType,
+                                    iconIndex = newIconIndex,
                                 )
                                 if (newType == GroupType.SUBSCRIPTION) {
                                     group.subscription = SubscriptionBean().applyDefaultValues().apply {

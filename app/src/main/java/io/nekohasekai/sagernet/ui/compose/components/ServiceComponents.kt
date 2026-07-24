@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.PowerSettingsNew
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
@@ -35,7 +34,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,7 +55,7 @@ enum class ServiceState {
  * Bottom inset that scrollable screens should reserve so their last items are
  * not hidden behind the overlay [StatsBar].
  */
-val StatsBarBottomInset = 76.dp
+val StatsBarBottomInset = 140.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -104,7 +102,7 @@ fun ServiceButton(
                 scaleX = pressScale.value
                 scaleY = pressScale.value
             },
-        shape = CircleShape,
+        shape = RoundedCornerShape(28.dp),
         containerColor = color,
         contentColor = contentColor,
         elevation = FloatingActionButtonDefaults.elevation(
@@ -121,37 +119,17 @@ fun ServiceButton(
 }
 
 /**
- * A spinning gear behind a STATIC lightning bolt — the gear rotates around its
- * own axis to signal "connecting", the bolt stays put.
+ * M3 Expressive circular wavy progress indicator — the signature loading
+ * spinner. Shown inside the FAB while connecting.
  */
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun ConnectingIndicator(tint: Color) {
-    val transition = rememberInfiniteTransition(label = "gearSpin")
-    val rotation by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2200, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "gearRotation",
+    androidx.compose.material3.CircularWavyProgressIndicator(
+        modifier = Modifier.size(28.dp),
+        color = tint,
+        trackColor = tint.copy(alpha = 0.2f),
     )
-    Box(contentAlignment = Alignment.Center) {
-        Icon(
-            Icons.Default.Settings,
-            contentDescription = "Connecting",
-            tint = tint.copy(alpha = 0.55f),
-            modifier = Modifier
-                .size(34.dp)
-                .graphicsLayer { rotationZ = rotation },
-        )
-        Icon(
-            Icons.Default.Bolt,
-            contentDescription = null,
-            tint = tint,
-            modifier = Modifier.size(18.dp),
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)

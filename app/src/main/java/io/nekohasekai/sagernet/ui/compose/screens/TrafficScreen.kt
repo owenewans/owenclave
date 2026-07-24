@@ -47,8 +47,6 @@ fun TrafficScreen(
         topBar = {
             OwenclaveTopAppBar(
                 title = "Traffic",
-                navigationIcon = Icons.Filled.Menu,
-                onNavigationClick = onMenuClick,
                 scrollBehavior = scrollBehavior,
                 actions = {
                     IconButton(onClick = { /* clear stats */ }) {

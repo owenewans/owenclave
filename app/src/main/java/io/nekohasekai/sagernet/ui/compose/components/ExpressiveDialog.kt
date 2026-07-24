@@ -58,7 +58,7 @@ fun ExpressiveDialog(
     Popup(
         alignment = Alignment.Center,
         onDismissRequest = onDismissRequest,
-        properties = PopupProperties(focusable = true),
+        properties = PopupProperties(focusable = true, clippingEnabled = false),
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),

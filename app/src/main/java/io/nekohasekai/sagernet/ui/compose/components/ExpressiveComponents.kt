@@ -76,7 +76,8 @@ class MorphPolygonShape(
 
 /**
  * A colored icon sitting inside a distinctive M3E [MaterialShapes] container
- * (Cookie, Clover, Sunny, Gem, Flower, ...). Morphs to a different shape while pressed.
+ * (Cookie, Clover, Sunny, Gem, Flower, ...). Uses the polygon's static shape
+ * (no per-frame morph) to avoid the GPU saturation / ANR that Morph caused.
  */
 @Composable
 fun ShapedIcon(
@@ -89,10 +90,11 @@ fun ShapedIcon(
     pressedShape: RoundedPolygon = MaterialShapes.Cookie12Sided,
     pressed: Boolean = false,
 ) {
+    val activeShape = if (pressed) pressedShape else shape
     Box(
         modifier = modifier
             .size(size)
-            .clip(RoundedCornerShape(14.dp))
+            .clip(activeShape.toShape())
             .background(containerColor),
         contentAlignment = Alignment.Center,
     ) {
@@ -107,6 +109,7 @@ fun ShapedIcon(
 
 /**
  * Static shaped icon (no press morph) — cheaper for lists.
+ * Uses the polygon's static [toShape] for the M3E look without per-frame cost.
  */
 @Composable
 fun ShapedIconStatic(
@@ -120,7 +123,7 @@ fun ShapedIconStatic(
     Box(
         modifier = modifier
             .size(size)
-            .clip(RoundedCornerShape(14.dp))
+            .clip(shape.toShape())
             .background(containerColor),
         contentAlignment = Alignment.Center,
     ) {

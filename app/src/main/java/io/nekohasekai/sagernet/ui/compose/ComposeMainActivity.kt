@@ -1,51 +1,48 @@
 package io.nekohasekai.sagernet.ui.compose
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Directions
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Transform
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -53,11 +50,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.R
@@ -70,7 +67,6 @@ import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ui.compose.components.ServiceButton
 import io.nekohasekai.sagernet.ui.compose.components.ServiceState
 import io.nekohasekai.sagernet.ui.compose.components.StatsBar
-import io.nekohasekai.sagernet.ui.compose.screens.AboutScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ConfigurationScreen
 import io.nekohasekai.sagernet.ui.compose.screens.GroupScreen
 import io.nekohasekai.sagernet.ui.compose.screens.LogcatScreen
@@ -78,6 +74,7 @@ import io.nekohasekai.sagernet.ui.compose.screens.RouteScreen
 import io.nekohasekai.sagernet.ui.compose.screens.SettingsScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ToolsScreen
 import io.nekohasekai.sagernet.ui.compose.screens.TrafficScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 enum class NavDestination(
@@ -86,12 +83,12 @@ enum class NavDestination(
     val icon: ImageVector,
 ) {
     CONFIGURATION("configuration", R.string.menu_configuration, Icons.Filled.Description),
-    GROUP("group", R.string.menu_group, Icons.Filled.List),
+    GROUP("group", R.string.menu_group, Icons.AutoMirrored.Filled.List),
     ROUTE("route", R.string.menu_route, Icons.Filled.Directions),
-    SETTINGS("settings", R.string.settings, Icons.Filled.Settings),
     LOGCAT("logcat", R.string.menu_log, Icons.Filled.BugReport),
     TRAFFIC("traffic", R.string.menu_traffic, Icons.Filled.Transform),
     TOOLS("tools", R.string.menu_tools, Icons.Filled.Construction),
+    SETTINGS("settings", R.string.settings, Icons.Filled.Settings),
 }
 
 class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
@@ -125,7 +122,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                         modifier = Modifier
                             .fillMaxSize()
                             .blur(blurRadius),
-                        color = MaterialTheme.colorScheme.surface,
+                        color = MaterialTheme.colorScheme.surfaceContainer,
                     ) {
                         MainScreen(
                             serviceState = serviceState.value,
@@ -134,6 +131,17 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                             downlinkSpeed = downlinkSpeed.value,
                             onThemeChanged = { newId -> themeId = newId },
                             onNightThemeChanged = { newNight -> nightTheme = newNight },
+                            onServiceModeChanged = {
+                                val wasRunning = serviceState.value.canStop
+                                if (wasRunning) {
+                                    SagerNet.stopService()
+                                }
+                                runOnDefaultDispatcher {
+                                    if (wasRunning) delay(500)
+                                    connection.disconnect(this@ComposeMainActivity)
+                                    connection.connect(this@ComposeMainActivity, this@ComposeMainActivity)
+                                }
+                            },
                         )
                     }
                 }
@@ -148,8 +156,6 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     private fun handleViewIntent(intent: Intent) {
         val uri = intent.data ?: return
         val link = uri.toString()
-        // Run on a background thread — runBlocking here would freeze the UI
-        // and cause ANR crashes.
         io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
                 val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(link)
@@ -161,6 +167,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
             }
         }
     }
+
     private fun toggleService() {
         val state = serviceState.value
         when {
@@ -223,12 +230,10 @@ fun MainScreen(
     downlinkSpeed: String,
     onThemeChanged: (Int) -> Unit = {},
     onNightThemeChanged: (Int) -> Unit = {},
+    onServiceModeChanged: () -> Unit = {},
 ) {
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
     var currentDestination by remember { mutableStateOf(NavDestination.CONFIGURATION) }
     val snackbarHostState = remember { SnackbarHostState() }
-    // Hoisted here so the bottom StatsBar can morph to show batch-test progress.
     var batchTestProgress by remember { mutableStateOf<Pair<Int, Int>?>(null) }
 
     val stateForButton = when (serviceState) {
@@ -249,187 +254,156 @@ fun MainScreen(
 
     val EmphasizedEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            DrawerContent(
-                currentDestination = currentDestination,
-                onDestinationSelected = { destination ->
-                    currentDestination = destination
-                    scope.launch { drawerState.close() }
-                },
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        floatingActionButton = {
+            val transition = serviceState == BaseService.State.Connecting ||
+                serviceState == BaseService.State.Stopping
+            ServiceButton(
+                state = stateForButton,
+                onClick = { if (!transition) onServiceToggle() },
             )
         },
+        floatingActionButtonPosition = FabPosition.End,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0),
+    ) { paddingValues ->
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            AnimatedContent(
+                targetState = currentDestination,
+                transitionSpec = {
+                    val fromIndex = NavDestination.entries.indexOf(initialState)
+                    val toIndex = NavDestination.entries.indexOf(targetState)
+                    val direction = if (toIndex >= fromIndex) 1 else -1
+                    (slideInHorizontally(tween(380, easing = EmphasizedEasing)) { fullWidth -> direction * fullWidth }) togetherWith
+                        (slideOutHorizontally(tween(380, easing = EmphasizedEasing)) { fullWidth -> -direction * fullWidth })
+                },
+                label = "screenTransition",
+            ) { destination ->
+                when (destination) {
+                    NavDestination.CONFIGURATION -> ConfigurationScreen(
+                        onMenuClick = {},
+                        serviceRunning = serviceState.canStop,
+                        serviceConnected = serviceState == BaseService.State.Connected,
+                        batchTestProgress = batchTestProgress,
+                        onBatchTestProgress = { batchTestProgress = it },
+                    )
+                    NavDestination.GROUP -> GroupScreen(
+                        onMenuClick = {},
+                    )
+                    NavDestination.ROUTE -> RouteScreen(
+                        onMenuClick = {},
+                    )
+                    NavDestination.SETTINGS -> SettingsScreen(
+                        onMenuClick = {},
+                        onThemeChanged = onThemeChanged,
+                        onNightThemeChanged = onNightThemeChanged,
+                        onServiceModeChanged = onServiceModeChanged,
+                    )
+                    NavDestination.LOGCAT -> LogcatScreen(
+                        onMenuClick = {},
+                    )
+                    NavDestination.TRAFFIC -> TrafficScreen(
+                        onMenuClick = {},
+                    )
+                    NavDestination.TOOLS -> ToolsScreen(
+                        onMenuClick = {},
+                    )
+                }
+            }
+
+            StatsBar(
+                statusText = statusText,
+                uplinkSpeed = uplinkSpeed,
+                downlinkSpeed = downlinkSpeed,
+                connected = serviceState == BaseService.State.Connected,
+                testProgress = batchTestProgress,
+                modifier = Modifier.align(androidx.compose.ui.Alignment.BottomCenter),
+            )
+
+            FloatingBottomNav(
+                items = NavDestination.entries,
+                selected = currentDestination,
+                onSelect = { currentDestination = it },
+                modifier = Modifier
+                    .align(androidx.compose.ui.Alignment.BottomCenter)
+                    .padding(bottom = 80.dp),
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+private fun FloatingBottomNav(
+    items: List<NavDestination>,
+    selected: NavDestination,
+    onSelect: (NavDestination) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+
+    Surface(
+        modifier = modifier
+            .width(168.dp)
+            .navigationBarsPadding(),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        tonalElevation = 6.dp,
+        shadowElevation = 8.dp,
     ) {
-        Scaffold(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            floatingActionButton = {
-                val transition = serviceState == BaseService.State.Connecting ||
-                    serviceState == BaseService.State.Stopping
-                ServiceButton(
-                    state = stateForButton,
-                    onClick = { if (!transition) onServiceToggle() },
-                    modifier = if (transition) Modifier.graphicsLayer { alpha = 0.7f } else Modifier,
+        LazyRow(
+            state = lazyListState,
+            contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 6.dp),
+            horizontalArrangement = Arrangement.spacedBy(2.dp),
+        ) {
+            items(items) { destination ->
+                val isSelected = destination == selected
+                val containerColor by animateColorAsState(
+                    targetValue = if (isSelected) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent,
+                    label = "navItemColor",
                 )
-            },
-            floatingActionButtonPosition = FabPosition.End,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0),
-        ) { paddingValues ->
-            // StatsBar is drawn as an OVERLAY (not a bottomBar) so the screen
-            // content fills the whole area and truly shows through the bar's
-            // rounded top corners — no reserved grey rectangle behind it.
-            Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
-                AnimatedContent(
-                    targetState = currentDestination,
-                    transitionSpec = {
-                        (fadeIn(tween(380, easing = EmphasizedEasing)) +
-                            slideInHorizontally(tween(380, easing = EmphasizedEasing)) { it / 4 }) togetherWith
-                            (fadeOut(tween(380, easing = EmphasizedEasing)) +
-                            slideOutHorizontally(tween(380, easing = EmphasizedEasing)) { -it / 4 })
+                val iconColor by animateColorAsState(
+                    targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                    label = "navItemIcon",
+                )
+                val scale by animateFloatAsState(
+                    targetValue = if (isSelected) 1.15f else 1f,
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessMedium,
+                    ),
+                    label = "navItemScale",
+                )
+                Surface(
+                    onClick = {
+                        onSelect(destination)
+                        scope.launch {
+                            val index = items.indexOf(destination)
+                            lazyListState.animateScrollToItem(index)
+                        }
                     },
-                    label = "screenTransition",
-                ) { destination ->
-                    when (destination) {
-                        NavDestination.CONFIGURATION -> ConfigurationScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                            serviceRunning = serviceState.canStop,
-                            serviceConnected = serviceState == BaseService.State.Connected,
-                            batchTestProgress = batchTestProgress,
-                            onBatchTestProgress = { batchTestProgress = it },
-                        )
-                        NavDestination.GROUP -> GroupScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                        )
-                        NavDestination.ROUTE -> RouteScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                        )
-                        NavDestination.SETTINGS -> SettingsScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                            onThemeChanged = onThemeChanged,
-                            onNightThemeChanged = onNightThemeChanged,
-                        )
-                        NavDestination.LOGCAT -> LogcatScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                        )
-                        NavDestination.TRAFFIC -> TrafficScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
-                        )
-                        NavDestination.TOOLS -> ToolsScreen(
-                            onMenuClick = { scope.launch { drawerState.open() } },
+                    shape = RoundedCornerShape(20.dp),
+                    color = containerColor,
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                        },
+                    ) {
+                        Icon(
+                            imageVector = destination.icon,
+                            contentDescription = stringResource(destination.labelRes),
+                            tint = iconColor,
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
-
-                StatsBar(
-                    statusText = statusText,
-                    uplinkSpeed = uplinkSpeed,
-                    downlinkSpeed = downlinkSpeed,
-                    connected = serviceState == BaseService.State.Connected,
-                    testProgress = batchTestProgress,
-                    modifier = Modifier.align(androidx.compose.ui.Alignment.BottomCenter),
-                )
             }
         }
     }
-}
-
-@Composable
-private fun DrawerContent(
-    currentDestination: NavDestination,
-    onDestinationSelected: (NavDestination) -> Unit,
-) {
-    ModalDrawerSheet(
-        drawerContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-    ) {
-        androidx.compose.foundation.layout.Row(
-            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 24.dp, top = 24.dp, bottom = 20.dp),
-        ) {
-            io.nekohasekai.sagernet.ui.compose.components.AppLogo(
-                style = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.fromId(
-                    DataStore.appLogo
-                ),
-                size = 40.dp,
-            )
-            androidx.compose.foundation.layout.Spacer(Modifier.padding(start = 12.dp))
-            Text(
-                text = stringResource(R.string.app_name),
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-
-        val groups = listOf(
-            NavDestination.CONFIGURATION,
-            NavDestination.GROUP,
-            NavDestination.ROUTE,
-            NavDestination.SETTINGS,
-        )
-        val misc = listOf(
-            NavDestination.LOGCAT,
-            NavDestination.TRAFFIC,
-            NavDestination.TOOLS,
-        )
-
-        groups.forEach { destination ->
-            DrawerItem(
-                destination = destination,
-                selected = currentDestination == destination,
-                onClick = { onDestinationSelected(destination) },
-            )
-        }
-
-        HorizontalDivider(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 28.dp),
-        )
-
-        misc.forEach { destination ->
-            DrawerItem(
-                destination = destination,
-                selected = currentDestination == destination,
-                onClick = { onDestinationSelected(destination) },
-            )
-        }
-    }
-}
-
-@Composable
-private fun DrawerItem(
-    destination: NavDestination,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    NavigationDrawerItem(
-        label = {
-            Text(
-                stringResource(destination.labelRes),
-                style = MaterialTheme.typography.labelLarge,
-            )
-        },
-        icon = {
-            io.nekohasekai.sagernet.ui.compose.components.ShapedIcon(
-                icon = destination.icon,
-                containerColor = if (selected)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = if (selected)
-                    MaterialTheme.colorScheme.onPrimary
-                else
-                    MaterialTheme.colorScheme.onSecondaryContainer,
-                size = 40.dp,
-                pressed = selected,
-            )
-        },
-        selected = selected,
-        onClick = onClick,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
-        colors = NavigationDrawerItemDefaults.colors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            unselectedContainerColor = androidx.compose.ui.graphics.Color.Transparent,
-        ),
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 3.dp),
-    )
 }
