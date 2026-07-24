@@ -90,7 +90,7 @@
     <string name="enc_method">குறியாக்க முறை</string>
     <string name="protocol">நெறிமுறை</string>
     <string name="protocol_param">நெறிமுறை அளவுருக்கள்</string>
-    <string name="obfs">Obfs</string>
+    <string name="obfs">ஒபிஎப்எச்</string>
     <string name="obfs_param">Obfs அளவுருக்கள்</string>
     <string name="uuid">பயனர் அடையாளம்</string>
     <string name="alter_id">மாற்று அடையாளம்</string>
@@ -362,7 +362,7 @@
     <string name="stun_attest_loading">இதற்கு சில நிமிடங்கள் ஆகலாம்…</string>
     <string name="nat_mapping_behaviour">NAT மேப்பிங் நடத்தை</string>
     <string name="nat_filtering_behaviour">NAT வடிகட்டுதல் நடத்தை</string>
-    <string name="route_ssid">Wi-Fi SSID</string>
+    <string name="route_ssid">வை-பை அடையாளம்</string>
     <string name="missing_permission">அனுமதிகள் இல்லை</string>
     <string name="location_disabled">இருப்பிடம் முடக்கப்பட்டது</string>
     <string name="route_need_location_enabled">ரூட்டிங் விதி `%s`க்கு உங்கள் **வைஃபை SSID**க்கான அணுகல் தேவை, ஆனால் இதற்கு **இருப்பிடத்தை இயக்க வேண்டும்**</string>
@@ -555,7 +555,7 @@
     <string name="insecure_warn">பாதுகாப்பு குறிப்புகள்</string>
     <string name="insecure_warn_sum">தெளிவான உரைக்கு சமமான பாதுகாப்புடன் சுயவிவரங்களுக்கான எச்சரிக்கைகளைக் காண்பி.</string>
     <string name="ech">ஒவ்வொரு</string>
-    <string name="server_name_to_verify">ServerNameToVerify</string>
+    <string name="server_name_to_verify">சரிபார்க்கசேவையகம்</string>
     <string name="mieru_traffic_pattern">போக்குவரத்து முறை</string>
     <string name="insecure_warning_detail">இந்த சுயவிவரத்தின் பாதுகாப்பு தெளிவான உரைக்கு சமமானது. \n\n\"பாதுகாப்பு உதவிக்குறிப்புகள்\" இயக்கப்பட்டிருப்பதால் இந்த முன்னறிவிப்பு காட்டப்படுகிறது.</string>
     <string name="hysteria_hop_interval_min">குறைந்தபட்ச துறைமுகம் துள்ளல் இடைவெளி (கள்)</string>
