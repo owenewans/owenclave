@@ -487,10 +487,10 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     initialState = initialState,
                     onBack = { finish() },
                     onSave = { state ->
-                        runBlocking {
+                        lifecycleScope.launch(Dispatchers.IO) {
                             saveProfile(entity, profileId, profileType, state)
+                            withContext(Dispatchers.Main) { finish() }
                         }
-                        finish()
                     },
                 )
             }

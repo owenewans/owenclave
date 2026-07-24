@@ -66,7 +66,7 @@ public class OLCRTCBean extends AbstractBean {
 
     @Override
     public String displayAddress() {
-        return authProvider + " | " + transport + " | " + roomId;
+        return authProvider + " / " + transport + " / " + roomId;
     }
 
     @NotNull

@@ -55,7 +55,7 @@ enum class ServiceState {
  * Bottom inset that scrollable screens should reserve so their last items are
  * not hidden behind the overlay [StatsBar].
  */
-val StatsBarBottomInset = 140.dp
+val StatsBarBottomInset = 120.dp
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable

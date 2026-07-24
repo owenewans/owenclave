@@ -14,11 +14,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,10 +28,13 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.toShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -41,6 +46,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -60,8 +66,11 @@ import io.nekohasekai.sagernet.ui.compose.components.LoadingState
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.ProfileCard
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
@@ -83,6 +92,7 @@ fun ConfigurationScreen(
     var pingingIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
     var showDinoGame by remember { mutableStateOf(false) }
     val reloadAccess = remember { kotlinx.coroutines.sync.Mutex() }
+    var batchTestJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
 
     LaunchedEffect(Unit) {
         selectedProfileId = withContext(Dispatchers.IO) { DataStore.selectedProxy }
@@ -107,7 +117,8 @@ fun ConfigurationScreen(
     }
 
     fun batchUrlTest() {
-        scope.launch(Dispatchers.IO) {
+        batchTestJob?.cancel()
+        batchTestJob = scope.launch(Dispatchers.IO) {
             val groupId = DataStore.currentGroupId()
             val toTest = profiles.filter {
                 it.type != ProxyEntity.TYPE_CHAIN && it.type != ProxyEntity.TYPE_BALANCER && it.type != ProxyEntity.TYPE_CONFIG
@@ -120,10 +131,11 @@ fun ConfigurationScreen(
             val timeout = DataStore.connectionTestTimeout
             withContext(Dispatchers.Main) { onBatchTestProgress(Pair(0, total)) }
             for (entity in toTest) {
+                if (!isActive) break
                 withContext(Dispatchers.Main) { pingingIds = pingingIds + entity.id }
                 try {
                     val instance = io.nekohasekai.sagernet.bg.test.V2RayTestInstance(entity, link, timeout)
-                    val result = instance.use { it.doTest() }
+                    val result = withTimeout(30_000L) { instance.use { it.doTest() } }
                     entity.ping = result
                     entity.status = 1
                     entity.error = null
@@ -143,10 +155,17 @@ fun ConfigurationScreen(
             }
             withContext(Dispatchers.Main) {
                 onBatchTestProgress(null)
-                // If not a single server responded, cheer the user up with a game.
+                batchTestJob = null
                 if (!anyWorking) showDinoGame = true
             }
         }
+    }
+
+    fun cancelBatchTest() {
+        batchTestJob?.cancel()
+        batchTestJob = null
+        pingingIds = emptySet()
+        onBatchTestProgress(null)
     }
 
     fun importFromClipboard() {
@@ -197,11 +216,18 @@ fun ConfigurationScreen(
                 actions = {
                     // Only offer "test all" when there is at least one profile to test.
                     if (profiles.isNotEmpty()) {
-                        IconButton(
-                            onClick = { batchUrlTest() },
-                            enabled = batchTestProgress == null,
-                        ) {
-                            Icon(Icons.Filled.Speed, contentDescription = "Test all")
+                        if (batchTestProgress != null) {
+                            IconButton(
+                                onClick = { cancelBatchTest() },
+                            ) {
+                                Icon(Icons.Filled.Close, contentDescription = "Cancel test")
+                            }
+                        } else {
+                            IconButton(
+                                onClick = { batchUrlTest() },
+                            ) {
+                                Icon(Icons.Filled.Speed, contentDescription = "Test all")
+                            }
                         }
                         Spacer(Modifier.width(6.dp))
                     }
@@ -211,14 +237,16 @@ fun ConfigurationScreen(
                         Icon(Icons.Filled.ContentPaste, contentDescription = "Import subscription from clipboard")
                     }
                     Spacer(Modifier.width(6.dp))
-                    IconButton(
+                    Surface(
                         onClick = { showProtocolPicker = true },
-                        colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        ),
+                        shape = MaterialShapes.Cookie9Sided.toShape(),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(40.dp),
                     ) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add profile")
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(Icons.Filled.Add, contentDescription = "Add profile", modifier = Modifier.size(22.dp))
+                        }
                     }
                     Spacer(Modifier.width(8.dp))
                 },

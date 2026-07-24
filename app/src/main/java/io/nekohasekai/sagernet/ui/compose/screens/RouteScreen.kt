@@ -4,17 +4,21 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialShapes
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.material3.toShape
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -23,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
@@ -42,7 +47,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun RouteScreen(
     onMenuClick: () -> Unit,
@@ -81,13 +86,21 @@ fun RouteScreen(
                 title = "Routes",
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    IconButton(onClick = {
-                        DataStore.routeName = ""
-                        context.startActivity(
-                            Intent(context, ComposeRouteSettingsActivity::class.java)
-                        )
-                    }) {
-                        Icon(Icons.Filled.Add, contentDescription = "Add")
+                    Surface(
+                        onClick = {
+                            DataStore.routeName = ""
+                            context.startActivity(
+                                Intent(context, ComposeRouteSettingsActivity::class.java)
+                            )
+                        },
+                        shape = MaterialShapes.Cookie9Sided.toShape(),
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(40.dp),
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(Icons.Filled.Add, contentDescription = "Add", modifier = Modifier.size(22.dp))
+                        }
                     }
                 },
             )
