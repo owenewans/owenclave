@@ -41,8 +41,6 @@ github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
 github.com/bketelsen/crypt v0.0.3-0.20200106085610-5cbc8cc4026c/go.mod h1:MKsuJmJgSg28kpZDP6UIiPt0e0Oz0kqKNGyRaWEPv84=
-github.com/ccding/go-stun v0.1.5 h1:qEM367nnezmj7dv+SdT52prv5x6HUTG3nlrjX5aitlo=
-github.com/ccding/go-stun v0.1.5/go.mod h1:cCZjJ1J3WFSJV6Wj8Y9Di8JMTsEXh6uv2eNmLzKaUeM=
 github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
@@ -67,12 +65,14 @@ github.com/enfein/mieru/v3 v3.34.1 h1:V5RMMtFfWhSHIMyxsqgmsXyDXP+6H4V9azwLTeQVTz
 github.com/enfein/mieru/v3 v3.34.1/go.mod h1:zJBUCsi5rxyvHM8fjFf+GLaEl4OEjjBXr1s5F6Qd3hM=
 github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260718092345-3cdf5523b8a1 h1:fXemp07G37JcUY2q0AqHccO4y9PqFxYAJxeXlZOrvkM=
 github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260718092345-3cdf5523b8a1/go.mod h1:SOqHbiyPArJ27ou26xu92j/s0RzOA6DYUi72hxmy6bk=
+github.com/exclavenetwork/go-stun v0.1.7-0.20260724055932-543999925444 h1:LPhTr377b1pQMnZ0c++gP5qqs/6ndaFA3Bz1N32B6gI=
+github.com/exclavenetwork/go-stun v0.1.7-0.20260724055932-543999925444/go.mod h1:ObmiKQNMk51Fks7eGBg1scssRkcoCs25W0UHDjeYavk=
 github.com/exclavenetwork/hysteria/core/v2 v2.9.3-1 h1:o8Sc2WQW51F5khBq5at/bT1FWcsHG853nA2ceJNE53I=
 github.com/exclavenetwork/hysteria/core/v2 v2.9.3-1/go.mod h1:oKL5gKIKCvAMaEisBDd2J4rTyLdpokpOTN3AZUr+oTI=
 github.com/exclavenetwork/hysteria/extras/v2 v2.9.3-1 h1:+rgbuOPSG8mi/cJZ1A05evVxZeE1HQdcd8bHHYJyicw=
 github.com/exclavenetwork/hysteria/extras/v2 v2.9.3-1/go.mod h1:0TackschLivWkLO4mtt3ZC/MFEIhUBo4932LQkZwtoo=
-github.com/exclavenetwork/libexclavecore v0.0.0-20260718092645-f4c1cdd5b937 h1:uvj+Q/dVU1ipr4jA6bT0TfJlRoaYFmkMJpNGMcS50u0=
-github.com/exclavenetwork/libexclavecore v0.0.0-20260718092645-f4c1cdd5b937/go.mod h1:SiK1OMF6IzDzdx2d7zjSwVPlyg7DwW/e35S8c72Q6YA=
+github.com/exclavenetwork/libexclavecore v0.0.0-20260724063511-f16cfbbcca04 h1:daTcjhScWEYBVgWRQ1B8spdx3rb33sDxRUc5iEC8XoY=
+github.com/exclavenetwork/libexclavecore v0.0.0-20260724063511-f16cfbbcca04/go.mod h1:zogP46aPFu4dQhAcfVydKvortqSthVzPRNaMy+UR1sA=
 github.com/exclavenetwork/sing-juicity v0.1.5 h1:Cwb3zjQ7iMe61X+X53J9bM2LcsqInhS3q+a5UPM8oSg=
 github.com/exclavenetwork/sing-juicity v0.1.5/go.mod h1:2DohMvdRHvjMQGbbem18mZuPuUADdtKIh5FQTTGm8es=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=
