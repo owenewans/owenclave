@@ -200,9 +200,6 @@ fun ConfigurationScreen(
                         IconButton(
                             onClick = { batchUrlTest() },
                             enabled = batchTestProgress == null,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceBright,
-                            ),
                         ) {
                             Icon(Icons.Filled.Speed, contentDescription = "Test all")
                         }
@@ -210,9 +207,6 @@ fun ConfigurationScreen(
                     }
                     IconButton(
                         onClick = { importFromClipboard() },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        ),
                     ) {
                         Icon(Icons.Filled.ContentPaste, contentDescription = "Import subscription from clipboard")
                     }

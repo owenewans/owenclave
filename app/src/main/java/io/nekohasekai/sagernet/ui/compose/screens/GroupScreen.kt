@@ -288,9 +288,6 @@ fun GroupScreen(
                                 subs.forEach { GroupUpdater.startUpdate(it, true) }
                             }
                         },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        ),
                     ) {
                         Icon(Icons.Filled.Refresh, contentDescription = "Update all")
                     }

@@ -27,7 +27,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearWavyProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -180,9 +179,6 @@ fun GroupCard(
                         IconButton(
                             onClick = onUpdate,
                             modifier = Modifier.size(44.dp),
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceBright,
-                            ),
                         ) {
                             Icon(
                                 Icons.Default.Refresh,
@@ -195,9 +191,6 @@ fun GroupCard(
                     IconButton(
                         onClick = onEdit,
                         modifier = Modifier.size(44.dp),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceBright,
-                        ),
                     ) {
                         Icon(
                             Icons.Default.Edit,
@@ -210,9 +203,6 @@ fun GroupCard(
                         IconButton(
                             onClick = { menuExpanded = true },
                             modifier = Modifier.size(44.dp),
-                            colors = IconButtonDefaults.iconButtonColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceBright,
-                            ),
                         ) {
                             Icon(
                                 Icons.Default.MoreVert,
@@ -298,9 +288,6 @@ fun RouteCard(
             IconButton(
                 onClick = onEdit,
                 modifier = Modifier.size(36.dp),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceBright,
-                ),
             ) {
                 Icon(
                     Icons.Default.Edit,
