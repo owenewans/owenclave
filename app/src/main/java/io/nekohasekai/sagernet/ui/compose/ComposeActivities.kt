@@ -937,7 +937,9 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
         } else {
             val groupId = DataStore.currentGroupId()
             entity.groupId = groupId
-            ProfileManager.createProfile(groupId, entity.requireBean())
+            val created = ProfileManager.createProfile(groupId, entity.requireBean())
+            created.iconIndex = state.iconIndex
+            ProfileManager.updateProfile(created)
         }
     }
 }

@@ -1208,6 +1208,18 @@ fun SettingsScreen(
                         PreferenceItem(
                             title = "SOCKS Username",
                             subtitle = socksUsername.ifEmpty { "None" },
+                            trailingContent = {
+                                if (socksUsername.isEmpty()) {
+                                    androidx.compose.material3.TextButton(
+                                        onClick = {
+                                            val user = "user_" + java.util.UUID.randomUUID().toString().take(8)
+                                            val pass = java.util.UUID.randomUUID().toString().take(12)
+                                            socksUsername = user; socksPassword = pass
+                                            DataStore.socksUsername = user; DataStore.socksPassword = pass
+                                        },
+                                    ) { Text("Generate") }
+                                }
+                            },
                             onClick = {
                                 editingTextKey = "socksUsername"
                                 editingTextValue = socksUsername
@@ -1265,6 +1277,18 @@ fun SettingsScreen(
                         PreferenceItem(
                             title = "HTTP Username",
                             subtitle = httpUsername.ifEmpty { "None" },
+                            trailingContent = {
+                                if (httpUsername.isEmpty()) {
+                                    androidx.compose.material3.TextButton(
+                                        onClick = {
+                                            val user = "user_" + java.util.UUID.randomUUID().toString().take(8)
+                                            val pass = java.util.UUID.randomUUID().toString().take(12)
+                                            httpUsername = user; httpPassword = pass
+                                            DataStore.httpUsername = user; DataStore.httpPassword = pass
+                                        },
+                                    ) { Text("Generate") }
+                                }
+                            },
                             onClick = {
                                 editingTextKey = "httpUsername"
                                 editingTextValue = httpUsername

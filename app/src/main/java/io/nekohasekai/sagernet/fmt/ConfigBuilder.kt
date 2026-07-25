@@ -2201,7 +2201,7 @@ fun buildV2RayConfig(
 
         }
 
-        val mainIsBalancer = proxy.balancerBean != null
+        val mainIsBalancer = proxy.type == ProxyEntity.TYPE_BALANCER
 
         val tagProxy = buildChain(
             TAG_AGENT, proxies, mainIsBalancer

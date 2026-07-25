@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -192,6 +193,7 @@ fun UniversalProfileSettingsScreen(
                     DividerItem()
                     ProfileIconPicker(
                         selected = s.iconIndex,
+                        name = s.name,
                         onSelect = { s = s.copy(iconIndex = it) },
                     )
                     if (showServerAddress) {
@@ -784,13 +786,11 @@ private fun TlsTransportFields(s: ProfileFieldState, update: (ProfileFieldState)
 @Composable
 private fun ProfileIconPicker(
     selected: Int,
+    name: String,
     onSelect: (Int) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val currentIcon = if (selected in io.nekohasekai.sagernet.ui.compose.components.ProfileIconSet.indices)
-        io.nekohasekai.sagernet.ui.compose.components.ProfileIconSet[selected]
-    else
-        io.nekohasekai.sagernet.ui.compose.components.ProfileIconSet[0]
+    val currentIcon = io.nekohasekai.sagernet.ui.compose.components.profileIconFor(selected, name)
 
     Box {
         Row(
@@ -808,7 +808,7 @@ private fun ProfileIconPicker(
             )
             Spacer(Modifier.padding(start = 16.dp))
             Text(
-                text = "Icon",
+                text = if (selected == -1) "Icon (Auto)" else "Icon",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f),
@@ -830,6 +830,30 @@ private fun ProfileIconPicker(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(
+                            if (selected == -1) androidx.compose.foundation.shape.RoundedCornerShape(12.dp)
+                            else androidx.compose.foundation.shape.CircleShape
+                        )
+                        .background(
+                            if (selected == -1) MaterialTheme.colorScheme.primaryContainer
+                            else MaterialTheme.colorScheme.surfaceContainerHighest
+                        )
+                        .clickable { onSelect(-1); expanded = false },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Filled.AutoAwesome,
+                        contentDescription = null,
+                        tint = if (selected == -1)
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(22.dp),
+                    )
+                }
                 io.nekohasekai.sagernet.ui.compose.components.ProfileIconSet.forEachIndexed { idx, icon ->
                     val isSelected = idx == selected
                     Box(
