@@ -122,6 +122,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     private var serviceMessage = mutableStateOf<String?>(null)
     private var uplinkSpeed = mutableStateOf("")
     private var downlinkSpeed = mutableStateOf("")
+    private val appStats = mutableStateOf<List<io.nekohasekai.sagernet.aidl.AppStats>>(emptyList())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -153,6 +154,15 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                             onServiceToggle = { toggleService() },
                             uplinkSpeed = uplinkSpeed.value,
                             downlinkSpeed = downlinkSpeed.value,
+                            appStats = appStats.value,
+                            onClearStats = {
+                                connection.service?.resetTrafficStats()
+                                appStats.value = emptyList()
+                            },
+                            onDestinationChanged = { dest ->
+                                connection.trafficTimeout =
+                                    if (dest == NavDestination.TRAFFIC) 1500 else 0
+                            },
                             onThemeChanged = { newId -> themeId = newId },
                             onNightThemeChanged = { newNight -> nightTheme = newNight },
                             onServiceModeChanged = {
@@ -245,6 +255,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     }
 
     override fun statsUpdated(stats: List<io.nekohasekai.sagernet.aidl.AppStats>) {
+        appStats.value = stats
     }
 
     override fun onServiceConnected(service: io.nekohasekai.sagernet.aidl.ISagerNetService) {
@@ -258,6 +269,7 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
 
     override fun onStart() {
         super.onStart()
+        connection.bandwidthTimeout = 1000
         GroupManager.userInterface = object : GroupManager.Interface {
             override suspend fun confirm(message: String): Boolean = true
             override suspend fun onUpdateSuccess(
@@ -305,6 +317,8 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     }
 
     override fun onStop() {
+        connection.bandwidthTimeout = 0
+        connection.trafficTimeout = 0
         GroupManager.userInterface = null
         super.onStop()
     }
@@ -337,6 +351,9 @@ fun MainScreen(
     onServiceToggle: () -> Unit,
     uplinkSpeed: String,
     downlinkSpeed: String,
+    appStats: List<io.nekohasekai.sagernet.aidl.AppStats> = emptyList(),
+    onClearStats: () -> Unit = {},
+    onDestinationChanged: (NavDestination) -> Unit = {},
     onThemeChanged: (Int) -> Unit = {},
     onNightThemeChanged: (Int) -> Unit = {},
     onServiceModeChanged: () -> Unit = {},
@@ -397,7 +414,12 @@ fun MainScreen(
                         onServiceModeChanged = onServiceModeChanged,
                     )
                     NavDestination.LOGCAT -> LogcatScreen(onMenuClick = {})
-                    NavDestination.TRAFFIC -> TrafficScreen(onMenuClick = {})
+                    NavDestination.TRAFFIC -> TrafficScreen(
+                        stats = appStats,
+                        onClearStats = onClearStats,
+                        serviceConnected = serviceState == BaseService.State.Connected,
+                        trafficStatsEnabled = DataStore.appTrafficStatistics,
+                    )
                     NavDestination.TOOLS -> ToolsScreen(onMenuClick = {})
                 }
             }
@@ -405,7 +427,10 @@ fun MainScreen(
             UnifiedBottomBar(
                 items = NavDestination.entries,
                 selected = currentDestination,
-                onSelect = { currentDestination = it },
+                onSelect = {
+                    currentDestination = it
+                    onDestinationChanged(it)
+                },
                 uplinkSpeed = uplinkSpeed,
                 downlinkSpeed = downlinkSpeed,
                 connected = serviceState == BaseService.State.Connected,

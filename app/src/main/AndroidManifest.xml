@@ -198,6 +198,18 @@
             android:exported="false"
             android:launchMode="singleTask" />
         <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.ChainSettingsActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.BalancerSettingsActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="io.nekohasekai.sagernet.ui.profile.ConfigSettingsActivity"
+            android:exported="false"
+            android:launchMode="singleTask" />
+        <activity
             android:name="io.nekohasekai.sagernet.ui.compose.ComposeConfigEditActivity"
             android:exported="false"
             android:launchMode="singleTask" />

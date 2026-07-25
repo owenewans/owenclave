@@ -20,6 +20,9 @@ import io.nekohasekai.sagernet.database.RuleEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.fmt.AbstractBean
+import io.nekohasekai.sagernet.fmt.internal.ChainBean
+import io.nekohasekai.sagernet.fmt.internal.BalancerBean
+import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.group.GroupUpdater
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
@@ -650,6 +653,22 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     network = if (b.protocol == MieruBean.PROTOCOL_UDP) "udp" else "tcp",
                     serverPorts = b.portRange ?: "")
             }
+            ProxyEntity.TYPE_CONFIG -> {
+                val b = entity.configBean ?: return s
+                s.copy(configContent = b.content ?: "", configType = b.type ?: "v2ray")
+            }
+            ProxyEntity.TYPE_CHAIN -> {
+                val b = entity.chainBean ?: return s
+                s.copy(serverPorts = b.proxies?.joinToString(",") ?: "")
+            }
+            ProxyEntity.TYPE_BALANCER -> {
+                val b = entity.balancerBean ?: return s
+                s.copy(congestionControl = b.strategy.ifEmpty { "random" },
+                    network = (b.type ?: 0).toString(),
+                    serverPorts = b.proxies?.joinToString(",") ?: "",
+                    uuid = b.groupId?.toString() ?: "",
+                    path = b.nameFilter ?: "")
+            }
             else -> s
         }
     }
@@ -944,6 +963,42 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.protocol = if (state.network == "udp") MieruBean.PROTOCOL_UDP else MieruBean.PROTOCOL_TCP
                 b.portRange = state.serverPorts
                 entity.mieruBean = b
+            }
+            ProxyEntity.TYPE_CONFIG -> {
+                val b = entity.configBean ?: ConfigBean().applyDefaultValues()
+                b.name = state.name
+                b.type = state.configType.ifEmpty { "v2ray" }
+                b.content = state.configContent
+                if (state.configType == "v2ray_outbound") {
+                    b.serverAddress = state.serverAddress
+                }
+                entity.configBean = b
+            }
+            ProxyEntity.TYPE_CHAIN -> {
+                val b = entity.chainBean ?: ChainBean().applyDefaultValues()
+                b.name = state.name
+                b.proxies = state.serverPorts.split(",")
+                    .mapNotNull { it.trim().takeIf { it.isNotEmpty() }?.toLongOrNull() }
+                    .toMutableList()
+                entity.chainBean = b
+            }
+            ProxyEntity.TYPE_BALANCER -> {
+                val b = entity.balancerBean ?: BalancerBean().applyDefaultValues()
+                b.name = state.name
+                b.strategy = when (state.congestionControl) {
+                    "random", "leastPing", "leastLoad" -> state.congestionControl
+                    else -> "random"
+                }
+                b.type = state.network.toIntOrNull() ?: 0
+                if (b.type == 0) {
+                    b.proxies = state.serverPorts.split(",")
+                        .mapNotNull { it.trim().takeIf { it.isNotEmpty() }?.toLongOrNull() }
+                        .toMutableList()
+                } else {
+                    b.groupId = state.uuid.toLongOrNull() ?: 0L
+                }
+                b.nameFilter = state.path
+                entity.balancerBean = b
             }
         }
 

@@ -243,6 +243,8 @@ fun UniversalProfileSettingsScreen(
                     ProxyEntity.TYPE_TRUSTTUNNEL -> TrustTunnelFields(s) { s = it }
                     ProxyEntity.TYPE_SNELL -> SnellFields(s) { s = it }
                     ProxyEntity.TYPE_CONFIG -> ConfigFields(s) { s = it }
+                    ProxyEntity.TYPE_CHAIN -> ChainFields(s) { s = it }
+                    ProxyEntity.TYPE_BALANCER -> BalancerFields(s) { s = it }
                 }
 
                 if (profileType in listOf(
@@ -713,6 +715,40 @@ private fun SnellFields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
         ProfileTextField("Obfs Mode", s.obfsType) { update(s.copy(obfsType = it)) }
         DividerItem()
         ProfileTextField("Obfs Host", s.host) { update(s.copy(host = it)) }
+    }
+}
+
+@Composable
+private fun ChainFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
+    PreferenceHeader("Chain Settings")
+    SectionCard {
+        ProfileTextField(
+            label = "Proxy IDs (comma-separated, in order)",
+            value = s.serverPorts,
+            onValueChange = { update(s.copy(serverPorts = it)) },
+            singleLine = false,
+        )
+    }
+}
+
+@Composable
+private fun BalancerFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
+    PreferenceHeader("Balancer Settings")
+    SectionCard {
+        ProfileTextField("Strategy (random/leastPing)", s.congestionControl) { update(s.copy(congestionControl = it)) }
+        DividerItem()
+        ProfileTextField("Type (0=list, 1=group)", s.network) { update(s.copy(network = it)) }
+        DividerItem()
+        ProfileTextField(
+            label = "Proxy IDs (comma-separated)",
+            value = s.serverPorts,
+            onValueChange = { update(s.copy(serverPorts = it)) },
+            singleLine = false,
+        )
+        DividerItem()
+        ProfileTextField("Group ID (if type=1)", s.uuid) { update(s.copy(uuid = it)) }
+        DividerItem()
+        ProfileTextField("Name Filter (regex, optional)", s.path) { update(s.copy(path = it)) }
     }
 }
 
