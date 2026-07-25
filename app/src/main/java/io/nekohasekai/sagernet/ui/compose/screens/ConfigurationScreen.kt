@@ -40,8 +40,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -50,10 +50,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
+import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
@@ -62,7 +60,6 @@ import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.ktx.parseShareLinks
 import io.nekohasekai.sagernet.ui.compose.ComposeProfileSettingsActivity
 import io.nekohasekai.sagernet.ui.compose.components.EmptyState
-import io.nekohasekai.sagernet.ui.compose.components.LoadingState
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.ProfileCard
 import kotlinx.coroutines.Dispatchers
@@ -83,37 +80,41 @@ fun ConfigurationScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    val lifecycleOwner = LocalLifecycleOwner.current
 
-    var profiles by remember { mutableStateOf<List<ProxyEntity>>(emptyList()) }
-    var loading by remember { mutableStateOf(true) }
-    var selectedProfileId by remember { mutableStateOf(0L) }
+    val profiles = remember { mutableStateListOf<ProxyEntity>() }
+    var selectedProfileId by remember { mutableStateOf(DataStore.selectedProxy) }
     var showProtocolPicker by remember { mutableStateOf(false) }
     var pingingIds by remember { mutableStateOf<Set<Long>>(emptySet()) }
     var showDinoGame by remember { mutableStateOf(false) }
     val reloadAccess = remember { kotlinx.coroutines.sync.Mutex() }
     var batchTestJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
 
-    LaunchedEffect(Unit) {
-        selectedProfileId = withContext(Dispatchers.IO) { DataStore.selectedProxy }
-    }
-
-    fun reloadProfiles() {
-        scope.launch(Dispatchers.IO) {
-            val groupId = DataStore.currentGroupId()
-            profiles = SagerDatabase.proxyDao.getByGroup(groupId)
-            loading = false
-        }
-    }
-
-    DisposableEffect(lifecycleOwner) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_RESUME) {
-                reloadProfiles()
+    val listener = remember {
+        object : ProfileManager.Listener {
+            override suspend fun onAdd(profile: ProxyEntity) {
+                withContext(Dispatchers.Main) { profiles.add(profile) }
+            }
+            override suspend fun onUpdated(profileId: Long, trafficStats: TrafficStats) {}
+            override suspend fun onUpdated(profile: ProxyEntity) {
+                withContext(Dispatchers.Main) {
+                    val index = profiles.indexOfFirst { it.id == profile.id }
+                    if (index >= 0) profiles[index] = profile
+                }
+            }
+            override suspend fun onRemoved(groupId: Long, profileId: Long) {
+                withContext(Dispatchers.Main) {
+                    profiles.removeAll { it.id == profileId }
+                }
             }
         }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    DisposableEffect(Unit) {
+        val groupId = DataStore.currentGroupId()
+        profiles.clear()
+        profiles.addAll(SagerDatabase.proxyDao.getByGroup(groupId))
+        ProfileManager.addListener(listener)
+        onDispose { ProfileManager.removeListener(listener) }
     }
 
     fun batchUrlTest() {
@@ -145,11 +146,10 @@ fun ConfigurationScreen(
                     entity.status = 3
                     entity.error = e.message
                 }
-                SagerDatabase.proxyDao.updateProxy(entity)
+                ProfileManager.updateProfile(entity)
                 done++
                 withContext(Dispatchers.Main) {
                     pingingIds = pingingIds - entity.id
-                    profiles = profiles.map { if (it.id == entity.id) entity else it }
                     onBatchTestProgress(Pair(done, total))
                 }
             }
@@ -177,7 +177,6 @@ fun ConfigurationScreen(
                 if (beans.isNotEmpty()) {
                     val groupId = DataStore.selectedGroupForImport()
                     ProfileManager.createProfile(groupId, beans[0])
-                    withContext(Dispatchers.Main) { reloadProfiles() }
                 }
             } catch (_: Exception) {
             }
@@ -259,7 +258,6 @@ fun ConfigurationScreen(
                     .padding(paddingValues)
             ) {
                 when {
-                    loading -> LoadingState()
                     // Keep the LazyColumn always composed (even when empty) so that
                     // adding/removing the only profile animates the card in/out via
                     // animateItem() instead of hard-swapping the whole screen.
@@ -285,7 +283,7 @@ fun ConfigurationScreen(
                                 }
                             }
                         }
-                        items(profiles, key = { it.id }) { entity ->
+                        items(profiles, key = { "${it.id}_${it.displayName()}" }) { entity ->
                         ProfileCard(
                             entity = entity,
                             selected = entity.id == selectedProfileId,
@@ -338,9 +336,6 @@ fun ConfigurationScreen(
                                 scope.launch(Dispatchers.IO) {
                                     val groupId = DataStore.currentGroupId()
                                     ProfileManager.deleteProfile(groupId, entity.id)
-                                    withContext(Dispatchers.Main) {
-                                        profiles = SagerDatabase.proxyDao.getByGroup(groupId)
-                                    }
                                 }
                             },
                             onPing = {
@@ -356,18 +351,12 @@ fun ConfigurationScreen(
                                         entity.ping = result
                                         entity.status = 1
                                         entity.error = null
-                                        SagerDatabase.proxyDao.updateProxy(entity)
-                                        withContext(Dispatchers.Main) {
-                                            profiles = profiles.map { if (it.id == entity.id) entity else it }
-                                        }
+                                        ProfileManager.updateProfile(entity)
                                     } catch (e: Exception) {
                                         entity.ping = -1
                                         entity.status = 3
                                         entity.error = e.message
-                                        SagerDatabase.proxyDao.updateProxy(entity)
-                                        withContext(Dispatchers.Main) {
-                                            profiles = profiles.map { if (it.id == entity.id) entity else it }
-                                        }
+                                        ProfileManager.updateProfile(entity)
                                     } finally {
                                         pingingIds = pingingIds - entity.id
                                     }

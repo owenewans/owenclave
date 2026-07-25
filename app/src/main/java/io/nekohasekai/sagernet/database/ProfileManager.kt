@@ -32,11 +32,14 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.applyDefaultValues
+import kotlinx.coroutines.flow.MutableSharedFlow
 import java.io.IOException
 import java.sql.SQLException
 import java.util.*
 
 object ProfileManager {
+
+    val profileChanges = MutableSharedFlow<Pair<Long, ProxyEntity?>>(extraBufferCapacity = 16)
 
     interface Listener {
         suspend fun onAdd(profile: ProxyEntity)
@@ -105,18 +108,21 @@ object ProfileManager {
             userOrder = SagerDatabase.proxyDao.nextOrder(groupId) ?: 1
         }
         profile.id = SagerDatabase.proxyDao.addProxy(profile)
+        profileChanges.emit(profile.id to profile)
         iterator { onAdd(profile) }
         return profile
     }
 
     suspend fun updateProfile(profile: ProxyEntity) {
         SagerDatabase.proxyDao.updateProxy(profile)
+        profileChanges.emit(profile.id to profile)
         iterator { onUpdated(profile) }
     }
 
     suspend fun updateProfile(profiles: List<ProxyEntity>) {
         SagerDatabase.proxyDao.updateProxy(profiles)
         profiles.forEach {
+            profileChanges.emit(it.id to it)
             iterator { onUpdated(it) }
         }
     }
@@ -126,6 +132,7 @@ object ProfileManager {
         if (DataStore.selectedProxy == profileId) {
             DataStore.selectedProxy = 0L
         }
+        profileChanges.emit(profileId to null)
         iterator { onRemoved(groupId, profileId) }
         if (SagerDatabase.proxyDao.countByGroup(groupId) > 1) {
             GroupManager.rearrange(groupId)

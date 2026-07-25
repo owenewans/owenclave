@@ -555,6 +555,9 @@ data class ProxyEntity(
         @Query("SELECT * FROM proxy_entities WHERE groupId = :groupId ORDER BY userOrder")
         fun getByGroup(groupId: Long): List<ProxyEntity>
 
+        @Query("SELECT * FROM proxy_entities WHERE groupId = :groupId ORDER BY userOrder")
+        fun getByGroupFlow(groupId: Long): kotlinx.coroutines.flow.Flow<List<ProxyEntity>>
+
         @Query("SELECT * FROM proxy_entities WHERE id in (:proxyIds)")
         fun getEntities(proxyIds: List<Long>): List<ProxyEntity>
 

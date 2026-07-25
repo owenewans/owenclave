@@ -58,8 +58,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.toShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -81,6 +83,9 @@ import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.bg.SagerConnection
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.ProfileManager
+import io.nekohasekai.sagernet.database.ProxyEntity
+import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ui.compose.components.ServiceState
 import io.nekohasekai.sagernet.ui.compose.screens.ConfigurationScreen
@@ -295,27 +300,17 @@ fun MainScreen(
                         batchTestProgress = batchTestProgress,
                         onBatchTestProgress = { batchTestProgress = it },
                     )
-                    NavDestination.GROUP -> GroupScreen(
-                        onMenuClick = {},
-                    )
-                    NavDestination.ROUTE -> RouteScreen(
-                        onMenuClick = {},
-                    )
+                    NavDestination.GROUP -> GroupScreen(onMenuClick = {})
+                    NavDestination.ROUTE -> RouteScreen(onMenuClick = {})
                     NavDestination.SETTINGS -> SettingsScreen(
                         onMenuClick = {},
                         onThemeChanged = onThemeChanged,
                         onNightThemeChanged = onNightThemeChanged,
                         onServiceModeChanged = onServiceModeChanged,
                     )
-                    NavDestination.LOGCAT -> LogcatScreen(
-                        onMenuClick = {},
-                    )
-                    NavDestination.TRAFFIC -> TrafficScreen(
-                        onMenuClick = {},
-                    )
-                    NavDestination.TOOLS -> ToolsScreen(
-                        onMenuClick = {},
-                    )
+                    NavDestination.LOGCAT -> LogcatScreen(onMenuClick = {})
+                    NavDestination.TRAFFIC -> TrafficScreen(onMenuClick = {})
+                    NavDestination.TOOLS -> ToolsScreen(onMenuClick = {})
                 }
             }
 
