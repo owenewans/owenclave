@@ -357,6 +357,9 @@ object Key {
     const val RULES_FIRST_CREATE = "rulesFirstCreate"
     const val DO_NOT_SHOW_RULE_EXPORT_WARNING = "doNotShowRuleExportWarning"
 
+    const val APP_AUTO_UPDATE = "appAutoUpdate"
+    const val APP_LAST_UPDATE_CHECK = "appLastUpdateCheck"
+
 }
 
 object TunImplementation {

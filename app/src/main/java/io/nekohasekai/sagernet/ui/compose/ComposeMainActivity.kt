@@ -89,6 +89,7 @@ import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
+import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.nekohasekai.sagernet.ui.compose.components.ServiceState
 import io.nekohasekai.sagernet.ui.compose.screens.ConfigurationScreen
 import io.nekohasekai.sagernet.ui.compose.screens.GroupScreen
@@ -275,6 +276,29 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
             override suspend fun onUpdateFailure(group: ProxyGroup, message: String) {
                 io.nekohasekai.sagernet.ktx.runOnMainDispatcher {
                     android.widget.Toast.makeText(this@ComposeMainActivity, message, android.widget.Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        if (DataStore.appAutoUpdate) {
+            val lastCheck = DataStore.appLastUpdateCheck
+            val now = System.currentTimeMillis()
+            if (now - lastCheck > 6 * 60 * 60 * 1000) {
+                runOnDefaultDispatcher {
+                    try {
+                        val info = io.nekohasekai.sagernet.group.AppUpdater.checkForUpdate()
+                        if (info != null) {
+                            runOnMainDispatcher {
+                                android.widget.Toast.makeText(
+                                    this@ComposeMainActivity,
+                                    "Update available: v${info.versionName}",
+                                    android.widget.Toast.LENGTH_LONG,
+                                ).show()
+                            }
+                        }
+                    } catch (_: Exception) {
+                    }
+                    DataStore.appLastUpdateCheck = now
                 }
             }
         }

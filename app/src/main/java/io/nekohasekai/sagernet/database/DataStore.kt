@@ -501,6 +501,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var rulesFirstCreate by configurationStore.boolean(Key.RULES_FIRST_CREATE)
     var doNotShowRuleExportWarning by configurationStore.boolean(Key.DO_NOT_SHOW_RULE_EXPORT_WARNING)
 
+    var appAutoUpdate by configurationStore.boolean(Key.APP_AUTO_UPDATE) { true }
+    var appLastUpdateCheck by configurationStore.long(Key.APP_LAST_UPDATE_CHECK)
+
     var getInstalledPackagesInited by configurationStore.boolean("getInstalledPackagesInited")
     var postNotificationsPermissionRequested by configurationStore.boolean("postNotificationsPermissionRequested")
     var accessLocalNetworkPermissionRequested by configurationStore.boolean("accessLocalNetworkPermissionRequested")

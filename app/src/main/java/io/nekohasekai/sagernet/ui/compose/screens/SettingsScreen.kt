@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Dns
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Public
@@ -30,6 +31,7 @@ import androidx.compose.material.icons.filled.Route
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.Translate
 import androidx.compose.material.icons.filled.WbSunny
@@ -59,6 +61,7 @@ import io.nekohasekai.sagernet.LogLevel
 import io.nekohasekai.sagernet.RouteMode
 import io.nekohasekai.sagernet.TunImplementation
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.group.AppUpdater
 import io.nekohasekai.sagernet.ui.compose.ComposeAssetsActivity
 import io.nekohasekai.sagernet.ui.compose.ComposeStunActivity
 import io.nekohasekai.sagernet.ui.compose.components.DividerItem
@@ -191,6 +194,13 @@ fun SettingsScreen(
     var socksProxyChainPort by remember { mutableStateOf(DataStore.socksProxyChainPort) }
     var socksProxyChainUsername by remember { mutableStateOf(DataStore.socksProxyChainUsername ?: "") }
     var socksProxyChainPassword by remember { mutableStateOf(DataStore.socksProxyChainPassword ?: "") }
+
+    var appAutoUpdate by remember { mutableStateOf(DataStore.appAutoUpdate) }
+    var updateInfo by remember { mutableStateOf<AppUpdater.UpdateInfo?>(null) }
+    var checkingUpdate by remember { mutableStateOf(false) }
+    var downloadingUpdate by remember { mutableStateOf(false) }
+    var showUpdateDialog by remember { mutableStateOf(false) }
+    var updateError by remember { mutableStateOf<String?>(null) }
 
     // ── Dialogs ──
     if (showThemePicker) {
@@ -473,6 +483,70 @@ fun SettingsScreen(
                     }
                     showTextEditDialog = false
                 }) { Text("OK") }
+            }
+        }
+    }
+
+    // ── Update Dialog ──
+    if (showUpdateDialog && updateInfo != null) {
+        val info = updateInfo!!
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(
+            onDismissRequest = {
+                if (!downloadingUpdate) showUpdateDialog = false
+            },
+        ) {
+            Text(
+                text = "Update Available",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+            Text(
+                text = "v${info.versionName}",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 12.dp),
+            )
+            val releaseNotesTrimmed = info.releaseNotes.lines().take(20).joinToString("\n")
+            Text(
+                text = releaseNotesTrimmed.ifEmpty { "Release notes not available." },
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .heightIn(max = 300.dp)
+                    .verticalScroll(rememberScrollState())
+                    .padding(bottom = 16.dp),
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                TextButton(
+                    onClick = {
+                        AppUpdater.openReleasesPage(context)
+                        showUpdateDialog = false
+                    },
+                    enabled = !downloadingUpdate,
+                ) { Text("Open in Browser") }
+                Spacer(Modifier.width(8.dp))
+                TextButton(
+                    onClick = {
+                        if (!AppUpdater.canInstallApk(context)) {
+                            AppUpdater.requestInstallPermission(context as android.app.Activity)
+                        } else {
+                            downloadingUpdate = true
+                            io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
+                                try {
+                                    AppUpdater.downloadAndInstall(context, info)
+                                } catch (e: Exception) {
+                                    updateError = e.message ?: "Download failed"
+                                }
+                                downloadingUpdate = false
+                            }
+                        }
+                    },
+                    enabled = !downloadingUpdate,
+                ) { Text(if (downloadingUpdate) "Downloading..." else "Download & Install") }
             }
         }
     }
@@ -1393,6 +1467,46 @@ fun SettingsScreen(
                                 editingTextValue = experimentalFlags
                                 editingText = Pair("Experimental Flags", editingTextValue)
                                 showTextEditDialog = true
+                            },
+                            shape = shape,
+                        )
+                    }
+                }
+
+                // ── About ──
+                PreferenceHeader("About")
+                PreferenceGroup {
+                    item { shape ->
+                        SwitchPreferenceItem(
+                            title = "Auto Check for Updates",
+                            subtitle = "Check GitHub for new releases on app start",
+                            icon = Icons.Filled.SystemUpdate,
+                            checked = appAutoUpdate,
+                            onCheckedChange = { appAutoUpdate = it; DataStore.appAutoUpdate = it },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = if (checkingUpdate) "Checking..." else "Check for Updates",
+                            subtitle = updateError ?: updateInfo?.let { "Update available: v${it.versionName}" } ?: "Current: ${io.nekohasekai.sagernet.BuildConfig.VERSION_NAME}",
+                            icon = Icons.Filled.Download,
+                            onClick = {
+                                checkingUpdate = true
+                                updateError = null
+                                io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
+                                    try {
+                                        val info = AppUpdater.checkForUpdate()
+                                        updateInfo = info
+                                        if (info != null) {
+                                            showUpdateDialog = true
+                                        }
+                                    } catch (e: Exception) {
+                                        updateError = e.message ?: "Check failed"
+                                    }
+                                    checkingUpdate = false
+                                    DataStore.appLastUpdateCheck = System.currentTimeMillis()
+                                }
                             },
                             shape = shape,
                         )
