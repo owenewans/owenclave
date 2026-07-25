@@ -117,6 +117,19 @@ fun ConfigurationScreen(
         onDispose { ProfileManager.removeListener(listener) }
     }
 
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                val groupId = DataStore.currentGroupId()
+                profiles.clear()
+                profiles.addAll(SagerDatabase.proxyDao.getByGroup(groupId))
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
     fun batchUrlTest() {
         batchTestJob?.cancel()
         batchTestJob = scope.launch(Dispatchers.IO) {
