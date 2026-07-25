@@ -644,6 +644,12 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     dnsServer = b.dnsServer ?: "8.8.8.8:53", socksHost = b.socksHost ?: "127.0.0.1",
                     socksPort = b.socksPort?.toString() ?: "8808")
             }
+            ProxyEntity.TYPE_MIERU -> {
+                val b = entity.mieruBean ?: return s
+                s.copy(username = b.username ?: "", password = b.password ?: "",
+                    network = if (b.protocol == MieruBean.PROTOCOL_UDP) "udp" else "tcp",
+                    serverPorts = b.portRange ?: "")
+            }
             else -> s
         }
     }
@@ -927,6 +933,17 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.socksHost = state.socksHost
                 b.socksPort = state.socksPort.toIntOrNull() ?: 8808
                 entity.olcrtcBean = b
+            }
+            ProxyEntity.TYPE_MIERU -> {
+                val b = entity.mieruBean ?: MieruBean().applyDefaultValues()
+                b.name = state.name
+                b.serverAddress = state.serverAddress
+                b.serverPort = state.serverPort.toIntOrNull() ?: 8964
+                b.username = state.username
+                b.password = state.password
+                b.protocol = if (state.network == "udp") MieruBean.PROTOCOL_UDP else MieruBean.PROTOCOL_TCP
+                b.portRange = state.serverPorts
+                entity.mieruBean = b
             }
         }
 
