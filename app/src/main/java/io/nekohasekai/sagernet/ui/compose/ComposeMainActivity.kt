@@ -199,6 +199,10 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                             profile.userOrder = io.nekohasekai.sagernet.database.SagerDatabase.proxyDao.nextOrder(import.group.id) ?: 1
                             profile.id = io.nekohasekai.sagernet.database.SagerDatabase.proxyDao.addProxy(profile)
                         }
+                        if (import.profiles.isNotEmpty()) {
+                            io.nekohasekai.sagernet.database.DataStore.selectedProxy = import.profiles.first().id
+                        }
+                        io.nekohasekai.sagernet.database.DataStore.selectedGroup = import.group.id
                         if (import.group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && import.group.subscription?.link?.isNotEmpty() == true) {
                             val created = io.nekohasekai.sagernet.database.SagerDatabase.groupDao.getById(import.group.id)
                             if (created != null) {
@@ -210,7 +214,8 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                     val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(link)
                     if (beans.isNotEmpty()) {
                         val groupId = io.nekohasekai.sagernet.database.DataStore.selectedGroupForImport()
-                        io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, beans[0])
+                        val profile = io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, beans[0])
+                        io.nekohasekai.sagernet.database.DataStore.selectedProxy = profile.id
                     }
                 }
             } catch (_: Exception) {
@@ -412,7 +417,6 @@ private fun UnifiedBottomBar(
         animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "unifiedContainer",
     )
-    val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
 
     Surface(
@@ -447,16 +451,14 @@ private fun UnifiedBottomBar(
                     .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)),
             )
 
-            // ── Center: Nav (2-3 items visible, clipped with rounded corners) ──
-            LazyRow(
-                state = lazyListState,
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp),
+            // ── Center: Nav (all items visible, no scroll) ──
+            Row(
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
                 modifier = Modifier
-                    .width(160.dp)
+                    .weight(1f)
                     .clip(RoundedCornerShape(24.dp)),
             ) {
-                items(items) { destination ->
+                items.forEach { destination ->
                     val isSelected = destination == selected
                     val itemColor by animateColorAsState(
                         targetValue = if (isSelected) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent,
@@ -475,16 +477,10 @@ private fun UnifiedBottomBar(
                         label = "navItemScale",
                     )
                     Surface(
-                        onClick = {
-                            onSelect(destination)
-                            scope.launch {
-                                val index = items.indexOf(destination)
-                                lazyListState.animateScrollToItem(index)
-                            }
-                        },
+                        onClick = { onSelect(destination) },
                         shape = if (isSelected) MaterialShapes.Cookie9Sided.toShape() else RoundedCornerShape(24.dp),
                         color = itemColor,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(40.dp),
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -497,7 +493,7 @@ private fun UnifiedBottomBar(
                                 imageVector = destination.icon,
                                 contentDescription = stringResource(destination.labelRes),
                                 tint = iconColor,
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(20.dp),
                             )
                         }
                     }

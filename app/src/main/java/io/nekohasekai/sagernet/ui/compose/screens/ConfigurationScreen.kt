@@ -228,9 +228,12 @@ fun ConfigurationScreen(
                     val beans = parseShareLinks(text)
                     if (beans.isNotEmpty()) {
                         val groupId = DataStore.selectedGroupForImport()
+                        var lastId = 0L
                         beans.forEach { bean ->
-                            ProfileManager.createProfile(groupId, bean)
+                            val p = ProfileManager.createProfile(groupId, bean)
+                            lastId = p.id
                         }
+                        if (lastId > 0) DataStore.selectedProxy = lastId
                         withContext(Dispatchers.Main) {
                             android.widget.Toast.makeText(context, "Imported ${beans.size} profile(s)", android.widget.Toast.LENGTH_SHORT).show()
                         }
