@@ -507,7 +507,8 @@ fun SettingsScreen(
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 12.dp),
             )
-            val releaseNotesTrimmed = info.releaseNotes.lines().take(20).joinToString("\n")
+            val releaseNotesClean = AppUpdater.markdownToPlainText(info.releaseNotes)
+            val releaseNotesTrimmed = releaseNotesClean.lines().take(30).joinToString("\n")
             Text(
                 text = releaseNotesTrimmed.ifEmpty { "Release notes not available." },
                 style = MaterialTheme.typography.bodyMedium,

@@ -35,6 +35,27 @@ object AppUpdater {
         val htmlUrl: String,
     )
 
+    fun markdownToPlainText(md: String): String {
+        return md.lines()
+            .filter { line ->
+                !line.startsWith("<img ") &&
+                !line.startsWith("<div") &&
+                !line.startsWith("</div>") &&
+                !line.startsWith("---") &&
+                !line.startsWith("![")
+            }
+            .joinToString("\n")
+            .replace(Regex("\\*\\*(.+?)\\*\\*"), "$1")
+            .replace(Regex("\\*(.+?)\\*"), "$1")
+            .replace(Regex("`(.+?)`"), "$1")
+            .replace(Regex("#+\\s*"), "")
+            .replace(Regex("\\[(.+?)]\\([^)]+\\)"), "$1")
+            .replace(Regex("^\\s*[-*]\\s*", RegexOption.MULTILINE), "  - ")
+            .replace(Regex("\\|"), " ")
+            .replace(Regex("\n{3,}"), "\n\n")
+            .trim()
+    }
+
     fun compareVersions(current: String, remote: String): Boolean {
         val currentParts = current.removeSuffix("-beta.1").split(".").map { it.toIntOrNull() ?: 0 }
         val remoteParts = remote.removeSuffix("-beta.1").split(".").map { it.toIntOrNull() ?: 0 }
