@@ -107,11 +107,11 @@ enum class NavDestination(
 ) {
     CONFIGURATION("configuration", R.string.menu_configuration, Icons.Filled.Description),
     GROUP("group", R.string.menu_group, Icons.AutoMirrored.Filled.List),
+    SETTINGS("settings", R.string.settings, Icons.Filled.Settings),
     ROUTE("route", R.string.menu_route, Icons.Filled.Directions),
     LOGCAT("logcat", R.string.menu_log, Icons.Filled.BugReport),
     TRAFFIC("traffic", R.string.menu_traffic, Icons.Filled.Transform),
     TOOLS("tools", R.string.menu_tools, Icons.Filled.Construction),
-    SETTINGS("settings", R.string.settings, Icons.Filled.Settings),
 }
 
 class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
@@ -451,14 +451,15 @@ private fun UnifiedBottomBar(
                     .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)),
             )
 
-            // ── Center: Nav (all items visible, no scroll) ──
-            Row(
+            // ── Center: Nav (scrollable, no auto-scroll) ──
+            LazyRow(
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
                 modifier = Modifier
-                    .weight(1f)
+                    .width(160.dp)
                     .clip(RoundedCornerShape(24.dp)),
             ) {
-                items.forEach { destination ->
+                items(items) { destination ->
                     val isSelected = destination == selected
                     val itemColor by animateColorAsState(
                         targetValue = if (isSelected) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent,
@@ -480,7 +481,7 @@ private fun UnifiedBottomBar(
                         onClick = { onSelect(destination) },
                         shape = if (isSelected) MaterialShapes.Cookie9Sided.toShape() else RoundedCornerShape(24.dp),
                         color = itemColor,
-                        modifier = Modifier.size(40.dp),
+                        modifier = Modifier.size(48.dp),
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -493,7 +494,7 @@ private fun UnifiedBottomBar(
                                 imageVector = destination.icon,
                                 contentDescription = stringResource(destination.labelRes),
                                 tint = iconColor,
-                                modifier = Modifier.size(20.dp),
+                                modifier = Modifier.size(24.dp),
                             )
                         }
                     }
