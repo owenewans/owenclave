@@ -259,6 +259,13 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     }
 
     override fun onServiceConnected(service: io.nekohasekai.sagernet.aidl.ISagerNetService) {
+        val state = try {
+            BaseService.State.entries[service.state]
+        } catch (_: android.os.RemoteException) {
+            BaseService.State.Idle
+        }
+        SagerNet.started = state.canStop
+        serviceState.value = state
     }
 
     override fun onServiceDisconnected() {
@@ -484,8 +491,6 @@ private fun UnifiedBottomBar(
         ) {
             // ── Left: Status ──
             StatusSection(
-                uplinkSpeed = uplinkSpeed,
-                downlinkSpeed = downlinkSpeed,
                 connected = connected,
                 connecting = connecting,
                 testProgress = testProgress,
@@ -638,8 +643,6 @@ private fun PowerButton(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun StatusSection(
-    uplinkSpeed: String,
-    downlinkSpeed: String,
     connected: Boolean,
     connecting: Boolean,
     testProgress: Pair<Int, Int>?,
@@ -685,15 +688,6 @@ private fun StatusSection(
         } else {
             // Animated expressive status indicator (no text)
             StatusPulse(connected = connected, connecting = connecting)
-            if (connected && (uplinkSpeed.isNotEmpty() || downlinkSpeed.isNotEmpty())) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    SpeedMini(label = "↑", value = uplinkSpeed, color = MaterialTheme.colorScheme.primary)
-                    SpeedMini(label = "↓", value = downlinkSpeed, color = MaterialTheme.colorScheme.tertiary)
-                }
-            }
         }
     }
 }
@@ -742,22 +736,3 @@ private fun StatusPulse(connected: Boolean, connecting: Boolean) {
     }
 }
 
-@Composable
-private fun SpeedMini(label: String, value: String, color: Color) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = color,
-            fontFamily = FontFamily.Monospace,
-            fontSize = 11.sp,
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.labelSmall,
-            color = color,
-            fontFamily = FontFamily.Monospace,
-            fontSize = 11.sp,
-        )
-    }
-}

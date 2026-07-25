@@ -12,18 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.Transform
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -54,7 +52,7 @@ import io.nekohasekai.sagernet.utils.PackageCache
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TrafficScreen(
     stats: List<AppStats>,
@@ -102,7 +100,7 @@ fun TrafficScreen(
 
     val isVpn = DataStore.serviceMode == Key.MODE_VPN
 
-    Scaffold(
+    androidx.compose.material3.Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         topBar = {
@@ -110,8 +108,11 @@ fun TrafficScreen(
                 title = "Traffic",
                 scrollBehavior = scrollBehavior,
                 actions = {
-                    IconButton(onClick = onClearStats) {
-                        Icon(Icons.Filled.DeleteSweep, contentDescription = "Clear")
+                    androidx.compose.material3.IconButton(onClick = onClearStats) {
+                        androidx.compose.material3.Icon(
+                            Icons.Filled.DeleteSweep,
+                            contentDescription = "Clear",
+                        )
                     }
                 },
             )
@@ -144,13 +145,11 @@ fun TrafficScreen(
             } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(displayList, key = { it.uid }) { stat ->
-                        TrafficItem(stat = stat, showRates = showRates)
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        )
+                        TrafficCard(stat = stat, showRates = showRates)
                     }
                 }
             }
@@ -160,8 +159,9 @@ fun TrafficScreen(
 
 private data class AppInfo(val packageName: String?, val label: String)
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun TrafficItem(stat: AppStats, showRates: Boolean) {
+private fun TrafficCard(stat: AppStats, showRates: Boolean) {
     val appInfo by produceState<AppInfo?>(null, stat.uid) {
         value = withContext(Dispatchers.Default) {
             PackageCache.awaitLoadSync()
@@ -189,88 +189,119 @@ private fun TrafficItem(stat: AppStats, showRates: Boolean) {
     val useIEC = DataStore.useIECUnit
     val info = appInfo
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        tonalElevation = 2.dp,
     ) {
-        if (iconBitmap != null) {
-            Image(
-                bitmap = iconBitmap!!,
-                contentDescription = null,
-                modifier = Modifier.size(36.dp),
-            )
-        } else {
-            Surface(
-                modifier = Modifier.size(36.dp),
-                shape = MaterialTheme.shapes.small,
-                color = MaterialTheme.colorScheme.secondaryContainer,
-            ) {}
-        }
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = info?.label ?: "UID ${stat.uid}",
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            val pkg = info?.packageName
-            Text(
-                text = if (pkg != null) "$pkg (${stat.uid})" else "UID ${stat.uid}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            val tcp = if (showRates) stat.tcpConnections else stat.tcpConnectionsTotal
-            val udp = if (showRates) stat.udpConnections else stat.udpConnectionsTotal
-            if (tcp > 0 || udp > 0) {
-                val parts = mutableListOf<String>()
-                if (tcp > 0) parts.add("$tcp TCP")
-                if (udp > 0) parts.add("$udp UDP")
-                Text(
-                    text = parts.joinToString("  "),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.padding(top = 2.dp),
-                )
-            }
-        }
-
-        Column(horizontalAlignment = Alignment.End) {
-            if (showRates) {
-                Text(
-                    text = "${FormatFileSizeCompat.formatFileSize(app, stat.uplinkTotal, useIEC)} | ${FormatFileSizeCompat.formatFileSize(app, stat.uplink, useIEC)}/s \u2191",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontFamily = FontFamily.Monospace,
-                    maxLines = 1,
-                )
-                Text(
-                    text = "${FormatFileSizeCompat.formatFileSize(app, stat.downlinkTotal, useIEC)} | ${FormatFileSizeCompat.formatFileSize(app, stat.downlink, useIEC)}/s \u2193",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontFamily = FontFamily.Monospace,
-                    maxLines = 1,
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            if (iconBitmap != null) {
+                Image(
+                    bitmap = iconBitmap!!,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
                 )
             } else {
+                Surface(
+                    modifier = Modifier.size(40.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer,
+                ) {}
+            }
+
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "${FormatFileSizeCompat.formatFileSize(app, stat.uplinkTotal, useIEC)} \u2191",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontFamily = FontFamily.Monospace,
+                    text = info?.label ?: "UID ${stat.uid}",
+                    style = MaterialTheme.typography.titleSmall,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+                val pkg = info?.packageName
                 Text(
-                    text = "${FormatFileSizeCompat.formatFileSize(app, stat.downlinkTotal, useIEC)} \u2193",
+                    text = if (pkg != null) "$pkg (${stat.uid})" else "UID ${stat.uid}",
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontFamily = FontFamily.Monospace,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
                 )
+
+                val tcp = if (showRates) stat.tcpConnections else stat.tcpConnectionsTotal
+                val udp = if (showRates) stat.udpConnections else stat.udpConnectionsTotal
+                if (tcp > 0 || udp > 0) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.padding(top = 4.dp),
+                    ) {
+                        if (tcp > 0) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.tertiaryContainer,
+                            ) {
+                                Text(
+                                    text = "TCP $tcp",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                )
+                            }
+                        }
+                        if (udp > 0) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.secondaryContainer,
+                            ) {
+                                Text(
+                                    text = "UDP $udp",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                if (showRates) {
+                    Text(
+                        text = "\u2191 ${FormatFileSizeCompat.formatFileSize(app, stat.uplink, useIEC)}/s",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                    )
+                    Text(
+                        text = "\u2193 ${FormatFileSizeCompat.formatFileSize(app, stat.downlink, useIEC)}/s",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                    )
+                } else {
+                    Text(
+                        text = "\u2191 ${FormatFileSizeCompat.formatFileSize(app, stat.uplinkTotal, useIEC)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                    )
+                    Text(
+                        text = "\u2193 ${FormatFileSizeCompat.formatFileSize(app, stat.downlinkTotal, useIEC)}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.tertiary,
+                        fontFamily = FontFamily.Monospace,
+                        maxLines = 1,
+                    )
+                }
             }
         }
     }
