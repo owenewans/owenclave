@@ -205,17 +205,23 @@ fun ConfigurationScreen(
         scope.launch(Dispatchers.IO) {
             try {
                 if (text.startsWith("owenkey://", ignoreCase = true)) {
-                    val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(text.trim())
-                    if (group != null) {
-                        io.nekohasekai.sagernet.database.GroupManager.createGroup(group)
-                        if (group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
-                            val created = SagerDatabase.groupDao.getById(group.id)
+                    val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(text.trim())
+                    if (import != null) {
+                        io.nekohasekai.sagernet.database.GroupManager.createGroup(import.group)
+                        import.profiles.forEach { profile ->
+                            profile.id = 0
+                            profile.groupId = import.group.id
+                            profile.userOrder = SagerDatabase.proxyDao.nextOrder(import.group.id) ?: 1
+                            profile.id = SagerDatabase.proxyDao.addProxy(profile)
+                        }
+                        if (import.group.type == GroupType.SUBSCRIPTION && import.group.subscription?.link?.isNotEmpty() == true) {
+                            val created = SagerDatabase.groupDao.getById(import.group.id)
                             if (created != null) {
                                 io.nekohasekai.sagernet.group.GroupUpdater.executeUpdate(created, true)
                             }
                         }
                         withContext(Dispatchers.Main) {
-                            android.widget.Toast.makeText(context, "Group imported", android.widget.Toast.LENGTH_SHORT).show()
+                            android.widget.Toast.makeText(context, "Group imported with ${import.profiles.size} profiles", android.widget.Toast.LENGTH_SHORT).show()
                         }
                     }
                 } else {

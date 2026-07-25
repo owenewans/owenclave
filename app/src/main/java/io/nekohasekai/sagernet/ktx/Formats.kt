@@ -19,10 +19,15 @@
 
 package io.nekohasekai.sagernet.ktx
 
+import com.esotericsoftware.kryo.io.ByteBufferInput
+import com.esotericsoftware.kryo.io.ByteBufferOutput
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.ProxyGroup
+import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.fmt.AbstractBean
+import io.nekohasekai.sagernet.fmt.KryoConverters
 import io.nekohasekai.sagernet.fmt.Serializable
 import io.nekohasekai.sagernet.fmt.anytls.parseAnyTLS
 import io.nekohasekai.sagernet.fmt.http.parseHttp
@@ -171,43 +176,102 @@ fun parseBackupLines(text: String): List<AbstractBean> {
 }
 
 /**
- * Serialises a [ProxyGroup] (with its subscription) into an `owenkey://` URI
- * suitable for sharing via clipboard, QR code, or deep link.
- *
- * Format: `owenkey://<base64(Parcelable)>`
+ * Serialises a [ProxyGroup] and all its profiles into an `owenkey://` URI.
+ * Uses Kryo directly — NOT Parcelable (which depends on the transient `export` flag).
  */
 fun groupToOwenkeyLink(group: ProxyGroup): String? {
     return try {
-        group.export = true
-        val parcel = android.os.Parcel.obtain()
-        group.writeToParcel(parcel, 0)
-        val data = parcel.marshall()
-        parcel.recycle()
-        group.export = false
-        val encoded = kotlin.io.encoding.Base64.UrlSafe.encode(data)
+        val profiles = SagerDatabase.proxyDao.getByGroup(group.id)
+        val out = java.io.ByteArrayOutputStream()
+        val buf = ByteBufferOutput(out)
+
+        buf.writeString(group.name ?: "")
+        buf.writeInt(group.type)
+        buf.writeInt(group.iconIndex)
+        buf.writeInt(group.order)
+        buf.writeLong(group.frontProxy)
+        buf.writeLong(group.landingProxy)
+
+        if (group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && group.subscription != null) {
+            buf.writeBoolean(true)
+            val subBytes = KryoConverters.serialize(group.subscription!!)
+            buf.writeVarInt(subBytes.size, true)
+            buf.writeBytes(subBytes)
+        } else {
+            buf.writeBoolean(false)
+        }
+
+        buf.writeInt(profiles.size)
+        for (profile in profiles) {
+            buf.writeInt(profile.type)
+            val beanBytes = KryoConverters.serialize(profile.requireBean())
+            buf.writeVarInt(beanBytes.size, true)
+            buf.writeBytes(beanBytes)
+            buf.writeInt(profile.iconIndex)
+        }
+
+        buf.flush()
+        buf.close()
+        val encoded = kotlin.io.encoding.Base64.UrlSafe.encode(out.toByteArray())
         "owenkey://$encoded"
-    } catch (_: Exception) {
+    } catch (e: Exception) {
+        android.util.Log.w("owenkey", "groupToOwenkeyLink failed", e)
         null
     }
 }
 
+data class OwenkeyImport(val group: ProxyGroup, val profiles: List<ProxyEntity>)
+
 /**
- * Parses an `owenkey://` link back into a [ProxyGroup].
- * Returns null if the link is malformed or the data is corrupt.
+ * Parses an `owenkey://` link back into a [ProxyGroup] + its profiles.
  */
-fun parseOwenkeyLink(link: String): ProxyGroup? {
+fun parseOwenkeyLink(link: String): OwenkeyImport? {
     return try {
         val prefix = "owenkey://"
         if (!link.startsWith(prefix, ignoreCase = true)) return null
         val encoded = link.removePrefix(prefix).trim()
         val data = kotlin.io.encoding.Base64.UrlSafe.decode(encoded)
-        val parcel = android.os.Parcel.obtain()
-        parcel.unmarshall(data, 0, data.size)
-        parcel.setDataPosition(0)
-        val group = ProxyGroup.CREATOR.createFromParcel(parcel)
-        parcel.recycle()
-        group
-    } catch (_: Exception) {
+        val input = java.io.ByteArrayInputStream(data)
+        val buf = ByteBufferInput(input)
+
+        val name = buf.readString()
+        val type = buf.readInt()
+        val iconIndex = buf.readInt()
+        val order = buf.readInt()
+        val frontProxy = buf.readLong()
+        val landingProxy = buf.readLong()
+
+        val group = ProxyGroup(
+            name = name,
+            type = type,
+            iconIndex = iconIndex,
+            order = order,
+            frontProxy = frontProxy,
+            landingProxy = landingProxy,
+        )
+
+        if (buf.readBoolean()) {
+            val subLen = buf.readVarInt(true)
+            val subBytes = buf.readBytes(subLen)
+            group.subscription = KryoConverters.subscriptionDeserialize(subBytes)
+        }
+
+        val profileCount = buf.readInt()
+        val profiles = ArrayList<ProxyEntity>()
+        repeat(profileCount) {
+            val pType = buf.readInt()
+            val beanLen = buf.readVarInt(true)
+            val beanBytes = buf.readBytes(beanLen)
+            val pIconIndex = buf.readInt()
+            val entity = ProxyEntity(type = pType, iconIndex = pIconIndex)
+            entity.putByteArray(beanBytes)
+            entity.requireBean().applyDefaultValues()
+            profiles.add(entity)
+        }
+
+        OwenkeyImport(group, profiles)
+    } catch (e: Exception) {
+        android.util.Log.w("owenkey", "parseOwenkeyLink failed", e)
         null
     }
 }

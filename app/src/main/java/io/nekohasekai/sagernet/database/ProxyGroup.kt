@@ -55,8 +55,12 @@ data class ProxyGroup(
             output.writeInt(0)
             output.writeString(name)
             output.writeInt(type)
-            val subscription = subscription!!
-            subscription.serializeForShare(output)
+            if (type == GroupType.SUBSCRIPTION && subscription != null) {
+                output.writeBoolean(true)
+                subscription!!.serializeForShare(output)
+            } else {
+                output.writeBoolean(false)
+            }
         } else {
             output.writeInt(1)
             output.writeLong(id)
@@ -79,9 +83,12 @@ data class ProxyGroup(
             val version = input.readInt()
             name = input.readString()
             type = input.readInt()
-            val subscription = SubscriptionBean()
-            this.subscription = subscription
-            subscription.deserializeFromShare(input)
+            val hasSubscription = input.readBoolean()
+            if (hasSubscription) {
+                val subscription = SubscriptionBean()
+                this.subscription = subscription
+                subscription.deserializeFromShare(input)
+            }
         } else {
             val version = input.readInt()
             id = input.readLong()

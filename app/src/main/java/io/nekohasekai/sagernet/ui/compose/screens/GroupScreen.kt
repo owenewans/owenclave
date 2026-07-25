@@ -186,11 +186,17 @@ fun GroupScreen(
                         scope.launch(Dispatchers.IO) {
                             try {
                                 if (text.startsWith("owenkey://", ignoreCase = true)) {
-                                    val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(text.trim())
-                                    if (group != null) {
-                                        GroupManager.createGroup(group)
-                                        if (group.type == GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
-                                            val created = SagerDatabase.groupDao.getById(group.id)
+                                    val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(text.trim())
+                                    if (import != null) {
+                                GroupManager.createGroup(import.group)
+                                import.profiles.forEach { profile ->
+                                    profile.id = 0
+                                    profile.groupId = import.group.id
+                                    profile.userOrder = SagerDatabase.proxyDao.nextOrder(import.group.id) ?: 1
+                                    profile.id = SagerDatabase.proxyDao.addProxy(profile)
+                                }
+                                        if (import.group.type == GroupType.SUBSCRIPTION && import.group.subscription?.link?.isNotEmpty() == true) {
+                                            val created = SagerDatabase.groupDao.getById(import.group.id)
                                             if (created != null) {
                                                 GroupUpdater.executeUpdate(created, true)
                                             }
@@ -307,11 +313,17 @@ fun GroupScreen(
                         quickAddUrl = ""
                         scope.launch(Dispatchers.IO) {
                             if (url.startsWith("owenkey://", ignoreCase = true)) {
-                                val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(url)
-                                if (group != null) {
-                                    GroupManager.createGroup(group)
-                                    if (group.type == GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
-                                        val created = SagerDatabase.groupDao.getById(group.id)
+                                val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(url)
+                                if (import != null) {
+                                    GroupManager.createGroup(import.group)
+                                    import.profiles.forEach { profile ->
+                                        profile.id = 0
+                                        profile.groupId = import.group.id
+                                        profile.userOrder = SagerDatabase.proxyDao.nextOrder(import.group.id) ?: 1
+                                        profile.id = SagerDatabase.proxyDao.addProxy(profile)
+                                    }
+                                    if (import.group.type == GroupType.SUBSCRIPTION && import.group.subscription?.link?.isNotEmpty() == true) {
+                                        val created = SagerDatabase.groupDao.getById(import.group.id)
                                         if (created != null) {
                                             GroupUpdater.executeUpdate(created, true)
                                         }

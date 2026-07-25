@@ -173,6 +173,14 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
 
         if (intent?.action == Intent.ACTION_VIEW) {
             handleViewIntent(intent)
+            intent = null
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (intent.action == Intent.ACTION_VIEW) {
+            handleViewIntent(intent)
         }
     }
 
@@ -182,11 +190,17 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
         io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
                 if (link.startsWith("owenkey://", ignoreCase = true)) {
-                    val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(link)
-                    if (group != null) {
-                        io.nekohasekai.sagernet.database.GroupManager.createGroup(group)
-                        if (group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
-                            val created = io.nekohasekai.sagernet.database.SagerDatabase.groupDao.getById(group.id)
+                    val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(link)
+                    if (import != null) {
+                        io.nekohasekai.sagernet.database.GroupManager.createGroup(import.group)
+                        import.profiles.forEach { profile ->
+                            profile.id = 0
+                            profile.groupId = import.group.id
+                            profile.userOrder = io.nekohasekai.sagernet.database.SagerDatabase.proxyDao.nextOrder(import.group.id) ?: 1
+                            profile.id = io.nekohasekai.sagernet.database.SagerDatabase.proxyDao.addProxy(profile)
+                        }
+                        if (import.group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && import.group.subscription?.link?.isNotEmpty() == true) {
+                            val created = io.nekohasekai.sagernet.database.SagerDatabase.groupDao.getById(import.group.id)
                             if (created != null) {
                                 io.nekohasekai.sagernet.group.GroupUpdater.executeUpdate(created, true)
                             }
