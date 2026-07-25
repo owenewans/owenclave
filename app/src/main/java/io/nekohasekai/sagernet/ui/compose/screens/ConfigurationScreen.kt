@@ -52,8 +52,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.aidl.TrafficStats
+import io.nekohasekai.sagernet.GroupOrder
+import io.nekohasekai.sagernet.GroupType
 import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.GroupManager
 import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.database.SagerDatabase
@@ -89,6 +92,19 @@ fun ConfigurationScreen(
     val reloadAccess = remember { kotlinx.coroutines.sync.Mutex() }
     var batchTestJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
 
+    fun loadProfiles() {
+        val groupId = DataStore.currentGroupId()
+        val raw = SagerDatabase.proxyDao.getByGroup(groupId)
+        val group = SagerDatabase.groupDao.getById(groupId)
+        val sorted = when (group?.order) {
+            GroupOrder.BY_NAME -> raw.sortedBy { it.displayName() }
+            GroupOrder.BY_DELAY -> raw.sortedBy { if (it.status == 1) it.ping else 114514 }
+            else -> raw
+        }
+        profiles.clear()
+        profiles.addAll(sorted)
+    }
+
     val listener = remember {
         object : ProfileManager.Listener {
             override suspend fun onAdd(profile: ProxyEntity) {
@@ -99,6 +115,12 @@ fun ConfigurationScreen(
                 withContext(Dispatchers.Main) {
                     val index = profiles.indexOfFirst { it.id == profile.id }
                     if (index >= 0) profiles[index] = profile
+                    val group = SagerDatabase.groupDao.getById(DataStore.currentGroupId())
+                    if (group?.order == GroupOrder.BY_DELAY) {
+                        val sorted = profiles.sortedBy { if (it.status == 1) it.ping else 114514 }
+                        profiles.clear()
+                        profiles.addAll(sorted)
+                    }
                 }
             }
             override suspend fun onRemoved(groupId: Long, profileId: Long) {
@@ -110,9 +132,7 @@ fun ConfigurationScreen(
     }
 
     DisposableEffect(Unit) {
-        val groupId = DataStore.currentGroupId()
-        profiles.clear()
-        profiles.addAll(SagerDatabase.proxyDao.getByGroup(groupId))
+        loadProfiles()
         ProfileManager.addListener(listener)
         onDispose { ProfileManager.removeListener(listener) }
     }
@@ -121,9 +141,7 @@ fun ConfigurationScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
             if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                val groupId = DataStore.currentGroupId()
-                profiles.clear()
-                profiles.addAll(SagerDatabase.proxyDao.getByGroup(groupId))
+                loadProfiles()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -186,12 +204,40 @@ fun ConfigurationScreen(
         val text = clipboard.primaryClip?.getItemAt(0)?.text?.toString() ?: return
         scope.launch(Dispatchers.IO) {
             try {
-                val beans = parseShareLinks(text)
-                if (beans.isNotEmpty()) {
-                    val groupId = DataStore.selectedGroupForImport()
-                    ProfileManager.createProfile(groupId, beans[0])
+                if (text.startsWith("owenkey://", ignoreCase = true)) {
+                    val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(text.trim())
+                    if (group != null) {
+                        io.nekohasekai.sagernet.database.GroupManager.createGroup(group)
+                        if (group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
+                            val created = SagerDatabase.groupDao.getById(group.id)
+                            if (created != null) {
+                                io.nekohasekai.sagernet.group.GroupUpdater.executeUpdate(created, true)
+                            }
+                        }
+                        withContext(Dispatchers.Main) {
+                            android.widget.Toast.makeText(context, "Group imported", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                } else {
+                    val beans = parseShareLinks(text)
+                    if (beans.isNotEmpty()) {
+                        val groupId = DataStore.selectedGroupForImport()
+                        beans.forEach { bean ->
+                            ProfileManager.createProfile(groupId, bean)
+                        }
+                        withContext(Dispatchers.Main) {
+                            android.widget.Toast.makeText(context, "Imported ${beans.size} profile(s)", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            android.widget.Toast.makeText(context, "No valid share links found", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    android.widget.Toast.makeText(context, e.message ?: "Import failed", android.widget.Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

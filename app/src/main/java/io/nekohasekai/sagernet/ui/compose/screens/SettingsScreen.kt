@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Cable
 import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.Dashboard
 import androidx.compose.material.icons.filled.Dns
-import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Lan
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Public
@@ -81,8 +80,6 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     var showThemePicker by remember { mutableStateOf(false) }
-    var showLogoPicker by remember { mutableStateOf(false) }
-    var currentLogo by remember { mutableStateOf(DataStore.appLogo) }
     var showNightModePicker by remember { mutableStateOf(false) }
     var showServiceModePicker by remember { mutableStateOf(false) }
     var showTunPicker by remember { mutableStateOf(false) }
@@ -213,18 +210,6 @@ fun SettingsScreen(
             selected = DataStore.appTheme,
             onSelect = { DataStore.appTheme = it; onThemeChanged(it); showThemePicker = false },
             onDismiss = { showThemePicker = false },
-        )
-    }
-
-    if (showLogoPicker) {
-        LogoPickerDialog(
-            selected = currentLogo,
-            onSelect = {
-                DataStore.appLogo = it
-                currentLogo = it
-                showLogoPicker = false
-            },
-            onDismiss = { showLogoPicker = false },
         )
     }
 
@@ -512,6 +497,13 @@ fun SettingsScreen(
         ) {
             Column(modifier = Modifier.padding(bottom = io.nekohasekai.sagernet.ui.compose.components.StatsBarBottomInset)) {
                 // ── General ──
+                Text(
+                    text = "sponsored by openlibrecommunity",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 4.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
                 PreferenceHeader("General")
                 PreferenceGroup {
                     item { shape ->
@@ -529,15 +521,6 @@ fun SettingsScreen(
                             subtitle = "Choose app color theme",
                             icon = Icons.Filled.Palette,
                             onClick = { showThemePicker = true },
-                            shape = shape,
-                        )
-                    }
-                    item { shape ->
-                        PreferenceItem(
-                            title = "App Logo",
-                            subtitle = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.fromId(currentLogo).label,
-                            icon = Icons.Filled.Face,
-                            onClick = { showLogoPicker = true },
                             shape = shape,
                         )
                     }
@@ -1479,90 +1462,6 @@ fun <T> SingleChoiceDialog(
             }
         }
         Spacer(Modifier.height(12.dp))
-        androidx.compose.foundation.layout.Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End,
-        ) {
-            TextButton(onClick = onDismiss) { Text("Close") }
-        }
-    }
-}
-
-@Composable
-private fun LogoPickerDialog(
-    selected: Int,
-    onSelect: (Int) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = onDismiss) {
-        Text(
-            text = "App Logo",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(bottom = 4.dp),
-        )
-        Text(
-            text = "Pick a logo shape",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 16.dp),
-        )
-        val styles = io.nekohasekai.sagernet.ui.compose.components.AppLogoStyle.entries
-        Column(
-            modifier = Modifier
-                .heightIn(max = 440.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
-        ) {
-            styles.chunked(3).forEach { rowStyles ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp),
-                ) {
-                    rowStyles.forEach { style ->
-                        val isSelected = style.id == selected
-                        androidx.compose.material3.Surface(
-                            onClick = { onSelect(style.id) },
-                            shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
-                            color = if (isSelected)
-                                MaterialTheme.colorScheme.primaryContainer
-                            else
-                                MaterialTheme.colorScheme.surfaceContainerHigh,
-                            border = if (isSelected)
-                                androidx.compose.foundation.BorderStroke(
-                                    2.dp, MaterialTheme.colorScheme.primary,
-                                )
-                            else null,
-                            modifier = Modifier.weight(1f),
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(vertical = 14.dp),
-                                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-                            ) {
-                                io.nekohasekai.sagernet.ui.compose.components.AppLogo(
-                                    style = style,
-                                    size = 56.dp,
-                                )
-                                Spacer(Modifier.height(8.dp))
-                                Text(
-                                    text = style.label,
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = if (isSelected)
-                                        MaterialTheme.colorScheme.onPrimaryContainer
-                                    else
-                                        MaterialTheme.colorScheme.onSurface,
-                                )
-                            }
-                        }
-                    }
-                    // pad incomplete rows so cells keep equal width
-                    repeat(3 - rowStyles.size) {
-                        Spacer(Modifier.weight(1f))
-                    }
-                }
-            }
-        }
-        Spacer(Modifier.height(16.dp))
         androidx.compose.foundation.layout.Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End,

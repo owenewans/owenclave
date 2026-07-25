@@ -129,9 +129,10 @@ fun RouteScreen(
                             enabled = rule.enabled,
                             modifier = Modifier.animateItem(),
                             onEnabledChange = { enabled ->
+                                val updated = rule.copy(enabled = enabled)
+                                rules = rules.map { if (it.id == rule.id) updated else it }
                                 scope.launch(Dispatchers.IO) {
-                                    rule.enabled = enabled
-                                    SagerDatabase.rulesDao.updateRule(rule)
+                                    SagerDatabase.rulesDao.updateRule(updated)
                                 }
                             },
                             onEdit = {

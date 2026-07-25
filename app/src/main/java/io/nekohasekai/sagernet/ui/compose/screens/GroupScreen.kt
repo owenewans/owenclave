@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Link
@@ -177,10 +178,50 @@ fun GroupScreen(
             val addOptions = listOf(
                 "New group" to { showAddPicker = false; DataStore.groupName = ""; DataStore.groupType = GroupType.BASIC; context.startActivity(Intent(context, ComposeGroupSettingsActivity::class.java)) },
                 "Add subscription from URL" to { showAddPicker = false; showQuickAdd = true },
+                "Import from clipboard" to {
+                    showAddPicker = false
+                    val clip = (context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager).primaryClip
+                    if (clip != null && clip.itemCount > 0) {
+                        val text = clip.getItemAt(0).coerceToText(context).toString()
+                        scope.launch(Dispatchers.IO) {
+                            try {
+                                if (text.startsWith("owenkey://", ignoreCase = true)) {
+                                    val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(text.trim())
+                                    if (group != null) {
+                                        GroupManager.createGroup(group)
+                                        if (group.type == GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
+                                            val created = SagerDatabase.groupDao.getById(group.id)
+                                            if (created != null) {
+                                                GroupUpdater.executeUpdate(created, true)
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(text)
+                                    if (beans.isNotEmpty()) {
+                                        val groupId = DataStore.selectedGroupForImport()
+                                        beans.forEach { bean ->
+                                            io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, bean)
+                                        }
+                                    } else {
+                                        withContext(Dispatchers.Main) {
+                                            android.widget.Toast.makeText(context, "No valid share links found in clipboard", android.widget.Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                }
+                            } catch (e: Exception) {
+                                withContext(Dispatchers.Main) {
+                                    android.widget.Toast.makeText(context, e.message ?: "Import failed", android.widget.Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            withContext(Dispatchers.Main) { reloadGroups() }
+                        }
+                    }
+                },
             )
             Column(
                 modifier = Modifier
-                    .heightIn(max = 420.dp)
+                    .heightIn(max = 480.dp)
                     .clip(RoundedCornerShape(24.dp)),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
@@ -197,7 +238,7 @@ fun GroupScreen(
                             horizontalArrangement = Arrangement.spacedBy(14.dp),
                         ) {
                             ShapedIconStatic(
-                                icon = if (index == 0) Icons.Filled.Folder else Icons.Filled.Link,
+                                icon = if (index == 0) Icons.Filled.Folder else if (index == 1) Icons.Filled.Link else Icons.Filled.ContentPaste,
                                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                                 size = 40.dp,
@@ -223,6 +264,18 @@ fun GroupScreen(
     }
 
     if (showQuickAdd) {
+        val clipboardManager = androidx.compose.ui.platform.LocalClipboardManager.current
+        androidx.compose.runtime.LaunchedEffect(showQuickAdd) {
+            if (showQuickAdd && quickAddUrl.isBlank()) {
+                val clip = clipboardManager.getText()
+                if (clip != null) {
+                    val text = clip.text
+                    if (text != null && (text.startsWith("https://", ignoreCase = true) || text.startsWith("http://", ignoreCase = true) || text.startsWith("owenkey://", ignoreCase = true))) {
+                        quickAddUrl = text.trim()
+                    }
+                }
+            }
+        }
         io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { showQuickAdd = false; quickAddUrl = "" }) {
             Text(
                 text = "Add subscription",
@@ -231,7 +284,7 @@ fun GroupScreen(
                 modifier = Modifier.padding(bottom = 4.dp),
             )
             Text(
-                text = "Paste subscription link to download and add automatically",
+                text = "Paste subscription link or owenkey:// link to import",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -253,18 +306,37 @@ fun GroupScreen(
                         showQuickAdd = false
                         quickAddUrl = ""
                         scope.launch(Dispatchers.IO) {
-                            val group = ProxyGroup(
-                                name = "Subscription",
-                                type = GroupType.SUBSCRIPTION,
-                            )
-                            group.subscription = SubscriptionBean().applyDefaultValues().apply {
-                                link = url
-                                type = SubscriptionType.RAW
-                            }
-                            GroupManager.createGroup(group)
-                            val created = SagerDatabase.groupDao.getById(group.id)
-                            if (created != null) {
-                                GroupUpdater.executeUpdate(created, true)
+                            if (url.startsWith("owenkey://", ignoreCase = true)) {
+                                val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(url)
+                                if (group != null) {
+                                    GroupManager.createGroup(group)
+                                    if (group.type == GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
+                                        val created = SagerDatabase.groupDao.getById(group.id)
+                                        if (created != null) {
+                                            GroupUpdater.executeUpdate(created, true)
+                                        }
+                                    }
+                                }
+                            } else {
+                                try {
+                                    val group = ProxyGroup(
+                                        name = "Subscription",
+                                        type = GroupType.SUBSCRIPTION,
+                                    )
+                                    group.subscription = SubscriptionBean().applyDefaultValues().apply {
+                                        link = url
+                                        type = SubscriptionType.RAW
+                                    }
+                                    GroupManager.createGroup(group)
+                                    val created = SagerDatabase.groupDao.getById(group.id)
+                                    if (created != null) {
+                                        GroupUpdater.executeUpdate(created, true)
+                                    }
+                                } catch (e: Exception) {
+                                    withContext(Dispatchers.Main) {
+                                        android.widget.Toast.makeText(context, e.message ?: "Import failed", android.widget.Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
                             withContext(Dispatchers.Main) { reloadGroups() }
                         }
@@ -373,6 +445,24 @@ fun GroupScreen(
                                     )
                                 }
                                 DropdownMenuItem(
+                                    text = { Text("Export group to clipboard") },
+                                    onClick = {
+                                        menuScope.dismiss()
+                                        scope.launch(Dispatchers.IO) {
+                                            val g = SagerDatabase.groupDao.getById(group.id)
+                                            if (g != null) {
+                                                val link = io.nekohasekai.sagernet.ktx.groupToOwenkeyLink(g)
+                                                if (link != null) {
+                                                    withContext(Dispatchers.Main) {
+                                                        SagerNet.trySetPrimaryClip(link)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    leadingIcon = { Icon(Icons.Filled.Link, contentDescription = null) },
+                                )
+                                DropdownMenuItem(
                                     text = { Text("Export profiles to clipboard") },
                                     onClick = {
                                         menuScope.dismiss()
@@ -386,6 +476,7 @@ fun GroupScreen(
                                             }
                                         }
                                     },
+                                    leadingIcon = { Icon(Icons.Filled.Link, contentDescription = null) },
                                 )
                                 DropdownMenuItem(
                                     text = { Text("Clear profiles") },
@@ -393,6 +484,7 @@ fun GroupScreen(
                                         menuScope.dismiss()
                                         clearGroup = group
                                     },
+                                    leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
                                 )
                                 DropdownMenuItem(
                                     text = { Text("Delete group") },

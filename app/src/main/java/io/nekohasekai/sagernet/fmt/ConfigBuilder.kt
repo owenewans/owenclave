@@ -258,7 +258,13 @@ fun buildV2RayConfig(
 
     val routeMode = DataStore.routeMode
     val proxies = proxy.resolveChain()
-    val extraRules = if (forTest || routeMode != RouteMode.RULE) listOf() else SagerDatabase.rulesDao.enabledRules()
+    val extraRules = if (forTest || routeMode != RouteMode.RULE) listOf() else SagerDatabase.rulesDao.enabledRules().filter { rule ->
+        rule.domains.isNotEmpty() || rule.ip.isNotEmpty() || rule.port.isNotEmpty() ||
+        rule.sourcePort.isNotEmpty() || rule.network.isNotEmpty() || rule.source.isNotEmpty() ||
+        rule.protocol.isNotEmpty() || rule.attrs.isNotEmpty() ||
+        rule.packages.isNotEmpty() || rule.customPackageNames.isNotEmpty() ||
+        rule.ssid.isNotEmpty() || rule.networkType.isNotEmpty()
+    }
     val extraProxies = if (forTest) mapOf() else SagerDatabase.proxyDao.getEntities(extraRules.mapNotNull { rule ->
         rule.outbound.takeIf { it > 0 && it != proxy.id }
     }.toHashSet().toList()).associate {

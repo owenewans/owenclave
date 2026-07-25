@@ -47,6 +47,7 @@ import io.nekohasekai.sagernet.ui.compose.screens.AppItem
 import io.nekohasekai.sagernet.ui.compose.screens.AppListScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ConfigEditScreen
 import io.nekohasekai.sagernet.ui.compose.screens.GroupSettingsScreen
+import io.nekohasekai.sagernet.ui.compose.screens.GroupSettingsData
 import io.nekohasekai.sagernet.ui.compose.screens.SubscriptionSettings
 import io.nekohasekai.sagernet.ui.compose.screens.ProbeCertScreen
 import io.nekohasekai.sagernet.ui.compose.screens.ProfileFieldState
@@ -191,6 +192,9 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
         var initialName = ""
         var initialType = GroupType.BASIC
         var initialIconIndex = 0
+        var initialOrder = 0
+        var initialFrontProxy = -1L
+        var initialLandingProxy = -1L
         var initialSubscription = SubscriptionSettings()
 
         if (editingGroupId > 0L) {
@@ -200,6 +204,9 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                     initialName = group.name ?: ""
                     initialType = group.type
                     initialIconIndex = group.iconIndex
+                    initialOrder = group.order
+                    initialFrontProxy = group.frontProxy
+                    initialLandingProxy = group.landingProxy
                     val sub = group.subscription
                     if (sub != null) {
                         initialSubscription = SubscriptionSettings(
@@ -220,23 +227,29 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                     groupName = initialName,
                     groupType = initialType,
                     initialIconIndex = initialIconIndex,
+                    initialOrder = initialOrder,
+                    initialFrontProxy = initialFrontProxy,
+                    initialLandingProxy = initialLandingProxy,
                     initialSubscription = initialSubscription,
                     onBack = { finish() },
-                    onSave = { newName, newType, newIconIndex, subSettings ->
+                    onSave = { data ->
                         runBlocking {
                             if (editingGroupId > 0L) {
                                 val group = SagerDatabase.groupDao.getById(editingGroupId)
                                 if (group != null) {
-                                    group.name = newName.ifEmpty { if (newType == GroupType.SUBSCRIPTION) "Subscription" else "Group" }
-                                    group.type = newType
-                                    group.iconIndex = newIconIndex
-                                    if (newType == GroupType.SUBSCRIPTION) {
+                                    group.name = data.name.ifEmpty { if (data.type == GroupType.SUBSCRIPTION) "Subscription" else "Group" }
+                                    group.type = data.type
+                                    group.iconIndex = data.iconIndex
+                                    group.order = data.order
+                                    group.frontProxy = data.frontProxy
+                                    group.landingProxy = data.landingProxy
+                                    if (data.type == GroupType.SUBSCRIPTION) {
                                         val sub = group.subscription ?: SubscriptionBean().applyDefaultValues()
-                                        sub.link = subSettings.link
-                                        sub.deduplication = subSettings.deduplication
-                                        sub.updateWhenConnectedOnly = subSettings.updateWhenConnectedOnly
-                                        sub.autoUpdate = subSettings.autoUpdate
-                                        sub.customUserAgent = subSettings.customUserAgent
+                                        sub.link = data.subscription.link
+                                        sub.deduplication = data.subscription.deduplication
+                                        sub.updateWhenConnectedOnly = data.subscription.updateWhenConnectedOnly
+                                        sub.autoUpdate = data.subscription.autoUpdate
+                                        sub.customUserAgent = data.subscription.customUserAgent
                                         group.subscription = sub
                                     } else {
                                         group.subscription = null
@@ -245,21 +258,24 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                                 }
                             } else {
                                 val group = ProxyGroup(
-                                    name = newName.ifEmpty { if (newType == GroupType.SUBSCRIPTION) "Subscription" else "Group" },
-                                    type = newType,
-                                    iconIndex = newIconIndex,
+                                    name = data.name.ifEmpty { if (data.type == GroupType.SUBSCRIPTION) "Subscription" else "Group" },
+                                    type = data.type,
+                                    iconIndex = data.iconIndex,
+                                    order = data.order,
+                                    frontProxy = data.frontProxy,
+                                    landingProxy = data.landingProxy,
                                 )
-                                if (newType == GroupType.SUBSCRIPTION) {
+                                if (data.type == GroupType.SUBSCRIPTION) {
                                     group.subscription = SubscriptionBean().applyDefaultValues().apply {
-                                        link = subSettings.link
-                                        deduplication = subSettings.deduplication
-                                        updateWhenConnectedOnly = subSettings.updateWhenConnectedOnly
-                                        autoUpdate = subSettings.autoUpdate
-                                        customUserAgent = subSettings.customUserAgent
+                                        link = data.subscription.link
+                                        deduplication = data.subscription.deduplication
+                                        updateWhenConnectedOnly = data.subscription.updateWhenConnectedOnly
+                                        autoUpdate = data.subscription.autoUpdate
+                                        customUserAgent = data.subscription.customUserAgent
                                     }
                                 }
                                 GroupManager.createGroup(group)
-                                if (newType == GroupType.SUBSCRIPTION && subSettings.link.isNotEmpty()) {
+                                if (data.type == GroupType.SUBSCRIPTION && data.subscription.link.isNotEmpty()) {
                                     val created = SagerDatabase.groupDao.getById(group.id)
                                     if (created != null) {
                                         GroupUpdater.executeUpdate(created, true)

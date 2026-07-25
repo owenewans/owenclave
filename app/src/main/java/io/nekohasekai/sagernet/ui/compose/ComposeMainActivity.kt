@@ -82,6 +82,8 @@ import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.bg.BaseService
 import io.nekohasekai.sagernet.bg.SagerConnection
+import io.nekohasekai.sagernet.database.GroupManager
+import io.nekohasekai.sagernet.database.ProxyGroup
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProfileManager
 import io.nekohasekai.sagernet.database.ProxyEntity
@@ -179,10 +181,23 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
         val link = uri.toString()
         io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
-                val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(link)
-                if (beans.isNotEmpty()) {
-                    val groupId = io.nekohasekai.sagernet.database.DataStore.selectedGroupForImport()
-                    io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, beans[0])
+                if (link.startsWith("owenkey://", ignoreCase = true)) {
+                    val group = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(link)
+                    if (group != null) {
+                        io.nekohasekai.sagernet.database.GroupManager.createGroup(group)
+                        if (group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && group.subscription?.link?.isNotEmpty() == true) {
+                            val created = io.nekohasekai.sagernet.database.SagerDatabase.groupDao.getById(group.id)
+                            if (created != null) {
+                                io.nekohasekai.sagernet.group.GroupUpdater.executeUpdate(created, true)
+                            }
+                        }
+                    }
+                } else {
+                    val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(link)
+                    if (beans.isNotEmpty()) {
+                        val groupId = io.nekohasekai.sagernet.database.DataStore.selectedGroupForImport()
+                        io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, beans[0])
+                    }
                 }
             } catch (_: Exception) {
             }
@@ -219,6 +234,36 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     }
 
     override fun onBinderDied() {
+    }
+
+    override fun onStart() {
+        super.onStart()
+        GroupManager.userInterface = object : GroupManager.Interface {
+            override suspend fun confirm(message: String): Boolean = true
+            override suspend fun onUpdateSuccess(
+                group: ProxyGroup, changed: Int, added: List<String>,
+                updated: Map<String, String>, deleted: List<String>, duplicate: List<String>,
+            ) {
+                io.nekohasekai.sagernet.ktx.runOnMainDispatcher {
+                    val msg = if (changed == 0) {
+                        getString(io.nekohasekai.sagernet.R.string.group_no_difference, group.displayName())
+                    } else {
+                        "Updated ${group.displayName()}: $changed changed"
+                    }
+                    android.widget.Toast.makeText(this@ComposeMainActivity, msg, android.widget.Toast.LENGTH_SHORT).show()
+                }
+            }
+            override suspend fun onUpdateFailure(group: ProxyGroup, message: String) {
+                io.nekohasekai.sagernet.ktx.runOnMainDispatcher {
+                    android.widget.Toast.makeText(this@ComposeMainActivity, message, android.widget.Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        GroupManager.userInterface = null
+        super.onStop()
     }
 
     override fun routeAlert(type: Int, routeName: String) {

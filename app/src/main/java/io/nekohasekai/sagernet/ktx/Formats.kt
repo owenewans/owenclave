@@ -20,6 +20,8 @@
 package io.nekohasekai.sagernet.ktx
 
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.database.ProxyGroup
+import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.fmt.Serializable
 import io.nekohasekai.sagernet.fmt.anytls.parseAnyTLS
@@ -166,6 +168,48 @@ fun parseBackupLines(text: String): List<AbstractBean> {
         }
     }
     return entities
+}
+
+/**
+ * Serialises a [ProxyGroup] (with its subscription) into an `owenkey://` URI
+ * suitable for sharing via clipboard, QR code, or deep link.
+ *
+ * Format: `owenkey://<base64(Parcelable)>`
+ */
+fun groupToOwenkeyLink(group: ProxyGroup): String? {
+    return try {
+        group.export = true
+        val parcel = android.os.Parcel.obtain()
+        group.writeToParcel(parcel, 0)
+        val data = parcel.marshall()
+        parcel.recycle()
+        group.export = false
+        val encoded = kotlin.io.encoding.Base64.UrlSafe.encode(data)
+        "owenkey://$encoded"
+    } catch (_: Exception) {
+        null
+    }
+}
+
+/**
+ * Parses an `owenkey://` link back into a [ProxyGroup].
+ * Returns null if the link is malformed or the data is corrupt.
+ */
+fun parseOwenkeyLink(link: String): ProxyGroup? {
+    return try {
+        val prefix = "owenkey://"
+        if (!link.startsWith(prefix, ignoreCase = true)) return null
+        val encoded = link.removePrefix(prefix).trim()
+        val data = kotlin.io.encoding.Base64.UrlSafe.decode(encoded)
+        val parcel = android.os.Parcel.obtain()
+        parcel.unmarshall(data, 0, data.size)
+        parcel.setDataPosition(0)
+        val group = ProxyGroup.CREATOR.createFromParcel(parcel)
+        parcel.recycle()
+        group
+    } catch (_: Exception) {
+        null
+    }
 }
 
 fun <T : Serializable> T.applyDefaultValues(): T {
