@@ -88,6 +88,8 @@ data class ProxyEntity(
     var rx: Long = 0L,
     var status: Int = 0,
     var ping: Int = 0,
+    @androidx.room.ColumnInfo(defaultValue = "0")
+    var connectedTime: Long = 0L,
     var uuid: String = "",
     var error: String? = null,
     var socksBean: SOCKSBean? = null,
@@ -620,6 +622,9 @@ data class ProxyEntity(
     """
         )
         fun updateTraffic(id: Long, tx: Long?, rx: Long?): Int
+
+        @Query("UPDATE proxy_entities SET connectedTime = :time WHERE id = :id")
+        fun updateConnectedTime(id: Long, time: Long): Int
     }
 
     override fun describeContents(): Int {

@@ -85,6 +85,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var selectedProxy by configurationStore.long(Key.PROFILE_ID)
     var currentProfile by configurationStore.long(Key.PROFILE_CURRENT)
     var startedProfile by configurationStore.long(Key.PROFILE_STARTED)
+    var connectionStart by configurationStore.long(Key.CONNECTION_START)
 
     var selectedGroup by configurationStore.long(Key.PROFILE_GROUP) {
         SagerNet.currentProfile?.groupId ?: 0L

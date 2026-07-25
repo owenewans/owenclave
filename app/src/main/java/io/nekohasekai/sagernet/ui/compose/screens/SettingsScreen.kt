@@ -572,13 +572,6 @@ fun SettingsScreen(
         ) {
             Column(modifier = Modifier.padding(bottom = io.nekohasekai.sagernet.ui.compose.components.StatsBarBottomInset)) {
                 // ── General ──
-                Text(
-                    text = "sponsored by openlibrecommunity",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 4.dp),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                )
                 PreferenceHeader("General")
                 PreferenceGroup {
                     item { shape ->
@@ -1537,6 +1530,14 @@ fun SettingsScreen(
                         )
                     }
                 }
+
+                Text(
+                    text = "sponsored by openlibrecommunity",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 16.dp),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                )
             }
         }
     }

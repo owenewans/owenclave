@@ -352,89 +352,99 @@ fun ConfigurationScreen(
                             }
                         }
                         items(profiles, key = { "${it.id}_${it.displayName()}" }) { entity ->
-                        ProfileCard(
-                            entity = entity,
-                            selected = entity.id == selectedProfileId,
-                            connected = entity.id == selectedProfileId && serviceConnected,
-                            pinging = entity.id in pingingIds,
-                            modifier = Modifier.animateItem(),
-                            onClick = {
-                                val entity = entity
-                                io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
-                                    val update = selectedProfileId != entity.id
-                                    if (!update) return@runOnDefaultDispatcher
-                                    DataStore.selectedProxy = entity.id
-                                    kotlinx.coroutines.withContext(Dispatchers.Main) {
-                                        selectedProfileId = entity.id
-                                    }
-                                    if (serviceRunning && reloadAccess.tryLock()) {
-                                        try {
-                                            SagerNet.reloadService()
-                                        } finally {
-                                            reloadAccess.unlock()
+                            ProfileCard(
+                                entity = entity,
+                                selected = entity.id == selectedProfileId,
+                                connected = entity.id == selectedProfileId && serviceConnected,
+                                connectionStart = if (entity.id == selectedProfileId && serviceConnected) DataStore.connectionStart else 0L,
+                                pinging = entity.id in pingingIds,
+                                modifier = Modifier.animateItem(),
+                                onClick = {
+                                    val entity = entity
+                                    io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
+                                        val update = selectedProfileId != entity.id
+                                        if (!update) return@runOnDefaultDispatcher
+                                        DataStore.selectedProxy = entity.id
+                                        kotlinx.coroutines.withContext(Dispatchers.Main) {
+                                            selectedProfileId = entity.id
+                                        }
+                                        if (serviceRunning && reloadAccess.tryLock()) {
+                                            try {
+                                                SagerNet.reloadService()
+                                            } finally {
+                                                reloadAccess.unlock()
+                                            }
                                         }
                                     }
-                                }
-                            },
-                            onEdit = {
-                                context.startActivity(
-                                    Intent(context, ComposeProfileSettingsActivity::class.java).apply {
-                                        putExtra(ComposeProfileSettingsActivity.EXTRA_PROFILE_ID, entity.id)
-                                        putExtra(ComposeProfileSettingsActivity.EXTRA_PROFILE_TYPE, entity.type)
+                                },
+                                onEdit = {
+                                    context.startActivity(
+                                        Intent(context, ComposeProfileSettingsActivity::class.java).apply {
+                                            putExtra(ComposeProfileSettingsActivity.EXTRA_PROFILE_ID, entity.id)
+                                            putExtra(ComposeProfileSettingsActivity.EXTRA_PROFILE_TYPE, entity.type)
+                                        }
+                                    )
+                                },
+                                onShare = if (entity.hasShareLink()) {
+                                    {
+                                        scope.launch(Dispatchers.IO) {
+                                            val link = entity.toLink()
+                                            if (link != null) {
+                                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                                    type = "text/plain"
+                                                    putExtra(Intent.EXTRA_TEXT, link)
+                                                }
+                                                withContext(Dispatchers.Main) {
+                                                    context.startActivity(Intent.createChooser(shareIntent, "Share"))
+                                                }
+                                            }
+                                        }
                                     }
-                                )
-                            },
-                            onShare = if (entity.hasShareLink()) {
-                                {
+                                } else null,
+                                onDelete = {
                                     scope.launch(Dispatchers.IO) {
-                                        val link = entity.toLink()
-                                        if (link != null) {
-                                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                                type = "text/plain"
-                                                putExtra(Intent.EXTRA_TEXT, link)
-                                            }
-                                            withContext(Dispatchers.Main) {
-                                                context.startActivity(Intent.createChooser(shareIntent, "Share"))
-                                            }
+                                        val groupId = DataStore.currentGroupId()
+                                        ProfileManager.deleteProfile(groupId, entity.id)
+                                    }
+                                },
+                                onPing = {
+                                    scope.launch(Dispatchers.IO) {
+                                        pingingIds = pingingIds + entity.id
+                                        try {
+                                            val link = DataStore.connectionTestURL
+                                            val timeout = DataStore.connectionTestTimeout
+                                            val instance = io.nekohasekai.sagernet.bg.test.V2RayTestInstance(
+                                                entity, link, timeout
+                                            )
+                                            val result = instance.use { it.doTest() }
+                                            entity.ping = result
+                                            entity.status = 1
+                                            entity.error = null
+                                            ProfileManager.updateProfile(entity)
+                                        } catch (e: Exception) {
+                                            entity.ping = -1
+                                            entity.status = 3
+                                            entity.error = e.message
+                                            ProfileManager.updateProfile(entity)
+                                        } finally {
+                                            pingingIds = pingingIds - entity.id
                                         }
                                     }
-                                }
-                            } else null,
-                            onDelete = {
-                                scope.launch(Dispatchers.IO) {
-                                    val groupId = DataStore.currentGroupId()
-                                    ProfileManager.deleteProfile(groupId, entity.id)
-                                }
-                            },
-                            onPing = {
-                                scope.launch(Dispatchers.IO) {
-                                    pingingIds = pingingIds + entity.id
-                                    try {
-                                        val link = DataStore.connectionTestURL
-                                        val timeout = DataStore.connectionTestTimeout
-                                        val instance = io.nekohasekai.sagernet.bg.test.V2RayTestInstance(
-                                            entity, link, timeout
-                                        )
-                                        val result = instance.use { it.doTest() }
-                                        entity.ping = result
-                                        entity.status = 1
-                                        entity.error = null
-                                        ProfileManager.updateProfile(entity)
-                                    } catch (e: Exception) {
-                                        entity.ping = -1
-                                        entity.status = 3
-                                        entity.error = e.message
-                                        ProfileManager.updateProfile(entity)
-                                    } finally {
-                                        pingingIds = pingingIds - entity.id
-                                    }
-                                }
-                            },
-                        )
+                                },
+                            )
+                        }
+                        item(key = "__sponsored__") {
+                            Text(
+                                text = "sponsored by openlibrecommunity",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
+                                modifier = Modifier.fillMaxWidth().padding(top = 12.dp, bottom = 8.dp),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            )
+                        }
                     }
                 }
             }
-        }
     }
 }
 

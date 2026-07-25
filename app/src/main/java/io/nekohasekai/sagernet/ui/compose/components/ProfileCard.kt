@@ -65,6 +65,7 @@ fun ProfileCard(
     onLongClick: (() -> Unit)? = null,
     pinging: Boolean = false,
     connected: Boolean = false,
+    connectionStart: Long = 0L,
     modifier: Modifier = Modifier,
 ) {
     val containerColor by animateColorAsState(
@@ -96,6 +97,16 @@ fun ProfileCard(
     )
 
     var showMenu by remember { mutableStateOf(false) }
+
+    var now by remember { mutableStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(connected, connectionStart) {
+        if (connected && connectionStart > 0) {
+            while (true) {
+                now = System.currentTimeMillis()
+                kotlinx.coroutines.delay(1000)
+            }
+        }
+    }
 
     // Distinctive per-profile MaterialShape derived from the profile name.
     val seedShape = remember(entity.displayName()) { shapeForSeed(entity.displayName()) }
@@ -202,6 +213,29 @@ fun ProfileCard(
                             color = onContainerColor.copy(alpha = 0.6f),
                         )
                     }
+                    if (connected && connectionStart > 0) {
+                        Text(
+                            text = "·",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = onContainerColor.copy(alpha = 0.4f),
+                        )
+                        Text(
+                            text = formatDuration(now - connectionStart),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = onContainerColor.copy(alpha = 0.7f),
+                        )
+                    } else if (entity.connectedTime > 0) {
+                        Text(
+                            text = "·",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = onContainerColor.copy(alpha = 0.4f),
+                        )
+                        Text(
+                            text = formatTotalTime(entity.connectedTime),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = onContainerColor.copy(alpha = 0.5f),
+                        )
+                    }
                     if (pinging) {
                         CircularWavyProgressIndicator(
                             modifier = Modifier.size(12.dp),
@@ -283,5 +317,24 @@ private fun formatTraffic(tx: Long, rx: Long): String {
         total < 1024 * 1024 -> "%.1fKB".format(total / 1024.0)
         total < 1024 * 1024 * 1024 -> "%.1fMB".format(total / (1024.0 * 1024))
         else -> "%.2fGB".format(total / (1024.0 * 1024 * 1024))
+    }
+}
+
+private fun formatDuration(ms: Long): String {
+    val s = ms / 1000
+    return when {
+        s < 60 -> "${s}s"
+        s < 3600 -> "${s / 60}m ${s % 60}s"
+        s < 86400 -> "${s / 3600}h ${s % 3600 / 60}m"
+        else -> "${s / 86400}d ${s % 86400 / 3600}h"
+    }
+}
+
+private fun formatTotalTime(s: Long): String {
+    return when {
+        s < 60 -> "${s}s"
+        s < 3600 -> "${s / 60}m"
+        s < 86400 -> "${s / 3600}h"
+        else -> "${s / 86400}d ${s % 86400 / 3600}h"
     }
 }

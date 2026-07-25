@@ -424,6 +424,19 @@ class BaseService {
 
                 // change the state
                 data.changeState(State.Stopped, msg)
+                val startedProfileId = DataStore.startedProfile
+                val startTime = DataStore.connectionStart
+                if (startedProfileId > 0 && startTime > 0) {
+                    val elapsed = (System.currentTimeMillis() - startTime) / 1000
+                    if (elapsed > 0) {
+                        val entity = SagerDatabase.proxyDao.getById(startedProfileId)
+                        if (entity != null) {
+                            entity.connectedTime += elapsed
+                            SagerDatabase.proxyDao.updateConnectedTime(startedProfileId, entity.connectedTime)
+                        }
+                    }
+                }
+                DataStore.connectionStart = 0L
                 DataStore.startedProfile = 0L
                 if (!keepState) DataStore.currentProfile = 0L
                 // stop the service if nothing has bound to it
@@ -504,6 +517,7 @@ class BaseService {
                     }
                     DataStore.currentProfile = profile.id
                     DataStore.startedProfile = profile.id
+                    DataStore.connectionStart = System.currentTimeMillis()
                     startProcesses()
                     data.changeState(State.Connected)
                     data.binder.checkLoop()
