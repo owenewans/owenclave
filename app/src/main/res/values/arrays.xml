@@ -887,8 +887,7 @@
     <string-array name="shadowquic_congestion_control_value">
         <item>bbr</item>
         <item>cubic</item>
-        <item>new-reno</item>
-        <item>brutal</item>
+        <item>new_reno</item>
     </string-array>
 
     <string-array name="hysteria2_obfs_type">

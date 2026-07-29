@@ -698,6 +698,8 @@ public class V2RayConfig {
                     return TrustTunnelOutboundConfigurationObject.class;
                 case "snell":
                     return SnellOutboundConfigurationObject.class;
+                case "shadowquic":
+                    return ShadowQUICOutboundConfigurationObject.class;
             }
             return null;
         }
@@ -1029,6 +1031,20 @@ public class V2RayConfig {
 
     }
 
+    public static class ShadowQUICOutboundConfigurationObject implements OutboundConfigurationObject {
+
+        public String address;
+        public Integer port;
+        public String username;
+        public String password;
+        public String congestionControl;
+        public Boolean udpOverStream;
+        public Boolean zeroRTTHandshake;
+        public String serverName;
+        public List<String> alpn;
+
+    }
+
     public static class StreamSettingsObject {
 
         public String network;
@@ -1308,6 +1324,7 @@ public class V2RayConfig {
             public Long up_mbps;
             public Long down_mbps;
             public String bbrProfile;
+            public Boolean disableLossCompensation;
         }
 
         public static class OBFSObject {

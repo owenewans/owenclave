@@ -36,10 +36,6 @@ public class ShadowQUICBean extends AbstractBean {
     public String congestionControl;
     public Boolean zeroRTT;
     public Boolean udpOverStream;
-    public Boolean disableALPN;
-    public Boolean useSunnyQUIC;
-    public String certificate;
-    public Long brutalUploadBandwidth;
 
     @Override
     public void initializeDefaultValues() {
@@ -51,16 +47,12 @@ public class ShadowQUICBean extends AbstractBean {
         if (congestionControl == null) congestionControl = "bbr";
         if (zeroRTT == null) zeroRTT = false;
         if (udpOverStream == null) udpOverStream = false;
-        if (disableALPN == null) disableALPN = false;
-        if (useSunnyQUIC == null) useSunnyQUIC = false;
-        if (certificate == null) certificate = "";
-        if (brutalUploadBandwidth == null) brutalUploadBandwidth = 0L;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
         super.serialize(output);
-        output.writeInt(3);
+        output.writeInt(4);
         output.writeString(username);
         output.writeString(password);
         output.writeString(sni);
@@ -68,10 +60,6 @@ public class ShadowQUICBean extends AbstractBean {
         output.writeString(congestionControl);
         output.writeBoolean(zeroRTT);
         output.writeBoolean(udpOverStream);
-        output.writeBoolean(disableALPN);
-        output.writeBoolean(useSunnyQUIC);
-        output.writeString(certificate);
-        output.writeLong(brutalUploadBandwidth);
     }
 
     @Override
@@ -83,17 +71,29 @@ public class ShadowQUICBean extends AbstractBean {
         sni = input.readString();
         alpn = input.readString();
         congestionControl = input.readString();
+        if (version <= 3 && congestionControl.equals("new-reno")) {
+            congestionControl = "new_reno";
+        }
+        if (version <= 3 && congestionControl.equals("brutal")) {
+            congestionControl = "bbr";
+        }
         zeroRTT = input.readBoolean();
         udpOverStream = input.readBoolean();
-        if (version >= 1) {
-            disableALPN = input.readBoolean();
-            useSunnyQUIC = input.readBoolean();
+        if (version >= 1 && version <= 3) {
+            boolean disableALPN = input.readBoolean(); // disableALPN, removed
+            if (disableALPN) {
+                alpn = "";
+            }
+            if (!disableALPN && alpn.isEmpty()) {
+                alpn = "h3";
+            }
+            input.readBoolean(); // useSunnyQUIC, removed
         }
-        if (version >= 2) {
-            certificate = input.readString();
+        if (version >= 2 && version <= 3) {
+            input.readString(); // certificate, removed
         }
-        if (version >= 3) {
-            brutalUploadBandwidth = input.readLong();
+        if (version == 3) {
+            input.readLong(); // brutalUploadBandwidth, removed
         }
     }
 
@@ -125,8 +125,6 @@ public class ShadowQUICBean extends AbstractBean {
     public void applyFeatureSettings(AbstractBean other) {
         if (!(other instanceof ShadowQUICBean bean)) return;
         bean.congestionControl = congestionControl;
-        bean.brutalUploadBandwidth = brutalUploadBandwidth;
-        bean.certificate = certificate;
     }
 
 }

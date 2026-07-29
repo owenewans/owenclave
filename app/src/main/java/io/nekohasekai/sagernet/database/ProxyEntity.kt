@@ -49,7 +49,6 @@ import io.nekohasekai.sagernet.fmt.naive.NaiveBean
 import io.nekohasekai.sagernet.fmt.naive.buildNaiveConfig
 import io.nekohasekai.sagernet.fmt.naive.toUri
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
-import io.nekohasekai.sagernet.fmt.shadowquic.buildShadowQUICConfig
 import io.nekohasekai.sagernet.fmt.shadowquic.toUri
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.toUri
@@ -351,10 +350,6 @@ data class ProxyEntity(
                                 append("\n\n")
                                 append(bean.buildNaiveConfig(port, username, password))
                             }
-                            is ShadowQUICBean -> {
-                                append("\n\n")
-                                append(bean.buildShadowQUICConfig(port, username, password, forExport = true))
-                            }
                         }
                     }
                 }
@@ -365,7 +360,6 @@ data class ProxyEntity(
     fun needExternal(): Boolean {
         return when (type) {
             TYPE_NAIVE -> true
-            TYPE_SHADOWQUIC -> true
             else -> false
         }
     }
