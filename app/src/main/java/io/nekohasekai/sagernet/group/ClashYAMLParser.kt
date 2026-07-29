@@ -807,7 +807,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                          else -> return listOf()
                     }
                 }
-                reuse = proxy.getBoolean("reuse")
+                reuse = proxy.getBoolean("reuse") ?: false
                 name = proxy.getString("name")
             })
         }

@@ -43,7 +43,7 @@ public class ShadowQUICBean extends AbstractBean {
         if (username == null) username = "";
         if (password == null) password = "";
         if (sni == null) sni = "";
-        if (alpn == null) alpn = "";
+        if (alpn == null) alpn = "h3";
         if (congestionControl == null) congestionControl = "bbr";
         if (zeroRTT == null) zeroRTT = false;
         if (udpOverStream == null) udpOverStream = false;

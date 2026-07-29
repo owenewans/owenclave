@@ -1741,9 +1741,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         snellBean.userKey = it
                     }
                 }
-                settings.getBoolean("reuse")?.also {
-                    snellBean.reuse = it
-                }
+                snellBean.reuse = settings.getBoolean("reuse") ?: false
                 when (snellBean.version) {
                     4 -> when (settings.getString("obfsMode")) {
                         null, "", "none" -> {
@@ -1786,7 +1784,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 shadowquicBean.udpOverStream = settings.getBoolean("udpOverStream")
                 shadowquicBean.zeroRTT = settings.getBoolean("zeroRTTHandshake")
                 shadowquicBean.sni = settings.getString("servername")
-                shadowquicBean.alpn = settings.getStringArray("alpn")?.joinToString("\n")
+                shadowquicBean.alpn = settings.getStringArray("alpn")?.joinToString("\n") ?: ""
             }
             return listOf(shadowquicBean)
         }
