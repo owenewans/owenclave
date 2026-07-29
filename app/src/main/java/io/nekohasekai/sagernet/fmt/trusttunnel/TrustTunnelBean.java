@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 import libexclavecore.Libexclavecore;
 
 public class TrustTunnelBean extends AbstractBean {
@@ -176,7 +177,7 @@ public class TrustTunnelBean extends AbstractBean {
         if (!allowInsecure) {
             return false;
         }
-        if (!serverNameToVerify.isEmpty()) {
+        if (!NetsKt.listByLineOrComma(serverNameToVerify).isEmpty()) {
             return false;
         }
         return true;

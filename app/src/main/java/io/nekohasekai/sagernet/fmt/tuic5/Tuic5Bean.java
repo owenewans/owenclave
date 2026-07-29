@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 import libexclavecore.Libexclavecore;
 
 public class Tuic5Bean extends AbstractBean {
@@ -210,7 +211,7 @@ public class Tuic5Bean extends AbstractBean {
         if (!pinnedPeerCertificateSha256.isEmpty()) {
             return false;
         }
-        if (!serverNameToVerify.isEmpty()) {
+        if (!NetsKt.listByLineOrComma(serverNameToVerify).isEmpty()) {
             return false;
         }
         return true;

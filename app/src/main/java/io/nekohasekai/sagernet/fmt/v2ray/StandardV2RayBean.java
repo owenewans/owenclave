@@ -26,6 +26,7 @@ import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean;
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean;
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean;
+import io.nekohasekai.sagernet.ktx.NetsKt;
 import libexclavecore.Libexclavecore;
 
 public abstract class StandardV2RayBean extends AbstractBean {
@@ -651,7 +652,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
                 if (!pinnedPeerCertificateSha256.isEmpty()) {
                     return false;
                 }
-                if (!serverNameToVerify.isEmpty()) {
+                if (!NetsKt.listByLineOrComma(serverNameToVerify).isEmpty()) {
                     return false;
                 }
                 break;

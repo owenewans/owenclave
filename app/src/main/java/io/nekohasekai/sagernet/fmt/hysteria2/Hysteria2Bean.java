@@ -318,7 +318,7 @@ public class Hysteria2Bean extends AbstractBean {
         if (!pinnedPeerCertificateSha256.isEmpty()) {
             return false;
         }
-        if (!serverNameToVerify.isEmpty()) {
+        if (!NetsKt.listByLineOrComma(serverNameToVerify).isEmpty()) {
             return false;
         }
         return true;
