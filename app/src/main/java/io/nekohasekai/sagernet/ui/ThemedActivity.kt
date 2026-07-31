@@ -91,7 +91,7 @@ abstract class ThemedActivity : AppCompatActivity {
                 insetController.isAppearanceLightNavigationBars =
                     if (DataStore.appTheme == Theme.BLACK) !Theme.usingNightMode() else false
                 @Suppress("DEPRECATION")
-                window.navigationBarColor = getColorAttr(androidx.appcompat.R.attr.colorPrimary)
+                window.navigationBarColor = getColorAttr(androidx.appcompat.R.attr.colorPrimaryDark)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     window.isNavigationBarContrastEnforced = true
                 }
