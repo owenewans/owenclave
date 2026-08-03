@@ -777,6 +777,7 @@
     <string-array name="language_entry">
         <item>@string/language_system_default</item>
         <item>@string/language_ar_display_name</item>
+        <item>@string/language_cs_display_name</item>
         <item>@string/language_en_display_name</item>
         <item>@string/language_es_display_name</item>
         <item>@string/language_fa_display_name</item>
@@ -796,6 +797,7 @@
     <string-array name="language_value">
         <item />
         <item>ar</item>
+        <item>cs</item>
         <item>en-US</item>
         <item>es</item>
         <item>fa</item>
