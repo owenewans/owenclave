@@ -549,7 +549,6 @@
     <string name="discard_icmp_sum">Buang ICMP dan ICMPv6</string>
     <string name="insecure_warn_sum">Tampilkan peringatan untuk profil dengan keamanan yang setara dengan teks biasa.</string>
     <string name="ech">ECH</string>
-    <string name="server_name_to_verify">ServerNameToVerify</string>
     <string name="mieru_traffic_pattern">Pola lalu lintas</string>
     <string name="insecure_warning_detail">Keamanan profil ini setara dengan teks biasa.\n\nPeringatan ini ditampilkan karena \"tips keamanan\" diaktifkan.</string>
     <string name="hysteria_hop_interval_min">Interval lompat port minimum (d)</string>

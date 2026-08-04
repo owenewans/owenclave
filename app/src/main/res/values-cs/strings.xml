@@ -575,7 +575,6 @@
     <string name="insecure_warn">Bezpečnostní tipy</string>
     <string name="insecure_warn_sum">Zobrazovat upozornění u profilů se zabezpečením odpovídajícím nešifrovanému přenosu.</string>
     <string name="ech">ECH</string>
-    <string name="server_name_to_verify">ServerNameToVerify</string>
     <string name="mieru_traffic_pattern">Vzorec provozu</string>
     <string name="insecure_warning_detail">Zabezpečení tohoto profilu odpovídá nešifrovanému přenosu.\n\nToto upozornění se zobrazuje, protože jsou povoleny „Bezpečnostní tipy“.</string>
     <string name="hysteria_hop_interval_min">Minimální interval přeskakování portů (s)</string>

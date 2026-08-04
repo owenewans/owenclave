@@ -562,7 +562,6 @@
     <string name="insecure_warn">安全建议</string>
     <string name="insecure_warn_sum">对安全性相当于明文的配置显示警告。</string>
     <string name="ech">ECH</string>
-    <string name="server_name_to_verify">ServerNameToVerify</string>
     <string name="mieru_traffic_pattern">流量模式</string>
     <string name="insecure_warning_detail">此配置的安全性相当于明文。\n\n该警告被显示是因为“安全建议”被启用。</string>
     <string name="hysteria_hop_interval_min">最小端口跳跃间隔（秒）</string>

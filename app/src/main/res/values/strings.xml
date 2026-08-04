@@ -594,7 +594,7 @@
     <string name="insecure_warn">Security tips</string>
     <string name="insecure_warn_sum">Display warnings for profiles with equivalent security to cleartext.</string>
     <string name="ech">ECH</string>
-    <string name="server_name_to_verify">ServerNameToVerify</string>
+    <string name="server_name_to_verify" translatable="false">ServerNameToVerify</string>
     <string name="mieru_traffic_pattern">Traffic pattern</string>
     <string name="insecure_warning_detail">The security of this profile is equivalent to cleartext.\n\nThis warning is displayed because \"security tips\" is enabled.</string>
     <string name="hysteria_hop_interval_min">Minimum port hopping interval (s)</string>
