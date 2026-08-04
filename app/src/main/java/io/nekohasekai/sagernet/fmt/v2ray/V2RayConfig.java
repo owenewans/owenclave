@@ -1318,6 +1318,7 @@ public class V2RayConfig {
         public Long hopIntervalMin;
         public Long hopIntervalMax;
         public Boolean omitMaxDatagramFrameSize;
+        public Boolean chromeParrot;
 
         public static class CongestionObject {
             public String type;
@@ -1362,6 +1363,7 @@ public class V2RayConfig {
         public String uplinkDataKey;
         public String uplinkChunkSize;
         public Boolean noGRPCHeader;
+        public Boolean parseXForwardedFor;
         public XmuxObject xmux;
         public DownloadSettingsObject downloadSettings;
         public Boolean useBrowserForwarding;
