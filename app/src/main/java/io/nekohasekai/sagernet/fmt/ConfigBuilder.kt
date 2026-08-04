@@ -1186,6 +1186,9 @@ fun buildV2RayConfig(
                                             hy2Settings = Hysteria2Object().apply {
                                                 // V2Ray transport is TCP only so it is safe to omit MaxDatagramFrameSize.
                                                 omitMaxDatagramFrameSize = true
+                                                if (bean.hy2ChromeParrot) {
+                                                    chromeParrot = true
+                                                }
                                                 if (bean.hy2Password.isNotEmpty()) {
                                                     password = bean.hy2Password
                                                 }
@@ -1352,6 +1355,9 @@ fun buildV2RayConfig(
                                         }
                                         if (bean.auth.isNotEmpty()) {
                                             password = bean.auth
+                                        }
+                                        if (bean.chromeParrot) {
+                                            chromeParrot = true
                                         }
                                         congestion = Hysteria2Object.CongestionObject().apply {
                                             if (bean.downloadMbps > 0) {

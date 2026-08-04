@@ -145,6 +145,10 @@
             app:title="@string/server_name_to_verify"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
+            app:icon="@drawable/ic_baseline_fingerprint_24"
+            app:key="serverHysteria2ChromeParrot"
+            app:title="@string/chrome_parrot" />
+        <SwitchPreference
             app:icon="@drawable/baseline_construction_24"
             app:key="serverHysteria2OmitMaxDatagramFrameSize"
             app:summary="@string/hysteria2_omit_max_datagram_frame_size_sum"

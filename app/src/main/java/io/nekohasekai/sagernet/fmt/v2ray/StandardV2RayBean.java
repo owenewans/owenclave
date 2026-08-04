@@ -78,6 +78,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
     public Long hy2DownMbps;
     public Long hy2UpMbps;
     public String hy2Password;
+    public Boolean hy2ChromeParrot;
 
     public String mekyaKcpSeed;
     public String mekyaKcpHeaderType;
@@ -156,6 +157,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (hy2DownMbps == null) hy2DownMbps = 0L;
         if (hy2UpMbps == null) hy2UpMbps = 0L;
         if (hy2Password == null) hy2Password = "";
+        if (hy2ChromeParrot == null) hy2ChromeParrot = false;
 
         if (mekyaKcpSeed == null) mekyaKcpSeed = "";
         if (mekyaKcpHeaderType == null) mekyaKcpHeaderType = "none";
@@ -175,7 +177,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(37);
+        output.writeInt(38);
         super.serialize(output);
 
         output.writeString(uuid);
@@ -311,6 +313,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
 
         output.writeString(realityMldsa65Verify);
         output.writeString(serverNameToVerify);
+        output.writeBoolean(hy2ChromeParrot);
     }
 
     @Override
@@ -567,6 +570,9 @@ public abstract class StandardV2RayBean extends AbstractBean {
         if (version >= 37) {
             serverNameToVerify = input.readString();
         }
+        if (version >= 38) {
+            hy2ChromeParrot = input.readBoolean();
+        }
     }
 
     @Override
@@ -627,6 +633,7 @@ public abstract class StandardV2RayBean extends AbstractBean {
         bean.singMuxMinStreams = singMuxMinStreams;
         bean.singMuxMaxStreams = singMuxMaxStreams;
         bean.singMuxPadding = singMuxPadding;
+        bean.hy2ChromeParrot = hy2ChromeParrot;
     }
 
     @Override

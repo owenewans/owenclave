@@ -356,6 +356,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverHysteria2ObfsType by profileCacheStore.string(Key.SERVER_HYSTERIA2_OBFS_TYPE)
     var serverHysteria2GeckoMinPacketSize by profileCacheStore.stringToInt(Key.SERVER_HYSTERIA2_GECKO_MIN_PACKET_SIZE)
     var serverHysteria2GeckoMaxPacketSize by profileCacheStore.stringToInt(Key.SERVER_HYSTERIA2_GECKO_MAX_PACKET_SIZE)
+    var serverHysteria2ChromeParrot by profileCacheStore.boolean(Key.SERVER_HYSTERIA2_CHROME_PARROT)
 
     var serverSnellVersion by profileCacheStore.stringToInt(Key.SERVER_SNELL_VERSION)
     var serverSnellReuse by profileCacheStore.boolean(Key.SERVER_SNELL_REUSE)

@@ -58,6 +58,7 @@ public class Hysteria2Bean extends AbstractBean {
     public Integer geckoMinPacketSize;
     public Integer geckoMaxPacketSize;
     public String serverNameToVerify;
+    public Boolean chromeParrot;
 
     @Override
     public void initializeDefaultValues() {
@@ -87,11 +88,12 @@ public class Hysteria2Bean extends AbstractBean {
         if (geckoMinPacketSize == null) geckoMinPacketSize = 0;
         if (geckoMaxPacketSize == null) geckoMaxPacketSize = 0;
         if (serverNameToVerify == null) serverNameToVerify = "";
+        if (chromeParrot == null) chromeParrot = false;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(10);
+        output.writeInt(11);
         super.serialize(output);
         output.writeString(auth);
         switch (obfsType) {
@@ -134,6 +136,7 @@ public class Hysteria2Bean extends AbstractBean {
                 break;
         }
         output.writeString(serverNameToVerify);
+        output.writeBoolean(chromeParrot);
     }
 
     @Override
@@ -226,6 +229,9 @@ public class Hysteria2Bean extends AbstractBean {
         if (version >= 10) {
             serverNameToVerify = input.readString();
         }
+        if (version >= 10) {
+            chromeParrot = input.readBoolean();
+        }
     }
 
     @Override
@@ -264,6 +270,7 @@ public class Hysteria2Bean extends AbstractBean {
         if (bean.geckoMaxPacketSize == null || bean.geckoMaxPacketSize == 0) {
             bean.geckoMaxPacketSize = geckoMaxPacketSize;
         }
+        bean.chromeParrot = chromeParrot;
     }
 
     @Override
