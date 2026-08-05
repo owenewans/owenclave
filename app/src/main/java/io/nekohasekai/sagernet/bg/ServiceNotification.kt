@@ -42,7 +42,7 @@ import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.getColorAttr
-import io.nekohasekai.sagernet.ui.SwitchActivity
+import io.nekohasekai.sagernet.ui.compose.ComposeQuickToggleActivity
 import io.nekohasekai.sagernet.utils.FormatFileSizeCompat
 import io.nekohasekai.sagernet.utils.Theme
 
@@ -185,7 +185,7 @@ class ServiceNotification(
 
         val switchAction = NotificationCompat.Action.Builder(
             0, service.getString(R.string.quick_toggle), PendingIntent.getActivity(
-                service, 0, Intent(service, SwitchActivity::class.java), flags
+                service, 0, Intent(service, ComposeQuickToggleActivity::class.java), flags
             )
         ).apply {
             setShowsUserInterface(false)

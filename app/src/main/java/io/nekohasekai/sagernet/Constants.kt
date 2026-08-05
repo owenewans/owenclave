@@ -30,6 +30,7 @@ object Key {
     const val APP_THEME = "appTheme"
     const val APP_LOGO = "appLogo"
     const val NIGHT_THEME = "nightTheme"
+    const val NAV_BAR_SIZE = "navBarSize"
     const val APP_LANGUAGE = "appLanguage"
     const val SERVICE_MODE = "serviceMode"
     const val MODE_VPN = "vpn"

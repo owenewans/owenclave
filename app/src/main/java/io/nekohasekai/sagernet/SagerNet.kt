@@ -53,7 +53,7 @@ import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.readableMessage
 import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
-import io.nekohasekai.sagernet.ui.MainActivity
+import io.nekohasekai.sagernet.ui.compose.ComposeMainActivity
 import io.nekohasekai.sagernet.utils.CrashHandler
 import io.nekohasekai.sagernet.utils.DefaultNetworkListener
 import io.nekohasekai.sagernet.utils.DeviceStorageApp
@@ -207,7 +207,7 @@ class SagerNet : Application(),
                     it,
                     0,
                     Intent(
-                        application, MainActivity::class.java
+                        application, ComposeMainActivity::class.java
                     ).setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT),
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
                 )

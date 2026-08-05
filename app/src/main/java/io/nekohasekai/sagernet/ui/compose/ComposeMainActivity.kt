@@ -368,6 +368,7 @@ fun MainScreen(
     var currentDestination by remember { mutableStateOf(NavDestination.CONFIGURATION) }
     val snackbarHostState = remember { SnackbarHostState() }
     var batchTestProgress by remember { mutableStateOf<Pair<Int, Int>?>(null) }
+    var navBarSize by remember { mutableStateOf(DataStore.navBarSize) }
 
     val stateForButton = when (serviceState) {
         BaseService.State.Idle -> ServiceState.IDLE
@@ -415,6 +416,7 @@ fun MainScreen(
                     NavDestination.GROUP -> GroupScreen(onMenuClick = {})
                     NavDestination.ROUTE -> RouteScreen(onMenuClick = {})
                     NavDestination.SETTINGS -> SettingsScreen(
+                        onNavBarSizeChanged = { navBarSize = it },
                         onMenuClick = {},
                         onThemeChanged = onThemeChanged,
                         onNightThemeChanged = onNightThemeChanged,
@@ -444,6 +446,7 @@ fun MainScreen(
                 connecting = serviceState == BaseService.State.Connecting || serviceState == BaseService.State.Stopping,
                 testProgress = batchTestProgress,
                 onPowerClick = onServiceToggle,
+                navBarSize = navBarSize,
                 modifier = Modifier.align(androidx.compose.ui.Alignment.BottomCenter),
             )
         }
@@ -462,9 +465,19 @@ private fun UnifiedBottomBar(
     connecting: Boolean,
     testProgress: Pair<Int, Int>?,
     onPowerClick: () -> Unit,
+    navBarSize: Int = 1,
     modifier: Modifier = Modifier,
 ) {
     val testing = testProgress != null
+    // nav bar size: 0 = small, 1 = medium, 2 = large
+    val navScale = when (navBarSize) {
+        0 -> 0.85f
+        2 -> 1.25f
+        else -> 1f
+    }
+    val itemSize = (48 * navScale).dp
+    val iconSize = (24 * navScale).dp
+    val navRowWidth = (160 * navScale).dp
     val containerColor by animateColorAsState(
         targetValue = if (testing)
             MaterialTheme.colorScheme.primaryContainer
@@ -510,7 +523,7 @@ private fun UnifiedBottomBar(
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
                 modifier = Modifier
-                    .width(160.dp)
+                    .width(navRowWidth)
                     .clip(RoundedCornerShape(24.dp)),
             ) {
                 items(items) { destination ->
@@ -535,7 +548,7 @@ private fun UnifiedBottomBar(
                         onClick = { onSelect(destination) },
                         shape = if (isSelected) MaterialShapes.Cookie9Sided.toShape() else RoundedCornerShape(24.dp),
                         color = itemColor,
-                        modifier = Modifier.size(48.dp),
+                        modifier = Modifier.size(itemSize),
                     ) {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -548,7 +561,7 @@ private fun UnifiedBottomBar(
                                 imageVector = destination.icon,
                                 contentDescription = stringResource(destination.labelRes),
                                 tint = iconColor,
-                                modifier = Modifier.size(24.dp),
+                                modifier = Modifier.size(iconSize),
                             )
                         }
                     }

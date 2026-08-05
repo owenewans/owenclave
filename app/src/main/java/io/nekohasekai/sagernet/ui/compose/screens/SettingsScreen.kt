@@ -79,11 +79,14 @@ fun SettingsScreen(
     onMenuClick: () -> Unit,
     onThemeChanged: (Int) -> Unit = {},
     onNightThemeChanged: (Int) -> Unit = {},
+    onNavBarSizeChanged: (Int) -> Unit = {},
     onServiceModeChanged: () -> Unit = {},
 ) {
     val context = LocalContext.current
     var showThemePicker by remember { mutableStateOf(false) }
     var showNightModePicker by remember { mutableStateOf(false) }
+    var showNavBarSizePicker by remember { mutableStateOf(false) }
+    var navBarSize by remember { mutableStateOf(DataStore.navBarSize) }
     var showServiceModePicker by remember { mutableStateOf(false) }
     var showTunPicker by remember { mutableStateOf(false) }
     var showMtuPicker by remember { mutableStateOf(false) }
@@ -230,6 +233,16 @@ fun SettingsScreen(
             selected = DataStore.nightTheme,
             onSelect = { DataStore.nightTheme = it; onNightThemeChanged(it); showNightModePicker = false },
             onDismiss = { showNightModePicker = false },
+        )
+    }
+
+    if (showNavBarSizePicker) {
+        SingleChoiceDialog(
+            title = "Navigation Bar Size",
+            items = listOf("Small" to 0, "Medium" to 1, "Large" to 2),
+            selected = navBarSize,
+            onSelect = { DataStore.navBarSize = it; navBarSize = it; onNavBarSizeChanged(it); showNavBarSizePicker = false },
+            onDismiss = { showNavBarSizePicker = false },
         )
     }
 
@@ -598,6 +611,15 @@ fun SettingsScreen(
                             subtitle = when (DataStore.nightTheme) { 0 -> "Follow system"; 1 -> "Always dark"; 2 -> "Always light"; else -> "Auto" },
                             icon = Icons.Filled.WbSunny,
                             onClick = { showNightModePicker = true },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Navigation Bar Size",
+                            subtitle = when (navBarSize) { 0 -> "Small"; 2 -> "Large"; else -> "Medium" },
+                            icon = Icons.Filled.Dashboard,
+                            onClick = { showNavBarSizePicker = true },
                             shape = shape,
                         )
                     }
