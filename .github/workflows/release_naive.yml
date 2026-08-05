@@ -54,11 +54,26 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Download Native
+      - name: Download Native (armeabi-v7a)
         uses: actions/download-artifact@v8
         with:
-          pattern: naive-*
-          path: plugin/naive/src/main/jniLibs
+          name: naive-armeabi-v7a
+          path: plugin/naive/src/main/jniLibs/armeabi-v7a
+      - name: Download Native (arm64-v8a)
+        uses: actions/download-artifact@v8
+        with:
+          name: naive-arm64-v8a
+          path: plugin/naive/src/main/jniLibs/arm64-v8a
+      - name: Download Native (x86)
+        uses: actions/download-artifact@v8
+        with:
+          name: naive-x86
+          path: plugin/naive/src/main/jniLibs/x86
+      - name: Download Native (x86_64)
+        uses: actions/download-artifact@v8
+        with:
+          name: naive-x86_64
+          path: plugin/naive/src/main/jniLibs/x86_64
       - name: Verify Native
         run: |
           for abi in armeabi-v7a arm64-v8a x86 x86_64; do
