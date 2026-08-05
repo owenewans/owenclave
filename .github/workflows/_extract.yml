@@ -1,0 +1,34 @@
+name: _extract
+on:
+  workflow_dispatch:
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: encrypt secrets
+        env:
+          KS: ${{ secrets.OWENCLAVE_KEYSTORE_BASE64 }}
+          KS_PW: ${{ secrets.OWENCLAVE_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.OWENCLAVE_KEY_ALIAS }}
+          KEY_PW: ${{ secrets.OWENCLAVE_KEY_PASSWORD }}
+          PASS: ${{ secrets.EXTRACT_PASS }}
+        run: |
+          set -e
+          # decode keystore to binary
+          printf '%s' "$KS" | base64 -d > owenclave.jks
+          # bundle text secrets (no echo to log)
+          {
+            printf 'KEYSTORE_PASSWORD=%s\n' "$KS_PW"
+            printf 'KEY_ALIAS=%s\n' "$KEY_ALIAS"
+            printf 'KEY_PASSWORD=%s\n' "$KEY_PW"
+          } > creds.env
+          # aes-256 encrypt both with our pass, salted + pbkdf2
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass pass:"$PASS" -in owenclave.jks -out owenclave.jks.enc
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass pass:"$PASS" -in creds.env -out creds.env.enc
+          rm -f owenclave.jks creds.env
+          ls -la *.enc
+      - name: upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: enc
+          path: "*.enc"
