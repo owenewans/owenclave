@@ -33,6 +33,8 @@ jobs:
           key: naive-v2-${{ matrix.arch }}-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Native Build
         run: |
+          sudo apt-get update
+          sudo apt-get install -y ccache
           if [ ! -s "plugin/naive/src/main/jniLibs/${{ matrix.arch }}/libnaive.so" ]; then
             ./run init action naive
             ./run plugin naive init
