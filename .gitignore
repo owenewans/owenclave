@@ -19,3 +19,4 @@ go.work
 go.work.sum
 .opencode
 owenclave.jks
+.pi/
