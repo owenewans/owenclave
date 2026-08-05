@@ -214,12 +214,6 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     when (network) {
                         "tcp", "raw" -> {
                             v2rayBean.type = "tcp"
-                            streamSettings.getObject("finalmask")?.also { finalmask ->
-                                // ban Xray TCP finalmask
-                                finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
-                                    return listOf()
-                                }
-                            }
                             (streamSettings.getObject("tcpSettings") ?: streamSettings.getObject("rawSettings"))?.also { tcpSettings ->
                                 tcpSettings.getObject("header")?.also { header ->
                                     header.getString("type")?.lowercase()?.also { type ->
@@ -600,31 +594,6 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(extra)
                                 }
                             }
-                            streamSettings.getObject("finalmask")?.also { finalmask ->
-                                if (v2rayBean.alpn != "h3") {
-                                    // ban Xray TCP finalmask
-                                    finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
-                                        return listOf()
-                                    }
-                                } else {
-                                    // ban Xray UDP finalmask
-                                    finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also {
-                                        return listOf()
-                                    }
-                                    // ban Xray QUIC port hopping
-                                    finalmask.getObject("quicParams")?.also { quicParams ->
-                                        quicParams.getObject("udphop")?.also { udphop ->
-                                            udphop.getInt("ports")?.also {
-                                                return listOf()
-                                            } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
-                                                it.split(",").joinToString(",") { it.trim() }
-                                                    .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
-                                                    ?.also { return listOf() }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
                         }
                         "hysteria2", "hy2" -> {
                             v2rayBean.type = "hysteria2"
@@ -673,10 +642,23 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         else -> return listOf()
                     }
                     when (v2rayBean.type) {
-                        "ws", "grpc", "httpupgrade" -> {
+                        "tcp", "ws", "grpc", "httpupgrade", "http" -> {
                             streamSettings.getObject("finalmask")?.also { finalmask ->
                                 // ban Xray TCP finalmask
                                 finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
+                                    return listOf()
+                                }
+                            }
+                        }
+                        "splithttp" -> {
+                            streamSettings.getObject("finalmask")?.also { finalmask ->
+                                // leave it broken, I don't care
+                                // ban Xray TCP finalmask
+                                finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
+                                    return listOf()
+                                }
+                                // ban Xray UDP finalmask
+                                finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also {
                                     return listOf()
                                 }
                             }
@@ -1055,6 +1037,15 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         }
                     }
                 }
+            }
+            if (v2rayBean.security == "reality") {
+                when (v2rayBean.type) {
+                    "tcp", "http", "grpc", "splithttp" -> {}
+                    else -> return listOf()
+                }
+            }
+            if (v2rayBean is VLESSBean && v2rayBean.security != "none" && v2rayBean.flow == "xtls-rprx-vision-udp443" && v2rayBean.type != "tcp") {
+                return listOf()
             }
             return listOf(v2rayBean)
         }

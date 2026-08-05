@@ -1872,8 +1872,6 @@ com.google.guava:listenablefuture
       or implied. See the License for the specific language governing permissions and limitations under
       the License.
 
-
-
 com.google.protobuf:protobuf-java
 
       Copyright 2008 Google Inc.  All rights reserved.

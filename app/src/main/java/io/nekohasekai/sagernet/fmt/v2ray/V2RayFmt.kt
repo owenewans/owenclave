@@ -434,7 +434,7 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             val json = parseJson(finalmask).asJsonObject
             if (!json.isEmpty) {
                 when (bean.type) {
-                    "tcp", "ws", "grpc", "httpupgrade" -> {
+                    "tcp", "ws", "grpc", "httpupgrade", "http" -> {
                         // ban Xray TCP finalmask
                         json.getArray("tcp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
                             error("unsupported")
@@ -496,28 +496,14 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                         }
                     }
                     "splithttp" -> {
-                        if (bean.alpn != "h3") {
-                            // ban Xray TCP finalmask
-                            json.getArray("tcp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
-                                error("unsupported")
-                            }
-                        } else {
-                            // ban Xray UDP finalmask
-                            json.getArray("udp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
-                                error("unsupported")
-                            }
-                            // ban Xray QUIC port hopping
-                            json.getObject("quicParams")?.also { quicParams ->
-                                quicParams.getObject("udphop")?.also { udphop ->
-                                    udphop.getInt("ports")?.also {
-                                        error("unsupported")
-                                    } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
-                                        it.split(",").joinToString(",") { it.trim() }
-                                            .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
-                                            ?.also { error("unsupported") }
-                                    }
-                                }
-                            }
+                        // leave it broken, I don't care
+                        // ban Xray TCP finalmask
+                        json.getArray("tcp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
+                            error("unsupported")
+                        }
+                        // ban Xray UDP finalmask
+                        json.getArray("udp", ignoreCase = true)?.takeIf { it.isNotEmpty() }?.also {
+                            error("unsupported")
                         }
                     }
                 }
@@ -525,6 +511,16 @@ fun parseV2Ray(link: String): StandardV2RayBean {
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    if (bean.security == "reality") {
+        when (bean.type) {
+            "tcp", "http", "grpc", "splithttp" -> {}
+            else -> error("reality does not support ${bean.type}")
+        }
+    }
+    if (bean is VLESSBean && bean.security != "none" && bean.flow == "xtls-rprx-vision-udp443" && bean.type != "tcp") {
+        error("vision does not support ${bean.type}")
     }
 
     return bean
@@ -965,6 +961,16 @@ fun StandardV2RayBean.toUri(): String? {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
             }
         }
+    }
+
+    if (security == "reality") {
+        when (type) {
+            "tcp", "http", "grpc", "splithttp" -> {}
+            else -> error("reality does not support ${type}")
+        }
+    }
+    if (this is VLESSBean && security != "none" && flow.isNotEmpty() && type != "tcp") {
+        error("vision does not support ${type}")
     }
 
     return builder.string
