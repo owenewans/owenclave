@@ -371,6 +371,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverHysteria2ObfsType by profileCacheStore.string(Key.SERVER_HYSTERIA2_OBFS_TYPE)
     var serverHysteria2GeckoMinPacketSize by profileCacheStore.stringToInt(Key.SERVER_HYSTERIA2_GECKO_MIN_PACKET_SIZE)
     var serverHysteria2GeckoMaxPacketSize by profileCacheStore.stringToInt(Key.SERVER_HYSTERIA2_GECKO_MAX_PACKET_SIZE)
+    var serverHysteria2ChromeParrot by profileCacheStore.boolean(Key.SERVER_HYSTERIA2_CHROME_PARROT)
 
     var serverSnellVersion by profileCacheStore.stringToInt(Key.SERVER_SNELL_VERSION)
     var serverSnellReuse by profileCacheStore.boolean(Key.SERVER_SNELL_REUSE)
@@ -425,8 +426,6 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverSSHKeepaliveInterval by profileCacheStore.stringToInt(Key.SERVER_SSH_KEEPALIVE_INTERVAL)
 
     var serverNaiveNoPostQuantum by profileCacheStore.boolean(Key.SERVER_NAIVE_NO_POST_QUANTUM)
-    var serverShadowQUICDisableALPN by profileCacheStore.boolean(Key.SERVER_SHADOWQUIC_DISABLE_ALPN)
-    var serverShadowQUICUseSunnyQUIC by profileCacheStore.boolean(Key.SERVER_SHADOWQUIC_USE_SUNNYQUIC)
     var serverSingUot by profileCacheStore.boolean(Key.SERVER_SING_UOT)
     var serverSingMux by profileCacheStore.boolean(Key.SERVER_SING_MUX)
     var serverSingMuxProtocol by profileCacheStore.string(Key.SERVER_SING_MUX_PROTOCOL)

@@ -75,16 +75,22 @@ class SnellSettingsActivity : ProfileSettingsActivity<SnellBean>() {
         val modePref = findPreference<SimpleMenuPreference>(Key.SERVER_SNELL_MODE)!!
         val obfsPref = findPreference<SimpleMenuPreference>(Key.SERVER_SNELL_OBFS_MODE)!!
         val obfsHostPref = findPreference<EditTextPreference>(Key.SERVER_SNELL_OBFS_HOST)!!
+        obfsHostPref.isVisible = obfsPref.value != "none"
         fun updateVisibility(v: Int) {
             val isV6 = v == 6
             modePref.isVisible = isV6
             obfsPref.isVisible = !isV6
-            obfsHostPref.isVisible = !isV6
+            obfsHostPref.isVisible = !isV6 && obfsPref.value != "none"
         }
         val cur = versionPref.value.toInt()
         updateVisibility(cur)
         versionPref.setOnPreferenceChangeListener { _, newValue ->
             updateVisibility((newValue as String).toInt())
+            true
+        }
+        obfsPref.setOnPreferenceChangeListener { _, newValue ->
+            newValue to String
+            obfsHostPref.isVisible = newValue != "none"
             true
         }
     }

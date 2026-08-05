@@ -41,6 +41,8 @@ supported protocols:
 - vless (with various optional sub-protocols)
 - wireguard (tcp and udp only)
 - trusttunnel (no icmp echo support)
+- snell v4 and snell v6
+- shadowquic
 - ssh proxy ("dynamic port forwarding")
 - http connect tunnel (http/1.1, http/1.1 with tls, http/2 and http/3)
 - socks4, socks4a and socks5

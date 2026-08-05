@@ -571,7 +571,6 @@
     <string name="insecure_warn">Советы по безопасности</string>
     <string name="insecure_warn_sum">Отображать предупреждения для профилей со слабой защитой, эквивалентной открытому тексту.</string>
     <string name="ech">ECH</string>
-    <string name="server_name_to_verify">ServerNameToVerify (имя сервера для проверки)</string>
     <string name="mieru_traffic_pattern">Паттерн трафика</string>
     <string name="insecure_warning_detail">Безопасность этого профиля эквивалентна открытому тексту.\n\nЭто предупреждение отображается, поскольку включена функция \"Советы по безопасности\".</string>
     <string name="hysteria_hop_interval_min">Минимальный интервал переключения портов (с)</string>

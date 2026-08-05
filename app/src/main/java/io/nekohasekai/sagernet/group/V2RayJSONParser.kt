@@ -33,6 +33,7 @@ import io.nekohasekai.sagernet.fmt.http3.Http3Bean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
+import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.supportedShadowsocks2022Method
 import io.nekohasekai.sagernet.fmt.shadowsocks.supportedShadowsocksMethod
@@ -1740,9 +1741,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         snellBean.userKey = it
                     }
                 }
-                settings.getBoolean("reuse")?.also {
-                    snellBean.reuse = it
-                }
+                snellBean.reuse = settings.getBoolean("reuse") ?: false
                 when (snellBean.version) {
                     4 -> when (settings.getString("obfsMode")) {
                         null, "", "none" -> {
@@ -1767,6 +1766,27 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 }
             }
             return listOf(snellBean)
+        }
+        "shadowquic" -> {
+            val shadowquicBean = ShadowQUICBean()
+            outbound.getObject("settings")?.also { settings ->
+                outbound.getString("tag")?.also {
+                    shadowquicBean.name = it
+                }
+                settings.getString("address")?.also {
+                    shadowquicBean.serverAddress = it
+                } ?: return listOf()
+                settings.getPort("port")?.also {
+                    shadowquicBean.serverPort = it
+                } ?: return listOf()
+                shadowquicBean.username = settings.getString("username")
+                shadowquicBean.password = settings.getString("password")
+                shadowquicBean.udpOverStream = settings.getBoolean("udpOverStream")
+                shadowquicBean.zeroRTT = settings.getBoolean("zeroRTTHandshake")
+                shadowquicBean.sni = settings.getString("servername")
+                shadowquicBean.alpn = settings.getStringArray("alpn")?.joinToString("\n") ?: ""
+            }
+            return listOf(shadowquicBean)
         }
         "wireguard" -> {
             val beanList = mutableListOf<WireGuardBean>()

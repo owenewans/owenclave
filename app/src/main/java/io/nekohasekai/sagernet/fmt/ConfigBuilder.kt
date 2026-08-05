@@ -48,6 +48,7 @@ import io.nekohasekai.sagernet.fmt.internal.BalancerBean
 import io.nekohasekai.sagernet.fmt.internal.ConfigBean
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
+import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
 import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
@@ -665,7 +666,7 @@ fun buildV2RayConfig(
                                 if (proxyEntity.naiveBean != null && proxyEntity.naiveBean!!.singUoT && DataStore.experimentalFlagsProperties.getBooleanProperty( "singuot")) {
                                     uot = true
                                 }
-                                if (proxyEntity.naiveBean != null || proxyEntity.shadowquicBean != null) {
+                                if (proxyEntity.naiveBean != null) {
                                     directNeedsInterruption = true
                                 }
                             })
@@ -1191,6 +1192,9 @@ fun buildV2RayConfig(
                                             hy2Settings = Hysteria2Object().apply {
                                                 // V2Ray transport is TCP only so it is safe to omit MaxDatagramFrameSize.
                                                 omitMaxDatagramFrameSize = true
+                                                if (bean.hy2ChromeParrot) {
+                                                    chromeParrot = true
+                                                }
                                                 if (bean.hy2Password.isNotEmpty()) {
                                                     password = bean.hy2Password
                                                 }
@@ -1357,6 +1361,9 @@ fun buildV2RayConfig(
                                         }
                                         if (bean.auth.isNotEmpty()) {
                                             password = bean.auth
+                                        }
+                                        if (bean.chromeParrot) {
+                                            chromeParrot = true
                                         }
                                         congestion = Hysteria2Object.CongestionObject().apply {
                                             if (bean.downloadMbps > 0) {
@@ -1899,6 +1906,23 @@ fun buildV2RayConfig(
                                         }
                                     }
                                 }
+                            } else if (bean is ShadowQUICBean) {
+                                protocol = "shadowquic"
+                                settings = LazyOutboundConfigurationObject(this, V2RayConfig.ShadowQUICOutboundConfigurationObject().apply {
+                                    address = bean.serverAddress
+                                    port = bean.serverPort
+                                    username = bean.username
+                                    password = bean.password
+                                    congestionControl = bean.congestionControl
+                                    udpOverStream = udpOverStream
+                                    zeroRTTHandshake = zeroRTTHandshake
+                                    if (bean.sni.isNotEmpty()) {
+                                        serverName = bean.sni
+                                    }
+                                    if (bean.alpn.listByLineOrComma().isNotEmpty()) {
+                                        alpn = bean.alpn.listByLineOrComma()
+                                    }
+                                })
                             }
                             if (bean is StandardV2RayBean && bean.mux) {
                                 mux = OutboundObject.MuxObject().apply {

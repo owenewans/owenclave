@@ -857,9 +857,7 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                         userKey = it
                     }
                 }
-                outbound.getBoolean("reuse")?.also {
-                    reuse = it
-                }
+                reuse = outbound.getBoolean("reuse") ?: false
                 when (version) {
                     4 -> when (outbound.getString("obfs_mode")?.lowercase()) {
                         null, "", "none" -> {

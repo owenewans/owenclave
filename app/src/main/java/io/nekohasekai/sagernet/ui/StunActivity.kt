@@ -101,6 +101,7 @@ class StunActivity : ThemedActivity() {
             when {
                 binding.stunRB.isChecked -> doTest()
                 binding.stunLegacyRB.isChecked -> doLegacyTest()
+                binding.stunTCPRB.isChecked -> doTCPTest()
             }
         }
         binding.natMappingBehaviourCard.isVisible = false
@@ -132,10 +133,11 @@ class StunActivity : ThemedActivity() {
                 binding.resultLayout.isVisible = true
                 markwon.setMarkdown(binding.natMappingBehaviour, result.natMapping)
                 markwon.setMarkdown(binding.natFilteringBehaviour, result.natFiltering)
+                markwon.setMarkdown(binding.natExternalAddress, result.host)
                 binding.natMappingBehaviourCard.isVisible = true
                 binding.natFilteringBehaviourCard.isVisible = true
                 binding.natTypeCard.isVisible = false
-                binding.natExternalAddressCard.isVisible = false
+                binding.natExternalAddressCard.isVisible = true
             }
         }
     }
@@ -166,6 +168,36 @@ class StunActivity : ThemedActivity() {
                 binding.natMappingBehaviourCard.isVisible = false
                 binding.natFilteringBehaviourCard.isVisible = false
                 binding.natTypeCard.isVisible = true
+                binding.natExternalAddressCard.isVisible = true
+            }
+        }
+    }
+
+    fun doTCPTest() {
+        binding.waitLayout.isVisible = true
+        binding.resultLayout.isVisible = false
+        runOnDefaultDispatcher {
+            val stunClient = Libexclavecore.newStunClient().apply {
+                if (SagerNet.started && DataStore.startedProfile > 0) {
+                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                    useDNSUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock")
+                }
+            }
+            val result = stunClient.stunLegacyTest(binding.natStunServer.text.toString())
+            onMainDispatcher {
+                if (result.error.isNotEmpty()) {
+                    AlertDialog.Builder(this@StunActivity)
+                        .setTitle(R.string.error_title)
+                        .setMessage(result.error)
+                        .setPositiveButton(android.R.string.ok) { _, _ -> }
+                        .runCatching { show() }
+                }
+                binding.waitLayout.isVisible = false
+                binding.resultLayout.isVisible = true
+                markwon.setMarkdown(binding.natExternalAddress, result.host)
+                binding.natMappingBehaviourCard.isVisible = false
+                binding.natFilteringBehaviourCard.isVisible = false
+                binding.natTypeCard.isVisible = false
                 binding.natExternalAddressCard.isVisible = true
             }
         }

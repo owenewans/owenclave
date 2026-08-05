@@ -62,7 +62,6 @@ fun String.decodeBase64(): String {
 }
 
 fun parseShareLinks(text: String): List<AbstractBean> {
-    val shadowQUICEnabled = DataStore.experimentalFlagsProperties.getBooleanProperty("shadowquic")
     val links = text.split('\n').flatMap { it.trim().split(' ') }
     val linksByLine = text.split('\n').map { it.trim() }
 
@@ -140,8 +139,7 @@ fun parseShareLinks(text: String): List<AbstractBean> {
             runCatching {
                 entities.addAll(parseTrustTunnel(this))
             }
-        } else if (startsWith("sq://", ignoreCase = true) || startsWith("shadowquic://", ignoreCase = true)
-            && shadowQUICEnabled) {
+        } else if (startsWith("sq://", ignoreCase = true) || startsWith("shadowquic://", ignoreCase = true)) {
             runCatching {
                 entities.add(parseShadowQUIC(this))
             }
