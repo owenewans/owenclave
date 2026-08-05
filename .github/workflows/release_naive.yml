@@ -30,13 +30,20 @@ jobs:
         with:
           path: |
             plugin/naive/src/main/jniLibs/${{ matrix.arch }}
-          key: naive-${{ matrix.arch }}-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          key: naive-v2-${{ matrix.arch }}-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
       - name: Native Build
-        if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          ./run init action naive
-          ./run plugin naive init
-          ./run plugin naive ${{ matrix.arch }}
+          if [ ! -s "plugin/naive/src/main/jniLibs/${{ matrix.arch }}/libnaive.so" ]; then
+            ./run init action naive
+            ./run plugin naive init
+            ./run plugin naive ${{ matrix.arch }}
+          fi
+          test -s "plugin/naive/src/main/jniLibs/${{ matrix.arch }}/libnaive.so"
+      - name: Upload Native
+        uses: actions/upload-artifact@v7
+        with:
+          name: naive-${{ matrix.arch }}
+          path: plugin/naive/src/main/jniLibs/${{ matrix.arch }}/libnaive.so
   build:
     name: Gradle Build
     runs-on: ubuntu-latest
@@ -45,35 +52,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - name: Checkout Submodule
+      - name: Download Native
+        uses: actions/download-artifact@v8
+        with:
+          pattern: naive-*
+          path: plugin/naive/src/main/jniLibs
+      - name: Verify Native
         run: |
-          git submodule update --init plugin/naive/src/main/jni/naiveproxy
-      - name: Fetch Status
-        run: git submodule status 'plugin/naive/*' > naive_status
-      - name: Native Cache (armeabi-v7a)
-        uses: actions/cache@v6
-        with:
-          path: |
-            plugin/naive/src/main/jniLibs/armeabi-v7a
-          key: naive-armeabi-v7a-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
-      - name: Native Cache (arm64-v8a)
-        uses: actions/cache@v6
-        with:
-          path: |
-            plugin/naive/src/main/jniLibs/arm64-v8a
-          key: naive-arm64-v8a-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
-      - name: Native Cache (x86)
-        uses: actions/cache@v6
-        with:
-          path: |
-            plugin/naive/src/main/jniLibs/x86
-          key: naive-x86-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
-      - name: Native Cache (x86_64)
-        uses: actions/cache@v6
-        with:
-          path: |
-            plugin/naive/src/main/jniLibs/x86_64
-          key: naive-x86_64-${{ hashFiles('bin/plugin/naive/*', 'naive_status') }}
+          for abi in armeabi-v7a arm64-v8a x86 x86_64; do
+            test -s "plugin/naive/src/main/jniLibs/$abi/libnaive.so"
+          done
       - name: Gradle cache
         uses: actions/cache@v6
         with:
