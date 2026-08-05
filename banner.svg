@@ -1,0 +1,105 @@
+<svg width="1280" height="400" viewBox="0 0 1280 400" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <!-- background gradient -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="400" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0d141c"/>
+      <stop offset="0.5" stop-color="#0a1017"/>
+      <stop offset="1" stop-color="#0c1219"/>
+    </linearGradient>
+    <!-- sun/gear gradient: cyan -> blue (top-left to bottom-right) -->
+    <linearGradient id="sun" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#48e0cf"/>
+      <stop offset="0.5" stop-color="#3aa0e0"/>
+      <stop offset="1" stop-color="#3866f2"/>
+    </linearGradient>
+    <!-- soft glow orb -->
+    <radialGradient id="orb" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#1c3540" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#1c3540" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="sunGlow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#3aa0e0" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#3aa0e0" stop-opacity="0"/>
+    </radialGradient>
+    <!-- grid pattern -->
+    <pattern id="grid" width="64" height="64" patternUnits="userSpaceOnUse">
+      <path d="M64 0H0V64" fill="none" stroke="#1a2732" stroke-width="1" stroke-opacity="0.5"/>
+    </pattern>
+    <linearGradient id="accentLine" x1="0" y1="0" x2="1280" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#43d9c9"/>
+      <stop offset="0.5" stop-color="#3aa0e0"/>
+      <stop offset="1" stop-color="#3b6ef0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- base -->
+  <rect width="1280" height="400" fill="url(#bg)"/>
+  <rect width="1280" height="400" fill="url(#grid)"/>
+
+  <!-- decorative orbs -->
+  <circle cx="1120" cy="120" r="200" fill="url(#orb)"/>
+  <circle cx="200" cy="360" r="160" fill="url(#orb)"/>
+
+  <!-- logo: sun-gear -->
+  <circle cx="205" cy="197" r="150" fill="url(#sunGlow)"/>
+  <g transform="translate(205, 197)" fill="url(#sun)">
+    <!-- 12 rounded rays -->
+    <g id="ray"><rect x="-13" y="-116" width="26" height="58" rx="13"/></g>
+    <use href="#ray" transform="rotate(30)"/>
+    <use href="#ray" transform="rotate(60)"/>
+    <use href="#ray" transform="rotate(90)"/>
+    <use href="#ray" transform="rotate(120)"/>
+    <use href="#ray" transform="rotate(150)"/>
+    <use href="#ray" transform="rotate(180)"/>
+    <use href="#ray" transform="rotate(210)"/>
+    <use href="#ray" transform="rotate(240)"/>
+    <use href="#ray" transform="rotate(270)"/>
+    <use href="#ray" transform="rotate(300)"/>
+    <use href="#ray" transform="rotate(330)"/>
+    <!-- disc -->
+    <circle r="76"/>
+    <!-- white ring -->
+    <circle r="76" fill="none" stroke="#ffffff" stroke-width="19"/>
+    <!-- inner cutout -->
+    <circle r="47"/>
+  </g>
+
+  <!-- title -->
+  <text x="340" y="175" font-size="86" font-weight="700" fill="#ffffff" letter-spacing="-1">Owenclave</text>
+
+  <!-- version badge -->
+  <g transform="translate(340, 195)">
+    <rect width="112" height="34" rx="17" fill="#14343a" stroke="#2a5a63" stroke-width="1"/>
+    <text x="56" y="23" font-size="19" font-weight="700" fill="#43d9c9" text-anchor="middle">v0.17.50</text>
+  </g>
+
+  <!-- subtitle -->
+  <text x="340" y="262" font-size="27" font-weight="500" fill="#9fb0bf">Material 3 Expressive Android Proxy Client</text>
+
+  <!-- feature chips -->
+  <g transform="translate(340, 288)">
+    <!-- M3 Expressive -->
+    <g>
+      <rect width="132" height="34" rx="17" fill="#12211d" stroke="#2c5c4f" stroke-width="1"/>
+      <text x="66" y="23" font-size="16" font-weight="600" fill="#43d9a0" text-anchor="middle">M3 Expressive</text>
+    </g>
+    <!-- Auto Update -->
+    <g transform="translate(144, 0)">
+      <rect width="118" height="34" rx="17" fill="#13233a" stroke="#2a4a7a" stroke-width="1"/>
+      <text x="59" y="23" font-size="16" font-weight="600" fill="#5aa0f0" text-anchor="middle">Auto Update</text>
+    </g>
+    <!-- 20+ Protocols -->
+    <g transform="translate(274, 0)">
+      <rect width="132" height="34" rx="17" fill="#221830" stroke="#4a3a6a" stroke-width="1"/>
+      <text x="66" y="23" font-size="16" font-weight="600" fill="#b088f0" text-anchor="middle">20+ Protocols</text>
+    </g>
+    <!-- owenkey:// -->
+    <g transform="translate(418, 0)">
+      <rect width="118" height="34" rx="17" fill="#2a1a1a" stroke="#6a3a3a" stroke-width="1"/>
+      <text x="59" y="23" font-size="16" font-weight="600" fill="#ff8a7b" text-anchor="middle">owenkey://</text>
+    </g>
+  </g>
+
+  <!-- bottom accent line -->
+  <rect x="0" y="397" width="1280" height="3" fill="url(#accentLine)"/>
+</svg>
