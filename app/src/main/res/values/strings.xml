@@ -622,4 +622,7 @@
     <string name="snell_mode">Mode</string>
     <string name="anytls_disable_reuse">Disable connection reuse</string>
     <string name="chrome_parrot" translatable="false">Chrome parrot</string>
+    <string name="chrome_parrot_summary">Imitate Chrome\'s QUIC Client Hello</string>
+    <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">This option is disabled to match Chrome\'s behavior.</string>
+    <string name="option_globally_enabled">This option has been enabled globally and the value will be omitted.</string>
 </resources>

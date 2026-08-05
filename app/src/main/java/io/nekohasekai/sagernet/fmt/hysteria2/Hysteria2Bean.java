@@ -123,7 +123,11 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeLong(hopIntervalMax);
         output.writeString(congestionControl);
         output.writeString(bbrProfile);
-        output.writeBoolean(omitMaxDatagramFrameSize);
+        if (chromeParrot) {
+            output.writeBoolean(false); // omitMaxDatagramFrameSize
+        } else {
+            output.writeBoolean(omitMaxDatagramFrameSize);
+        }
         output.writeString(obfsType);
         switch (obfsType) {
             case "gecko":
@@ -231,6 +235,9 @@ public class Hysteria2Bean extends AbstractBean {
         }
         if (version >= 10) {
             chromeParrot = input.readBoolean();
+            if (chromeParrot) {
+                omitMaxDatagramFrameSize = false;
+            }
         }
     }
 

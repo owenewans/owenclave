@@ -586,4 +586,7 @@
     <string name="snell_obfs_host">混淆主机</string>
     <string name="snell_mode">模式</string>
     <string name="anytls_disable_reuse">禁用连接复用</string>
+    <string name="chrome_parrot_summary">模仿 Chrome 的 QUIC Client Hello</string>
+    <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">此选项被禁用以匹配 Chrome 的行为。 </string>
+    <string name="option_globally_enabled">此选项已被全局启用，该值将被忽略。</string>
 </resources>

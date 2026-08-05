@@ -1184,10 +1184,14 @@ fun buildV2RayConfig(
                                         }
                                         "hysteria2" -> {
                                             hy2Settings = Hysteria2Object().apply {
-                                                // V2Ray transport is TCP only so it is safe to omit MaxDatagramFrameSize.
-                                                omitMaxDatagramFrameSize = true
                                                 if (bean.hy2ChromeParrot) {
+                                                    // Chrome always advertises QUIC datagram support.
+                                                    // omitMaxDatagramFrameSize is in fact always disabled regardless of the value.
+                                                    // Do not set omitMaxDatagramFrameSize to avoid user confusion.
                                                     chromeParrot = true
+                                                } else {
+                                                    // V2Ray transport is TCP only so it is safe to omit MaxDatagramFrameSize.
+                                                    omitMaxDatagramFrameSize = true
                                                 }
                                                 if (bean.hy2Password.isNotEmpty()) {
                                                     password = bean.hy2Password
@@ -1350,14 +1354,16 @@ fun buildV2RayConfig(
                                     security = "tls"
                                     hy2Settings = Hysteria2Object().apply {
                                         use_udp_extension = true
-                                        if (DataStore.hysteria2OmitMaxDatagramFrameSize || bean.omitMaxDatagramFrameSize) {
+                                        if (bean.chromeParrot) {
+                                            // Chrome always advertise QUIC datagram support.
+                                            // omitMaxDatagramFrameSize is in fact always disabled regardless of the value.
+                                            // Do not set omitMaxDatagramFrameSize to avoid user confusion.
+                                            chromeParrot = true
+                                        } else if (DataStore.hysteria2OmitMaxDatagramFrameSize || bean.omitMaxDatagramFrameSize) {
                                             omitMaxDatagramFrameSize = true
                                         }
                                         if (bean.auth.isNotEmpty()) {
                                             password = bean.auth
-                                        }
-                                        if (bean.chromeParrot) {
-                                            chromeParrot = true
                                         }
                                         congestion = Hysteria2Object.CongestionObject().apply {
                                             if (bean.downloadMbps > 0) {

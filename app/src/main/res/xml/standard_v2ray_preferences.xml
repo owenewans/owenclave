@@ -116,6 +116,7 @@
         <SwitchPreference
             app:icon="@drawable/ic_baseline_fingerprint_24"
             app:key="serverHysteria2ChromeParrot"
+            app:summary="@string/chrome_parrot_summary"
             app:title="@string/chrome_parrot" />
         <EditTextPreference
             app:dialogLayout="@layout/layout_password_dialog"

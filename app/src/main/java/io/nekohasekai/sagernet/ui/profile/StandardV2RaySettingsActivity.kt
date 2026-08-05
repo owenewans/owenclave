@@ -54,6 +54,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.getBooleanProperty
 import io.nekohasekai.sagernet.ktx.listenForPackageChanges
+import io.nekohasekai.sagernet.ktx.onMainDispatcher
 import io.nekohasekai.sagernet.ktx.readableMessage
 import io.nekohasekai.sagernet.ktx.runOnMainDispatcher
 import io.nekohasekai.sagernet.ktx.showAllowingStateLoss
@@ -400,6 +401,11 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
         realityMldsa65Verify = findPreference(Key.SERVER_REALITY_MLDSA65_VERIFY)!!
         realityFingerprint = findPreference(Key.SERVER_REALITY_FINGERPRINT)!!
         realityDisableX25519Mlkem768 = findPreference(Key.SERVER_REALITY_DISABLE_X25519MLKEM768)!!
+        realityDisableX25519Mlkem768.summary = if (DataStore.realityDisableX25519Mlkem768) {
+            getString(R.string.option_globally_enabled)
+        } else {
+            getString(R.string.reality_breaking_change_summary)
+        }
 
         realityPublicKey.apply {
             summaryProvider = PasswordSummaryProvider
