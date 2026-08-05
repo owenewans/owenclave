@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# Build olcrtc CLI for all Android ABIs as libolcrtc.so
-# Must run inside owenclave-fhs (nix develop -c owenclave-fhs -c "./bin/lib/olcrtc/build.sh")
-# Requires CGO_ENABLED=1 for ALL ABIs: the Android netlink-free getifaddrs path
-# (internal/protect/pionnet_android.go, //go:build android && cgo) needs cgo.
-# Without cgo the nocgo stub returns ErrInterfacesUnavailable and ICE fails.
+# build olcrtc cli for all android abis as libolcrtc.so
+# cgo enables android interface discovery required by ice
 set -euo pipefail
 
-OLCRTC_SRC="${OLCRTC_SRC:-/tmp/opencode/olcrtc}"
+OLCRTC_COMMIT="${OLCRTC_COMMIT:-513be68c0056eb720a0151d36f662d75cbe8f437}"
+OLCRTC_SRC="${OLCRTC_SRC:-${TMPDIR:-/tmp}/owenclave-olcrtc}"
 OUT_ROOT="${OUT_ROOT:-$(cd "$(dirname "$0")/../../.." && pwd)/app/src/main/jniLibs}"
 TC="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
+
+if [ ! -d "$OLCRTC_SRC/.git" ]; then
+  rm -rf "$OLCRTC_SRC"
+  git clone https://github.com/openlibrecommunity/olcrtc.git "$OLCRTC_SRC"
+fi
+git -C "$OLCRTC_SRC" fetch --depth 1 origin "$OLCRTC_COMMIT"
+git -C "$OLCRTC_SRC" checkout --detach "$OLCRTC_COMMIT"
 
 echo "olcrtc src: $OLCRTC_SRC"
 echo "jniLibs out: $OUT_ROOT"
