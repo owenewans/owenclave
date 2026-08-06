@@ -233,7 +233,7 @@ public class Hysteria2Bean extends AbstractBean {
         if (version >= 10) {
             serverNameToVerify = input.readString();
         }
-        if (version >= 10) {
+        if (version >= 11) {
             chromeParrot = input.readBoolean();
             if (chromeParrot) {
                 omitMaxDatagramFrameSize = false;
