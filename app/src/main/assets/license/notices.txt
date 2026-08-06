@@ -1611,7 +1611,10 @@ androidx.appcompat:appcompat
 androidx.appcompat:appcompat-resources
 androidx.arch.core:core-common
 androidx.arch.core:core-runtime
+androidx.camera.featurecombinationquery:featurecombinationquery
+androidx.camera.viewfinder:viewfinder-core
 androidx.camera:camera-camera2
+androidx.camera:camera-camera2-pipe
 androidx.camera:camera-core
 androidx.camera:camera-lifecycle
 androidx.camera:camera-video
@@ -1619,12 +1622,14 @@ androidx.camera:camera-view
 androidx.cardview:cardview
 androidx.collection:collection-jvm
 androidx.collection:collection-ktx
+androidx.compose.runtime:runtime-annotation-android
 androidx.concurrent:concurrent-futures
 androidx.concurrent:concurrent-futures-ktx
 androidx.constraintlayout:constraintlayout
 androidx.constraintlayout:constraintlayout-core
 androidx.coordinatorlayout:coordinatorlayout
 androidx.core:core
+androidx.core:core-backported-fixes
 androidx.core:core-ktx
 androidx.core:core-viewtree
 androidx.cursoradapter:cursoradapter
@@ -1651,6 +1656,10 @@ androidx.lifecycle:lifecycle-viewmodel
 androidx.lifecycle:lifecycle-viewmodel-ktx
 androidx.lifecycle:lifecycle-viewmodel-savedstate
 androidx.loader:loader
+androidx.media3:media3-common
+androidx.media3:media3-container
+androidx.media3:media3-muxer
+androidx.navigationevent:navigationevent-android
 androidx.preference:preference
 androidx.profileinstaller:profileinstaller
 androidx.recyclerview:recyclerview
@@ -1666,6 +1675,7 @@ androidx.sqlite:sqlite-framework-android
 androidx.startup:startup-runtime
 androidx.swiperefreshlayout:swiperefreshlayout
 androidx.tracing:tracing
+androidx.tracing:tracing-android
 androidx.tracing:tracing-ktx
 androidx.transition:transition
 androidx.vectordrawable:vectordrawable
@@ -1826,6 +1836,37 @@ com.google.auto.value:auto-value-annotations
       See the License for the specific language governing permissions and
       limitations under the License.
 
+com.google.code.findbugs:jsr305
+
+      Copyright (c) 2007-2009, JSR305 expert group
+      All rights reserved.
+
+      https://opensource.org/licenses/BSD-3-Clause
+
+      Redistribution and use in source and binary forms, with or without
+      modification, are permitted provided that the following conditions are met:
+
+          * Redistributions of source code must retain the above copyright notice,
+            this list of conditions and the following disclaimer.
+          * Redistributions in binary form must reproduce the above copyright notice,
+            this list of conditions and the following disclaimer in the documentation
+            and/or other materials provided with the distribution.
+          * Neither the name of the JSR305 expert group nor the names of its
+            contributors may be used to endorse or promote products derived from
+            this software without specific prior written permission.
+
+      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+      AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+      THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+      ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+      LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+      CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+      SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+      INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+      CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+      ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+      POSSIBILITY OF SUCH DAMAGE.
+
 com.google.code.gson:gson
 
       Copyright 2008 Google Inc.
@@ -1835,6 +1876,22 @@ com.google.code.gson:gson
       You may obtain a copy of the License at
 
           http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+
+com.google.dagger:dagger
+
+      Copyright 2012 The Dagger Authors
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
 
       Unless required by applicable law or agreed to in writing, software
       distributed under the License is distributed on an "AS IS" BASIS,
@@ -1858,6 +1915,8 @@ com.google.errorprone:error_prone_annotations
       See the License for the specific language governing permissions and
       limitations under the License.
 
+com.google.guava:failuresuccess
+com.google.guava:guava
 com.google.guava:listenablefuture
 
       Copyright (C) 2007 The Guava Authors
@@ -1871,6 +1930,22 @@ com.google.guava:listenablefuture
       is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
       or implied. See the License for the specific language governing permissions and limitations under
       the License.
+
+com.google.j2objc:j2objc-annotations
+
+      Copyright 2012 Google Inc. All Rights Reserved.
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
 
 com.google.protobuf:protobuf-java
 
@@ -1985,6 +2060,63 @@ io.noties.markwon:core
       See the License for the specific language governing permissions and
       limitations under the License.
 
+jakarta.inject:jakarta.inject-api
+
+      Copyright (C) 2009 The JSR-330 Expert Group
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+
+javax.inject:javax.inject
+
+      Copyright (C) 2009 The JSR-330 Expert Group
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+
+org.checkerframework:checker-qual
+
+      Checker Framework qualifiers
+      Copyright 2004-present by the Checker Framework developers
+
+      MIT License:
+
+      Permission is hereby granted, free of charge, to any person obtaining a copy
+      of this software and associated documentation files (the "Software"), to deal
+      in the Software without restriction, including without limitation the rights
+      to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+      copies of the Software, and to permit persons to whom the Software is
+      furnished to do so, subject to the following conditions:
+
+      The above copyright notice and this permission notice shall be included in
+      all copies or substantial portions of the Software.
+
+      THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+      IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+      AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+      LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+      OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+      THE SOFTWARE.
+
 org.jetbrains.kotlin:kotlin-bom
 org.jetbrains.kotlin:kotlin-parcelize-runtime
 org.jetbrains.kotlin:kotlin-stdlib
@@ -2071,6 +2203,22 @@ org.jetbrains.kotlin:kotlin-stdlib-jdk7
             FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
             ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
             DEALINGS IN THE SOFTWARE.
+
+org.jetbrains.kotlinx:atomicfu-jvm
+
+      Copyright 2017 JetBrains s.r.o.
+
+      Licensed under the Apache License, Version 2.0 (the "License");
+      you may not use this file except in compliance with the License.
+      You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
 
 org.jetbrains.kotlinx:kotlinx-coroutines-android
 org.jetbrains.kotlinx:kotlinx-coroutines-bom

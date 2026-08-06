@@ -207,7 +207,12 @@ fun Project.setupApp() {
         buildFeatures.viewBinding = true
         compileOptions.isCoreLibraryDesugaringEnabled = true
         flavorDimensions.add("vendor")
-        productFlavors.create("oss")
+        productFlavors.create("oss") {
+            minSdk = 23
+        }
+        productFlavors.create("legacy") {
+            minSdk = 21
+        }
         tasks.register("downloadAssets") {
             downloadAssets(update = false)
         }
@@ -215,7 +220,6 @@ fun Project.setupApp() {
             downloadRootCAList()
             downloadAssets(update = true)
         }
-
     }
     androidComponents.apply {
         onVariants { variant ->

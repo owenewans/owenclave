@@ -67,14 +67,17 @@ jobs:
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           export LOCAL_PROPERTIES="${{ secrets.LOCAL_PROPERTIES }}"
           ./gradlew :app:downloadAssets
-          ./gradlew :app:assembleOssRelease
-          APK="app/build/outputs/apk/oss/release"
-          echo "APK=$APK" >> $GITHUB_ENV
+          ./gradlew :app:assembleOssRelease :app:assembleLegacyRelease
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
           name: APKs
-          path: ${{ env.APK }}
+          path: app/build/outputs/apk/oss/release
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: APKs-legacy
+          path: app/build/outputs/apk/legacy/release
   publish:
     name: Publish Release
     if: github.event.inputs.release == 'y' && github.event.inputs.tag != ''
@@ -91,7 +94,12 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: APKs
-          path: artifacts
+          path: artifacts/oss
+      - name: Download Artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: APKs-legacy
+          path: artifacts/legacy
       - name: Publish Pre-release
         if: github.event.inputs.prerelease == 'y'
         run: |
