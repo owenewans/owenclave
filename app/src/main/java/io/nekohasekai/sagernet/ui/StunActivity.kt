@@ -183,7 +183,7 @@ class StunActivity : ThemedActivity() {
                     useDNSUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock")
                 }
             }
-            val result = stunClient.stunLegacyTest(binding.natStunServer.text.toString())
+            val result = stunClient.stunTCPTest(binding.natStunServer.text.toString())
             onMainDispatcher {
                 if (result.error.isNotEmpty()) {
                     AlertDialog.Builder(this@StunActivity)

@@ -189,12 +189,17 @@ fun String.toHysteriaPort(disallowFromGreaterThanTo: Boolean = false): Int {
 
 const val USER_AGENT = "Exclave/${BuildConfig.VERSION_NAME}"
 
-// Taken from https://gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/-/blob/main/client/torrc with unsupported servers removed.
 val PUBLIC_STUN_SERVERS = arrayOf(
-    "stun.epygi.com:3478",
-    "stun.uls.co.za:3478",
+    "stunserver2025.stunprotocol.org:3478",
     "stun.voipgate.com:3478",
-    "stun.mixvoip.com:3478"
+    "stun.mixvoip.com:3478",
+    "stun.dus.net:3478",
+    "stun.m-online.net:3478",
+    "stun.pure-ip.com:3478",
+    "stun.sip.us:3478",
+    "stun.siptrunk.com:3478",
+    "stun.telnyx.com:3478",
+    "stun.voipia.net:3478"
 )
 
 fun String.unescapeLineFeed(): String {
