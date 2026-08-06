@@ -120,15 +120,15 @@ Exclave is licensed under the GNU General Public License as published by the Fre
 
   - Build libexclavecore: `./run lib core` or `./library/core/build.sh`
   - Download assets: `./gradlew :app:downloadAssets`, or update assets to the latest version: `./gradlew :app:updateAssets`
-  - Build Exclave: `./gradlew :app:assembleOssRelease`
+  - Build Exclave: `./gradlew :app:assembleOssRelease` (default flavor) or `./gradlew :app:assembleLegacyRelease` (legacy flavor)
 
 - Windows (x64):
 
-  - Build libexclavecore: `./library/core/build.bat`
-  - Download assets: `./gradlew.bat :app:downloadAssets`, or update assets to the latest version: `./gradlew.bat :app:updateAssets`
-  - Build Exclave: `./gradlew.bat :app:assembleOssRelease` (default flavor) or `./gradlew.bat :app:assembleLegacyRelease` (legacy flavor)
+  - Build libexclavecore: `.\library\core\build.bat`
+  - Download assets: `.\gradlew.bat :app:downloadAssets`, or update assets to the latest version: `.\gradlew.bat :app:updateAssets`
+  - Build Exclave: `.\gradlew.bat :app:assembleOssRelease` (default flavor) or `.\gradlew.bat :app:assembleLegacyRelease` (legacy flavor)
 
-- APK files are located in `./app/build/outputs/apk/oss/release` (default flavor) or `./app/build/outputs/apk/legacy/release` (legacy flavor).
+- APK files are located in `.\app\build\outputs\apk\oss\release` (default flavor) or `.\app\build\outputs\apk\legacy\release` (legacy flavor).
 
 ## Acknowledgment
 
