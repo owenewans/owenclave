@@ -1518,10 +1518,10 @@ class ConfigurationFragment @JvmOverloads constructor(
                     notifyDataSetChanged()
 
                     if (selectedProfileIndex != -1 && !scrolled) {
-                        configurationListView.scrollTo(selectedProfileIndex, true)
+                        layoutManager.scrollToPositionWithOffset(selectedProfileIndex, 0)
                         scrolled = true
                     } else if (newProfiles.isNotEmpty() && !scrolled) {
-                        configurationListView.scrollTo(0, true)
+                        layoutManager.scrollToPositionWithOffset(0, 0)
                         scrolled = true
                     }
 
