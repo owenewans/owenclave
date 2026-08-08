@@ -2,7 +2,7 @@ module libexclavecore
 
 go 1.26
 
-require github.com/exclavenetwork/libexclavecore v0.0.0-20260806191853-39c302a56844
+require github.com/exclavenetwork/libexclavecore v0.0.0-20260808053433-75cf4f4a697d
 
 require (
 	filippo.io/age v1.3.1 // indirect
@@ -10,28 +10,28 @@ require (
 	filippo.io/mldsa v0.0.0-20260711112038-ff3f469cee29 // indirect
 	github.com/adrg/xdg v0.5.3 // indirect
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da // indirect
-	github.com/andybalholm/brotli v1.0.6 // indirect
+	github.com/andybalholm/brotli v1.2.2 // indirect
 	github.com/anytls/sing-anytls v0.0.13 // indirect
 	github.com/apernet/quic-go v0.61.1-0.20260806010916-184d081eef3e // indirect
 	github.com/dgryski/go-camellia v0.0.0-20191119043421-69a8a13fb23d // indirect
-	github.com/dgryski/go-metro v0.0.0-20200812162917-85c65e2d0165 // indirect
+	github.com/dgryski/go-metro v0.0.0-20250106013310-edb8663e5e33 // indirect
 	github.com/enfein/mieru/v3 v3.35.0 // indirect
-	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260806080819-aafdeaf9623d // indirect
+	github.com/exclavenetwork/exclave-core/v5 v5.50.1-0.20260808051351-527078356a31 // indirect
 	github.com/exclavenetwork/go-stun v0.1.7-0.20260724055932-543999925444 // indirect
 	github.com/exclavenetwork/hysteria/core/v2 v2.12.0-1 // indirect
 	github.com/exclavenetwork/hysteria/extras/v2 v2.12.0-1 // indirect
 	github.com/exclavenetwork/sing-juicity v0.3.0-beta.1 // indirect
 	github.com/exclavenetwork/sing-shadowquic v0.0.0-20260801175020-65c7acc31f93 // indirect
-	github.com/gofrs/uuid/v5 v5.3.2 // indirect
+	github.com/gofrs/uuid/v5 v5.5.1 // indirect
 	github.com/golang-collections/go-datastructures v0.0.0-20150211160725-59788d5eb259 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/btree v1.1.3 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/hashicorp/yamux v0.1.2 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
-	github.com/klauspost/cpuid/v2 v2.0.12 // indirect
-	github.com/lunixbochs/struc v0.0.0-20200707160740-784aaebc1d40 // indirect
-	github.com/metacubex/cpu v0.1.0 // indirect
+	github.com/klauspost/compress v1.19.2 // indirect
+	github.com/klauspost/cpuid/v2 v2.4.0 // indirect
+	github.com/lunixbochs/struc v0.0.0-20241101090106-8d528fa2c543 // indirect
+	github.com/metacubex/cpu v0.1.1 // indirect
 	github.com/metacubex/hkdf v0.1.0 // indirect
 	github.com/metacubex/hpke v0.1.0 // indirect
 	github.com/metacubex/jls-quic-go v0.0.0-20260727080412-732f2fc9a34d // indirect
@@ -45,7 +45,7 @@ require (
 	github.com/quic-go/quic-go v0.61.0 // indirect
 	github.com/refraction-networking/utls v1.8.3-0.20260802151714-23b1dac19c06 // indirect
 	github.com/riobard/go-bloom v0.0.0-20200614022211-cdc8013cb5b3 // indirect
-	github.com/sagernet/quic-go v0.61.0-sing-box-mod.2 // indirect
+	github.com/sagernet/quic-go v0.61.0-sing-box-mod.3 // indirect
 	github.com/sagernet/sing v0.8.13-0.20260804143108-f22b119cc7a2 // indirect
 	github.com/sagernet/sing-mux v0.3.5 // indirect
 	github.com/sagernet/sing-quic v0.7.0-beta.1 // indirect
@@ -57,21 +57,21 @@ require (
 	github.com/v2fly/BrowserBridge v0.0.0-20210430233438-0570fc1d7d08 // indirect
 	github.com/v2fly/ss-bloomring v0.0.0-20210312155135-28617310f63e // indirect
 	github.com/v2fly/struc v0.0.0-20241227015403-8e8fa1badfd6 // indirect
-	github.com/xtaci/smux v1.5.15 // indirect
+	github.com/xtaci/smux v1.5.57 // indirect
 	go4.org/netipx v0.0.0-20231129151722-fdeea329fbba // indirect
 	golang.org/x/crypto v0.54.0 // indirect
-	golang.org/x/exp v0.0.0-20250911091902-df9299821621 // indirect
+	golang.org/x/exp v0.0.0-20260727155853-b88d891fe743 // indirect
 	golang.org/x/mobile v0.0.0-20260803200217-62cee1672c8e // indirect
 	golang.org/x/mod v0.38.0 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/text v0.40.0 // indirect
-	golang.org/x/time v0.7.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 	golang.org/x/tools v0.48.0 // indirect
 	golang.zx2c4.com/wintun v0.0.0-20230126152724-0fa3db229ce2 // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20260522210424-ecfc5a8d5446 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20260526163538-3dc84a4a5aaa // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20260807164820-c8921c73eeea // indirect
 	google.golang.org/grpc v1.83.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gvisor.dev/gvisor v0.0.0-20250503011706-39ed1f5ac29c // indirect
