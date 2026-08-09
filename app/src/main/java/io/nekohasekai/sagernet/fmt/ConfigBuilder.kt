@@ -529,35 +529,25 @@ fun buildV2RayConfig(
                     // but this is not the main function of this software, just keep it broken
                     if (bean.security == "none" && bean.host.isNotEmpty()) {
                         val host = try {
-                            val u = Libexclavecore.newURL("placeholder").apply {
-                                rawHost = if (Libexclavecore.isIPv6(bean.host)) "[${bean.host}]" else bean.host
-                            }.string
-                            Libexclavecore.parseURL(u).host
+                            Libexclavecore.splitHostPort(bean.host).host
                         } catch (_: Exception) {
                             bean.host
                         }
-                        wsRules[host] = RoutingObject.RuleObject().apply {
-                            type = "field"
-                            outboundTag = TAG_DIRECT
-                            port = bean.serverPort.toString()
-                            if (Libexclavecore.isIP(host)) {
-                                ip = listOf(host)
-                                if (DataStore.domainStrategy != "AsIs") {
-                                    skipDomain = true
-                                }
-                            } else {
+                        if (host.isNotEmpty() && !Libexclavecore.isIP(host)) {
+                            wsRules[host] = RoutingObject.RuleObject().apply {
+                                type = "field"
+                                outboundTag = TAG_DIRECT
+                                port = bean.serverPort.toString()
                                 domains = listOf(host)
                             }
                         }
                     }
-                    if (bean.security != "none" && bean.sni.isNotEmpty()) {
+                    if (bean.security != "none" && bean.sni.isNotEmpty() && !Libexclavecore.isIP(bean.sni)) {
                         wsRules[bean.sni] = RoutingObject.RuleObject().apply {
                             type = "field"
                             outboundTag = TAG_DIRECT
                             port = bean.serverPort.toString()
-                            if (!Libexclavecore.isIP(bean.sni)) {
-                                domains = listOf(bean.sni)
-                            }
+                            domains = listOf(bean.sni)
                         }
                     }
                     if (bean.serverAddress.isNotEmpty()) {

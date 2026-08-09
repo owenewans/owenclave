@@ -128,7 +128,6 @@
                 <!--data android:scheme="http" /-->
                 <!--data android:scheme="https" /-->
                 <data android:scheme="ss" />
-                <!--data android:scheme="ssh" /-->
                 <data android:scheme="ssr" />
                 <data android:scheme="socks" />
                 <data android:scheme="socks4" />

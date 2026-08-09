@@ -26,8 +26,11 @@ fun parseAnyTLS(url: String): AnyTLSBean {
     val link = Libexclavecore.parseURL(url)
     return AnyTLSBean().apply {
         name = link.fragment
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPort = link.port.takeIf { it > 0 } ?: 443
+        serverAddress = link.host
+        serverPort = when {
+            !link.hasPort() -> 443
+            else -> link.port
+        }
         password = link.username
         security = "tls"
         link.queryParameter("sni")?.also {
@@ -44,7 +47,7 @@ fun AnyTLSBean.toUri(): String? {
         error("anytls must use tls")
     }
     val builder = Libexclavecore.newURL("anytls")
-    builder.setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
+    builder.setHostPort(serverAddress, serverPort)
     if (password.isNotEmpty()) {
         builder.username = password
     }

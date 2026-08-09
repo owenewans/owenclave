@@ -42,13 +42,11 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
     val link = Libexclavecore.parseURL(url)
     return Hysteria2Bean().apply {
         name = link.fragment
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPorts = if (port.isNotEmpty() && port.isValidHysteriaMultiPort()) {
-            port
-        } else if (link.port > 0) {
-            link.port.toString()
-        } else {
-            "443"
+        serverAddress = link.host
+        serverPorts = when {
+            port.isNotEmpty() -> if (port.isValidHysteriaPort()) port else error("invalid port")
+            !link.hasPort() -> "443"
+            else -> link.port.toString()
         }
         link.queryParameter("mport")?.takeIf { it.isValidHysteriaMultiPort() }?.also {
             serverPorts = it
@@ -108,9 +106,6 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
 fun Hysteria2Bean.toUri(): String? {
     if (!serverPorts.isValidHysteriaPort()) {
         error("invalid port")
-    }
-    if (serverAddress.isEmpty()) {
-        error("empty server address")
     }
 
     val builder = Libexclavecore.newURL("hysteria2").apply {

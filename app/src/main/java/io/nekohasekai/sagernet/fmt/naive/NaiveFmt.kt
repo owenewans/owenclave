@@ -36,8 +36,11 @@ fun parseNaive(link: String): NaiveBean {
             "naive+quic" -> "quic"
             else -> error("impossible")
         }
-        serverAddress = url.host.ifEmpty { error("empty host") }
-        serverPort = url.port.takeIf { it > 0 } ?: 443
+        serverAddress = url.host
+        serverPort = when {
+            !url.hasPort() -> 443
+            else -> url.port
+        }
         username = url.username
         password = url.password
         sni = url.queryParameter("sni")
@@ -52,7 +55,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     val host = if (sni.isNotEmpty() && proxyOnly) {
         sni
     } else {
-        serverAddress.ifEmpty { error("empty server address") }
+        serverAddress
     }
     val port = if (proxyOnly) {
         finalPort

@@ -34,6 +34,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
 import io.nekohasekai.sagernet.fmt.v2ray.supportedQuicSecurity
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
+import libexclavecore.Libexclavecore
 import kotlin.io.encoding.Base64
 
 fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
@@ -457,8 +458,13 @@ fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
                             peerPreSharedKey = peer.getString("preshared_key") ?: peer.getString("presharedKey")
                             keepaliveInterval = peer.getInt("persistent_keepalive_interval") ?: peer.getInt("persistentKeepaliveInterval")
                             peer.getString("endpoint")?.also {
-                                serverAddress = it.substringBeforeLast(":").removePrefix("[").removeSuffix("]")
-                                serverPort = it.substringAfterLast(":").toIntOrNull() ?: return listOf()
+                                try {
+                                    val hostPort = Libexclavecore.splitHostPort(it)
+                                    serverAddress = hostPort.host
+                                    serverPort = hostPort.port
+                                } catch (_: Exception) {
+                                    return listOf()
+                                }
                             }
                         })
                     }

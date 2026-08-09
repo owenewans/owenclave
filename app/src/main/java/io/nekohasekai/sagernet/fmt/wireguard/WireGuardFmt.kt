@@ -33,8 +33,11 @@ import kotlin.jvm.optionals.getOrNull
 fun parseWireGuard(server: String): WireGuardBean {
     val link = Libexclavecore.parseURL(server)
     return WireGuardBean().apply {
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPort = link.port.takeIf { it > 0 } ?: 51820
+        serverAddress = link.host
+        serverPort = when {
+            !link.hasPort() -> error("invalid port")
+            else -> link.port
+        }
         if (link.username.isNotEmpty()) {
             // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L126-L148
             privateKey = link.username.replace('_', '/').replace('-', '+')
@@ -105,8 +108,9 @@ fun parseWireGuardConfig(conf: String): List<WireGuardBean> {
             continue
         }
         beans.add(wgBean.applyDefaultValues().clone().apply {
-            serverAddress = endpoint.substringBeforeLast(":").removePrefix("[").removeSuffix("]").ifEmpty { error("empty host") }
-            serverPort = endpoint.substringAfterLast(":").toIntOrNull() ?: continue
+            val hostPort = Libexclavecore.splitHostPort(endpoint)
+            serverAddress = hostPort.host
+            serverPort = hostPort.port
             peerPublicKey = peer.getOr("PublicKey").getOrNull() ?: continue
             peerPreSharedKey = peer.getOr("PreSharedKey").getOrNull()
             keepaliveInterval = peer.getOr("PersistentKeepalive").getOrNull()?.toIntOrNull()?.takeIf { it > 0 }
@@ -124,7 +128,7 @@ fun WireGuardBean.toConf(): String {
     }
     iface.put("PrivateKey", privateKey.ifEmpty { error("empty private key") })
     val peer = ini.create("Peer")
-    peer.put("Endpoint", joinHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort))
+    peer.put("Endpoint", joinHostPort(serverAddress, serverPort))
     peer.put("PublicKey", peerPublicKey.ifEmpty { error("empty peer public key") })
     if (peerPreSharedKey.isNotEmpty()) {
         peer.put("PreSharedKey", peerPreSharedKey)

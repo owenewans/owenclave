@@ -25,26 +25,30 @@ import libexclavecore.Libexclavecore
 
 fun parseSOCKS(link: String): SOCKSBean {
     val url = Libexclavecore.parseURL(link)
-    if (url.scheme == "socks" && url.port == 0 && url.username.isEmpty() && url.password.isEmpty()) {
+    if (url.scheme == "socks" && !url.hasPort() && url.userInfo.isEmpty()) {
         // old v2rayNG format
         // This format is broken if username and/or password contains ":".
         val plainUri = link.substring("socks://".length).substringBefore("#").decodeBase64()
         return SOCKSBean().apply {
             protocol = SOCKSBean.PROTOCOL_SOCKS5
-            serverAddress = plainUri.substringAfterLast("@").substringBeforeLast(":").removePrefix("[").removeSuffix("]").ifEmpty { error("empty host") }
-            serverPort = plainUri.substringAfterLast("@").substringAfterLast(":").toIntOrNull()
+            val hostPort = Libexclavecore.splitHostPort(plainUri.substringAfterLast("@"))
+            serverAddress = hostPort.host
+            serverPort = hostPort.port
             username = plainUri.substringBeforeLast("@").substringBefore(":")
             password = plainUri.substringBeforeLast("@").substringAfter(":")
             name = url.fragment
         }
     }
-    if (url.scheme == "socks" && url.password.isEmpty() && url.username.decodeBase64().contains(":")) {
+    if (url.scheme == "socks" && !url.hasPassword() && url.username.decodeBase64().contains(":")) {
         // new v2rayNG format
         // This format is broken if username and/or password contains ":".
         return SOCKSBean().apply {
             protocol = SOCKSBean.PROTOCOL_SOCKS5
-            serverAddress = url.host.ifEmpty { error("empty host") }
-            serverPort = url.port
+            serverAddress = url.host?.ifEmpty { error("empty host") }
+            serverPort = when {
+                !url.hasPort() -> error("invalid port")
+                else -> url.port
+            }
             username = url.username.decodeBase64().substringBefore(":")
             password = url.username.decodeBase64().substringAfter(":")
             name = url.fragment
@@ -57,8 +61,11 @@ fun parseSOCKS(link: String): SOCKSBean {
             "socks5", "socks5h" /* blame cURL for this */, "socks" -> SOCKSBean.PROTOCOL_SOCKS5
             else -> error("impossible")
         }
-        serverAddress = url.host.ifEmpty { error("empty host") }
-        serverPort = url.port.takeIf { it > 0 } ?: 1080
+        serverAddress = url.host?.ifEmpty { error("empty host") }
+        serverPort = when {
+            !url.hasPort() -> 1080
+            else -> url.port
+        }
         username = url.username
         password = url.password
         name = url.fragment

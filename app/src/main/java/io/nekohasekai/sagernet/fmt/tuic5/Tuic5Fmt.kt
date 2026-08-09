@@ -63,10 +63,10 @@ fun parseTuic(server: String): AbstractBean {
     }
 
     return Tuic5Bean().apply {
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPort = link.port
-        if (link.port == 0) {
-            serverPort = 443
+        serverAddress = link.host
+        serverPort = when {
+            !link.hasPort() -> 443
+            else -> link.port
         }
         uuid = link.username
         password = link.password
@@ -116,7 +116,7 @@ fun parseTuic(server: String): AbstractBean {
 
 fun Tuic5Bean.toUri(): String? {
     val builder = Libexclavecore.newURL("tuic").apply {
-        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
+        setHostPort(serverAddress, serverPort)
         username = uuid.ifEmpty { error("empty uuid") }
         if (name.isNotEmpty()) {
             fragment = name

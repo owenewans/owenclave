@@ -1812,8 +1812,13 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getArray("peers")?.forEach { peer ->
                     beanList.add(wireguardBean.applyDefaultValues().clone().apply {
                         peer.getString("endpoint")?.also { endpoint ->
-                            serverAddress = endpoint.substringBeforeLast(":").removePrefix("[").removeSuffix("]")
-                            serverPort = endpoint.substringAfterLast(":").toIntOrNull() ?: return listOf()
+                            try {
+                                val hostPort = Libexclavecore.splitHostPort(endpoint)
+                                serverAddress = hostPort.host
+                                serverPort = hostPort.port
+                            } catch (_: Exception) {
+                                return listOf()
+                            }
                         }
                         peer.getString("publicKey")?.also {
                             if (it.length == 64) {
