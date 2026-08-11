@@ -3,8 +3,6 @@ plugins {
     `kotlin-dsl`
 }
 
-apply(from = "../repositories.gradle.kts")
-
 dependencies {
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)

@@ -32,6 +32,7 @@ aboutLibraries {
 
 dependencies {
     implementation(fileTree("libs"))
+    implementation(project(":plugin:api"))
     implementation(project(":library:proto-stub"))
     implementation(libs.kotlinx.coroutines.android)
     "ossImplementation"(libs.core.ktx)

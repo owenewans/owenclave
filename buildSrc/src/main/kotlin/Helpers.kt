@@ -153,7 +153,6 @@ fun Project.setupAppCommon(projectName: String = "") {
             dependsOn(cleanTask)
         }
     }
-    dependencies.add("implementation", project(":plugin:api"))
 }
 
 fun Project.setupPlugin(projectName: String) {
