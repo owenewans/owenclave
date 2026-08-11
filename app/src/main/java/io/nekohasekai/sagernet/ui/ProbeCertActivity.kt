@@ -85,28 +85,39 @@ class ProbeCertActivity : ThemedActivity() {
             setHomeAsUpIndicator(R.drawable.ic_navigation_close)
         }
 
-        binding.probeCertServer.setText("example.com")
-        binding.probeCertServerPort.setText("443")
-        binding.probeCertServerName.setText("example.com")
+        binding.probeCertServer.setText(DataStore.certProberServerAddress)
+        binding.probeCertServerPort.setText(DataStore.certProberServerPort.toString())
+        binding.probeCertServerName.setText(DataStore.certProberSNI)
+        binding.probeCertProtocol.setSelection(DataStore.certProberProtocol)
+        binding.probeCertAlpn.setText(DataStore.certProberALPN)
+        binding.certHashType.setSelection(DataStore.certProberHashType)
+
         binding.probeCertServer.doAfterTextChanged { text ->
             binding.probeCertServerName.setText(text)
         }
-        binding.probeCertAlpn.setText("h2,http/1.1")
-        binding.probeCertProtocol.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                when (position) {
-                    0 -> binding.probeCertAlpn.setText("h2,http/1.1")
-                    1 -> binding.probeCertAlpn.setText("h3")
-                    else -> error("unknown protocol")
+        binding.probeCertProtocol.post {
+            binding.probeCertProtocol.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                ) {
+                    when (position) {
+                        0 -> binding.probeCertAlpn.setText("h2,http/1.1")
+                        1 -> binding.probeCertAlpn.setText("h3")
+                        else -> error("unknown protocol")
+                    }
                 }
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
             }
         }
 
         binding.probeCert.setOnClickListener {
+            DataStore.certProberServerAddress = binding.probeCertServer.text.toString()
+            DataStore.certProberServerPort = binding.probeCertServerPort.text.toString().toInt()
+            DataStore.certProberSNI = binding.probeCertServerName.text.toString()
+            DataStore.certProberALPN = binding.probeCertAlpn.text.toString()
+            DataStore.certProberProtocol = binding.probeCertProtocol.selectedItemPosition
+            DataStore.certProberHashType = binding.certHashType.selectedItemPosition
             probeCert()
         }
 

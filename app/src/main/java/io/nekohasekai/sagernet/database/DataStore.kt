@@ -478,13 +478,22 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var rulesFirstCreate by configurationStore.boolean(Key.RULES_FIRST_CREATE)
     var doNotShowRuleExportWarning by configurationStore.boolean(Key.DO_NOT_SHOW_RULE_EXPORT_WARNING)
 
-    var getInstalledPackagesInited by configurationStore.boolean("getInstalledPackagesInited")
-    var postNotificationsPermissionRequested by configurationStore.boolean("postNotificationsPermissionRequested")
-    var accessLocalNetworkPermissionRequested by configurationStore.boolean("accessLocalNetworkPermissionRequested")
+    var getInstalledPackagesInited by configurationStore.boolean(Key.GET_INSTALLED_PACKAGES_INITED)
+    var postNotificationsPermissionRequested by configurationStore.boolean(Key.POST_NOTIFICATION_PERMISSION_REQUESTED)
+    var accessLocalNetworkPermissionRequested by configurationStore.boolean(Key.ACCESS_LOCAL_NETWORK_PERMISSION_REQUESTED)
 
     var experimentalFlagsProperties = Properties().apply {
         load(BufferedReader(StringReader(experimentalFlags)))
     }
+
+    var stunServerAddress by configurationStore.string(Key.STUN_SERVER_ADDRESS)
+    var stunTestType by configurationStore.stringToInt(Key.STUN_TEST_TYPE)
+    var certProberServerAddress by configurationStore.string(Key.CERT_PROBER_SERVER_ADDRESS) { "example.com" }
+    var certProberServerPort by configurationStore.stringToInt(Key.CERT_PROBER_SERVER_PORT) { 443 }
+    var certProberSNI by configurationStore.string(Key.CERT_PROBER_SNI) { "example.com" }
+    var certProberALPN by configurationStore.string(Key.CERT_PROBER_ALPN) { "h2,http/1.1" }
+    var certProberProtocol by configurationStore.stringToInt(Key.CERT_PROBER_PROTOCOL)
+    var certProberHashType by configurationStore.stringToInt(Key.CERT_PROBER_CERT_HASH_TYPE)
 
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         when (key) {

@@ -915,4 +915,11 @@
         <item>unsafe-raw</item>
     </string-array>
 
+    <string-array name="stun_test_type">
+        <item>@string/stun_test</item>
+        <item>@string/stun_legacy_test</item>
+        <item>@string/udp</item>
+        <item>@string/tcp</item>
+    </string-array>
+
 </resources>

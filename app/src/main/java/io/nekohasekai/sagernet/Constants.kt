@@ -334,6 +334,19 @@ object Key {
     const val RULES_FIRST_CREATE = "rulesFirstCreate"
     const val DO_NOT_SHOW_RULE_EXPORT_WARNING = "doNotShowRuleExportWarning"
 
+    const val GET_INSTALLED_PACKAGES_INITED = "getInstalledPackagesInited"
+    const val POST_NOTIFICATION_PERMISSION_REQUESTED = "postNotificationsPermissionRequested"
+    const val ACCESS_LOCAL_NETWORK_PERMISSION_REQUESTED = "accessLocalNetworkPermissionRequested"
+
+    const val STUN_SERVER_ADDRESS = "stunServerAddress"
+    const val STUN_TEST_TYPE = "stunTestType"
+    const val CERT_PROBER_SERVER_ADDRESS = "certProberServerAddress"
+    const val CERT_PROBER_SERVER_PORT = "certProberServerPort"
+    const val CERT_PROBER_SNI = "certProberSNI"
+    const val CERT_PROBER_ALPN = "certProberALPN"
+    const val CERT_PROBER_PROTOCOL = "certProberProtocol"
+    const val CERT_PROBER_CERT_HASH_TYPE = "certProberCertHashType"
+
 }
 
 object TunImplementation {
