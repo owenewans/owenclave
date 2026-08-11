@@ -198,7 +198,6 @@ val PUBLIC_STUN_SERVERS = arrayOf(
     "stun.pure-ip.com:3478",
     "stun.sip.us:3478",
     "stun.siptrunk.com:3478",
-    "stun.telnyx.com:3478",
     "stun.voipia.net:3478"
 )
 
