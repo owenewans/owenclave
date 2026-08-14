@@ -8,7 +8,8 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 core-ktx = { module = "androidx.core:core-ktx", version = "1.19.0" }
 #noinspection SimilarGradleDependency
 activity-ktx = { module = "androidx.activity:activity-ktx", version = "1.13.0" }
-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version = "1.8.9" }
+#noinspection SimilarGradleDependency
+fragment-ktx = { module = "androidx.fragment:fragment-ktx", version = "1.9.0" }
 #noinspection SimilarGradleDependency
 camera-view = { module = "androidx.camera:camera-view", version = "1.6.1" }
 #noinspection SimilarGradleDependency
@@ -16,7 +17,8 @@ camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version = "1.6
 #noinspection SimilarGradleDependency
 camera-camera2 = { module = "androidx.camera:camera-camera2", version = "1.6.1" }
 swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version = "1.2.0" }
-appcompat = { module = "androidx.appcompat:appcompat", version = "1.7.1" }
+#noinspection SimilarGradleDependency
+appcompat = { module = "androidx.appcompat:appcompat", version = "1.8.0" }
 preference = { module = "androidx.preference:preference", version = "1.2.1" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version = "3.0.0" }
 #noinspection SimilarGradleDependency
@@ -52,11 +54,15 @@ core-ktx-minSdk21 = { module = "androidx.core:core-ktx", version = "1.17.0" }
 #noinspection GradleDependency,SimilarGradleDependency
 activity-ktx-minSdk21 = { module = "androidx.activity:activity-ktx", version = "1.4.2" }
 #noinspection GradleDependency,SimilarGradleDependency
+fragment-ktx-minSdk21 = { module = "androidx.fragment:fragment-ktx", version = "1.8.9" }
+#noinspection GradleDependency,SimilarGradleDependency
 camera-view-minSdk21 = { module = "androidx.camera:camera-view", version = "1.4.2" }
 #noinspection GradleDependency,SimilarGradleDependency
 camera-lifecycle-minSdk21 = { module = "androidx.camera:camera-lifecycle", version = "1.4.2" }
 #noinspection GradleDependency,SimilarGradleDependency
 camera-camera2-minSdk21 = { module = "androidx.camera:camera-camera2", version = "1.4.2" }
+#noinspection GradleDependency,SimilarGradleDependency
+appcompat-minSdk21 = { module = "androidx.appcompat:appcompat", version = "1.7.1" }
 #noinspection GradleDependency,SimilarGradleDependency
 work-runtime-ktx-minSdk21 = { module = "androidx.work:work-runtime-ktx", version = "2.10.5" }
 #noinspection GradleDependency,SimilarGradleDependency
