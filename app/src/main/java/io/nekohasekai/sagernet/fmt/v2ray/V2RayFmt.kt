@@ -507,7 +507,8 @@ fun parseV2Ray(link: String): StandardV2RayBean {
             else -> error("reality does not support ${bean.type}")
         }
     }
-    if (bean is VLESSBean && bean.security != "none" && bean.flow == "xtls-rprx-vision-udp443" && bean.type != "tcp") {
+    if (bean is VLESSBean && bean.security != "none" && bean.flow == "xtls-rprx-vision-udp443"
+        && bean.type != "tcp" && bean.encryption == "none") {
         error("vision does not support ${bean.type}")
     }
 
@@ -954,11 +955,11 @@ fun StandardV2RayBean.toUri(): String? {
     if (security == "reality") {
         when (type) {
             "tcp", "http", "grpc", "splithttp" -> {}
-            else -> error("reality does not support ${type}")
+            else -> error("reality does not support $type")
         }
     }
-    if (this is VLESSBean && security != "none" && flow.isNotEmpty() && type != "tcp") {
-        error("vision does not support ${type}")
+    if (this is VLESSBean && security != "none" && flow.isNotEmpty() && type != "tcp" && encryption == "none") {
+        error("vision does not support $type")
     }
 
     return builder.string

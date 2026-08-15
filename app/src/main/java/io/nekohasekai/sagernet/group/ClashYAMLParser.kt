@@ -562,7 +562,9 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     else -> return listOf()
                 }
             }
-            if (bean is VLESSBean && bean.security != "none" && bean.flow == "xtls-rprx-vision-udp443" && bean.type != "tcp") {
+
+            if (bean is VLESSBean && bean.security != "none" && bean.flow == "xtls-rprx-vision-udp443"
+                && bean.type != "tcp" && bean.encryption == "none") {
                 return listOf()
             }
 
