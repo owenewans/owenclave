@@ -596,4 +596,7 @@
     <string name="snell_obfs_host">Hostitel maskování</string>
     <string name="snell_mode">Režim</string>
     <string name="anytls_disable_reuse">Zakázat opakované použití spojení</string>
+    <string name="chrome_parrot_summary">Napodobit QUIC Client Hello prohlížeče Chrome</string>
+    <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">Tato možnost je zakázána, aby odpovídala chování prohlížeče Chrome.</string>
+    <string name="option_globally_enabled">Tato možnost je globálně povolena a hodnota bude vynechána.</string>
 </resources>
