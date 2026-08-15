@@ -46,6 +46,7 @@
             app:entryValues="@array/shadowquic_congestion_control_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverCongestionController"
+            app:singleLineTitle="false"
             app:title="@string/congestion_control"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference

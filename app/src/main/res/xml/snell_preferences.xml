@@ -25,6 +25,7 @@
             app:entryValues="@array/snell_version_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverSnellVersion"
+            app:singleLineTitle="false"
             app:title="@string/app_version"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -44,6 +45,7 @@
             app:entryValues="@array/snell_obfs_value"
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="serverSnellObfsMode"
+            app:singleLineTitle="false"
             app:title="@string/snell_obfs_mode"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -57,6 +59,7 @@
             app:entryValues="@array/snell_mode_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverSnellMode"
+            app:singleLineTitle="false"
             app:title="@string/snell_mode"
             app:useSimpleSummaryProvider="true" />
 

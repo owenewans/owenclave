@@ -37,6 +37,7 @@
             app:entryValues="@array/naive_proto_value"
             app:icon="@drawable/ic_baseline_layers_24"
             app:key="serverProtocol"
+            app:singleLineTitle="false"
             app:title="@string/protocol"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -59,6 +60,7 @@
             app:entryValues="@array/utls_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
             app:key="serverUTLSFingerprint"
+            app:singleLineTitle="false"
             app:title="@string/utls_fingerprint"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference

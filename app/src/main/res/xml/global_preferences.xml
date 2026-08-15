@@ -17,6 +17,7 @@
             app:entryValues="@array/int_array_4"
             app:icon="@drawable/ic_baseline_wb_sunny_24"
             app:key="nightTheme"
+            app:singleLineTitle="false"
             app:title="@string/night_mode"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.ReselectableSimpleMenuPreference
@@ -25,6 +26,7 @@
             app:entryValues="@array/language_value"
             app:icon="@drawable/baseline_translate_24"
             app:key="appLanguage"
+            app:singleLineTitle="false"
             app:title="@string/language" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
             app:defaultValue="vpn"
@@ -32,6 +34,7 @@
             app:entryValues="@array/service_mode_values"
             app:icon="@drawable/ic_device_developer_mode"
             app:key="serviceMode"
+            app:singleLineTitle="false"
             app:title="@string/service_mode"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -40,6 +43,7 @@
             app:entryValues="@array/int_array_2"
             app:icon="@drawable/ic_baseline_flip_camera_android_24"
             app:key="tunImplementation"
+            app:singleLineTitle="false"
             app:title="@string/tun_implementation"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -79,6 +83,7 @@
             app:entryValues="@array/notification_value"
             app:icon="@drawable/ic_baseline_shutter_speed_24"
             app:key="speedInterval"
+            app:singleLineTitle="false"
             app:title="@string/speed_interval"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
@@ -93,6 +98,7 @@
             app:entries="@array/log_level_entry"
             app:entryValues="@array/log_level_value"
             app:key="logLevel"
+            app:singleLineTitle="false"
             app:title="@string/log_level"
             app:useSimpleSummaryProvider="true"/>
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -101,6 +107,7 @@
             app:entries="@array/root_ca_provider_entry"
             app:entryValues="@array/int_array_4"
             app:key="providerRootCA"
+            app:singleLineTitle="false"
             app:title="@string/root_ca_provider"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
@@ -134,6 +141,7 @@
             app:entryValues="@array/domain_strategy"
             app:icon="@drawable/ic_action_dns"
             app:key="domainStrategy"
+            app:singleLineTitle="false"
             app:title="@string/domain_strategy"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
@@ -158,6 +166,7 @@
             app:entryValues="@array/outbound_domain_strategy_value"
             app:icon="@drawable/baseline_wrap_text_24"
             app:key="outboundDomainStrategy"
+            app:singleLineTitle="false"
             app:title="@string/resolve_destination"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -166,6 +175,7 @@
             app:entryValues="@array/outbound_domain_strategy_value"
             app:icon="@drawable/baseline_wrap_text_24"
             app:key="outboundDomainStrategyForDirect"
+            app:singleLineTitle="false"
             app:title="@string/resolve_destination_for_direct"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -174,6 +184,7 @@
             app:entryValues="@array/outbound_domain_strategy_value"
             app:icon="@drawable/baseline_wrap_text_24"
             app:key="outboundDomainStrategyForServer"
+            app:singleLineTitle="false"
             app:title="@string/resolve_destination_for_server"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -182,6 +193,7 @@
             app:entryValues="@array/rules_dat_provider_value"
             app:icon="@drawable/ic_baseline_rule_folder_24"
             app:key="rulesProvider"
+            app:singleLineTitle="false"
             app:title="@string/route_rules_provider"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.LinkOrContentPreference
@@ -202,6 +214,7 @@
             app:entryValues="@array/int_array_3"
             app:icon="@drawable/baseline_wrap_text_24"
             app:key="routeMode"
+            app:singleLineTitle="false"
             app:title="@string/route_mode"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
@@ -239,6 +252,7 @@
             app:entryValues="@array/tls_fragmentation_value"
             app:icon="@drawable/ic_baseline_texture_24"
             app:key="fragmentMethod"
+            app:singleLineTitle="false"
             app:title="@string/fragment_method"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
@@ -271,6 +285,7 @@
             app:entryValues="@array/dns_query_strategy_value"
             app:icon="@drawable/ic_baseline_manage_search_24"
             app:key="remoteDnsQueryStrategy"
+            app:singleLineTitle="false"
             app:title="@string/remote_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -295,6 +310,7 @@
             app:entryValues="@array/dns_query_strategy_value"
             app:icon="@drawable/ic_baseline_manage_search_24"
             app:key="directDnsQueryStrategy"
+            app:singleLineTitle="false"
             app:title="@string/direct_dns_query_strategy"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference
@@ -436,6 +452,7 @@
             app:entryValues="@array/int_array_2"
             app:icon="@drawable/baseline_flight_takeoff_24"
             app:key="fabStyle"
+            app:singleLineTitle="false"
             app:title="@string/fab_style"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference

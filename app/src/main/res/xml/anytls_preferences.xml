@@ -52,6 +52,7 @@
             app:entryValues="@array/transport_layer_encryption_value"
             app:icon="@drawable/ic_baseline_layers_24"
             app:key="serverSecurity"
+            app:singleLineTitle="false"
             app:title="@string/security"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
@@ -103,6 +104,7 @@
             app:entryValues="@array/utls_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
             app:key="serverUTLSFingerprint"
+            app:singleLineTitle="false"
             app:title="@string/utls_fingerprint"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -131,6 +133,7 @@
             app:entryValues="@array/reality_fingerprint_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
             app:key="serverRealityFingerprint"
+            app:singleLineTitle="false"
             app:title="@string/reality_fingerprint"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference

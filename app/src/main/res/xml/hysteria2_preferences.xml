@@ -29,6 +29,7 @@
             app:key="serverHysteria2ObfsType"
             app:entries="@array/hysteria2_obfs_type"
             app:entryValues="@array/hysteria2_obfs_type"
+            app:singleLineTitle="false"
             app:title="@string/obfs"
             app:useSimpleSummaryProvider="true"/>
         <EditTextPreference
@@ -92,6 +93,7 @@
             app:entryValues="@array/hysteria2_congestion_control"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverCongestionController"
+            app:singleLineTitle="false"
             app:title="@string/congestion_control"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -99,6 +101,7 @@
             app:entryValues="@array/hysteria2_bbr_profile"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverHysteria2BBRProfile"
+            app:singleLineTitle="false"
             app:title="@string/hysteria_bbr_profile"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference

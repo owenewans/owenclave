@@ -44,6 +44,7 @@
             app:entryValues="@array/tuic_udp_relay_mode_value"
             app:icon="@drawable/ic_baseline_add_road_24"
             app:key="serverUDPRelayMode"
+            app:singleLineTitle="false"
             app:title="@string/tuic_udp_relay_mode"
             app:useSimpleSummaryProvider="true" />
         <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -51,6 +52,7 @@
             app:entryValues="@array/tuic_congestion_controller_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverCongestionController"
+            app:singleLineTitle="false"
             app:title="@string/congestion_control"
             app:useSimpleSummaryProvider="true" />
         <SwitchPreference

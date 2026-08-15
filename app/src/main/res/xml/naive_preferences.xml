@@ -37,6 +37,7 @@
             app:entryValues="@array/naive_proto_value"
             app:icon="@drawable/ic_baseline_layers_24"
             app:key="serverProtocol"
+            app:singleLineTitle="false"
             app:title="@string/protocol"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
