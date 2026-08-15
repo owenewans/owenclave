@@ -144,15 +144,6 @@ fun Project.setupAppCommon(projectName: String = "") {
             }
         }
     }
-    val cleanTask = tasks.register("cleanAboutLibrariesGenerated") {
-        delete(layout.buildDirectory.dir("generated/aboutLibraries"))
-    }
-
-    tasks.configureEach {
-        if (name.contains("preBuild")) {
-            dependsOn(cleanTask)
-        }
-    }
 }
 
 fun Project.setupPlugin(projectName: String) {
@@ -238,6 +229,18 @@ fun Project.setupApp() {
                     )
                 }
             }
+        }
+    }
+    tasks.configureEach {
+        if (name.contains("preBuild")) {
+            dependsOn(":app:exportLibraryDefinitionsOssRelease")
+            dependsOn(":app:exportLibraryDefinitionsLegacyRelease")
+        }
+    }
+    if (tasks.findByPath(":app:exportLibraryDefinitionsLegacyRelease") != null
+        && tasks.findByPath(":app:exportLibraryDefinitionsOssRelease") != null) {
+        tasks.named(":app:exportLibraryDefinitionsLegacyRelease") {
+            mustRunAfter(":app:exportLibraryDefinitionsOssRelease")
         }
     }
 }

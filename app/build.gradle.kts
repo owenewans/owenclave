@@ -20,13 +20,20 @@ ksp {
 aboutLibraries {
     offlineMode = true
     collect {
-        configPath = file("src/main/aboutlibraries")
+        configPath = file("src/main/aboutlibraries/config")
         includePlatform = true
     }
     export {
-        outputFile = file("src/main/res/raw/aboutlibraries.json")
         excludeFields.addAll("name", "description", "developers", "funding", "licenses", "organization", "scm", "website", "License")
         prettyPrint = true
+    }
+    exports {
+        create("ossRelease") {
+            outputFile = file("src/main/aboutlibraries/aboutlibraries.json")
+        }
+        create("legacyRelease") {
+            outputFile = file("src/main/aboutlibraries/aboutlibraries_legacy.json")
+        }
     }
 }
 
