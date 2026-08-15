@@ -2,11 +2,11 @@
     "libraries": [
         {
             "uniqueId": "androidx.activity:activity",
-            "artifactVersion": "1.8.1"
+            "artifactVersion": "1.11.0"
         },
         {
             "uniqueId": "androidx.activity:activity-ktx",
-            "artifactVersion": "1.8.1"
+            "artifactVersion": "1.11.0"
         },
         {
             "uniqueId": "androidx.annotation:annotation-experimental",
@@ -198,7 +198,7 @@
         },
         {
             "uniqueId": "androidx.profileinstaller:profileinstaller",
-            "artifactVersion": "1.3.1"
+            "artifactVersion": "1.4.0"
         },
         {
             "uniqueId": "androidx.recyclerview:recyclerview",

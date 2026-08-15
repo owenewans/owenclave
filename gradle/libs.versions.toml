@@ -52,7 +52,7 @@ desugar-jdk-libs = { module = "com.android.tools:desugar_jdk_libs", version = "2
 #noinspection GradleDependency,SimilarGradleDependency
 core-ktx-minSdk21 = { module = "androidx.core:core-ktx", version = "1.17.0" }
 #noinspection GradleDependency,SimilarGradleDependency
-activity-ktx-minSdk21 = { module = "androidx.activity:activity-ktx", version = "1.4.2" }
+activity-ktx-minSdk21 = { module = "androidx.activity:activity-ktx", version = "1.11.0" }
 #noinspection GradleDependency,SimilarGradleDependency
 fragment-ktx-minSdk21 = { module = "androidx.fragment:fragment-ktx", version = "1.8.9" }
 #noinspection GradleDependency,SimilarGradleDependency
