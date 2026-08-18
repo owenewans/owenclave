@@ -137,6 +137,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var navBarSize by configurationStore.int(Key.NAV_BAR_SIZE) { 1 }
     var serviceMode by configurationStore.string(Key.SERVICE_MODE) { Key.MODE_VPN }
 
+    var sendHwid by configurationStore.boolean(Key.SEND_HWID) { false }
+    var hwidValue by configurationStore.string(Key.HWID_VALUE) { "" }
+
     var domainStrategy by configurationStore.string(Key.DOMAIN_STRATEGY) { "AsIs" }
     var trafficSniffing by configurationStore.boolean(Key.TRAFFIC_SNIFFING) { true }
     var destinationOverride by configurationStore.boolean(Key.DESTINATION_OVERRIDE)

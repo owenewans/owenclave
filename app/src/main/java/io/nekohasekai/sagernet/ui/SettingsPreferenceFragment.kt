@@ -167,6 +167,30 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
         val enablePcap = findPreference<SwitchPreference>(Key.ENABLE_PCAP)!!
         val discardICMP = findPreference<SwitchPreference>(Key.DISCARD_ICMP)!!
         val appTrafficStatistics = findPreference<SwitchPreference>(Key.APP_TRAFFIC_STATISTICS)!!
+
+        val sendHwid = findPreference<SwitchPreference>(Key.SEND_HWID)!!
+        sendHwid.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue == true) {
+                MaterialAlertDialogBuilder(requireContext()).apply {
+                    setTitle(R.string.send_hwid)
+                    setMessage(R.string.send_hwid_summary)
+                    setPositiveButton(android.R.string.ok) { _, _ ->
+                        DataStore.sendHwid = true
+                        sendHwid.isChecked = true
+                    }
+                    setNegativeButton(android.R.string.cancel, null)
+                }.show()
+                false
+            } else {
+                true
+            }
+        }
+        findPreference<Preference>(Key.RESET_HWID)!!.setOnPreferenceClickListener {
+            Hwid.resetHwid()
+            snackbar(R.string.reset_hwid_done).show()
+            true
+        }
+
         serviceMode.setOnPreferenceChangeListener { _, newValue ->
             newValue as String
             tunImplementation.isEnabled = newValue == MODE_VPN

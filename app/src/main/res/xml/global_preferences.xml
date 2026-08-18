@@ -300,6 +300,19 @@
             app:title="@string/insecure_warn" />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/cag_hwid">
+        <SwitchPreference
+            app:icon="@drawable/ic_device_developer_mode"
+            app:key="sendHwid"
+            app:summary="@string/send_hwid_summary"
+            app:title="@string/send_hwid" />
+        <Preference
+            app:icon="@drawable/ic_baseline_update_24"
+            app:key="resetHwid"
+            app:summary="@string/reset_hwid_summary"
+            app:title="@string/reset_hwid" />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/cag_dns">
         <io.nekohasekai.sagernet.widget.NonBlackEditTextPreference
             app:defaultValue="tcp://1.1.1.1"

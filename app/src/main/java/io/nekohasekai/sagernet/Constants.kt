@@ -56,6 +56,10 @@ object Key {
     const val INDIVIDUAL = "individual"
     const val METERED_NETWORK = "meteredNetwork"
 
+    const val SEND_HWID = "sendHwid"
+    const val HWID_VALUE = "hwidValue"
+    const val RESET_HWID = "resetHwid"
+
     const val DOMAIN_STRATEGY = "domainStrategy"
     const val TRAFFIC_SNIFFING = "trafficSniffing"
     const val DESTINATION_OVERRIDE = "destinationOverride"

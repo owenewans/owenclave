@@ -56,6 +56,9 @@ object SIP008Updater : GroupUpdater() {
                 }
             }.newRequest().apply {
                 setURL(subscription.link)
+                for ((name, value) in Hwid.headers()) {
+                    setHeader(name, value)
+                }
                 if (subscription.customUserAgent.isNotEmpty()) {
                     setUserAgent(subscription.customUserAgent)
                 } else {

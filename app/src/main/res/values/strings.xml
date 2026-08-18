@@ -48,6 +48,12 @@
     <string name="port_http">HTTP proxy port</string>
     <string name="port_transproxy">Transparent proxy port</string>
     <string name="cag_route">Route settings</string>
+    <string name="cag_hwid">HWID</string>
+    <string name="send_hwid">Send HWID</string>
+    <string name="send_hwid_summary">Report a device identifier to subscription providers that enforce a device limit (x-hwid header). Disabled by default — only enable if your provider requires it.</string>
+    <string name="reset_hwid">Reset HWID</string>
+    <string name="reset_hwid_summary">Generate a new device identifier. Use this if a provider blocked this device or you want it to appear as a new device.</string>
+    <string name="reset_hwid_done">HWID reset</string>
     <string name="allow_access">Allow connections from LAN</string>
     <string name="allow_access_sum">Bind inbounds to 0.0.0.0</string>
     <string name="inbound_settings">Inbound settings</string>
