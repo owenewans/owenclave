@@ -59,10 +59,12 @@ object RawUpdater : GroupUpdater() {
 
         val link = subscription.link
         var proxies: List<AbstractBean>
+        var rawText: String? = null
         if (link.startsWith("content://", ignoreCase = true)) {
             val contentText = app.contentResolver.openInputStream(link.toUri())
                 ?.bufferedReader()
                 ?.readText()
+            rawText = contentText
 
             proxies = contentText?.let { parseRaw(contentText) }
                 ?: error(app.getString(R.string.no_proxies_found_in_subscription))
@@ -90,6 +92,7 @@ object RawUpdater : GroupUpdater() {
                 }
             }.execute()
 
+            rawText = response.contentString
             proxies = parseRaw(response.contentString)
                 ?: error(app.getString(R.string.no_proxies_found))
 
@@ -236,6 +239,8 @@ object RawUpdater : GroupUpdater() {
         SagerDatabase.proxyDao.updateProxy(toUpdate)
         SagerDatabase.proxyDao.deleteProxy(toDelete)
 
+        importClashRouting(proxyGroup, rawText)
+
         subscription.lastUpdated = System.currentTimeMillis() / 1000
         SagerDatabase.groupDao.updateGroup(proxyGroup)
         finishUpdate(proxyGroup)
@@ -243,6 +248,41 @@ object RawUpdater : GroupUpdater() {
         if (byUser && userInterface != null) {
             userInterface.onUpdateSuccess(proxyGroup, changed, added, updated, deleted, duplicate)
         }
+    }
+
+    // Best-effort import of mihomo/clash-meta `proxy-groups` + `rules` as native routing
+    // rules, see owenclave#6 and ClashRoutingParser's kdoc for exactly what is and isn't
+    // translated. Failures here must never fail the subscription update itself.
+    @Suppress("UNCHECKED_CAST")
+    private fun importClashRouting(proxyGroup: ProxyGroup, rawText: String?) {
+        if (rawText == null) return
+        val namePrefix = "[Mihomo ${proxyGroup.id}]"
+        try {
+            val yaml = parseClashYaml(rawText) ?: return
+            if (yaml["rules"] !is List<*>) return // not a mihomo-style profile, nothing to import
+            val result = ClashRoutingParser.parse(yaml, proxyGroup.id, namePrefix)
+            SagerDatabase.rulesDao.deleteByNamePrefix(namePrefix)
+            if (result.rules.isNotEmpty()) {
+                SagerDatabase.rulesDao.insert(result.rules)
+            }
+        } catch (e: Exception) {
+            Logs.w("importClashRouting failed", e)
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun parseClashYaml(text: String): Map<String, Any?>? {
+        val options = DumperOptions()
+        val yaml = Yaml(YAMLConstructor(LoaderOptions()), Representer(options), options, object : Resolver() {
+            override fun addImplicitResolver(tag: Tag, regexp: Pattern, first: String?, limit: Int) {
+                when (tag) {
+                    Tag.FLOAT -> {}
+                    Tag.BOOL -> super.addImplicitResolver(tag, Pattern.compile("^(?:true|True|TRUE|false|False|FALSE)$"), "tTfF", limit)
+                    else -> super.addImplicitResolver(tag, regexp, first, limit)
+                }
+            }
+        })
+        return yaml.loadAs(text, Map::class.java) as? Map<String, Any?>
     }
 
     @Suppress("UNCHECKED_CAST")

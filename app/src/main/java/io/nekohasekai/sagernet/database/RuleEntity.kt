@@ -139,6 +139,9 @@ data class RuleEntity(
         @Query("DELETE FROM rules")
         fun reset()
 
+        @Query("DELETE FROM rules WHERE name LIKE :prefix || '%'")
+        fun deleteByNamePrefix(prefix: String): Int
+
         @Insert
         fun insert(rules: List<RuleEntity>)
 
