@@ -121,6 +121,8 @@ fun SettingsScreen(
     var grpcServiceNameCompat by remember { mutableStateOf(DataStore.grpcServiceNameCompat) }
     var enableFragmentForDirect by remember { mutableStateOf(DataStore.enableFragmentForDirect) }
     var persistAcrossReboot by remember { mutableStateOf(DataStore.persistAcrossReboot) }
+    var sendHwid by remember { mutableStateOf(DataStore.sendHwid) }
+    var showHwidConsentDialog by remember { mutableStateOf(false) }
 
     var trafficSniffing by remember { mutableStateOf(DataStore.trafficSniffing) }
     var destinationOverride by remember { mutableStateOf(DataStore.destinationOverride) }
@@ -496,6 +498,32 @@ fun SettingsScreen(
                     }
                     showTextEditDialog = false
                 }) { Text("OK") }
+            }
+        }
+    }
+
+    if (showHwidConsentDialog) {
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { showHwidConsentDialog = false }) {
+            Text(
+                text = "Send HWID?",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+            Text(
+                text = "A device identifier will be sent with every subscription update, for panels that enforce a per-device limit. You can turn this off or reset the identifier at any time.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                TextButton(onClick = { showHwidConsentDialog = false }) { Text("Cancel") }
+                Spacer(Modifier.width(8.dp))
+                TextButton(onClick = {
+                    sendHwid = true
+                    DataStore.sendHwid = true
+                    showHwidConsentDialog = false
+                }) { Text("Enable") }
             }
         }
     }
@@ -1398,6 +1426,33 @@ fun SettingsScreen(
                 // ── Misc ──
                 PreferenceHeader("Misc")
                 PreferenceGroup {
+                    item { shape ->
+                        SwitchPreferenceItem(
+                            title = "Send HWID",
+                            subtitle = "Report a device identifier on subscription updates, for panels enforcing a device limit",
+                            checked = sendHwid,
+                            onCheckedChange = {
+                                if (it) {
+                                    showHwidConsentDialog = true
+                                } else {
+                                    sendHwid = false
+                                    DataStore.sendHwid = false
+                                }
+                            },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Reset HWID",
+                            subtitle = "Regenerate the locally stored device identifier",
+                            onClick = {
+                                io.nekohasekai.sagernet.ktx.Hwid.resetHwid()
+                                android.widget.Toast.makeText(context, "HWID reset", android.widget.Toast.LENGTH_SHORT).show()
+                            },
+                            shape = shape,
+                        )
+                    }
                     item { shape ->
                         SwitchPreferenceItem(
                             title = "Show Group Name",
