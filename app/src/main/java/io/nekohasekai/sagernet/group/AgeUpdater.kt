@@ -67,6 +67,8 @@ object AgeUpdater : GroupUpdater() {
                 }
                 if (subscription.customUserAgent.isNotEmpty()) {
                     setUserAgent(subscription.customUserAgent)
+                } else if (DataStore.spoofUserAgent.isNotEmpty()) {
+                    setUserAgent(DataStore.spoofUserAgent)
                 } else {
                     setUserAgent(USER_AGENT)
                 }

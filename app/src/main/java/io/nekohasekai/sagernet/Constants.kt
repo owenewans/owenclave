@@ -62,6 +62,7 @@ object Key {
     const val SPOOF_DEVICE_OS = "spoofDeviceOs"
     const val SPOOF_DEVICE_OS_VERSION = "spoofDeviceOsVersion"
     const val SPOOF_DEVICE_MODEL = "spoofDeviceModel"
+    const val SPOOF_USER_AGENT = "spoofUserAgent"
     const val CONNECTION_TEST_CONCURRENCY = "connectionTestConcurrency"
 
     const val DOMAIN_STRATEGY = "domainStrategy"

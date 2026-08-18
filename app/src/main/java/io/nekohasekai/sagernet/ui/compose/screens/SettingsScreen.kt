@@ -126,6 +126,8 @@ fun SettingsScreen(
     var spoofDeviceOs by remember { mutableStateOf(DataStore.spoofDeviceOs) }
     var spoofDeviceOsVersion by remember { mutableStateOf(DataStore.spoofDeviceOsVersion) }
     var spoofDeviceModel by remember { mutableStateOf(DataStore.spoofDeviceModel) }
+    var spoofUserAgent by remember { mutableStateOf(DataStore.spoofUserAgent) }
+    var showSpoofUserAgentPresets by remember { mutableStateOf(false) }
     var connectionTestConcurrency by remember { mutableStateOf(DataStore.connectionTestConcurrency) }
     var showConnectionTestConcurrencyPicker by remember { mutableStateOf(false) }
 
@@ -394,6 +396,29 @@ fun SettingsScreen(
         )
     }
 
+    if (showSpoofUserAgentPresets) {
+        SingleChoiceDialog(
+            title = "Default User-Agent",
+            items = listOf("Use device default (Owenclave)" to "") +
+                io.nekohasekai.sagernet.ktx.USER_AGENT_PRESETS.map { it to it } +
+                listOf("Custom" to " custom"),
+            selected = spoofUserAgent,
+            onSelect = {
+                showSpoofUserAgentPresets = false
+                if (it == " custom") {
+                    editingTextKey = "spoofUserAgent"
+                    editingText = Pair("Default User-Agent", spoofUserAgent)
+                    editingTextValue = spoofUserAgent
+                    showTextEditDialog = true
+                } else {
+                    DataStore.spoofUserAgent = it
+                    spoofUserAgent = it
+                }
+            },
+            onDismiss = { showSpoofUserAgentPresets = false },
+        )
+    }
+
     if (showOutboundStrategyPicker) {
         SingleChoiceDialog(
             title = "Resolve Destination",
@@ -497,6 +522,7 @@ fun SettingsScreen(
                         "spoofDeviceOs" -> { DataStore.spoofDeviceOs = editingTextValue; spoofDeviceOs = editingTextValue }
                         "spoofDeviceOsVersion" -> { DataStore.spoofDeviceOsVersion = editingTextValue; spoofDeviceOsVersion = editingTextValue }
                         "spoofDeviceModel" -> { DataStore.spoofDeviceModel = editingTextValue; spoofDeviceModel = editingTextValue }
+                        "spoofUserAgent" -> { DataStore.spoofUserAgent = editingTextValue; spoofUserAgent = editingTextValue }
                         "remoteDns" -> { DataStore.remoteDns = editingTextValue; remoteDns = editingTextValue }
                         "directDns" -> { DataStore.directDns = editingTextValue; directDns = editingTextValue }
                         "bootstrapDns" -> { DataStore.bootstrapDns = editingTextValue; bootstrapDns = editingTextValue }
@@ -1515,6 +1541,14 @@ fun SettingsScreen(
                                 editingTextValue = spoofDeviceModel
                                 showTextEditDialog = true
                             },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Default User-Agent",
+                            subtitle = spoofUserAgent.ifEmpty { "Owenclave (real identity), unless a subscription overrides it" },
+                            onClick = { showSpoofUserAgentPresets = true },
                             shape = shape,
                         )
                     }

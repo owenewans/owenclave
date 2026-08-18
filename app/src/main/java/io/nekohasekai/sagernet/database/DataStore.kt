@@ -142,6 +142,7 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var spoofDeviceOs by configurationStore.string(Key.SPOOF_DEVICE_OS) { "" }
     var spoofDeviceOsVersion by configurationStore.string(Key.SPOOF_DEVICE_OS_VERSION) { "" }
     var spoofDeviceModel by configurationStore.string(Key.SPOOF_DEVICE_MODEL) { "" }
+    var spoofUserAgent by configurationStore.string(Key.SPOOF_USER_AGENT) { "" }
     var connectionTestConcurrency by configurationStore.stringToInt(Key.CONNECTION_TEST_CONCURRENCY) { 5 }
 
     var domainStrategy by configurationStore.string(Key.DOMAIN_STRATEGY) { "AsIs" }
