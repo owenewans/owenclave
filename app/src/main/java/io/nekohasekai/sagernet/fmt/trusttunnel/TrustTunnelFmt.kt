@@ -23,6 +23,7 @@ import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import libexclavecore.Libexclavecore
+import java.io.ByteArrayOutputStream
 import kotlin.io.encoding.Base64
 
 // https://github.com/TrustTunnel/TrustTunnel/blob/8856e7ba83ae0c9faace78aaf9a95b1b291cd3ed/DEEP_LINK.md
@@ -81,7 +82,7 @@ fun TrustTunnelBean.toUri(): String {
     require(username.isNotEmpty()) { "empty username" }
     require(password.isNotEmpty()) { "empty password" }
     require(protocol == "https" || protocol == "quic") { "invalid protocol" }
-    val byteArrayBuilder = ArrayList<Byte>().apply {
+    val byteArrayStream = ByteArrayOutputStream().apply {
         writeTLV(Tag.Addresses.code, joinHostPort(serverAddress, serverPort).toByteArray())
         val serverNames = serverNameToVerify.listByLineOrComma()
         require(serverNames.size <= 1) { "only one serverNameToVerify value is supported" }
@@ -114,7 +115,7 @@ fun TrustTunnelBean.toUri(): String {
         }
         writeTLV(Tag.Version.code, byteArrayOf(Version.Version1.code))
     }
-    return "tt://?" + Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayBuilder.toByteArray())
+    return "tt://?" + Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayStream.toByteArray())
 }
 
 fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
@@ -245,40 +246,40 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
     }
 }
 
-private fun ArrayList<Byte>.writeTLV(tag: Long, value: ByteArray) {
+private fun ByteArrayOutputStream.writeTLV(tag: Long, value: ByteArray) {
     writeUVarInt(tag)
     writeUVarInt(value.size.toLong())
-    addAll(value.toList())
+    write(value)
 }
 
-private fun ArrayList<Byte>.writeUVarInt(i: Long) {
+private fun ByteArrayOutputStream.writeUVarInt(i: Long) {
     require(i < 4611686018427387904)
     when {
         i < 64 -> {
-            add((i and 0x3F).toByte())
+            write(byteArrayOf((i and 0x3F).toByte()))
         }
         i < 16384 -> {
             val encoded = i or (0x1L shl 14)
-            add(((encoded shr 8) and 0xFF).toByte())
-            add((encoded and 0xFF).toByte())
+            write(byteArrayOf(((encoded shr 8) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded and 0xFF).toByte())))
         }
         i < 1073741824 -> {
             val encoded = i or (0x2L shl 30)
-            add(((encoded shr 24) and 0xFF).toByte())
-            add(((encoded shr 16) and 0xFF).toByte())
-            add(((encoded shr 8) and 0xFF).toByte())
-            add((encoded and 0xFF).toByte())
+            write(byteArrayOf(((encoded shr 24) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 16) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 8) and 0xFF).toByte()))
+            write(byteArrayOf((encoded and 0xFF).toByte()))
         }
         else -> {
             val encoded = i or (0x3L shl 62)
-            add(((encoded shr 56) and 0xFF).toByte())
-            add(((encoded shr 48) and 0xFF).toByte())
-            add(((encoded shr 40) and 0xFF).toByte())
-            add(((encoded shr 32) and 0xFF).toByte())
-            add(((encoded shr 24) and 0xFF).toByte())
-            add(((encoded shr 16) and 0xFF).toByte())
-            add(((encoded shr 8) and 0xFF).toByte())
-            add((encoded and 0xFF).toByte())
+            write(byteArrayOf(((encoded shr 56) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 48) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 40) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 32) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 24) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 16) and 0xFF).toByte()))
+            write(byteArrayOf(((encoded shr 8) and 0xFF).toByte()))
+            write(byteArrayOf((encoded and 0xFF).toByte()))
         }
     }
 }
