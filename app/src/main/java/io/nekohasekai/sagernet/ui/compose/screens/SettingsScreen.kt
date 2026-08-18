@@ -123,6 +123,11 @@ fun SettingsScreen(
     var persistAcrossReboot by remember { mutableStateOf(DataStore.persistAcrossReboot) }
     var sendHwid by remember { mutableStateOf(DataStore.sendHwid) }
     var showHwidConsentDialog by remember { mutableStateOf(false) }
+    var spoofDeviceOs by remember { mutableStateOf(DataStore.spoofDeviceOs) }
+    var spoofDeviceOsVersion by remember { mutableStateOf(DataStore.spoofDeviceOsVersion) }
+    var spoofDeviceModel by remember { mutableStateOf(DataStore.spoofDeviceModel) }
+    var connectionTestConcurrency by remember { mutableStateOf(DataStore.connectionTestConcurrency) }
+    var showConnectionTestConcurrencyPicker by remember { mutableStateOf(false) }
 
     var trafficSniffing by remember { mutableStateOf(DataStore.trafficSniffing) }
     var destinationOverride by remember { mutableStateOf(DataStore.destinationOverride) }
@@ -371,6 +376,24 @@ fun SettingsScreen(
         )
     }
 
+    if (showConnectionTestConcurrencyPicker) {
+        SingleChoiceDialog(
+            title = "Connection Test Concurrency",
+            items = listOf(
+                "1 (sequential)" to 1,
+                "2 workers" to 2,
+                "3 workers" to 3,
+                "5 workers" to 5,
+                "10 workers" to 10,
+                "15 workers" to 15,
+                "20 workers" to 20,
+            ),
+            selected = connectionTestConcurrency,
+            onSelect = { DataStore.connectionTestConcurrency = it; connectionTestConcurrency = it; showConnectionTestConcurrencyPicker = false },
+            onDismiss = { showConnectionTestConcurrencyPicker = false },
+        )
+    }
+
     if (showOutboundStrategyPicker) {
         SingleChoiceDialog(
             title = "Resolve Destination",
@@ -471,6 +494,9 @@ fun SettingsScreen(
                 TextButton(onClick = {
                     when (editingTextKey) {
                         "connectionTestURL" -> { DataStore.connectionTestURL = editingTextValue; connectionTestURL = editingTextValue }
+                        "spoofDeviceOs" -> { DataStore.spoofDeviceOs = editingTextValue; spoofDeviceOs = editingTextValue }
+                        "spoofDeviceOsVersion" -> { DataStore.spoofDeviceOsVersion = editingTextValue; spoofDeviceOsVersion = editingTextValue }
+                        "spoofDeviceModel" -> { DataStore.spoofDeviceModel = editingTextValue; spoofDeviceModel = editingTextValue }
                         "remoteDns" -> { DataStore.remoteDns = editingTextValue; remoteDns = editingTextValue }
                         "directDns" -> { DataStore.directDns = editingTextValue; directDns = editingTextValue }
                         "bootstrapDns" -> { DataStore.bootstrapDns = editingTextValue; bootstrapDns = editingTextValue }
@@ -1450,6 +1476,53 @@ fun SettingsScreen(
                                 io.nekohasekai.sagernet.ktx.Hwid.resetHwid()
                                 android.widget.Toast.makeText(context, "HWID reset", android.widget.Toast.LENGTH_SHORT).show()
                             },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Spoofed Device OS",
+                            subtitle = spoofDeviceOs.ifEmpty { "Use device default (Android)" },
+                            onClick = {
+                                editingTextKey = "spoofDeviceOs"
+                                editingText = Pair("Spoofed Device OS", spoofDeviceOs)
+                                editingTextValue = spoofDeviceOs
+                                showTextEditDialog = true
+                            },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Spoofed OS Version",
+                            subtitle = spoofDeviceOsVersion.ifEmpty { "Use device default" },
+                            onClick = {
+                                editingTextKey = "spoofDeviceOsVersion"
+                                editingText = Pair("Spoofed OS Version", spoofDeviceOsVersion)
+                                editingTextValue = spoofDeviceOsVersion
+                                showTextEditDialog = true
+                            },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Spoofed Device Model",
+                            subtitle = spoofDeviceModel.ifEmpty { "Use device default" },
+                            onClick = {
+                                editingTextKey = "spoofDeviceModel"
+                                editingText = Pair("Spoofed Device Model", spoofDeviceModel)
+                                editingTextValue = spoofDeviceModel
+                                showTextEditDialog = true
+                            },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Connection Test Concurrency",
+                            subtitle = "$connectionTestConcurrency worker" + if (connectionTestConcurrency == 1) "" else "s",
+                            onClick = { showConnectionTestConcurrencyPicker = true },
                             shape = shape,
                         )
                     }

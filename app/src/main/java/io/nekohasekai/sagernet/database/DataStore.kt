@@ -139,6 +139,10 @@ object DataStore : OnPreferenceDataStoreChangeListener {
 
     var sendHwid by configurationStore.boolean(Key.SEND_HWID) { false }
     var hwidValue by configurationStore.string(Key.HWID_VALUE) { "" }
+    var spoofDeviceOs by configurationStore.string(Key.SPOOF_DEVICE_OS) { "" }
+    var spoofDeviceOsVersion by configurationStore.string(Key.SPOOF_DEVICE_OS_VERSION) { "" }
+    var spoofDeviceModel by configurationStore.string(Key.SPOOF_DEVICE_MODEL) { "" }
+    var connectionTestConcurrency by configurationStore.stringToInt(Key.CONNECTION_TEST_CONCURRENCY) { 5 }
 
     var domainStrategy by configurationStore.string(Key.DOMAIN_STRATEGY) { "AsIs" }
     var trafficSniffing by configurationStore.boolean(Key.TRAFFIC_SNIFFING) { true }

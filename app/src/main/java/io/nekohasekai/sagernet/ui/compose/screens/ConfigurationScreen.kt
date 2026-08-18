@@ -67,8 +67,13 @@ import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.ProfileCard
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 
@@ -157,37 +162,44 @@ fun ConfigurationScreen(
             }
             if (toTest.isEmpty()) return@launch
             val total = toTest.size
-            var done = 0
-            var anyWorking = false
             val link = DataStore.connectionTestURL
             val timeout = DataStore.connectionTestTimeout
+            val semaphore = Semaphore(DataStore.connectionTestConcurrency.coerceIn(1, 20))
+            val doneCount = java.util.concurrent.atomic.AtomicInteger(0)
+            val anyWorkingFlag = java.util.concurrent.atomic.AtomicBoolean(false)
             withContext(Dispatchers.Main) { onBatchTestProgress(Pair(0, total)) }
-            for (entity in toTest) {
-                if (!isActive) break
-                withContext(Dispatchers.Main) { pingingIds = pingingIds + entity.id }
-                try {
-                    val instance = io.nekohasekai.sagernet.bg.test.V2RayTestInstance(entity, link, timeout)
-                    val result = withTimeout(30_000L) { instance.use { it.doTest() } }
-                    entity.ping = result
-                    entity.status = 1
-                    entity.error = null
-                    if (result > 0) anyWorking = true
-                } catch (e: Exception) {
-                    entity.ping = -1
-                    entity.status = 3
-                    entity.error = e.message
-                }
-                ProfileManager.updateProfile(entity)
-                done++
-                withContext(Dispatchers.Main) {
-                    pingingIds = pingingIds - entity.id
-                    onBatchTestProgress(Pair(done, total))
-                }
+            coroutineScope {
+                toTest.map { entity ->
+                    async {
+                        if (!isActive) return@async
+                        semaphore.withPermit {
+                            withContext(Dispatchers.Main) { pingingIds = pingingIds + entity.id }
+                            try {
+                                val instance = io.nekohasekai.sagernet.bg.test.V2RayTestInstance(entity, link, timeout)
+                                val result = withTimeout(30_000L) { instance.use { it.doTest() } }
+                                entity.ping = result
+                                entity.status = 1
+                                entity.error = null
+                                if (result > 0) anyWorkingFlag.set(true)
+                            } catch (e: Exception) {
+                                entity.ping = -1
+                                entity.status = 3
+                                entity.error = e.message
+                            }
+                            ProfileManager.updateProfile(entity)
+                            val done = doneCount.incrementAndGet()
+                            withContext(Dispatchers.Main) {
+                                pingingIds = pingingIds - entity.id
+                                onBatchTestProgress(Pair(done, total))
+                            }
+                        }
+                    }
+                }.awaitAll()
             }
             withContext(Dispatchers.Main) {
                 onBatchTestProgress(null)
                 batchTestJob = null
-                if (!anyWorking) showDinoGame = true
+                if (!anyWorkingFlag.get()) showDinoGame = true
             }
         }
     }

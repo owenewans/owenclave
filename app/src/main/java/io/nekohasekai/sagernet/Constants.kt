@@ -59,6 +59,10 @@ object Key {
     const val SEND_HWID = "sendHwid"
     const val HWID_VALUE = "hwidValue"
     const val RESET_HWID = "resetHwid"
+    const val SPOOF_DEVICE_OS = "spoofDeviceOs"
+    const val SPOOF_DEVICE_OS_VERSION = "spoofDeviceOsVersion"
+    const val SPOOF_DEVICE_MODEL = "spoofDeviceModel"
+    const val CONNECTION_TEST_CONCURRENCY = "connectionTestConcurrency"
 
     const val DOMAIN_STRATEGY = "domainStrategy"
     const val TRAFFIC_SNIFFING = "trafficSniffing"

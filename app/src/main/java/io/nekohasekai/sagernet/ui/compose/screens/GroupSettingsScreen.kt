@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -99,6 +100,26 @@ fun GroupSettingsScreen(
     var autoUpdate by remember { mutableStateOf(initialSubscription.autoUpdate) }
     var subscriptionLink by remember { mutableStateOf(initialSubscription.link) }
     var userAgent by remember { mutableStateOf(initialSubscription.customUserAgent) }
+    var showUserAgentPresets by remember { mutableStateOf(false) }
+    // Cosmetic client fingerprints for blending in with other subscription clients.
+    // Format examples confirmed from https://docs.rw and openlibrecommunity/panel's client list.
+    val userAgentPresets = remember {
+        listOf(
+            "Owenclave/${io.nekohasekai.sagernet.BuildConfig.VERSION_NAME}",
+            "Happ/3.13.0",
+            "INCY/3.5.3/android",
+            "INCY/3.5.3/ios",
+            "Throne/2.16.0",
+            "V2rayTun/1.9.7",
+            "V2rayNG/1.10.4",
+            "Karing/1.6.0",
+            "FlClash/0.8.87",
+            "Clash Verge/2.4.4",
+            "Hiddify/2.5.7",
+            "SimpleXray/1.3.5",
+            "NekoBoxForAndroid/1.4.5",
+        )
+    }
     var updateWhenConnectedOnly by remember { mutableStateOf(initialSubscription.updateWhenConnectedOnly) }
     var frontProxy by remember { mutableStateOf(initialFrontProxy) }
     var landingProxy by remember { mutableStateOf(initialLandingProxy) }
@@ -211,9 +232,28 @@ fun GroupSettingsScreen(
                             value = userAgent,
                             onValueChange = { userAgent = it },
                             label = "User Agent",
+                            placeholder = "Blank = default (Owenclave/${io.nekohasekai.sagernet.BuildConfig.VERSION_NAME})",
                             modifier = Modifier.padding(16.dp),
                             singleLine = true,
                         )
+                        Box {
+                            TextButton(onClick = { showUserAgentPresets = true }, modifier = Modifier.padding(horizontal = 16.dp)) {
+                                Text("Fingerprint presets")
+                            }
+                            DropdownMenu(
+                                expanded = showUserAgentPresets,
+                                onDismissRequest = { showUserAgentPresets = false },
+                                shape = RoundedCornerShape(24.dp),
+                                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                            ) {
+                                userAgentPresets.forEach { preset ->
+                                    DropdownMenuItem(
+                                        text = { Text(preset) },
+                                        onClick = { userAgent = preset; showUserAgentPresets = false },
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
 
