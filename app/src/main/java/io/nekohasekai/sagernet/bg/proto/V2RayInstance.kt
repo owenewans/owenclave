@@ -61,9 +61,11 @@ import java.net.Socket
         }
 
         protected fun buildOlcrtcYaml(bean: OLCRTCBean, port: Int, username: String, password: String): String {
-            // olcrtc resolves a relative `data` dir against the executable dir
-            // (read-only nativeLibraryDir on Android), so use an absolute writable path.
-            val dataDir = File(SagerNet.application.noBackupFilesDir, "olcrtc_data").apply { mkdirs() }
+            // `data` is only for an optional display-name dictionary override
+            // (internal/names in olcrtc); a non-empty path with no names/surnames
+            // files inside it is a hard error. owenclave has no UI for that
+            // override, so the field is omitted and olcrtc falls back to its
+            // embedded name dictionaries.
             return buildString {
                 appendLine("mode: cnc")
                 appendLine("auth:")
@@ -80,7 +82,6 @@ import java.net.Socket
                 appendLine("  port: $port")
                 if (username.isNotEmpty()) appendLine("  user: \"$username\"")
                 if (password.isNotEmpty()) appendLine("  pass: \"$password\"")
-                appendLine("data: \"${dataDir.absolutePath}\"")
                 appendLine("debug: true")
             }.also {
                 Logs.d("olcrtc yaml config for port $port:\n$it")
