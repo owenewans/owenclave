@@ -923,7 +923,7 @@ fun StandardV2RayBean.toUri(): String? {
                 builder.addQueryParameter("allowInsecure", "1")
             }
             if (pinnedPeerCertificateSha256.isNotEmpty()) {
-                builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString(":"))
+                builder.addQueryParameter("pcs", pinnedPeerCertificateSha256.listByLineOrComma().joinToString(","))
             }
             if (serverNameToVerify.isNotEmpty()) {
                 val serverNames = serverNameToVerify.listByLineOrComma()
