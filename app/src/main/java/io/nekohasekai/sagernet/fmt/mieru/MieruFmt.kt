@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.mieru
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
+import kotlin.io.encoding.Base64
 
 fun parseMieru(link: String): List<MieruBean> {
     val beans = mutableListOf<MieruBean>()
@@ -162,6 +163,13 @@ fun MieruBean.toUri(): String? {
         }
     }
     if (trafficPattern.isNotEmpty()) {
+        try {
+            // TODO: validate trafficPattern
+            Base64.decode(trafficPattern)
+        } catch (_: Exception) {
+            throw IllegalArgumentException("invalid traffic-pattern")
+        }
+        Base64.decode(trafficPattern)
         builder.addQueryParameter("traffic-pattern", trafficPattern)
     }
     return builder.string

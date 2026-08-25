@@ -23,10 +23,8 @@ import java.io.ByteArrayOutputStream
 import java.security.MessageDigest
 import kotlin.experimental.and
 import kotlin.experimental.or
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 fun uuid5(text: String): String {
     val data = ByteArrayOutputStream()
     data.write(ByteArray(16))
@@ -40,7 +38,6 @@ fun uuid5(text: String): String {
     return Uuid.fromByteArray(result).toHexDashString()
 }
 
-@OptIn(ExperimentalUuidApi::class)
 fun uuidOrGenerate(text: String): String {
     if (text.length != 36) {
         return uuid5(text)

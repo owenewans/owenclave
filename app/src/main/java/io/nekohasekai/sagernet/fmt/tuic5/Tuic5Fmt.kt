@@ -23,53 +23,34 @@ import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
-import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 val supportedTuic5CongestionControl = arrayOf("cubic", "bbr", "new_reno")
 val supportedTuic5RelayMode = arrayOf("native", "quic")
 
-@OptIn(ExperimentalUuidApi::class)
 fun parseTuic(server: String): AbstractBean {
-    var link = Libexclavecore.parseURL(server)
+    val link = Libexclavecore.parseURL(server)
     if (link.queryParameter("version") == "4") {
         error("unsupported")
     }
-    if (server.length >= 46
-        && server.substring(7, 15).all {
-            (it in '0'..'9') || (it in 'a'..'f') || (it in 'A'..'F')
-        } && server[15] == '-'
-        && server.substring(16, 20).all {
-            (it in '0'..'9') || (it in 'a'..'f') || (it in 'A'..'F')
-        } && server[20] == '-'
-        && server.substring(21, 25).all {
-            (it in '0'..'9') || (it in 'a'..'f') || (it in 'A'..'F')
-        } && server[25] == '-'
-        && server.substring(26, 30).all {
-            (it in '0'..'9') || (it in 'a'..'f') || (it in 'A'..'F')
-        } && server[30] == '-'
-        && server.substring(31, 43).all {
-            (it in '0'..'9') || (it in 'a'..'f') || (it in 'A'..'F')
-        } && server.substring(43, 46) == "%3A"
-    ) {
-        // v2rayN broken format
-        link = Libexclavecore.parseURL(server.take(43) + ":" + server.substring(46, server.length))
-    }
-
-    try {
-        Uuid.parse(link.username)
-    } catch (_: Exception) {
-        error("unsupported")
-    }
-
     return Tuic5Bean().apply {
         serverAddress = link.host
         serverPort = when {
             !link.hasPort() -> 443
             else -> link.port
         }
-        uuid = link.username
-        password = link.password
+        if (!link.hasPassword() && link.username.length >= 37 && link.username[36] == ':'
+            && Uuid.parseHexDashOrNull(link.username.substring(0, 36)) != null) {
+            // v2rayN broken format
+            uuid = link.username.substring(0, 36)
+            if (link.username.length >= 38) {
+                password = link.username.substring(37)
+            }
+        } else {
+            require(Uuid.parseHexDashOrNull(link.username) != null) { "invalid uuid" }
+            uuid = link.username
+            password = link.password
+        }
         link.queryParameter("sni")?.let {
             sni = it
         }
@@ -117,7 +98,8 @@ fun parseTuic(server: String): AbstractBean {
 fun Tuic5Bean.toUri(): String? {
     val builder = Libexclavecore.newURL("tuic").apply {
         setHostPort(serverAddress, serverPort)
-        username = uuid.ifEmpty { error("empty uuid") }
+        require(Uuid.parseHexDashOrNull(uuid) != null) { "invalid uuid" }
+        username = uuid
         if (name.isNotEmpty()) {
             fragment = name
         }

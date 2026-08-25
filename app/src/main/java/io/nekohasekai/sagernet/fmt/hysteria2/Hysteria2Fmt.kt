@@ -24,6 +24,7 @@ import io.nekohasekai.sagernet.ktx.isValidHysteriaPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
+import kotlin.io.encoding.Base64
 
 fun parseHysteria2(rawURL: String): Hysteria2Bean {
     var url = rawURL
@@ -51,28 +52,13 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
         link.queryParameter("mport")?.takeIf { it.isValidHysteriaMultiPort() }?.also {
             serverPorts = it
         }
-        when {
-            // Warning: Do not use colon in username or password in so-called `userpass` authentication.
-            // Official Hysteria2 server can not handle it correctly.
-            // need to handle so-called broken "userpass" authentication
-            link.username.isEmpty() && link.password.isEmpty() -> {
-                if (rawURL.substringAfter("://").substringBefore("@") == ":") {
-                    auth = ":"
-                }
-            }
-            link.username.isNotEmpty() && link.password.isEmpty() -> {
-                auth = if (rawURL.substringAfter("://").substringBefore("@").endsWith(":")) {
-                    link.username + ":"
-                } else {
-                    link.username
-                }
-            }
-            link.username.isEmpty() && link.password.isNotEmpty() -> {
-                auth = ":" + link.password
-            }
-            link.username.isNotEmpty() && link.password.isNotEmpty() -> {
-                auth = link.username + ":" + link.password
-            }
+        // Warning: Do not use colon in username or password in so-called `userpass` authentication.
+        // Official Hysteria2 server can not handle it correctly.
+        // need to handle so-called broken "userpass" authentication
+        auth = if (link.hasPassword()) {
+            link.username + ":" + link.password
+        } else {
+            link.username
         }
         link.queryParameter("sni")?.also {
             sni = it
@@ -80,9 +66,11 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
         link.queryParameter("insecure")?.takeIf { it == "1" }?.also {
             allowInsecure = true
         }
-        link.queryParameter("pinSHA256")?.also {
+        link.queryParameter("pinSHA256")?.takeIf { it.isNotEmpty() }?.also {
             // https://github.com/apernet/hysteria/blob/922128e425a700c5bc01290e7a9560f182fe451b/app/cmd/client.go#L882-L889
-            pinnedPeerCertificateSha256 = it.replace(":", "").replace("-", "").lowercase()
+            val pinSHA256 = it.replace(":", "").replace("-", "").lowercase()
+            require(pinSHA256.hexToByteArray().size == 32) { "invalid pinSHA256" }
+            pinnedPeerCertificateSha256 = pinSHA256
         }
         link.queryParameter("obfs")?.also {
             when (it) {
@@ -90,13 +78,20 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
                 "salamander", "gecko"-> {
                     obfsType = it
                     link.queryParameter("obfs-password")?.also { password ->
+                        require(password.toByteArray().size >= 4) { "invalid obfs-password" }
                         obfsPassword = password
                     }
                 }
                 else -> error("unsupported obfs")
             }
         }
-        link.queryParameter("ech")?.also {
+        link.queryParameter("ech")?.takeIf { it.isNotEmpty() }?.also {
+            // TODO: validate echConfig
+            try {
+                Base64.decode(it)
+            } catch (_: Exception) {
+                throw IllegalArgumentException("invalid ech")
+            }
             echEnabled = true
             echConfig = it
         }
@@ -104,9 +99,7 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
 }
 
 fun Hysteria2Bean.toUri(): String? {
-    if (!serverPorts.isValidHysteriaPort()) {
-        error("invalid port")
-    }
+    require(serverPorts.isValidHysteriaPort()) { "invalid port" }
 
     val builder = Libexclavecore.newURL("hysteria2").apply {
         // fuck port hopping URL
@@ -132,16 +125,26 @@ fun Hysteria2Bean.toUri(): String? {
         builder.addQueryParameter("insecure", "1")
     }
     if (pinnedPeerCertificateSha256.isNotEmpty()) {
-        builder.addQueryParameter("pinSHA256", pinnedPeerCertificateSha256.listByLineOrComma()[0].replace(":", "").lowercase())
+        val pinSHA256 = pinnedPeerCertificateSha256.listByLineOrComma()[0].replace(":", "").lowercase()
+        try {
+            require(pinSHA256.hexToByteArray().size == 32)
+        } catch (_: Exception) {
+            throw IllegalArgumentException("invalid pinSHA256")
+        }
+        builder.addQueryParameter("pinSHA256", pinSHA256)
     }
     if (obfsType.isNotEmpty()) {
         builder.addQueryParameter("obfs", obfsType)
-        if (obfsPassword.isEmpty()) {
-            error("empty obfs password")
-        }
+        require(obfsPassword.toByteArray().size >= 4) { "invalid obfs password" }
         builder.addQueryParameter("obfs-password", obfsPassword)
     }
     if (echEnabled && echConfig.isNotEmpty()) {
+        try {
+            // TODO: validate echConfig
+            Base64.decode(echConfig)
+        } catch (_: Exception) {
+            throw IllegalArgumentException("invalid ech")
+        }
         builder.addQueryParameter("ech", echConfig)
     }
     if (name.isNotEmpty()) {

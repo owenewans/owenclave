@@ -75,6 +75,9 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
                 else -> error("unsupported method")
             }
             password = plainUri.substringBeforeLast("@").substringAfter(":")
+            if (method in supportedShadowsocks2022Method) {
+                validateShadowsocks2022Password(method, password)
+            }
             name = link.fragment
         }
     }
@@ -96,6 +99,9 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
                 else -> error("unsupported method")
             }
             password = link.password
+            if (method in supportedShadowsocks2022Method) {
+                validateShadowsocks2022Password(method, password)
+            }
             plugin = link.queryParameter("plugin")
             name = link.fragment
             fixInvalidParams()
@@ -117,9 +123,34 @@ fun parseShadowsocks(url: String): ShadowsocksBean {
             else -> error("unsupported method")
         }
         password = link.username.decodeBase64().substringAfter(":")
+        if (method in supportedShadowsocks2022Method) {
+            validateShadowsocks2022Password(method, password)
+        }
         plugin = link.queryParameter("plugin")
         name = link.fragment
         fixInvalidParams()
+    }
+}
+
+private fun validateShadowsocks2022Password(method: String, password: String) {
+    try {
+        when (method) {
+            "2022-blake3-aes-128-gcm" -> {
+                for (p in password.split(":")) {
+                    require(Base64.decode(p).size == 16)
+                }
+            }
+            "2022-blake3-aes-256-gcm" -> {
+                for (p in password.split(":")) {
+                    require(Base64.decode(p).size == 32)
+                }
+            }
+            "2022-blake3-chacha20-poly1305" -> {
+                require(Base64.decode(password).size == 32)
+            }
+        }
+    } catch (_: Exception) {
+        throw IllegalArgumentException("invalid password")
     }
 }
 
@@ -130,12 +161,9 @@ fun ShadowsocksBean.toUri(): String? {
     val builder = Libexclavecore.newURL("ss")
     builder.setHostPort(serverAddress, serverPort)
     if (method in supportedShadowsocks2022Method) {
+        validateShadowsocks2022Password(method, password)
         builder.username = method
-        if (password.isNotEmpty()) {
-            builder.password = password
-        } else {
-            error("empty password")
-        }
+        builder.password = password
     } else {
         builder.username = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode("$method:$password".toByteArray())
     }
@@ -178,6 +206,9 @@ fun parseShadowsocksConfig(config: JsonObject): ShadowsocksBean? {
             "aead-aes-256-gcm" -> "aes-256-gcm"
             "", null -> error("unsupported method") // different impl has different default value
             else -> error("unsupported method")
+        }
+        if (method in supportedShadowsocks2022Method) {
+            validateShadowsocks2022Password(method, password)
         }
         val pluginId = when (val id = config.getString("plugin")) {
             "simple-obfs" -> "obfs-local"

@@ -44,6 +44,7 @@ fun parseNaive(link: String): NaiveBean {
         username = url.username
         password = url.password
         sni = url.queryParameter("sni")
+        // TODO: validate extraHeaders
         extraHeaders = url.queryParameter("extra-headers")?.replace("\r\n", "\n")
         insecureConcurrency = url.queryParameter("insecure-concurrency")?.toIntOrNull()
         name = url.fragment
@@ -71,6 +72,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     }
     if (!proxyOnly) {
         if (extraHeaders.isNotEmpty()) {
+            // TODO: validate extraHeaders
             builder.addQueryParameter("extra-headers", extraHeaders.listByLine().joinToString("\r\n"))
         }
         if (name.isNotEmpty()) {
