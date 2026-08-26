@@ -220,12 +220,21 @@ fun parseV2Ray(link: String): StandardV2RayBean {
                     .filter { it.isNotEmpty() }.takeIf { it.isNotEmpty() }
                     ?.joinToString("\n")
             }
-            url.queryParameter("ech")?.let {
+            url.queryParameter("ech")?.takeIf { it.isNotEmpty() }?.let {
                 bean.echEnabled = true
-                try {
-                    Base64.decode(it)
-                    bean.echConfig = it
-                } catch (_: Exception) {}
+                // See the shit in https://github.com/XTLS/Xray-core/blob/f124daf5a37c3b968a618f92ca42396f3c001de5/transport/internet/tls/ech.go#L50-L83
+                if (it.contains("://")) {
+                    val parts = it.split("+", limit = 2)
+                    if (parts.size == 2) {
+                        bean.echQueryName = parts[0]
+                    }
+                } else {
+                    try {
+                        Base64.decode(it)
+                        bean.echConfigList = it
+                        bean.echQueryName = ""
+                    } catch (_: Exception) {}
+                }
             }
         }
         "reality" -> {
@@ -969,6 +978,17 @@ fun StandardV2RayBean.toUri(): String? {
             }
             if (this is VLESSBean && flow.isNotEmpty()) {
                 builder.addQueryParameter("flow", flow.removeSuffix("-udp443"))
+            }
+            if (echEnabled && echConfigList.isNotEmpty()) {
+                // The `example.com+https://1.1.1.1/dns-query` is shit,
+                // so echQueryName is ignored.
+                try {
+                    // TODO: validate echConfig
+                    Base64.decode(echConfigList)
+                } catch (_: Exception) {
+                    throw IllegalArgumentException("invalid ech")
+                }
+                builder.addQueryParameter("ech", echConfigList)
             }
         }
         "reality" -> {

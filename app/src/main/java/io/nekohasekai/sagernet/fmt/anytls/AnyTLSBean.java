@@ -47,7 +47,8 @@ public class AnyTLSBean extends AbstractBean {
     public Boolean allowInsecure;
     public String utlsFingerprint;
     public Boolean echEnabled;
-    public String echConfig;
+    public String echConfigList;
+    public String echQueryName;
     public String realityPublicKey;
     public String realityShortId;
     public String realityFingerprint;
@@ -74,7 +75,8 @@ public class AnyTLSBean extends AbstractBean {
         if (allowInsecure == null) allowInsecure = false;
         if (utlsFingerprint == null) utlsFingerprint = "";
         if (echEnabled == null) echEnabled = false;
-        if (echConfig == null) echConfig = "";
+        if (echConfigList == null) echConfigList = "";
+        if (echQueryName == null) echQueryName = "";
         if (realityPublicKey == null) realityPublicKey = "";
         if (realityShortId == null) realityShortId = "";
         if (realityFingerprint == null) realityFingerprint = "chrome";
@@ -87,7 +89,7 @@ public class AnyTLSBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(7);
+        output.writeInt(8);
         super.serialize(output);
         output.writeString(password);
         output.writeInt(idleSessionCheckInterval);
@@ -102,7 +104,7 @@ public class AnyTLSBean extends AbstractBean {
         output.writeString(pinnedPeerCertificateSha256);
         output.writeBoolean(allowInsecure);
         output.writeString(utlsFingerprint);
-        output.writeString(echConfig);
+        output.writeString(echConfigList);
         output.writeString(realityPublicKey);
         output.writeString(realityShortId);
         output.writeString(realityFingerprint);
@@ -113,6 +115,7 @@ public class AnyTLSBean extends AbstractBean {
         output.writeBoolean(echEnabled);
         output.writeString(serverNameToVerify);
         output.writeBoolean(disableReuse);
+        output.writeString(echQueryName);
     }
 
     @Override
@@ -136,8 +139,8 @@ public class AnyTLSBean extends AbstractBean {
         }
         allowInsecure = input.readBoolean();
         utlsFingerprint = input.readString();
-        echConfig = input.readString();
-        if (version <= 4 && !echConfig.isEmpty()) {
+        echConfigList = input.readString();
+        if (version <= 4 && !echConfigList.isEmpty()) {
             echEnabled = true;
         }
         if (version <= 2) {
@@ -165,6 +168,9 @@ public class AnyTLSBean extends AbstractBean {
         if (version >= 7) {
             disableReuse = input.readBoolean();
         }
+        if (version >= 8) {
+            echQueryName = input.readString();
+        }
     }
 
     @Override
@@ -190,10 +196,11 @@ public class AnyTLSBean extends AbstractBean {
         }
         bean.utlsFingerprint = utlsFingerprint;
         bean.echEnabled = echEnabled;
-        bean.echConfig = echConfig;
+        bean.echConfigList = echConfigList;
         bean.realityFingerprint = realityFingerprint;
         bean.realityDisableX25519Mlkem768 = realityDisableX25519Mlkem768;
         bean.disableReuse = disableReuse;
+        bean.echQueryName = echQueryName;
     }
 
     @NotNull

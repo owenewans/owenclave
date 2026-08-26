@@ -467,8 +467,6 @@
     <string name="allow_apps_bypass_vpn_sum">Povolit aplikacím samostatně obejít VPN pomocí systémových metod</string>
     <string name="update_all_subscriptions">Aktualizovat všechny odběry</string>
     <string name="cag_splithttp">Nastavení XHTTP</string>
-    <string name="ech_config">Konfigurace ECH</string>
-    <string name="ech_doh_server">Server DoH pro ECH</string>
     <string name="splithttp_mode">Režim</string>
     <string name="backup_all_profiles">Zálohovat všechny profily</string>
     <string name="browser_forwarder_hint">Stáhněte soubor v2ray-extra.zip z vydání v2ray-core a umístěte soubory index.html a index.js do Android/data/%s/files, nebo je importujte jako datové podklady směrování.</string>

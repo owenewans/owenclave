@@ -45,7 +45,8 @@ public class JuicityBean extends AbstractBean {
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
     public Boolean echEnabled;
-    public String echConfig;
+    public String echConfigList;
+    public String echQueryName;
     public String serverNameToVerify;
 
     @Override
@@ -62,13 +63,14 @@ public class JuicityBean extends AbstractBean {
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
         if (echEnabled == null) echEnabled = false;
-        if (echConfig == null) echConfig = "";
+        if (echConfigList == null) echConfigList = "";
+        if (echQueryName == null) echQueryName = "";
         if (serverNameToVerify == null) serverNameToVerify = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(6);
+        output.writeInt(7);
         super.serialize(output);
         output.writeString(uuid);
         output.writeString(password);
@@ -80,10 +82,11 @@ public class JuicityBean extends AbstractBean {
         output.writeString(pinnedPeerCertificateSha256);
         output.writeString(mtlsCertificate);
         output.writeString(mtlsCertificatePrivateKey);
-        output.writeString(echConfig);
+        output.writeString(echConfigList);
 
         output.writeBoolean(echEnabled);
         output.writeString(serverNameToVerify);
+        output.writeString(echQueryName);
     }
 
     @Override
@@ -111,8 +114,8 @@ public class JuicityBean extends AbstractBean {
             pinnedPeerCertificateSha256 = input.readString();
             mtlsCertificate = input.readString();
             mtlsCertificatePrivateKey = input.readString();
-            echConfig = input.readString();
-            if (version <= 4 && !echConfig.isEmpty()) {
+            echConfigList = input.readString();
+            if (version <= 4 && !echConfigList.isEmpty()) {
                 echEnabled = true;
             }
         }
@@ -121,6 +124,9 @@ public class JuicityBean extends AbstractBean {
         }
         if (version >= 6) {
             serverNameToVerify = input.readString();
+        }
+        if (version >= 7) {
+            echQueryName = input.readString();
         }
     }
 
@@ -146,7 +152,8 @@ public class JuicityBean extends AbstractBean {
             bean.pinnedPeerCertificateSha256 = pinnedPeerCertificateSha256;
         }
         bean.echEnabled = echEnabled;
-        bean.echConfig = echConfig;
+        bean.echConfigList = echConfigList;
+        bean.echQueryName = echQueryName;
     }
 
     @NotNull

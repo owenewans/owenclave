@@ -133,7 +133,7 @@ fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
                                     }
                                     tlsConfig.getString("echConfig")?.also {
                                         v2rayBean.echEnabled = true
-                                        v2rayBean.echConfig = it
+                                        v2rayBean.echConfigList = it
                                     }
                                 }
                             }
@@ -407,7 +407,7 @@ fun parseV2Ray5Outbound(outbound: JsonObject): List<AbstractBean> {
                     }
                     securitySettings.getString("echConfig")?.also {
                         hysteria2Bean.echEnabled = true
-                        hysteria2Bean.echConfig = it
+                        hysteria2Bean.echConfigList = it
                     }
                 }
                 streamSettings.getObject("transportSettings")?.also { transportSettings ->

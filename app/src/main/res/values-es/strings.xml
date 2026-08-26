@@ -455,8 +455,6 @@
     <string name="resolve_destination_for_direct">Resolver destino (directo)</string>
     <string name="edns_client_ip">IP del cliente EDNS</string>
     <string name="allow_apps_bypass_vpn">Permitir que las apps omitan la VPN</string>
-    <string name="ech_config">Configuración ECH</string>
-    <string name="ech_doh_server">Servidor ECH DoH</string>
     <string name="backup_all_profiles">Respaldar todos los perfiles</string>
     <string name="acquire_wake_lock">Adquirir WakeLock</string>
     <string name="log_level">Nivel de registro</string>

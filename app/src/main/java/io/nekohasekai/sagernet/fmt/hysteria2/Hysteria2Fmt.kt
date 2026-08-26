@@ -93,7 +93,8 @@ fun parseHysteria2(rawURL: String): Hysteria2Bean {
                 throw IllegalArgumentException("invalid ech")
             }
             echEnabled = true
-            echConfig = it
+            echConfigList = it
+            echQueryName = ""
         }
     }
 }
@@ -138,14 +139,14 @@ fun Hysteria2Bean.toUri(): String? {
         require(obfsPassword.toByteArray().size >= 4) { "invalid obfs password" }
         builder.addQueryParameter("obfs-password", obfsPassword)
     }
-    if (echEnabled && echConfig.isNotEmpty()) {
+    if (echEnabled && echConfigList.isNotEmpty()) {
         try {
             // TODO: validate echConfig
-            Base64.decode(echConfig)
+            Base64.decode(echConfigList)
         } catch (_: Exception) {
             throw IllegalArgumentException("invalid ech")
         }
-        builder.addQueryParameter("ech", echConfig)
+        builder.addQueryParameter("ech", echConfigList)
     }
     if (name.isNotEmpty()) {
         builder.fragment = name

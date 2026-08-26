@@ -48,7 +48,8 @@ public class Hysteria2Bean extends AbstractBean {
     public Long hopIntervalMin;
     public Long hopIntervalMax;
     public Boolean echEnabled;
-    public String echConfig;
+    public String echConfigList;
+    public String echQueryName;
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
     public String congestionControl;
@@ -78,7 +79,8 @@ public class Hysteria2Bean extends AbstractBean {
         if (hopIntervalMin == null) hopIntervalMin = 0L;
         if (hopIntervalMax == null) hopIntervalMax = 0L;
         if (echEnabled == null) echEnabled = false;
-        if (echConfig == null) echConfig = "";
+        if (echConfigList == null) echConfigList = "";
+        if (echQueryName == null) echQueryName = "";
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
         if (congestionControl == null) congestionControl = "bbr";
@@ -93,7 +95,7 @@ public class Hysteria2Bean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(11);
+        output.writeInt(12);
         super.serialize(output);
         output.writeString(auth);
         switch (obfsType) {
@@ -114,7 +116,7 @@ public class Hysteria2Bean extends AbstractBean {
         output.writeLong(downloadMbps);
         output.writeString(serverPorts);
         output.writeLong(hopInterval);
-        output.writeString(echConfig);
+        output.writeString(echConfigList);
         output.writeString(mtlsCertificate);
         output.writeString(mtlsCertificatePrivateKey);
 
@@ -141,6 +143,7 @@ public class Hysteria2Bean extends AbstractBean {
         }
         output.writeString(serverNameToVerify);
         output.writeBoolean(chromeParrot);
+        output.writeString(echQueryName);
     }
 
     @Override
@@ -189,8 +192,8 @@ public class Hysteria2Bean extends AbstractBean {
             }
         }
         if (version >= 4) {
-            echConfig = input.readString();
-            if (version <= 5 && !echConfig.isEmpty()) {
+            echConfigList = input.readString();
+            if (version <= 5 && !echConfigList.isEmpty()) {
                 echEnabled = true;
             }
             mtlsCertificate = input.readString();
@@ -239,6 +242,9 @@ public class Hysteria2Bean extends AbstractBean {
                 omitMaxDatagramFrameSize = false;
             }
         }
+        if (version >= 12) {
+            echQueryName = input.readString();
+        }
     }
 
     @Override
@@ -263,8 +269,15 @@ public class Hysteria2Bean extends AbstractBean {
         if (bean.certificates == null || bean.certificates.isEmpty() && !certificates.isEmpty()) {
             bean.certificates = certificates;
         }
-        bean.echEnabled = echEnabled;
-        bean.echConfig = echConfig;
+        if ((bean.echEnabled == null || !bean.echEnabled) && echEnabled) {
+            bean.echEnabled = echEnabled;
+        }
+        if ((bean.echConfigList == null || bean.echConfigList.isEmpty()) && !echConfigList.isEmpty()) {
+            bean.echConfigList = echConfigList;
+        }
+        if ((bean.echQueryName == null || bean.echQueryName.isEmpty()) && !echQueryName.isEmpty()) {
+            bean.echQueryName = echQueryName;
+        }
         bean.hopInterval = hopInterval;
         bean.hopIntervalMin = hopIntervalMin;
         bean.hopIntervalMax = hopIntervalMax;

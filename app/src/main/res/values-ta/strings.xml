@@ -449,8 +449,6 @@
     <string name="allow_apps_bypass_vpn_sum">சிச்டம் வழங்கிய முறைகளைப் பயன்படுத்தி VPN ஐத் தவிர்க்க ஆப்சை அனுமதிக்கவும்</string>
     <string name="update_all_subscriptions">அனைத்து சந்தாக்களையும் புதுப்பிக்கவும்</string>
     <string name="cag_splithttp">XHTTP அமைப்புகள்</string>
-    <string name="ech_config">நான் கட்டமைப்பு</string>
-    <string name="ech_doh_server">I DOH சர்வர்</string>
     <string name="splithttp_mode">பயன்முறை</string>
     <string name="backup_all_profiles">எல்லா சுயவிவரங்களையும் காப்புப் பிரதி எடுக்கவும்</string>
     <string name="browser_forwarder_hint">v2ray-core வெளியீட்டில் இருந்து v2ray-extra.zip ஐப் பதிவிறக்கி, Android/data/%s/files இல் index.html மற்றும் index.js ஐ வைக்கவும் அல்லது index.html மற்றும் index.js ஐ வழிச் சொத்துகளாக இறக்குமதி செய்யவும்.</string>

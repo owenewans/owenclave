@@ -42,7 +42,8 @@ public class Http3Bean extends AbstractBean {
     public String pinnedPeerCertificateSha256;
     public Boolean allowInsecure;
     public Boolean echEnabled;
-    public String echConfig;
+    public String echConfigList;
+    public String echQueryName;
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
     public String serverNameToVerify;
@@ -59,7 +60,8 @@ public class Http3Bean extends AbstractBean {
         if (pinnedPeerCertificateSha256 == null) pinnedPeerCertificateSha256 = "";
         if (allowInsecure == null) allowInsecure = false;
         if (echEnabled == null) echEnabled = false;
-        if (echConfig == null) echConfig = "";
+        if (echConfigList == null) echConfigList = "";
+        if (echQueryName == null) echQueryName = "";
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
         if (serverNameToVerify == null) serverNameToVerify = "";
@@ -67,7 +69,7 @@ public class Http3Bean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(5);
+        output.writeInt(6);
         super.serialize(output);
         output.writeString(username);
         output.writeString(password);
@@ -77,13 +79,14 @@ public class Http3Bean extends AbstractBean {
         output.writeString(pinnedPeerCertificatePublicKeySha256);
         output.writeString(pinnedPeerCertificateSha256);
         output.writeBoolean(allowInsecure);
-        output.writeString(echConfig);
+        output.writeString(echConfigList);
         output.writeString(mtlsCertificate);
         output.writeString(mtlsCertificatePrivateKey);
         output.writeBoolean(false); // trustTunnelUot, removed
 
         output.writeBoolean(echEnabled);
         output.writeString(serverNameToVerify);
+        output.writeString(echQueryName);
     }
 
     @Override
@@ -100,8 +103,8 @@ public class Http3Bean extends AbstractBean {
             pinnedPeerCertificateSha256 = input.readString();
         }
         allowInsecure = input.readBoolean();
-        echConfig = input.readString();
-        if (version <= 3 && !echConfig.isEmpty()) {
+        echConfigList = input.readString();
+        if (version <= 3 && !echConfigList.isEmpty()) {
             echEnabled = true;
         }
         if (version == 0) {
@@ -119,6 +122,9 @@ public class Http3Bean extends AbstractBean {
         }
         if (version >= 5) {
             serverNameToVerify = input.readString();
+        }
+        if (version >= 6) {
+            echQueryName = input.readString();
         }
     }
 
@@ -144,7 +150,8 @@ public class Http3Bean extends AbstractBean {
             bean.pinnedPeerCertificateSha256 = pinnedPeerCertificateSha256;
         }
         bean.echEnabled = echEnabled;
-        bean.echConfig = echConfig;
+        bean.echConfigList = echConfigList;
+        bean.echQueryName = echQueryName;
     }
 
     @NotNull

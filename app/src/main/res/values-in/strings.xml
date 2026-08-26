@@ -460,8 +460,6 @@
     <string name="allow_apps_bypass_vpn_sum">Izinkan aplikasi melewati VPN menggunakan metode yang disediakan sistem secara mandiri</string>
     <string name="update_all_subscriptions">Perbarui semua langganan</string>
     <string name="cag_splithttp">Pengaturan XHTTP</string>
-    <string name="ech_config">Konfigurasi ECH</string>
-    <string name="ech_doh_server">Server DoH ECH</string>
     <string name="splithttp_mode">Mode</string>
     <string name="backup_all_profiles">Cadangkan semua profil</string>
     <string name="browser_forwarder_hint">Silakan unduh v2ray-extra.zip dari rilis v2ray-core dan tempatkan index.html serta index.js di Android/data/%s/files atau impor index.html dan index.js sebagai aset rute.</string>

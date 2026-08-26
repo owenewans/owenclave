@@ -485,8 +485,7 @@
     <string name="allow_apps_bypass_vpn_sum">Allow apps to bypass VPN using system-provided methods on their own</string>
     <string name="update_all_subscriptions">Update all subscriptions</string>
     <string name="cag_splithttp">XHTTP settings</string>
-    <string name="ech_config">ECH Config</string>
-    <string name="ech_doh_server">ECH DoH server</string>
+    <string name="ech_config_list" translatable="false">ECHConfigList</string>
     <string name="splithttp_mode">Mode</string>
     <string name="splithttp_extra" translatable="false">Extra</string>
     <string name="backup_all_profiles">Backup all profiles</string>
@@ -625,4 +624,5 @@
     <string name="chrome_parrot_summary">Imitate Chrome\'s QUIC Client Hello</string>
     <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">This option is disabled to match Chrome\'s behavior.</string>
     <string name="option_globally_enabled">This option has been enabled globally and the value will be omitted.</string>
+    <string name="ech_query_name" translatable="false">ECHQueryName</string>
 </resources>

@@ -435,7 +435,6 @@
     <string name="allow_apps_bypass_vpn">Разрешить приложениям обходить VPN</string>
     <string name="update_all_subscriptions">Обновить все подписки</string>
     <string name="cag_splithttp">Настройки XHTTP</string>
-    <string name="ech_doh_server">ECH DoH сервер</string>
     <string name="ws_max_early_data">Максимальный объем ранних данных</string>
     <string name="hijack_dns">Перехват DNS</string>
     <string name="connection_test_url_test">URL test</string>
@@ -461,7 +460,6 @@
     <string name="probe_cert_summary">Проверка TLS-сертификата сервера.</string>
     <string name="front_proxy">Начальный прокси</string>
     <string name="allow_apps_bypass_vpn_sum">Разрешить приложениям обходить VPN самостоятельно, используя системные методы</string>
-    <string name="ech_config">ECH-конфиг</string>
     <string name="splithttp_mode">Режим</string>
     <string name="backup_all_profiles">Бэкап всех профилей</string>
     <string name="mieru_multiplexing_level">Уровень мультиплексирования</string>

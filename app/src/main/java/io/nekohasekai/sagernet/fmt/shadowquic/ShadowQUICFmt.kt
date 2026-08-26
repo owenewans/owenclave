@@ -24,6 +24,8 @@ import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
 import kotlin.text.ifEmpty
 
+val supportedShadowQUICCongestionControl = arrayOf("cubic", "bbr", "new_reno")
+
 // https://github.com/RealBikiniBottom/QuicProxy/discussions/2
 // https://github.com/spongebob888/shadowquic/discussions/160
 // third-party share link standard endorsed by the ShadowQUIC author
