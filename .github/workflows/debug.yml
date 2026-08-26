@@ -27,7 +27,7 @@ jobs:
           go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260821190718-4776eadac327
           go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260821190718-4776eadac327
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 21
