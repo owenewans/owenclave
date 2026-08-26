@@ -1575,8 +1575,8 @@ Go standard library
 
 androidx.activity:activity
 androidx.activity:activity-ktx
+androidx.annotation:annotation
 androidx.annotation:annotation-experimental
-androidx.annotation:annotation-jvm
 androidx.appcompat:appcompat
 androidx.appcompat:appcompat-resources
 androidx.arch.core:core-common
@@ -1590,9 +1590,9 @@ androidx.camera:camera-lifecycle
 androidx.camera:camera-video
 androidx.camera:camera-view
 androidx.cardview:cardview
-androidx.collection:collection-jvm
+androidx.collection:collection
 androidx.collection:collection-ktx
-androidx.compose.runtime:runtime-annotation-android
+androidx.compose.runtime:runtime-annotation
 androidx.concurrent:concurrent-futures
 androidx.concurrent:concurrent-futures-ktx
 androidx.constraintlayout:constraintlayout
@@ -1612,7 +1612,7 @@ androidx.emoji2:emoji2-views-helper
 androidx.exifinterface:exifinterface
 androidx.fragment:fragment
 androidx.fragment:fragment-ktx
-androidx.graphics:graphics-shapes-android
+androidx.graphics:graphics-shapes
 androidx.interpolator:interpolator
 androidx.lifecycle:lifecycle-common
 androidx.lifecycle:lifecycle-livedata
@@ -1629,23 +1629,22 @@ androidx.loader:loader
 androidx.media3:media3-common
 androidx.media3:media3-container
 androidx.media3:media3-muxer
-androidx.navigationevent:navigationevent-android
+androidx.navigationevent:navigationevent
 androidx.preference:preference
 androidx.profileinstaller:profileinstaller
 androidx.recyclerview:recyclerview
 androidx.resourceinspection:resourceinspection-annotation
-androidx.room:room-common-jvm
+androidx.room:room-common
 androidx.room:room-ktx
-androidx.room:room-runtime-android
+androidx.room:room-runtime
 androidx.savedstate:savedstate
 androidx.savedstate:savedstate-ktx
 androidx.slidingpanelayout:slidingpanelayout
-androidx.sqlite:sqlite-android
-androidx.sqlite:sqlite-framework-android
+androidx.sqlite:sqlite
+androidx.sqlite:sqlite-framework
 androidx.startup:startup-runtime
 androidx.swiperefreshlayout:swiperefreshlayout
 androidx.tracing:tracing
-androidx.tracing:tracing-android
 androidx.tracing:tracing-ktx
 androidx.transition:transition
 androidx.vectordrawable:vectordrawable
@@ -2174,7 +2173,7 @@ org.jetbrains.kotlin:kotlin-stdlib-jdk7
             ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
             DEALINGS IN THE SOFTWARE.
 
-org.jetbrains.kotlinx:atomicfu-jvm
+org.jetbrains.kotlinx:atomicfu
 
       Copyright 2017 JetBrains s.r.o.
 
@@ -2192,7 +2191,7 @@ org.jetbrains.kotlinx:atomicfu-jvm
 
 org.jetbrains.kotlinx:kotlinx-coroutines-android
 org.jetbrains.kotlinx:kotlinx-coroutines-bom
-org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm
+org.jetbrains.kotlinx:kotlinx-coroutines-core
 
       Copyright 2016-2025 JetBrains s.r.o and contributors
 

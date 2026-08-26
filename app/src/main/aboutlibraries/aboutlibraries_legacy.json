@@ -9,12 +9,12 @@
             "artifactVersion": "1.11.0"
         },
         {
-            "uniqueId": "androidx.annotation:annotation-experimental",
-            "artifactVersion": "1.4.1"
+            "uniqueId": "androidx.annotation:annotation",
+            "artifactVersion": "1.9.1"
         },
         {
-            "uniqueId": "androidx.annotation:annotation-jvm",
-            "artifactVersion": "1.9.1"
+            "uniqueId": "androidx.annotation:annotation-experimental",
+            "artifactVersion": "1.4.1"
         },
         {
             "uniqueId": "androidx.appcompat:appcompat",
@@ -30,7 +30,7 @@
         },
         {
             "uniqueId": "androidx.arch.core:core-runtime",
-            "artifactVersion": "2.1.0"
+            "artifactVersion": "2.2.0"
         },
         {
             "uniqueId": "androidx.camera:camera-camera2",
@@ -57,7 +57,7 @@
             "artifactVersion": "1.0.0"
         },
         {
-            "uniqueId": "androidx.collection:collection-jvm",
+            "uniqueId": "androidx.collection:collection",
             "artifactVersion": "1.4.2"
         },
         {
@@ -106,7 +106,7 @@
         },
         {
             "uniqueId": "androidx.databinding:viewbinding",
-            "artifactVersion": "9.3.1"
+            "artifactVersion": "9.3.2"
         },
         {
             "uniqueId": "androidx.drawerlayout:drawerlayout",
@@ -137,7 +137,7 @@
             "artifactVersion": "1.8.9"
         },
         {
-            "uniqueId": "androidx.graphics:graphics-shapes-android",
+            "uniqueId": "androidx.graphics:graphics-shapes",
             "artifactVersion": "1.0.1"
         },
         {
@@ -209,7 +209,7 @@
             "artifactVersion": "1.0.1"
         },
         {
-            "uniqueId": "androidx.room:room-common-jvm",
+            "uniqueId": "androidx.room:room-common",
             "artifactVersion": "2.7.2"
         },
         {
@@ -217,7 +217,7 @@
             "artifactVersion": "2.7.2"
         },
         {
-            "uniqueId": "androidx.room:room-runtime-android",
+            "uniqueId": "androidx.room:room-runtime",
             "artifactVersion": "2.7.2"
         },
         {
@@ -233,11 +233,11 @@
             "artifactVersion": "1.2.0"
         },
         {
-            "uniqueId": "androidx.sqlite:sqlite-android",
+            "uniqueId": "androidx.sqlite:sqlite",
             "artifactVersion": "2.5.1"
         },
         {
-            "uniqueId": "androidx.sqlite:sqlite-framework-android",
+            "uniqueId": "androidx.sqlite:sqlite-framework",
             "artifactVersion": "2.5.1"
         },
         {
@@ -354,7 +354,7 @@
         },
         {
             "uniqueId": "com.google.protobuf:protobuf-java",
-            "artifactVersion": "4.35.1"
+            "artifactVersion": "4.36.0"
         },
         {
             "uniqueId": "com.google.zxing:core",
@@ -401,7 +401,7 @@
             "artifactVersion": "1.11.0"
         },
         {
-            "uniqueId": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+            "uniqueId": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
             "artifactVersion": "1.11.0"
         },
         {

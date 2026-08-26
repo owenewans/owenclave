@@ -1257,6 +1257,8 @@ private fun parseECHConfigPem(pem: String): String? {
             .substringBefore("-----END ECH CONFIGS-----")
             .replace("\r", "")
             .replace("\n", "")
+             .replace("\t", "")
+             .replace(" ", "")
         ))
     } catch (_: Exception) {
         null

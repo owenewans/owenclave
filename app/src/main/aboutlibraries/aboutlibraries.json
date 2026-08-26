@@ -9,12 +9,12 @@
             "artifactVersion": "1.13.0"
         },
         {
-            "uniqueId": "androidx.annotation:annotation-experimental",
-            "artifactVersion": "1.4.1"
+            "uniqueId": "androidx.annotation:annotation",
+            "artifactVersion": "1.10.0"
         },
         {
-            "uniqueId": "androidx.annotation:annotation-jvm",
-            "artifactVersion": "1.10.0"
+            "uniqueId": "androidx.annotation:annotation-experimental",
+            "artifactVersion": "1.5.0"
         },
         {
             "uniqueId": "androidx.appcompat:appcompat",
@@ -30,7 +30,7 @@
         },
         {
             "uniqueId": "androidx.arch.core:core-runtime",
-            "artifactVersion": "2.1.0"
+            "artifactVersion": "2.2.0"
         },
         {
             "uniqueId": "androidx.camera.featurecombinationquery:featurecombinationquery",
@@ -69,11 +69,11 @@
             "artifactVersion": "1.0.0"
         },
         {
-            "uniqueId": "androidx.collection:collection-jvm",
-            "artifactVersion": "1.5.0"
+            "uniqueId": "androidx.collection:collection",
+            "artifactVersion": "1.6.0"
         },
         {
-            "uniqueId": "androidx.compose.runtime:runtime-annotation-android",
+            "uniqueId": "androidx.compose.runtime:runtime-annotation",
             "artifactVersion": "1.9.0"
         },
         {
@@ -122,7 +122,7 @@
         },
         {
             "uniqueId": "androidx.databinding:viewbinding",
-            "artifactVersion": "9.3.1"
+            "artifactVersion": "9.3.2"
         },
         {
             "uniqueId": "androidx.drawerlayout:drawerlayout",
@@ -153,7 +153,7 @@
             "artifactVersion": "1.9.0"
         },
         {
-            "uniqueId": "androidx.graphics:graphics-shapes-android",
+            "uniqueId": "androidx.graphics:graphics-shapes",
             "artifactVersion": "1.0.1"
         },
         {
@@ -217,7 +217,7 @@
             "artifactVersion": "1.9.0"
         },
         {
-            "uniqueId": "androidx.navigationevent:navigationevent-android",
+            "uniqueId": "androidx.navigationevent:navigationevent",
             "artifactVersion": "1.0.0"
         },
         {
@@ -237,7 +237,7 @@
             "artifactVersion": "1.0.1"
         },
         {
-            "uniqueId": "androidx.room:room-common-jvm",
+            "uniqueId": "androidx.room:room-common",
             "artifactVersion": "2.8.4"
         },
         {
@@ -245,7 +245,7 @@
             "artifactVersion": "2.8.4"
         },
         {
-            "uniqueId": "androidx.room:room-runtime-android",
+            "uniqueId": "androidx.room:room-runtime",
             "artifactVersion": "2.8.4"
         },
         {
@@ -261,11 +261,11 @@
             "artifactVersion": "1.2.0"
         },
         {
-            "uniqueId": "androidx.sqlite:sqlite-android",
+            "uniqueId": "androidx.sqlite:sqlite",
             "artifactVersion": "2.6.2"
         },
         {
-            "uniqueId": "androidx.sqlite:sqlite-framework-android",
+            "uniqueId": "androidx.sqlite:sqlite-framework",
             "artifactVersion": "2.6.2"
         },
         {
@@ -277,7 +277,7 @@
             "artifactVersion": "1.2.0"
         },
         {
-            "uniqueId": "androidx.tracing:tracing-android",
+            "uniqueId": "androidx.tracing:tracing",
             "artifactVersion": "2.0.0"
         },
         {
@@ -386,11 +386,11 @@
         },
         {
             "uniqueId": "com.google.guava:failureaccess",
-            "artifactVersion": "1.0.1"
+            "artifactVersion": "1.0.2"
         },
         {
             "uniqueId": "com.google.guava:guava",
-            "artifactVersion": "32.0.1-android"
+            "artifactVersion": "33.3.1-android"
         },
         {
             "uniqueId": "com.google.guava:listenablefuture",
@@ -398,11 +398,11 @@
         },
         {
             "uniqueId": "com.google.j2objc:j2objc-annotations",
-            "artifactVersion": "2.8"
+            "artifactVersion": "3.0.0"
         },
         {
             "uniqueId": "com.google.protobuf:protobuf-java",
-            "artifactVersion": "4.35.1"
+            "artifactVersion": "4.36.0"
         },
         {
             "uniqueId": "com.google.zxing:core",
@@ -434,7 +434,7 @@
         },
         {
             "uniqueId": "org.checkerframework:checker-qual",
-            "artifactVersion": "3.33.0"
+            "artifactVersion": "3.43.0"
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-bom",
@@ -453,7 +453,7 @@
             "artifactVersion": "1.8.22"
         },
         {
-            "uniqueId": "org.jetbrains.kotlinx:atomicfu-jvm",
+            "uniqueId": "org.jetbrains.kotlinx:atomicfu",
             "artifactVersion": "0.28.0"
         },
         {
@@ -465,7 +465,7 @@
             "artifactVersion": "1.11.0"
         },
         {
-            "uniqueId": "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",
+            "uniqueId": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
             "artifactVersion": "1.11.0"
         },
         {
