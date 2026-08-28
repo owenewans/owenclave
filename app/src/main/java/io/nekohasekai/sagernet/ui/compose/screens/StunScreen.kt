@@ -119,7 +119,7 @@ fun StunScreen(
                                             )
                                         }
                                         if (testMode == 0) {
-                                            val result = stunClient.stunTest(stunServer)
+                                            val result = stunClient.stunNatBehaviorDiscovery(stunServer)
                                             withContext(Dispatchers.Main) {
                                                 if (result.error.isNotEmpty()) {
                                                     error = result.error
@@ -130,7 +130,7 @@ fun StunScreen(
                                                 running = false
                                             }
                                         } else {
-                                            val result = stunClient.stunLegacyTest(stunServer)
+                                            val result = stunClient.stunNatTypeTest(stunServer)
                                             withContext(Dispatchers.Main) {
                                                 if (result.error.isNotEmpty()) {
                                                     error = result.error

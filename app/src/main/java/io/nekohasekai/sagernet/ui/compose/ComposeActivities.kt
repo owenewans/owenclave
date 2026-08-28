@@ -577,7 +577,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     uploadSpeed = b.uploadMbps?.toString() ?: "", downloadSpeed = b.downloadMbps?.toString() ?: "",
                     congestionControl = b.congestionControl ?: "bbr",
                     certificates = b.certificates ?: "", allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfig ?: "")
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
             }
             ProxyEntity.TYPE_SSH -> {
                 val b = entity.sshBean ?: return s
@@ -598,21 +598,21 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     congestionControl = b.congestionControl ?: "cubic",
                     certificates = b.certificates ?: "", allowInsecure = b.allowInsecure ?: false,
                     disableSNI = b.disableSNI ?: false, zeroRTT = b.zeroRTTHandshake ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfig ?: "")
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
             }
             ProxyEntity.TYPE_JUICITY -> {
                 val b = entity.juicityBean ?: return s
                 s.copy(uuid = b.uuid ?: "", password = b.password ?: "",
                     sni = b.sni ?: "", certificates = b.certificates ?: "",
                     allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfig ?: "")
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
             }
             ProxyEntity.TYPE_HTTP3 -> {
                 val b = entity.http3Bean ?: return s
                 s.copy(username = b.username ?: "", password = b.password ?: "",
                     sni = b.sni ?: "", certificates = b.certificates ?: "",
                     allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfig ?: "")
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
             }
             ProxyEntity.TYPE_ANYTLS -> {
                 val b = entity.anytlsBean ?: return s
@@ -620,7 +620,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     sni = b.sni ?: "", alpn = b.alpn ?: "",
                     certificates = b.certificates ?: "", utlsFingerprint = b.utlsFingerprint ?: "",
                     allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfig ?: "",
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "",
                     realityPublicKey = b.realityPublicKey ?: "", realityShortId = b.realityShortId ?: "")
             }
             ProxyEntity.TYPE_SHADOWQUIC -> {
@@ -636,7 +636,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                     password = b.password ?: "", sni = b.sni ?: "",
                     certificates = b.certificate ?: "", utlsFingerprint = b.utlsFingerprint ?: "",
                     allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfig ?: "")
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
             }
             ProxyEntity.TYPE_SNELL -> {
                 val b = entity.snellBean ?: return s
@@ -737,7 +737,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.allowInsecure = state.allowInsecure
                 b.utlsFingerprint = state.utlsFingerprint
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 b.mux = state.mux
                 b.singMux = state.singMux
                 entity.vmessBean = b
@@ -759,7 +759,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.allowInsecure = state.allowInsecure
                 b.utlsFingerprint = state.utlsFingerprint
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 b.mux = state.mux
                 b.singMux = state.singMux
                 entity.vlessBean = b
@@ -779,7 +779,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.allowInsecure = state.allowInsecure
                 b.utlsFingerprint = state.utlsFingerprint
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 b.mux = state.mux
                 b.singMux = state.singMux
                 entity.trojanBean = b
@@ -811,7 +811,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.certificates = state.certificates
                 b.allowInsecure = state.allowInsecure
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 entity.hysteria2Bean = b
             }
             ProxyEntity.TYPE_SSH -> {
@@ -854,7 +854,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.disableSNI = state.disableSNI
                 b.zeroRTTHandshake = state.zeroRTT
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 entity.tuic5Bean = b
             }
             ProxyEntity.TYPE_JUICITY -> {
@@ -868,7 +868,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.certificates = state.certificates
                 b.allowInsecure = state.allowInsecure
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 entity.juicityBean = b
             }
             ProxyEntity.TYPE_HTTP3 -> {
@@ -882,7 +882,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.certificates = state.certificates
                 b.allowInsecure = state.allowInsecure
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 entity.http3Bean = b
             }
             ProxyEntity.TYPE_ANYTLS -> {
@@ -898,7 +898,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.utlsFingerprint = state.utlsFingerprint
                 b.allowInsecure = state.allowInsecure
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 b.realityPublicKey = state.realityPublicKey
                 b.realityShortId = state.realityShortId
                 entity.anytlsBean = b
@@ -930,7 +930,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.utlsFingerprint = state.utlsFingerprint
                 b.allowInsecure = state.allowInsecure
                 b.echEnabled = state.echEnabled
-                b.echConfig = state.echConfig
+                b.echConfigList = state.echConfig
                 entity.trustTunnelBean = b
             }
             ProxyEntity.TYPE_SNELL -> {

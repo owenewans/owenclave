@@ -5,6 +5,10 @@
             "artifactVersion": "1.11.0"
         },
         {
+            "uniqueId": "androidx.activity:activity-compose",
+            "artifactVersion": "1.11.0"
+        },
+        {
             "uniqueId": "androidx.activity:activity-ktx",
             "artifactVersion": "1.11.0"
         },
@@ -33,6 +37,10 @@
             "artifactVersion": "2.2.0"
         },
         {
+            "uniqueId": "androidx.autofill:autofill",
+            "artifactVersion": "1.0.0"
+        },
+        {
             "uniqueId": "androidx.camera:camera-camera2",
             "artifactVersion": "1.4.2"
         },
@@ -58,11 +66,99 @@
         },
         {
             "uniqueId": "androidx.collection:collection",
-            "artifactVersion": "1.4.2"
+            "artifactVersion": "1.5.0"
         },
         {
             "uniqueId": "androidx.collection:collection-ktx",
-            "artifactVersion": "1.4.2"
+            "artifactVersion": "1.5.0"
+        },
+        {
+            "uniqueId": "androidx.compose.animation:animation",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.animation:animation-core",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.foundation:foundation",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.foundation:foundation-layout",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.material3:material3",
+            "artifactVersion": "1.5.0-alpha24"
+        },
+        {
+            "uniqueId": "androidx.compose.material3:material3-ripple",
+            "artifactVersion": "1.5.0-alpha24"
+        },
+        {
+            "uniqueId": "androidx.compose.material3:material3-window-size-class",
+            "artifactVersion": "1.5.0-alpha24"
+        },
+        {
+            "uniqueId": "androidx.compose.material:material-icons-core",
+            "artifactVersion": "1.7.8"
+        },
+        {
+            "uniqueId": "androidx.compose.material:material-icons-extended",
+            "artifactVersion": "1.7.8"
+        },
+        {
+            "uniqueId": "androidx.compose.material:material-ripple",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.runtime:runtime",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.runtime:runtime-annotation",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.runtime:runtime-retain",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.runtime:runtime-saveable",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui-geometry",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui-graphics",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui-text",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui-tooling-preview",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui-unit",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose.ui:ui-util",
+            "artifactVersion": "1.12.0-beta01"
+        },
+        {
+            "uniqueId": "androidx.compose:compose-bom",
+            "artifactVersion": "2025.06.00"
         },
         {
             "uniqueId": "androidx.concurrent:concurrent-futures",
@@ -105,6 +201,10 @@
             "artifactVersion": "1.1.0"
         },
         {
+            "uniqueId": "androidx.customview:customview-poolingcontainer",
+            "artifactVersion": "1.0.0"
+        },
+        {
             "uniqueId": "androidx.databinding:viewbinding",
             "artifactVersion": "9.3.2"
         },
@@ -118,11 +218,11 @@
         },
         {
             "uniqueId": "androidx.emoji2:emoji2",
-            "artifactVersion": "1.3.0"
+            "artifactVersion": "1.4.0"
         },
         {
             "uniqueId": "androidx.emoji2:emoji2-views-helper",
-            "artifactVersion": "1.3.0"
+            "artifactVersion": "1.4.0"
         },
         {
             "uniqueId": "androidx.exifinterface:exifinterface",
@@ -137,6 +237,10 @@
             "artifactVersion": "1.8.9"
         },
         {
+            "uniqueId": "androidx.graphics:graphics-path",
+            "artifactVersion": "1.0.1"
+        },
+        {
             "uniqueId": "androidx.graphics:graphics-shapes",
             "artifactVersion": "1.0.1"
         },
@@ -146,51 +250,75 @@
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-common",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
+        },
+        {
+            "uniqueId": "androidx.lifecycle:lifecycle-common-java8",
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-livedata",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-livedata-core",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-livedata-core-ktx",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-process",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-runtime",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
+        },
+        {
+            "uniqueId": "androidx.lifecycle:lifecycle-runtime-compose",
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-runtime-ktx",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-service",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-viewmodel",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
+        },
+        {
+            "uniqueId": "androidx.lifecycle:lifecycle-viewmodel-compose",
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-viewmodel-ktx",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.lifecycle:lifecycle-viewmodel-savedstate",
-            "artifactVersion": "2.6.2"
+            "artifactVersion": "2.9.4"
         },
         {
             "uniqueId": "androidx.loader:loader",
             "artifactVersion": "1.0.0"
+        },
+        {
+            "uniqueId": "androidx.navigation:navigation-common",
+            "artifactVersion": "2.9.5"
+        },
+        {
+            "uniqueId": "androidx.navigation:navigation-compose",
+            "artifactVersion": "2.9.5"
+        },
+        {
+            "uniqueId": "androidx.navigation:navigation-runtime",
+            "artifactVersion": "2.9.5"
         },
         {
             "uniqueId": "androidx.preference:preference",
@@ -222,11 +350,15 @@
         },
         {
             "uniqueId": "androidx.savedstate:savedstate",
-            "artifactVersion": "1.2.1"
+            "artifactVersion": "1.3.2"
+        },
+        {
+            "uniqueId": "androidx.savedstate:savedstate-compose",
+            "artifactVersion": "1.3.2"
         },
         {
             "uniqueId": "androidx.savedstate:savedstate-ktx",
-            "artifactVersion": "1.2.1"
+            "artifactVersion": "1.3.2"
         },
         {
             "uniqueId": "androidx.slidingpanelayout:slidingpanelayout",
@@ -282,7 +414,11 @@
         },
         {
             "uniqueId": "androidx.window:window",
-            "artifactVersion": "1.0.0"
+            "artifactVersion": "1.5.0"
+        },
+        {
+            "uniqueId": "androidx.window:window-core",
+            "artifactVersion": "1.5.0"
         },
         {
             "uniqueId": "androidx.work:work-multiprocess",
@@ -389,6 +525,10 @@
             "artifactVersion": "2.4.10"
         },
         {
+            "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib-common",
+            "artifactVersion": "2.4.10"
+        },
+        {
             "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
             "artifactVersion": "1.8.22"
         },
@@ -403,6 +543,14 @@
         {
             "uniqueId": "org.jetbrains.kotlinx:kotlinx-coroutines-core",
             "artifactVersion": "1.11.0"
+        },
+        {
+            "uniqueId": "org.jetbrains.kotlinx:kotlinx-serialization-bom",
+            "artifactVersion": "1.7.3"
+        },
+        {
+            "uniqueId": "org.jetbrains.kotlinx:kotlinx-serialization-core",
+            "artifactVersion": "1.7.3"
         },
         {
             "uniqueId": "org.jetbrains:annotations",

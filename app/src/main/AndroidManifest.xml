@@ -3,7 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="internalOnly">
 
-    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+    <!--
+      The legacy flavor targets minSdk 21; a handful of AndroidX/Compose AARs
+      declare a higher minSdk in their own manifest even though their actual
+      code paths are guarded by runtime Build.VERSION checks (or simply are
+      not reached on the View-based legacy UI). Overriding here matches the
+      officially documented workaround for supporting minSdk < the library's
+      declared floor; see plugin/api and library/proto-stub build.gradle.kts
+      for the equivalent minSdk override on our own modules.
+    -->
+    <uses-sdk tools:overrideLibrary="com.google.zxing.client.android,androidx.compose.material3.ripple,androidx.compose.material3.windowsizeclass,androidx.compose.material3,androidx.compose.animation.core,androidx.compose.material.ripple,androidx.compose.animation,androidx.compose.foundation.layout,androidx.compose.foundation,androidx.compose.ui.geometry,androidx.compose.ui.tooling.preview,androidx.compose.ui.unit,androidx.compose.ui.graphics,androidx.compose.ui.util,androidx.compose.ui.text,androidx.compose.runtime.retain,androidx.compose.runtime.annotation,androidx.compose.runtime,androidx.compose.runtime.saveable,androidx.window.core,androidx.window,androidx.compose.ui,androidx.compose.ui.tooling.data,androidx.compose.ui.tooling" />
 
     <permission
         android:name="${applicationId}.SERVICE"
