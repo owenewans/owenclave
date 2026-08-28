@@ -3,7 +3,7 @@
 # cgo enables android interface discovery required by ice
 set -euo pipefail
 
-OLCRTC_COMMIT="${OLCRTC_COMMIT:-48cae636f88e16863c99d4147bbc327a856cdf00}"
+OLCRTC_COMMIT="${OLCRTC_COMMIT:-f7068190fe340749a13a0e0fa578c3c67a898c39}"
 OLCRTC_SRC="${OLCRTC_SRC:-${TMPDIR:-/tmp}/owenclave-olcrtc}"
 OUT_ROOT="${OUT_ROOT:-$(cd "$(dirname "$0")/../../.." && pwd)/app/src/main/jniLibs}"
 TC="$ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
