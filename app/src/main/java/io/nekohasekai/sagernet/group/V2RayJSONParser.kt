@@ -57,7 +57,7 @@ import io.nekohasekai.sagernet.fmt.v2ray.supportedXhttpMode
 import io.nekohasekai.sagernet.fmt.wireguard.WireGuardBean
 import io.nekohasekai.sagernet.ktx.*
 import libexclavecore.Libexclavecore
-import java.util.Base64
+import kotlin.io.encoding.Base64
 
 fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
     // v2ray JSONv4 config, Xray config and JSONv4 config of Owenclave's v2ray fork only
@@ -169,18 +169,28 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     }
                                     tlsSettings.getString("echConfig")?.also {
                                         v2rayBean.echEnabled = true
-                                        v2rayBean.echConfig = it
+                                        v2rayBean.echConfigList = it
                                     }
-                                    tlsSettings.getString("echConfigList")?.also {
+                                    tlsSettings.getString("echConfigList")?.takeIf { it.isNotEmpty() }?.also {
                                         v2rayBean.echEnabled = true
-                                        try {
-                                            Base64.getDecoder().decode(it)
-                                            v2rayBean.echConfig = it
-                                        } catch (_: Exception) {}
+                                        // See the shit in https://github.com/XTLS/Xray-core/blob/f124daf5a37c3b968a618f92ca42396f3c001de5/transport/internet/tls/ech.go#L50-L83
+                                        if (it.contains("://")) {
+                                            val parts = it.split("+", limit = 2)
+                                            if (parts.size == 2) {
+                                                v2rayBean.echQueryName = parts[0]
+                                            }
+                                        } else {
+                                            try {
+                                                Base64.decode(it)
+                                                v2rayBean.echConfigList = it
+                                                v2rayBean.echQueryName = ""
+                                            } catch (_: Exception) {}
+                                        }
                                     }
                                     tlsSettings.getObject("ech")?.also {
                                         v2rayBean.echEnabled = it.getBoolean("enabled")
-                                        v2rayBean.echConfig = it.getString("config")
+                                        v2rayBean.echConfigList = it.getString("config")
+                                        v2rayBean.echQueryName = it.getString("queryDomain")
                                     }
                                 }
                             }
@@ -214,12 +224,6 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     when (network) {
                         "tcp", "raw" -> {
                             v2rayBean.type = "tcp"
-                            streamSettings.getObject("finalmask")?.also { finalmask ->
-                                // ban Xray TCP finalmask
-                                finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
-                                    return listOf()
-                                }
-                            }
                             (streamSettings.getObject("tcpSettings") ?: streamSettings.getObject("rawSettings"))?.also { tcpSettings ->
                                 tcpSettings.getObject("header")?.also { header ->
                                     header.getString("type")?.lowercase()?.also { type ->
@@ -600,31 +604,6 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     v2rayBean.splithttpExtra = GsonBuilder().setPrettyPrinting().create().toJson(extra)
                                 }
                             }
-                            streamSettings.getObject("finalmask")?.also { finalmask ->
-                                if (v2rayBean.alpn != "h3") {
-                                    // ban Xray TCP finalmask
-                                    finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
-                                        return listOf()
-                                    }
-                                } else {
-                                    // ban Xray UDP finalmask
-                                    finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also {
-                                        return listOf()
-                                    }
-                                    // ban Xray QUIC port hopping
-                                    finalmask.getObject("quicParams")?.also { quicParams ->
-                                        quicParams.getObject("udphop")?.also { udphop ->
-                                            udphop.getInt("ports")?.also {
-                                                return listOf()
-                                            } ?: udphop.getString("ports")?.takeIf { it.isNotEmpty() }?.also {
-                                                it.split(",").joinToString(",") { it.trim() }
-                                                    .takeIf { it.isValidHysteriaPort(disallowFromGreaterThanTo = true) }
-                                                    ?.also { return listOf() }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
                         }
                         "hysteria2", "hy2" -> {
                             v2rayBean.type = "hysteria2"
@@ -673,10 +652,23 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         else -> return listOf()
                     }
                     when (v2rayBean.type) {
-                        "ws", "grpc", "httpupgrade" -> {
+                        "tcp", "ws", "grpc", "httpupgrade", "http" -> {
                             streamSettings.getObject("finalmask")?.also { finalmask ->
                                 // ban Xray TCP finalmask
                                 finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
+                                    return listOf()
+                                }
+                            }
+                        }
+                        "splithttp" -> {
+                            streamSettings.getObject("finalmask")?.also { finalmask ->
+                                // leave it broken, I don't care
+                                // ban Xray TCP finalmask
+                                finalmask.getArray("tcp")?.takeIf { it.isNotEmpty() }?.also {
+                                    return listOf()
+                                }
+                                // ban Xray UDP finalmask
+                                finalmask.getArray("udp")?.takeIf { it.isNotEmpty() }?.also {
                                     return listOf()
                                 }
                             }
@@ -787,7 +779,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 else -> {
                                     val parts = encryption.split(".")
                                     if (parts.size < 4 || parts[0] != "mlkem768x25519plus"
-                                        || !(parts[1] == "native" || parts[1] == "xorpub" || parts[1] != "random")
+                                        || !(parts[1] == "native" || parts[1] == "xorpub" || parts[1] == "random")
                                         || !(parts[2] == "1rtt" || parts[2] == "0rtt")) {
                                         error("unsupported vless encryption")
                                     }
@@ -824,7 +816,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                     else -> {
                                         val parts = encryption.split(".")
                                         if (parts.size < 4 || parts[0] != "mlkem768x25519plus"
-                                            || !(parts[1] == "native" || parts[1] == "xorpub" || parts[1] != "random")
+                                            || !(parts[1] == "native" || parts[1] == "xorpub" || parts[1] == "random")
                                             || !(parts[2] == "1rtt" || parts[2] == "0rtt")) {
                                             error("unsupported vless encryption")
                                         }
@@ -1056,6 +1048,16 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                     }
                 }
             }
+            if (v2rayBean.security == "reality") {
+                when (v2rayBean.type) {
+                    "tcp", "http", "grpc", "splithttp" -> {}
+                    else -> return listOf()
+                }
+            }
+            if (v2rayBean is VLESSBean && v2rayBean.security != "none"&& v2rayBean.flow == "xtls-rprx-vision-udp443"
+                && v2rayBean.type != "tcp" && v2rayBean.encryption == "none") {
+                return listOf()
+            }
             return listOf(v2rayBean)
         }
         "hysteria2" -> {
@@ -1193,18 +1195,12 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                                 tlsSettings.getString("echConfig")?.also {
                                     hysteria2Bean.echEnabled = true
-                                    hysteria2Bean.echConfig = it
-                                }
-                                tlsSettings.getString("echConfigList")?.also {
-                                    hysteria2Bean.echEnabled = true
-                                    try {
-                                        Base64.getDecoder().decode(it)
-                                        hysteria2Bean.echConfig = it
-                                    } catch (_: Exception) {}
+                                    hysteria2Bean.echConfigList = it
                                 }
                                 tlsSettings.getObject("ech")?.also {
                                     hysteria2Bean.echEnabled = it.getBoolean("enabled")
-                                    hysteria2Bean.echConfig = it.getString("config")
+                                    hysteria2Bean.echConfigList = it.getString("config")
+                                    hysteria2Bean.echQueryName = it.getString("queryDomain")
                                 }
                             }
                         }
@@ -1360,6 +1356,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 /*tlsSettings.getObject("ech")?.also {
                     tuic5Bean.echEnabled = it.getBoolean("enabled")
                     tuic5Bean.echConfig = it.getString("config")
+                    tuic5Bean.echQueryName = it.getString("queryDomain")
                 }*/
             }
             return listOf(tuic5Bean)
@@ -1453,6 +1450,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 /*tlsSettings.getObject("ech")?.also {
                     http3Bean.echEnabled = it.getBoolean("enabled")
                     http3Bean.echConfig = it.getString("config")
+                    http3Bean.echQueryName = it.getString("queryDomain")
                 }*/
             }
             return listOf(http3Bean)
@@ -1552,6 +1550,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                             /*tlsSettings.getObject("ech")?.also {
                                 anytlsBean.echEnabled = it.getBoolean("enabled")
                                 anytlsBean.echConfig = it.getString("config")
+                                anytlsBean.echQueryName = it.getString("queryDomain")
                             }*/
                         }
                     }
@@ -1663,6 +1662,7 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 /*tlsSettings.getObject("ech")?.also {
                     juicityBean.echEnabled = it.getBoolean("enabled")
                     juicityBean.echConfig = it.getString("config")
+                    juicityBean.echQueryName = it.getString("queryDomain")
                 }*/
             }
             return listOf(juicityBean)
@@ -1798,7 +1798,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getString("secretKey")?.also {
                     // https://github.com/XTLS/Xray-core/blob/d8934cf83946e88210b6bb95d793bc06e12b6db8/infra/conf/wireguard.go#L126-L148
                     if (it.length == 64) {
-                        wireguardBean.privateKey = Base64.getEncoder().encodeToString(it.chunked(2).map { it.toInt(16).toByte() }.toByteArray())
+                        try {
+                            wireguardBean.privateKey = Base64.encode(it.hexToByteArray())
+                        } catch (_: Exception) {}
                     } else {
                         wireguardBean.privateKey = it.replace('_', '/').replace('-', '+')
                         if (wireguardBean.privateKey.length == 43) wireguardBean.privateKey += "="
@@ -1821,12 +1823,19 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                 settings.getArray("peers")?.forEach { peer ->
                     beanList.add(wireguardBean.applyDefaultValues().clone().apply {
                         peer.getString("endpoint")?.also { endpoint ->
-                            serverAddress = endpoint.substringBeforeLast(":").removePrefix("[").removeSuffix("]")
-                            serverPort = endpoint.substringAfterLast(":").toIntOrNull() ?: return listOf()
+                            try {
+                                val hostPort = Libexclavecore.splitHostPort(endpoint)
+                                serverAddress = hostPort.host
+                                serverPort = hostPort.port
+                            } catch (_: Exception) {
+                                return listOf()
+                            }
                         }
                         peer.getString("publicKey")?.also {
                             if (it.length == 64) {
-                                peerPublicKey = Base64.getEncoder().encodeToString(it.chunked(2).map { it.toInt(16).toByte() }.toByteArray())
+                                try {
+                                    peerPublicKey = Base64.encode(it.hexToByteArray())
+                                } catch (_: Exception) {}
                             } else {
                                 peerPublicKey = it.replace('_', '/').replace('-', '+')
                                 if (peerPublicKey.length == 43) peerPublicKey += "="
@@ -1834,7 +1843,9 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                         }
                         peer.getString("preSharedKey")?.also {
                             if (it.length == 64) {
-                                peerPreSharedKey = Base64.getEncoder().encodeToString(it.chunked(2).map { it.toInt(16).toByte() }.toByteArray())
+                                try {
+                                    peerPreSharedKey = Base64.encode(it.hexToByteArray())
+                                } catch (_: Exception) {}
                             } else {
                                 peerPreSharedKey = it.replace('_', '/').replace('-', '+')
                                 if (peerPreSharedKey.length == 43) peerPreSharedKey += "="
@@ -2042,14 +2053,23 @@ fun parseV2RayOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                                 tlsSettings.getString("verifyPeerCertByName")?.split(",")
                                     ?.filter { it.isNotEmpty() }?.takeIf { it.isNotEmpty() }?.also {
-                                        hysteria2Bean.serverNameToVerify = it.joinToString("\n")
-                                    }
-                                tlsSettings.getString("echConfigList")?.also {
+                                    hysteria2Bean.serverNameToVerify = it.joinToString("\n")
+                                }
+                                tlsSettings.getString("echConfigList")?.takeIf { it.isNotEmpty() }?.also {
                                     hysteria2Bean.echEnabled = true
-                                    try {
-                                        Base64.getDecoder().decode(it)
-                                        hysteria2Bean.echConfig = it
-                                    } catch (_: Exception) {}
+                                    // See the shit in https://github.com/XTLS/Xray-core/blob/f124daf5a37c3b968a618f92ca42396f3c001de5/transport/internet/tls/ech.go#L50-L83
+                                    if (it.contains("://")) {
+                                        val parts = it.split("+", limit = 2)
+                                        if (parts.size == 2) {
+                                            hysteria2Bean.echQueryName = parts[0]
+                                        }
+                                    } else {
+                                        try {
+                                            Base64.decode(it)
+                                            hysteria2Bean.echConfigList = it
+                                            hysteria2Bean.echQueryName = ""
+                                        } catch (_: Exception) {}
+                                    }
                                 }
                             }
                         }

@@ -21,14 +21,19 @@ package io.nekohasekai.sagernet.fmt.juicity
 
 import io.nekohasekai.sagernet.ktx.*
 import libexclavecore.Libexclavecore
-import java.util.Base64
+import kotlin.io.encoding.Base64
+import kotlin.uuid.Uuid
 
 fun parseJuicity(url: String): JuicityBean {
     val link = Libexclavecore.parseURL(url)
     return JuicityBean().apply {
         name = link.fragment
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPort = link.port
+        serverAddress = link.host
+        serverPort = when {
+            !link.hasPort() -> error("invalid port")
+            else -> link.port
+        }
+        require(Uuid.parseHexDashOrNull(link.username) != null) { "invalid uuid" }
         uuid = link.username
         password = link.password
         link.queryParameter("sni")?.also {
@@ -38,14 +43,19 @@ fun parseJuicity(url: String): JuicityBean {
             allowInsecure = true
         }
         link.queryParameter("pinned_certchain_sha256")?.also {
-            pinnedPeerCertificateChainSha256 = when {
-                it.length == 64 -> {
-                    Base64.getUrlEncoder().encodeToString(it.chunked(2).map { it.toInt(16).toByte() }.toByteArray())
+            val hash = try {
+                if (it.length == 64) {
+                    it.hexToByteArray()
+                } else if (it.contains("-") || it.contains("_")) {
+                    Base64.UrlSafe.decode(it)
+                } else {
+                    Base64.decode(it)
                 }
-                else -> {
-                    it.replace('/', '_').replace('+', '-')
-                }
+            } catch (_: Exception) {
+                throw IllegalArgumentException("invalid pinned_certchain_sha256")
             }
+            require(hash.size == 32) { "invalid pinned_certchain_sha256" }
+            pinnedPeerCertificateChainSha256 = Base64.UrlSafe.encode(hash)
             // match Juicity's behavior
             // https://github.com/juicity/juicity/blob/412dbe43e091788c5464eb2d6e9c169bdf39f19c/cmd/client/run.go#L97
             allowInsecure = true
@@ -55,8 +65,9 @@ fun parseJuicity(url: String): JuicityBean {
 
 fun JuicityBean.toUri(): String? {
     val builder = Libexclavecore.newURL("juicity").apply {
-        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
-        username = uuid.ifEmpty { error("empty uuid") }
+        setHostPort(serverAddress, serverPort)
+        require(Uuid.parseHexDashOrNull(uuid) != null) { "invalid uuid" }
+        username = uuid
         if (name.isNotEmpty()) {
             fragment = name
         }
@@ -71,15 +82,20 @@ fun JuicityBean.toUri(): String? {
     if (pinnedPeerCertificateChainSha256.isNotEmpty()) {
         // https://github.com/juicity/juicity/blob/412dbe43e091788c5464eb2d6e9c169bdf39f19c/cmd/client/run.go#L87-L96
         // it actually supports Base64 URL-safe encoding with padding, Base64 standard encoding with padding and Hex encoding
-        val certChainHash = pinnedPeerCertificateChainSha256.listByLineOrComma()[0].replace(":", "")
-        builder.addQueryParameter("pinned_certchain_sha256", when {
-            certChainHash.length == 64 -> {
-                Base64.getUrlEncoder().encodeToString(certChainHash.chunked(2).map { it.toInt(16).toByte() }.toByteArray())
+        val certChainHash = pinnedPeerCertificateChainSha256.listByLineOrComma()[0]
+        val hash = try {
+            if (certChainHash.length == 64) {
+                certChainHash.hexToByteArray()
+            } else if (certChainHash.contains("-") || certChainHash.contains("_")) {
+                Base64.UrlSafe.decode(certChainHash)
+            } else {
+                Base64.decode(certChainHash)
             }
-            else -> {
-                certChainHash.replace('/', '_').replace('+', '-')
-            }
-        })
+        } catch (_: Exception) {
+            throw IllegalArgumentException("invalid pinned_certchain_sha256")
+        }
+        require(hash.size == 32) { "invalid pinned_certchain_sha256" }
+        builder.addQueryParameter("pinned_certchain_sha256", Base64.UrlSafe.encode(hash))
     }
     // as `pinnedPeerCertificate(PublicKey)Sha256` is not exportable,
     // only add `allow_insecure=1` if `pinnedPeerCertificate(PublicKey)Sha256` is not used

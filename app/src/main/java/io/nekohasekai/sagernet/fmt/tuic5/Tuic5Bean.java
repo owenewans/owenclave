@@ -44,7 +44,8 @@ public class Tuic5Bean extends AbstractBean {
     public String sni;
     public Boolean allowInsecure;
     public Boolean echEnabled;
-    public String echConfig;
+    public String echConfigList;
+    public String echQueryName;
     public String pinnedPeerCertificateChainSha256;
     public String pinnedPeerCertificatePublicKeySha256;
     public String pinnedPeerCertificateSha256;
@@ -67,7 +68,8 @@ public class Tuic5Bean extends AbstractBean {
         if (sni == null) sni = "";
         if (allowInsecure == null) allowInsecure = false;
         if (echEnabled == null) echEnabled = false;
-        if (echConfig == null) echConfig = "";
+        if (echConfigList == null) echConfigList = "";
+        if (echQueryName == null) echQueryName = "";
         if (pinnedPeerCertificateChainSha256 == null) pinnedPeerCertificateChainSha256 = "";
         if (pinnedPeerCertificatePublicKeySha256 == null) pinnedPeerCertificatePublicKeySha256 = "";
         if (pinnedPeerCertificateSha256 == null) pinnedPeerCertificateSha256 = "";
@@ -79,7 +81,7 @@ public class Tuic5Bean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(6);
+        output.writeInt(7);
         super.serialize(output);
         output.writeString(password);
         output.writeString(certificates);
@@ -91,7 +93,7 @@ public class Tuic5Bean extends AbstractBean {
         output.writeString(sni);
         output.writeString(uuid);
         output.writeBoolean(allowInsecure);
-        output.writeString(echConfig);
+        output.writeString(echConfigList);
         output.writeString(pinnedPeerCertificateChainSha256);
         output.writeString(pinnedPeerCertificatePublicKeySha256);
         output.writeString(pinnedPeerCertificateSha256);
@@ -101,6 +103,7 @@ public class Tuic5Bean extends AbstractBean {
 
         output.writeBoolean(echEnabled);
         output.writeString(serverNameToVerify);
+        output.writeString(echQueryName);
     }
 
     @Override
@@ -123,8 +126,8 @@ public class Tuic5Bean extends AbstractBean {
             allowInsecure = input.readBoolean();
         }
         if (version >= 2) {
-            echConfig = input.readString();
-            if (version <= 4 && !echConfig.isEmpty()) {
+            echConfigList = input.readString();
+            if (version <= 4 && !echConfigList.isEmpty()) {
                 echEnabled = true;
             }
             pinnedPeerCertificateChainSha256 = input.readString();
@@ -142,6 +145,9 @@ public class Tuic5Bean extends AbstractBean {
         if (version >= 6) {
             serverNameToVerify = input.readString();
         }
+        if (version >= 7) {
+            echQueryName = input.readString();
+        }
     }
 
     @Override
@@ -151,6 +157,7 @@ public class Tuic5Bean extends AbstractBean {
             bean.certificates = certificates;
         }
         bean.zeroRTTHandshake = zeroRTTHandshake;
+        bean.congestionControl = congestionControl;
         if (allowInsecure) {
             bean.allowInsecure = true;
         }
@@ -167,7 +174,8 @@ public class Tuic5Bean extends AbstractBean {
             bean.pinnedPeerCertificateSha256 = pinnedPeerCertificateSha256;
         }
         bean.echEnabled = echEnabled;
-        bean.echConfig = echConfig;
+        bean.echConfigList = echConfigList;
+        bean.echQueryName = echQueryName;
         bean.singUDPOverStream = singUDPOverStream;
     }
 

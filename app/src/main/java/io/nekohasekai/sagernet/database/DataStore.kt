@@ -360,7 +360,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverPacketEncoding by profileCacheStore.string(Key.SERVER_PACKET_ENCODING)
     var serverUTLSFingerprint by profileCacheStore.string(Key.SERVER_UTLS_FINGERPRINT)
     var serverEchEnabled by profileCacheStore.boolean(Key.SERVER_ECH_ENABLED)
-    var serverEchConfig by profileCacheStore.string(Key.SERVER_ECH_CONFIG)
+    var serverEchConfigList by profileCacheStore.string(Key.SERVER_ECH_CONFIG_LIST)
+    var serverEchQueryName by profileCacheStore.string(Key.SERVER_ECH_QUERY_NAME)
     var serverRealityPublicKey by profileCacheStore.string(Key.SERVER_REALITY_PUBLIC_KEY)
     var serverRealityShortId by profileCacheStore.string(Key.SERVER_REALITY_SHORT_ID)
     var serverRealityMldsa65Verify by profileCacheStore.string(Key.SERVER_REALITY_MLDSA65_VERIFY)
@@ -515,13 +516,22 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var appAutoUpdate by configurationStore.boolean(Key.APP_AUTO_UPDATE) { true }
     var appLastUpdateCheck by configurationStore.long(Key.APP_LAST_UPDATE_CHECK)
 
-    var getInstalledPackagesInited by configurationStore.boolean("getInstalledPackagesInited")
-    var postNotificationsPermissionRequested by configurationStore.boolean("postNotificationsPermissionRequested")
-    var accessLocalNetworkPermissionRequested by configurationStore.boolean("accessLocalNetworkPermissionRequested")
+    var getInstalledPackagesInited by configurationStore.boolean(Key.GET_INSTALLED_PACKAGES_INITED)
+    var postNotificationsPermissionRequested by configurationStore.boolean(Key.POST_NOTIFICATION_PERMISSION_REQUESTED)
+    var accessLocalNetworkPermissionRequested by configurationStore.boolean(Key.ACCESS_LOCAL_NETWORK_PERMISSION_REQUESTED)
 
     var experimentalFlagsProperties = Properties().apply {
         load(BufferedReader(StringReader(experimentalFlags)))
     }
+
+    var stunServerAddress by configurationStore.string(Key.STUN_SERVER_ADDRESS)
+    var stunTestType by configurationStore.stringToInt(Key.STUN_TEST_TYPE)
+    var certProberServerAddress by configurationStore.string(Key.CERT_PROBER_SERVER_ADDRESS) { "example.com" }
+    var certProberServerPort by configurationStore.stringToInt(Key.CERT_PROBER_SERVER_PORT) { 443 }
+    var certProberSNI by configurationStore.string(Key.CERT_PROBER_SNI) { "example.com" }
+    var certProberALPN by configurationStore.string(Key.CERT_PROBER_ALPN) { "h2,http/1.1" }
+    var certProberProtocol by configurationStore.stringToInt(Key.CERT_PROBER_PROTOCOL)
+    var certProberHashType by configurationStore.stringToInt(Key.CERT_PROBER_CERT_HASH_TYPE)
 
     override fun onPreferenceDataStoreChanged(store: PreferenceDataStore, key: String) {
         when (key) {

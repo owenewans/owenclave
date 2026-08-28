@@ -438,8 +438,6 @@
     <string name="allow_apps_bypass_vpn_sum">アプリがシステムが提供するバイバス手段を使うことを許可</string>
     <string name="update_all_subscriptions">すべてのサブスクを更新</string>
     <string name="cag_splithttp">XHTTP 設定</string>
-    <string name="ech_config">ECH 設定</string>
-    <string name="ech_doh_server">ECH DoH サーバ</string>
     <string name="splithttp_mode">モード</string>
     <string name="backup_all_profiles">すべてのプロファイルをバックアップ</string>
     <string name="browser_forwarder_hint">v2ray-extra.zipをv2ray-coreのリリースからダウンロードし、index.htmlとindex.jsをAndroid/data/%s/filesに配置するか、それらをルートアセットとしてインポートしてください。</string>

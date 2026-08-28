@@ -24,10 +24,20 @@ import libexclavecore.Libexclavecore
 
 fun parseAnyTLS(url: String): AnyTLSBean {
     val link = Libexclavecore.parseURL(url)
+    if (link.queryParameter("security") == "reality") {
+        // We don't parse parameters which do not exist in the specification. v2rayN (?) and others
+        // invented `security=reality` without changing the scheme. Ignoring `security=reality` and
+        // parsing the link as normal AnyTLS will make users unable to connect to the server.
+        // Explicitly ban `security=reality` from importing.
+        error("anytls must use tls")
+    }
     return AnyTLSBean().apply {
         name = link.fragment
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPort = link.port.takeIf { it > 0 } ?: 443
+        serverAddress = link.host
+        serverPort = when {
+            !link.hasPort() -> 443
+            else -> link.port
+        }
         password = link.username
         security = "tls"
         link.queryParameter("sni")?.also {
@@ -44,7 +54,7 @@ fun AnyTLSBean.toUri(): String? {
         error("anytls must use tls")
     }
     val builder = Libexclavecore.newURL("anytls")
-    builder.setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
+    builder.setHostPort(serverAddress, serverPort)
     if (password.isNotEmpty()) {
         builder.username = password
     }

@@ -12,6 +12,7 @@
         app:entryValues="@array/int_array_2"
         app:icon="@drawable/ic_baseline_layers_24"
         app:key="groupType"
+        app:singleLineTitle="false"
         app:title="@string/group_type"
         app:useSimpleSummaryProvider="true" />
     <io.nekohasekai.sagernet.widget.SimpleMenuPreference
@@ -20,6 +21,7 @@
         app:entryValues="@array/int_array_3"
         app:icon="@drawable/ic_baseline_low_priority_24"
         app:key="groupOrder"
+        app:singleLineTitle="false"
         app:title="@string/group_order"
         app:useSimpleSummaryProvider="true" />
 
@@ -28,6 +30,7 @@
         app:entries="@array/front_landing_proxy_entry"
         app:entryValues="@array/front_landing_proxy_value"
         app:key="groupFrontProxy"
+        app:singleLineTitle="false"
         app:title="@string/front_proxy" />
 
     <io.nekohasekai.sagernet.widget.ReselectableSimpleMenuPreference
@@ -35,6 +38,7 @@
         app:entries="@array/front_landing_proxy_entry"
         app:entryValues="@array/front_landing_proxy_value"
         app:key="groupLandingProxy"
+        app:singleLineTitle="false"
         app:title="@string/landing_proxy" />
 
     <PreferenceCategory
@@ -46,6 +50,7 @@
             app:entryValues="@array/subscription_types_value"
             app:icon="@drawable/ic_baseline_nfc_24"
             app:key="subscriptionType"
+            app:singleLineTitle="false"
             app:title="@string/subscription_type"
             app:useSimpleSummaryProvider="true" />
 

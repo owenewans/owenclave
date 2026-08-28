@@ -203,7 +203,8 @@ object Key {
     const val SERVER_PACKET_ENCODING = "serverPacketEncoding"
     const val SERVER_UTLS_FINGERPRINT = "serverUTLSFingerprint"
     const val SERVER_ECH_ENABLED = "serverEchEnabled"
-    const val SERVER_ECH_CONFIG = "serverEchConfig"
+    const val SERVER_ECH_CONFIG_LIST = "serverEchConfig" // FIXME: should be "serverEchConfigList"
+    const val SERVER_ECH_QUERY_NAME = "serverEchQueryName"
     const val SERVER_MTLS_CERTIFICATE = "serverMtlsCertificate"
     const val SERVER_MTLS_CERTIFICATE_PRIVATE_KEY = "serverMtlsCertificatePrivateKey"
 
@@ -371,6 +372,19 @@ object Key {
 
     const val APP_AUTO_UPDATE = "appAutoUpdate"
     const val APP_LAST_UPDATE_CHECK = "appLastUpdateCheck"
+
+    const val GET_INSTALLED_PACKAGES_INITED = "getInstalledPackagesInited"
+    const val POST_NOTIFICATION_PERMISSION_REQUESTED = "postNotificationsPermissionRequested"
+    const val ACCESS_LOCAL_NETWORK_PERMISSION_REQUESTED = "accessLocalNetworkPermissionRequested"
+
+    const val STUN_SERVER_ADDRESS = "stunServerAddress"
+    const val STUN_TEST_TYPE = "stunTestType"
+    const val CERT_PROBER_SERVER_ADDRESS = "certProberServerAddress"
+    const val CERT_PROBER_SERVER_PORT = "certProberServerPort"
+    const val CERT_PROBER_SNI = "certProberSNI"
+    const val CERT_PROBER_ALPN = "certProberALPN"
+    const val CERT_PROBER_PROTOCOL = "certProberProtocol"
+    const val CERT_PROBER_CERT_HASH_TYPE = "certProberCertHashType"
 
 }
 

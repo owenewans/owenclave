@@ -227,17 +227,14 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                                 if (v2rayBean is VLESSBean || v2rayBean is TrojanBean || v2rayBean is VMessBean) {
                                     tls.getObject("ech")?.also { ech ->
-                                    ech.getBoolean("enabled")?.also { enabled ->
-                                        if (enabled) {
-                                            v2rayBean.echEnabled = true
-                                            ech.getStringArray("config")?.also {
-                                                v2rayBean.echConfig = parseECHConfigPem(it.joinToString("\n"))
-                                            } ?: ech.getString("config")?.also {
-                                                v2rayBean.echConfig = parseECHConfigPem(it)
-                                            }
+                                        v2rayBean.echEnabled = ech.getBoolean("enabled")
+                                        ech.getStringArray("config")?.also {
+                                            v2rayBean.echConfigList = parseECHConfigPem(it.joinToString("\n"))
+                                        } ?: ech.getString("config")?.also {
+                                            v2rayBean.echConfigList = parseECHConfigPem(it)
                                         }
+                                        v2rayBean.echQueryName = ech.getString("query_server_name")
                                     }
-                                }
                                 }
                             }
                         }
@@ -341,6 +338,15 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                         }
                     }
                 }
+            }
+            if (v2rayBean.security == "reality") {
+                when (v2rayBean.type) {
+                    "tcp", "http", "grpc", "splithttp" -> {}
+                    else -> return listOf()
+                }
+            }
+            if (v2rayBean is VLESSBean && v2rayBean.security != "none" && v2rayBean.flow == "xtls-rprx-vision-udp443" && v2rayBean.type != "tcp") {
+                return listOf()
             }
             return listOf(v2rayBean)
         }
@@ -448,16 +454,13 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                         allowInsecure = true
                     }
                     tls.getObject("ech")?.also { ech ->
-                        ech.getBoolean("enabled")?.also { enabled ->
-                            if (enabled) {
-                                echEnabled = true
-                                ech.getStringArray("config")?.also {
-                                    echConfig = parseECHConfigPem(it.joinToString("\n"))
-                                } ?: ech.getString("config")?.also {
-                                    echConfig = parseECHConfigPem(it)
-                                }
-                            }
+                        echEnabled = ech.getBoolean("enabled")
+                        ech.getStringArray("config")?.also {
+                            echConfigList = parseECHConfigPem(it.joinToString("\n"))
+                        } ?: ech.getString("config")?.also {
+                            echConfigList = parseECHConfigPem(it)
                         }
+                        echQueryName = ech.getString("query_server_name")
                     }
                 } ?: return listOf()
                 outbound.getObject("obfs")?.also { obfuscation ->
@@ -584,16 +587,13 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                         allowInsecure = true
                     }
                     /*tls.getObject("ech")?.also { ech ->
-                        ech.getBoolean("enabled")?.also { enabled ->
-                            if (enabled) {
-                                echEnabled = true
-                                ech.getStringArray("config")?.also {
-                                    echConfig = parseECHConfigPem(it.joinToString("\n"))
-                                } ?: ech.getString("config")?.also {
-                                    echConfig = parseECHConfigPem(it)
-                                }
-                            }
+                        echEnabled = ech.getBoolean("enabled")
+                        ech.getStringArray("config")?.also {
+                            echConfig = parseECHConfigPem(it.joinToString("\n"))
+                        } ?: ech.getString("config")?.also {
+                            echConfig = parseECHConfigPem(it)
                         }
+                        echQueryName = ech.getString("query_server_name")
                     }*/
                 } ?: return listOf()
             }
@@ -774,16 +774,13 @@ fun parseSingBoxOutbound(outbound: JsonObject): List<AbstractBean> {
                                 }
                             }
                             /*tls.getObject("ech")?.also { ech ->
-                                ech.getBoolean("enabled")?.also { enabled ->
-                                    if (enabled) {
-                                        echEnabled = true
-                                        ech.getStringArray("config")?.also {
-                                            echConfig = parseECHConfigPem(it.joinToString("\n"))
-                                        } ?: ech.getString("config")?.also {
-                                            echConfig = parseECHConfigPem(it)
-                                        }
-                                    }
+                                echEnabled = ech.getBoolean("enabled")
+                                ech.getStringArray("config")?.also {
+                                    echConfig = parseECHConfigPem(it.joinToString("\n"))
+                                } ?: ech.getString("config")?.also {
+                                    echConfig = parseECHConfigPem(it)
                                 }
+                                echQueryName = ech.getString("query_server_name")
                             }*/
                         } else {
                             security = "none"
@@ -1248,6 +1245,8 @@ private fun parseECHConfigPem(pem: String): String? {
             .substringBefore("-----END ECH CONFIGS-----")
             .replace("\r", "")
             .replace("\n", "")
+             .replace("\t", "")
+             .replace(" ", "")
         ))
     } catch (_: Exception) {
         null

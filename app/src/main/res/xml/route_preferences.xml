@@ -21,6 +21,7 @@
         app:entryValues="@array/network_type_value"
         app:icon="@drawable/baseline_public_24"
         app:key="routeNetworkType"
+        app:singleLineTitle="false"
         app:title="@string/network_type"
         app:useSimpleSummaryProvider="true" />
     <EditTextPreference
@@ -59,6 +60,7 @@
             app:entryValues="@array/route_protocol_value"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="routeNetwork"
+            app:singleLineTitle="false"
             app:title="network"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -83,6 +85,7 @@
             app:entries="@array/outbound_entry"
             app:entryValues="@array/outbound_value"
             app:key="routeOutbound"
+            app:singleLineTitle="false"
             app:title="outbound" />
     </PreferenceCategory>
 </PreferenceScreen>

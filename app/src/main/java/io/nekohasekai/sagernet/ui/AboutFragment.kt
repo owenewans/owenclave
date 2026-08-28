@@ -108,6 +108,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnLongClickAction {
                                 MaterialAlertDialogBuilder(activityContext).apply {
                                     setView(NestedScrollView(activityContext).apply {
+                                        layoutDirection = View.LAYOUT_DIRECTION_LTR
                                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                                         addView( HorizontalScrollView(activityContext).apply {
                                             addView(TextView(activityContext).apply {
@@ -158,6 +159,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
                             .setOnLongClickAction {
                                 MaterialAlertDialogBuilder(activityContext).apply {
                                     setView(NestedScrollView(activityContext).apply {
+                                        layoutDirection = View.LAYOUT_DIRECTION_LTR
                                         setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                                         addView( HorizontalScrollView(activityContext).apply {
                                             addView(TextView(activityContext).apply {
@@ -296,6 +298,7 @@ class AboutFragment : ToolbarFragment(R.layout.layout_about) {
         private fun showLicenseAlertDialogFromAssets(context: Context, asset: String) {
             MaterialAlertDialogBuilder(context).apply {
                 setView(NestedScrollView(context).apply {
+                    layoutDirection = View.LAYOUT_DIRECTION_LTR
                     setPadding(dp2px(16), dp2px(16), dp2px(16), 0)
                     addView( HorizontalScrollView(context).apply {
                         addView(TextView(context).apply {

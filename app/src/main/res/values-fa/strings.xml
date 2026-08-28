@@ -471,8 +471,6 @@
     <string name="edns_client_ip">EDNS 客户端 IP</string>
     <string name="allow_apps_bypass_vpn_sum">اجازه بده برنامه‌ها با استفاده از روش‌های ارائه‌شده توسط سیستم، VPN را دور بزنند</string>
     <string name="cag_splithttp">تنظیمات XHTTP</string>
-    <string name="ech_config">پیکربندی ECH</string>
-    <string name="ech_doh_server">سرور DoH با پشتیبانی از ECH</string>
     <string name="splithttp_mode">حالت</string>
     <string name="backup_all_profiles">پشتیبان‌گیری از همه‌‎ی تنظیمات</string>
     <string name="browser_forwarder_hint">لطفاً از بخش انتشار v2ray-core فایل v2ray-extra.zip را دانلود کنید و index.html و index.js را در مسیر Android/data/%s/files قرار دهید، یا این دو فایل را به‌عنوان منبع مسیریابی (Routing Resource) وارد کنید.</string>

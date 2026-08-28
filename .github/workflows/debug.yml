@@ -19,15 +19,15 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
-          go-version: 1.26.5
+          go-version: 1.27.0
           cache-dependency-path: "library/core/go.sum"
       - name: Setup Go Mobile
         # https://github.com/golang/mobile/blob/c31d5b91ecc32c0d598b8fe8457d244ca0b4e815/cmd/gomobile/init.go#L83
         run: |
-          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260803200217-62cee1672c8e
-          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260803200217-62cee1672c8e
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260821190718-4776eadac327
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260821190718-4776eadac327
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: 21
@@ -62,11 +62,14 @@ jobs:
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties
           ./gradlew :app:downloadAssets
-          ./gradlew :app:assembleOssDebug
-          APK="app/build/outputs/apk/oss/debug"
-          echo "APK=$APK" >> $GITHUB_ENV
+          ./gradlew :app:assembleOssDebug :app:assembleLegacyDebug
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
           name: APKs
-          path: ${{ env.APK }}
+          path: app/build/outputs/apk/oss/debug
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: APKs-legacy
+          path: app/build/outputs/apk/legacy/debug

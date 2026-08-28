@@ -29,6 +29,7 @@ import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
+import io.nekohasekai.sagernet.fmt.shadowquic.supportedShadowQUICCongestionControl
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.supportedShadowsocksMethod
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
@@ -75,7 +76,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     if (proxy.getBoolean("skip-cert-verify") == true) {
                         allowInsecure = true
                     }
-                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.takeIf { it.isNotEmpty() }?.also {
+                    proxy.getString("fingerprint")?.replace(":", "")?.trim()?.takeIf { it.isNotEmpty() }?.also {
                         pinnedPeerCertificateSha256 = it
                         allowInsecure = true
                     }
@@ -268,7 +269,8 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 bean.serverNameToVerify = proxy.getString("name-cert-verify")
                 proxy.getObject("ech-opts")?.also {
                     bean.echEnabled = it.getBoolean("enable")
-                    bean.echConfig = it.getString("config")
+                    bean.echConfigList = it.getString("config")
+                    bean.echQueryName = it.getString("query-server-name")
                 }
             }
 
@@ -555,6 +557,19 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     }
                 }
             }
+
+            if (bean.security == "reality") {
+                when (bean.type) {
+                    "tcp", "http", "grpc", "splithttp" -> {}
+                    else -> return listOf()
+                }
+            }
+
+            if (bean is VLESSBean && bean.security != "none" && bean.flow == "xtls-rprx-vision-udp443"
+                && bean.type != "tcp" && bean.encryption == "none") {
+                return listOf()
+            }
+
             return listOf(bean)
         }
         "ssr" -> {
@@ -638,7 +653,8 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 serverNameToVerify = proxy.getString("name-cert-verify")
                 proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
-                    echConfig = it.getString("config")
+                    echConfigList = it.getString("config")
+                    echQueryName = it.getString("query-server-name")
                 }
                 (proxy.getString("obfs"))?.also {
                     when (it) {
@@ -734,6 +750,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     /*proxy.getObject("ech-opts")?.also {
                         echEnabled = it.getBoolean("enable")
                         echConfig = it.getString("config")
+                        echQueryName = it.getString("query-server-name")
                     }*/
                     name = proxy.getString("name")
                 })
@@ -838,6 +855,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 /*proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
+                    echQueryName = it.getString("query-server-name")
                 }*/
                 proxy.getObject("shadowtls-opts")?.also { return listOf() }
                 proxy.getObject("restls-opts")?.also { return listOf() }
@@ -872,6 +890,7 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 /*proxy.getObject("ech-opts")?.also {
                     echEnabled = it.getBoolean("enable")
                     echConfig = it.getString("config")
+                    echQueryName = it.getString("query-server-name")
                 }*/
                 name = proxy.getString("name")
             })
@@ -961,6 +980,10 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                 alpn = proxy.getStringArray("alpn")?.joinToString("\n") ?: "h3"
                 udpOverStream = proxy.getBoolean("udp-over-stream")
                 zeroRTT = proxy.getBoolean("zero-rtt")
+                congestionControl = when (val controller = proxy.getString("congestion-controller")) {
+                    in supportedShadowQUICCongestionControl -> controller
+                    else -> "cubic"
+                }
                 name = proxy.getString("name")
             })
         }

@@ -37,6 +37,7 @@
             app:entryValues="@array/naive_proto_value"
             app:icon="@drawable/ic_baseline_layers_24"
             app:key="serverProtocol"
+            app:singleLineTitle="false"
             app:title="@string/protocol"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -59,6 +60,7 @@
             app:entryValues="@array/utls_value"
             app:icon="@drawable/ic_baseline_fingerprint_24"
             app:key="serverUTLSFingerprint"
+            app:singleLineTitle="false"
             app:title="@string/utls_fingerprint"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
@@ -96,7 +98,12 @@
         <EditTextPreference
             app:icon="@drawable/ic_baseline_security_24"
             app:key="serverEchConfig"
-            app:title="@string/ech_config"
+            app:title="@string/ech_config_list"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_manage_search_24"
+            app:key="serverEchQueryName"
+            app:title="@string/ech_query_name"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             app:dialogMessage="@string/one_per_line"

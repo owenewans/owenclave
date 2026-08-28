@@ -44,7 +44,8 @@ public class TrustTunnelBean extends AbstractBean {
     public String pinnedPeerCertificatePublicKeySha256;
     public String pinnedPeerCertificateSha256;
     public Boolean echEnabled;
-    public String echConfig;
+    public String echConfigList;
+    public String echQueryName;
     public String mtlsCertificate;
     public String mtlsCertificatePrivateKey;
     public String serverNameToVerify;
@@ -63,7 +64,8 @@ public class TrustTunnelBean extends AbstractBean {
         if (pinnedPeerCertificatePublicKeySha256 == null) pinnedPeerCertificatePublicKeySha256 = "";
         if (pinnedPeerCertificateSha256 == null) pinnedPeerCertificateSha256 = "";
         if (echEnabled == null) echEnabled = false;
-        if (echConfig == null) echConfig = "";
+        if (echConfigList == null) echConfigList = "";
+        if (echQueryName == null) echQueryName = "";
         if (mtlsCertificate == null) mtlsCertificate = "";
         if (mtlsCertificatePrivateKey == null) mtlsCertificatePrivateKey = "";
         if (serverNameToVerify == null) serverNameToVerify = "";
@@ -71,7 +73,7 @@ public class TrustTunnelBean extends AbstractBean {
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(2);
+        output.writeInt(3);
         super.serialize(output);
         output.writeString(protocol);
         output.writeString(username);
@@ -88,10 +90,11 @@ public class TrustTunnelBean extends AbstractBean {
         output.writeString(pinnedPeerCertificatePublicKeySha256);
         output.writeString(pinnedPeerCertificateSha256);
         output.writeBoolean(echEnabled);
-        output.writeString(echConfig);
+        output.writeString(echConfigList);
         output.writeString(mtlsCertificate);
         output.writeString(mtlsCertificatePrivateKey);
         output.writeString(serverNameToVerify);
+        output.writeString(echQueryName);
     }
 
     @Override
@@ -117,10 +120,13 @@ public class TrustTunnelBean extends AbstractBean {
             pinnedPeerCertificatePublicKeySha256 = input.readString();
             pinnedPeerCertificateSha256 = input.readString();
             echEnabled = input.readBoolean();
-            echConfig = input.readString();
+            echConfigList = input.readString();
             mtlsCertificate = input.readString();
             mtlsCertificatePrivateKey = input.readString();
             serverNameToVerify = input.readString();
+        }
+        if (version >= 3) {
+            echQueryName = input.readString();
         }
     }
 
@@ -147,7 +153,8 @@ public class TrustTunnelBean extends AbstractBean {
             bean.pinnedPeerCertificateSha256 = pinnedPeerCertificateSha256;
         }
         bean.echEnabled = echEnabled;
-        bean.echConfig = echConfig;
+        bean.echConfigList = echConfigList;
+        bean.echQueryName = echQueryName;
     }
 
     @NotNull

@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.mieru
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
+import kotlin.io.encoding.Base64
 
 fun parseMieru(link: String): List<MieruBean> {
     val beans = mutableListOf<MieruBean>()
@@ -64,7 +65,7 @@ fun parseMieru(link: String): List<MieruBean> {
     val trafficpattern = url.queryParameter("traffic-pattern")
     if (tcpPorts.isNotEmpty()) {
         beans.add(MieruBean().apply {
-            serverAddress = url.host.ifEmpty { error("empty host") }
+            serverAddress = url.host
             serverPort = if (tcpPorts.size == 1 && tcpPorts[0].toIntOrNull() != null) {
                 tcpPorts[0].toInt()
             } else 0
@@ -82,7 +83,7 @@ fun parseMieru(link: String): List<MieruBean> {
     }
     if (udpPorts.isNotEmpty()) {
         beans.add(MieruBean().apply {
-            serverAddress = url.host.ifEmpty { error("empty host") }
+            serverAddress = url.host
             serverPort = if (udpPorts.size == 1 && udpPorts[0].toIntOrNull() != null) {
                 udpPorts[0].toInt()
             } else 0
@@ -104,7 +105,7 @@ fun parseMieru(link: String): List<MieruBean> {
 
 fun MieruBean.toUri(): String? {
     val builder = Libexclavecore.newURL("mierus").apply {
-        host = serverAddress.ifEmpty { error("empty server address") }
+        host = serverAddress
     }
     if (username.isNotEmpty()) {
         builder.username = username
@@ -162,6 +163,13 @@ fun MieruBean.toUri(): String? {
         }
     }
     if (trafficPattern.isNotEmpty()) {
+        try {
+            // TODO: validate trafficPattern
+            Base64.decode(trafficPattern)
+        } catch (_: Exception) {
+            throw IllegalArgumentException("invalid traffic-pattern")
+        }
+        Base64.decode(trafficPattern)
         builder.addQueryParameter("traffic-pattern", trafficPattern)
     }
     return builder.string

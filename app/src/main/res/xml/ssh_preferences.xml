@@ -29,6 +29,7 @@
             app:entryValues="@array/int_array_3"
             app:icon="@drawable/ic_baseline_compare_arrows_24"
             app:key="serverAuthType"
+            app:singleLineTitle="false"
             app:title="@string/hysteria_auth_type"
             app:useSimpleSummaryProvider="true" />
 

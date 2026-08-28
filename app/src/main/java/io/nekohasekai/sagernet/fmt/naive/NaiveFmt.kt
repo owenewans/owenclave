@@ -36,11 +36,15 @@ fun parseNaive(link: String): NaiveBean {
             "naive+quic" -> "quic"
             else -> error("impossible")
         }
-        serverAddress = url.host.ifEmpty { error("empty host") }
-        serverPort = url.port.takeIf { it > 0 } ?: 443
+        serverAddress = url.host
+        serverPort = when {
+            !url.hasPort() -> 443
+            else -> url.port
+        }
         username = url.username
         password = url.password
         sni = url.queryParameter("sni")
+        // TODO: validate extraHeaders
         extraHeaders = url.queryParameter("extra-headers")?.replace("\r\n", "\n")
         insecureConcurrency = url.queryParameter("insecure-concurrency")?.toIntOrNull()
         name = url.fragment
@@ -52,7 +56,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     val host = if (sni.isNotEmpty() && proxyOnly) {
         sni
     } else {
-        serverAddress.ifEmpty { error("empty server address") }
+        serverAddress
     }
     val port = if (proxyOnly) {
         finalPort
@@ -68,6 +72,7 @@ fun NaiveBean.toUri(proxyOnly: Boolean = false): String {
     }
     if (!proxyOnly) {
         if (extraHeaders.isNotEmpty()) {
+            // TODO: validate extraHeaders
             builder.addQueryParameter("extra-headers", extraHeaders.listByLine().joinToString("\r\n"))
         }
         if (name.isNotEmpty()) {

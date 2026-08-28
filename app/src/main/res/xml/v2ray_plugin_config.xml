@@ -5,6 +5,7 @@
         app:persistent="false"
         app:entries="@array/v2ray_plugin_mode"
         app:entryValues="@array/v2ray_plugin_mode"
+        app:singleLineTitle="false"
         app:title="Transport mode"
         app:useSimpleSummaryProvider="true" />
     <EditTextPreference
@@ -35,6 +36,7 @@
             app:entries="@array/v2ray_plugin_log_level"
             app:entryValues="@array/v2ray_plugin_log_level"
             app:icon="@drawable/ic_baseline_bug_report_24"
+            app:singleLineTitle="false"
             app:title="Logcat level"
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>

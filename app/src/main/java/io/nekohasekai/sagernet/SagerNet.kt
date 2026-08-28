@@ -61,14 +61,18 @@ import io.nekohasekai.sagernet.utils.PackageCache
 import io.nekohasekai.sagernet.utils.Theme
 import kotlinx.coroutines.DEBUG_PROPERTY_NAME
 import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
+import libexclavecore.AndroidCAStore
 import libexclavecore.Libexclavecore
 import libexclavecore.UidDumper
+import java.io.ByteArrayOutputStream
 import java.net.Inet6Address
 import java.net.InetSocketAddress
+import java.security.KeyStore
 import androidx.work.Configuration as WorkConfiguration
 
 class SagerNet : Application(),
     UidDumper,
+    AndroidCAStore,
     WorkConfiguration.Provider {
 
     override fun attachBaseContext(base: Context) {
@@ -128,6 +132,9 @@ class SagerNet : Application(),
         )
 
         try {
+            if (DataStore.providerRootCA == RootCAProvider.SYSTEM_AND_USER) {
+                Libexclavecore.registerAndroidCAStore(this)
+            }
             Libexclavecore.updateSystemRoots(DataStore.providerRootCA)
         } catch (e: Exception) {
             Toast.makeText(this, e.readableMessage, Toast.LENGTH_LONG).show()
@@ -144,6 +151,21 @@ class SagerNet : Application(),
                 .penaltyLog()
                 .build()
         )
+    }
+
+    override fun certificates(): ByteArray {
+        try {
+            val keyStore = KeyStore.getInstance("AndroidCAStore")
+            val byteArrayStream = ByteArrayOutputStream()
+            keyStore.load(null, null)
+            val aliases = keyStore.aliases()
+            while (aliases.hasMoreElements()) {
+                byteArrayStream.write(keyStore.getCertificate(aliases.nextElement()).encoded)
+            }
+            return byteArrayStream.toByteArray()
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)

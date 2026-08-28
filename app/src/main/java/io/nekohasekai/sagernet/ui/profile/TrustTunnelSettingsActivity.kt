@@ -52,7 +52,8 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         DataStore.serverMtlsCertificate = mtlsCertificate
         DataStore.serverMtlsCertificatePrivateKey = mtlsCertificatePrivateKey
         DataStore.serverEchEnabled = echEnabled
-        DataStore.serverEchConfig = echConfig
+        DataStore.serverEchConfigList = echConfigList
+        DataStore.serverEchQueryName = echQueryName
         DataStore.serverServerNameToVerify = serverNameToVerify
     }
 
@@ -73,7 +74,8 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
         mtlsCertificate = DataStore.serverMtlsCertificate
         mtlsCertificatePrivateKey = DataStore.serverMtlsCertificatePrivateKey
         echEnabled = DataStore.serverEchEnabled
-        echConfig = DataStore.serverEchConfig
+        echConfigList = DataStore.serverEchConfigList
+        echQueryName = DataStore.serverEchQueryName
         serverNameToVerify = DataStore.serverServerNameToVerify
     }
 
@@ -97,10 +99,13 @@ class TrustTunnelSettingsActivity : ProfileSettingsActivity<TrustTunnelBean>() {
             true
         }
         val echEnabled = findPreference<SwitchPreference>(Key.SERVER_ECH_ENABLED)!!
-        val echConfig = findPreference<EditTextPreference>(Key.SERVER_ECH_CONFIG)!!
-        echConfig.isEnabled = echEnabled.isChecked
+        val echConfigList = findPreference<EditTextPreference>(Key.SERVER_ECH_CONFIG_LIST)!!
+        val echQueryName = findPreference<EditTextPreference>(Key.SERVER_ECH_QUERY_NAME)!!
+        echConfigList.isEnabled = echEnabled.isChecked
+        echQueryName.isEnabled = echEnabled.isChecked
         echEnabled.setOnPreferenceChangeListener { _, newValue ->
-            echConfig.isEnabled = newValue as Boolean
+            echConfigList.isEnabled = newValue as Boolean
+            echQueryName.isEnabled = newValue
             true
         }
     }

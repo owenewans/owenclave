@@ -34,6 +34,8 @@ import org.yaml.snakeyaml.Yaml
 import java.io.File
 import kotlin.text.ifEmpty
 
+val supportedShadowQUICCongestionControl = arrayOf("cubic", "bbr", "new_reno")
+
 // https://github.com/RealBikiniBottom/QuicProxy/discussions/2
 // https://github.com/spongebob888/shadowquic/discussions/160
 // third-party share link standard endorsed by the ShadowQUIC author
@@ -41,8 +43,11 @@ fun parseShadowQUIC(url: String): ShadowQUICBean {
     val link = Libexclavecore.parseURL(url)
     return ShadowQUICBean().apply {
         name = link.fragment
-        serverAddress = link.host.ifEmpty { error("empty host") }
-        serverPort = link.port.takeIf { it > 0 } ?: 443
+        serverAddress = link.host
+        serverPort = when {
+            !link.hasPort() -> 443
+            else -> link.port
+        }
         username = link.username.ifEmpty { error("missing username") }
         password = link.password.ifEmpty { error("missing password") }
         sni = link.queryParameter("sni")?.ifEmpty { error("missing sni") } ?: error("missing sni")
@@ -69,7 +74,7 @@ fun ShadowQUICBean.toUri(): String? {
         if (name.isNotEmpty()) {
             fragment = name
         }
-        setHostPort(serverAddress.ifEmpty { error("empty server address") }, serverPort)
+        setHostPort(serverAddress, serverPort)
         addQueryParameter("sni", sni.ifEmpty { error("missing sni") })
         addQueryParameter("udp_mode", if (udpOverStream) "stream" else "datagram")
         if (zeroRTT) {
