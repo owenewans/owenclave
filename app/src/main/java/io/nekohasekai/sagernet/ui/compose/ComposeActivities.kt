@@ -217,6 +217,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                             deduplication = sub.deduplication ?: false,
                             updateWhenConnectedOnly = sub.updateWhenConnectedOnly ?: false,
                             autoUpdate = sub.autoUpdate ?: false,
+                            autoSwitchToNewest = sub.autoSwitchToNewest ?: false,
                             customUserAgent = sub.customUserAgent ?: "",
                         )
                     }
@@ -252,6 +253,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                                         sub.deduplication = data.subscription.deduplication
                                         sub.updateWhenConnectedOnly = data.subscription.updateWhenConnectedOnly
                                         sub.autoUpdate = data.subscription.autoUpdate
+                                        sub.autoSwitchToNewest = data.subscription.autoSwitchToNewest
                                         sub.customUserAgent = data.subscription.customUserAgent
                                         group.subscription = sub
                                     } else {
@@ -274,6 +276,7 @@ class ComposeGroupSettingsActivity : ComponentActivity() {
                                         deduplication = data.subscription.deduplication
                                         updateWhenConnectedOnly = data.subscription.updateWhenConnectedOnly
                                         autoUpdate = data.subscription.autoUpdate
+                                        autoSwitchToNewest = data.subscription.autoSwitchToNewest
                                         customUserAgent = data.subscription.customUserAgent
                                     }
                                 }

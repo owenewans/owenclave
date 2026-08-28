@@ -311,6 +311,8 @@
     <string name="update_settings">Update settings</string>
     <string name="auto_update">Automatic update</string>
     <string name="auto_update_delay">Automatic update interval (minutes)</string>
+    <string name="auto_switch_to_newest">Auto-switch to newest</string>
+    <string name="auto_switch_to_newest_sum">After a successful update, switch the active profile to the newest one in this group and reconnect</string>
     <string name="update_when_connected_only">Update only when connected</string>
     <string name="update_when_connected_only_sum">Prevent IP address leak</string>
     <string name="subscription_user_agent">User agent</string>

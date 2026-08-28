@@ -25,6 +25,7 @@ import io.nekohasekai.sagernet.SubscriptionType
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.GroupManager
 import io.nekohasekai.sagernet.database.ProxyGroup
+import io.nekohasekai.sagernet.database.SagerDatabase
 import io.nekohasekai.sagernet.database.SubscriptionBean
 import io.nekohasekai.sagernet.ktx.*
 import kotlinx.coroutines.*
@@ -86,6 +87,9 @@ abstract class GroupUpdater {
                         SubscriptionType.AGE -> AgeUpdater
                         else -> error("unsupported")
                     }.doUpdate(proxyGroup, subscription, userInterface, byUser)
+                    if (subscription.autoSwitchToNewest == true) {
+                        switchToNewestProxy(proxyGroup)
+                    }
                     true
                 } catch (e: Throwable) {
                     Logs.w(e)
@@ -98,6 +102,25 @@ abstract class GroupUpdater {
             }
         }
 
+
+        /**
+         * Switches [DataStore.selectedProxy] to the newest profile in [proxyGroup] (the one
+         * with the lowest userOrder, i.e. first in the order returned by the subscription
+         * server) and reconnects the tunnel through it, if it isn't already selected.
+         *
+         * Used by subscriptions with a FIFO rotation scheme (e.g. short-lived rooms pushed
+         * by an external rotator) where the freshest, most likely-to-be-alive profile should
+         * always be the one in use after an update. See owenclave#9.
+         */
+        private suspend fun switchToNewestProxy(proxyGroup: ProxyGroup) {
+            val newest = SagerDatabase.proxyDao.getByGroup(proxyGroup.id)
+                .minByOrNull { it.userOrder } ?: return
+            if (DataStore.selectedProxy == newest.id) return
+            DataStore.selectedProxy = newest.id
+            if (SagerNet.started) {
+                SagerNet.reloadService()
+            }
+        }
 
         suspend fun finishUpdate(proxyGroup: ProxyGroup) {
             updating.remove(proxyGroup.id)

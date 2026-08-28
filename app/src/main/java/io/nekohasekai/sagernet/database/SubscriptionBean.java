@@ -37,6 +37,7 @@ public class SubscriptionBean extends Serializable {
     public String customUserAgent;
     public Boolean autoUpdate;
     public Integer autoUpdateDelay;
+    public Boolean autoSwitchToNewest;
     public Long lastUpdated;
     public Long bytesUsed;
     public Long bytesRemaining;
@@ -52,7 +53,7 @@ public class SubscriptionBean extends Serializable {
 
     @Override
     public void serializeToBuffer(ByteBufferOutput output) {
-        output.writeInt(9);
+        output.writeInt(10);
         output.writeInt(type);
         output.writeString(link);
         output.writeBoolean(deduplication);
@@ -68,6 +69,7 @@ public class SubscriptionBean extends Serializable {
         output.writeString(nameFilter1);
         output.writeString(httpHeaders);
         output.writeString(agePrivateKey);
+        output.writeBoolean(autoSwitchToNewest);
     }
 
     public void serializeForShare(ByteBufferOutput output) {
@@ -160,6 +162,10 @@ public class SubscriptionBean extends Serializable {
                 agePrivateKey = "";
             }
         }
+
+        if (version >= 10) {
+            autoSwitchToNewest = input.readBoolean();
+        }
     }
 
     public void deserializeFromShare(ByteBufferInput input) {
@@ -235,6 +241,7 @@ public class SubscriptionBean extends Serializable {
         if (customUserAgent == null) customUserAgent = "";
         if (autoUpdate == null) autoUpdate = false;
         if (autoUpdateDelay == null) autoUpdateDelay = 1440;
+        if (autoSwitchToNewest == null) autoSwitchToNewest = false;
         if (lastUpdated == null) lastUpdated = 0L;
 
         if (bytesUsed == null) bytesUsed = 0L;

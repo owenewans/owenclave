@@ -90,6 +90,7 @@ class GroupSettingsActivity(
         DataStore.subscriptionUserAgent = sub.customUserAgent
         DataStore.subscriptionAutoUpdate = sub.autoUpdate
         DataStore.subscriptionAutoUpdateDelay = sub.autoUpdateDelay
+        DataStore.subscriptionAutoSwitchToNewest = sub.autoSwitchToNewest
         DataStore.subscriptionLastUpdated = sub.lastUpdated
         DataStore.subscriptionBytesUsed = sub.bytesUsed
         DataStore.subscriptionBytesRemaining = sub.bytesRemaining
@@ -125,6 +126,7 @@ class GroupSettingsActivity(
                 customUserAgent = DataStore.subscriptionUserAgent
                 autoUpdate = DataStore.subscriptionAutoUpdate
                 autoUpdateDelay = DataStore.subscriptionAutoUpdateDelay
+                autoSwitchToNewest = DataStore.subscriptionAutoSwitchToNewest
                 lastUpdated = DataStore.subscriptionLastUpdated
                 bytesUsed = DataStore.subscriptionBytesUsed
                 bytesRemaining = DataStore.subscriptionBytesRemaining

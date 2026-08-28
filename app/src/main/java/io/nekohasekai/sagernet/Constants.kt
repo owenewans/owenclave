@@ -350,6 +350,7 @@ object Key {
     const val SUBSCRIPTION_USER_AGENT = "subscriptionUserAgent"
     const val SUBSCRIPTION_AUTO_UPDATE = "subscriptionAutoUpdate"
     const val SUBSCRIPTION_AUTO_UPDATE_DELAY = "subscriptionAutoUpdateDelay"
+    const val SUBSCRIPTION_AUTO_SWITCH_TO_NEWEST = "subscriptionAutoSwitchToNewest"
     const val SUBSCRIPTION_LAST_UPDATED = "subscriptionLastUpdated"
     const val SUBSCRIPTION_BYTES_USED = "subscriptionBytesUsed"
     const val SUBSCRIPTION_BYTES_REMAINING = "subscriptionBytesRemaining"

@@ -66,6 +66,7 @@ data class SubscriptionSettings(
     val deduplication: Boolean = false,
     val updateWhenConnectedOnly: Boolean = false,
     val autoUpdate: Boolean = false,
+    val autoSwitchToNewest: Boolean = false,
     val customUserAgent: String = "",
 )
 
@@ -98,6 +99,7 @@ fun GroupSettingsScreen(
     var order by remember { mutableIntStateOf(initialOrder) }
     var dedup by remember { mutableStateOf(initialSubscription.deduplication) }
     var autoUpdate by remember { mutableStateOf(initialSubscription.autoUpdate) }
+    var autoSwitchToNewest by remember { mutableStateOf(initialSubscription.autoSwitchToNewest) }
     var subscriptionLink by remember { mutableStateOf(initialSubscription.link) }
     var userAgent by remember { mutableStateOf(initialSubscription.customUserAgent) }
     var showUserAgentPresets by remember { mutableStateOf(false) }
@@ -133,6 +135,7 @@ fun GroupSettingsScreen(
                                 deduplication = dedup,
                                 updateWhenConnectedOnly = updateWhenConnectedOnly,
                                 autoUpdate = autoUpdate,
+                                autoSwitchToNewest = autoSwitchToNewest,
                                 customUserAgent = userAgent,
                             ),
                         ))
@@ -208,6 +211,13 @@ fun GroupSettingsScreen(
                             title = "Auto Update",
                             checked = autoUpdate,
                             onCheckedChange = { autoUpdate = it },
+                        )
+                        DividerItem()
+                        SwitchPreferenceItem(
+                            title = "Auto-switch to Newest",
+                            subtitle = "After a successful update, switch the active profile to the newest one in this group and reconnect",
+                            checked = autoSwitchToNewest,
+                            onCheckedChange = { autoSwitchToNewest = it },
                         )
                         DividerItem()
                         io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
