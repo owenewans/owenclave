@@ -198,6 +198,10 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     private fun handleViewIntent(intent: Intent) {
         val uri = intent.data ?: return
         val link = uri.toString()
+        if (link.startsWith("owenclave://", ignoreCase = true)) {
+            handleAddSubscriptionDeepLink(uri)
+            return
+        }
         io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
                 if (link.startsWith("owenkey://", ignoreCase = true)) {
@@ -232,6 +236,25 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
             } catch (_: Exception) {
             }
         }
+    }
+
+    /**
+     * `owenclave://add-subscription?url=<encoded subscription URL>[&hwid=1]`
+     * Doesn't import anything itself — just navigates to the Groups screen
+     * and hands the URL (and optional HWID preference) to the "Add
+     * subscription from URL" dialog via [PendingDeepLink], so the person can
+     * still review/edit before confirming the add.
+     */
+    private fun handleAddSubscriptionDeepLink(uri: android.net.Uri) {
+        val url = uri.getQueryParameter("url")?.trim()
+        if (url.isNullOrEmpty()) return
+        val sendHwid = when (uri.getQueryParameter("hwid")?.trim()?.lowercase()) {
+            "1", "true", "yes", "on" -> true
+            "0", "false", "no", "off" -> false
+            else -> null
+        }
+        PendingDeepLink.pendingSubscriptionAdd.value = PendingSubscriptionAdd(url, sendHwid)
+        PendingDeepLink.pendingDestination.value = NavDestination.GROUP
     }
 
     private fun toggleService() {
@@ -366,6 +389,15 @@ fun MainScreen(
     onServiceModeChanged: () -> Unit = {},
 ) {
     var currentDestination by remember { mutableStateOf(NavDestination.CONFIGURATION) }
+    val pendingDestination by PendingDeepLink.pendingDestination
+    LaunchedEffect(pendingDestination) {
+        val dest = pendingDestination
+        if (dest != null) {
+            currentDestination = dest
+            onDestinationChanged(dest)
+            PendingDeepLink.pendingDestination.value = null
+        }
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     var batchTestProgress by remember { mutableStateOf<Pair<Int, Int>?>(null) }
     var navBarSize by remember { mutableStateOf(DataStore.navBarSize) }
