@@ -22,3 +22,4 @@ owenclave.jks
 gradle/gradle-daemon-jvm.properties
 owenclave-full-combined.patch
 .env
+release.keystore
