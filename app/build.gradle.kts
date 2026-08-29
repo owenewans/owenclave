@@ -13,12 +13,12 @@ android {
     namespace = "io.nekohasekai.sagernet"
 
     signingConfigs {
-        create("release") {
-            storeFile = file(System.getenv("KEYSTORE_PATH") ?: "../owenclave.jks")
-            storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "owenclave"
-            keyAlias = System.getenv("KEY_ALIAS") ?: "owenclave"
-            keyPassword = System.getenv("KEY_PASSWORD") ?: "owenclave"
-        }
+     maybeCreate("release").apply {
+         storeFile = file(System.getenv("KEYSTORE_PATH") ?: "../owenclave.jks")
+         storePassword = System.getenv("KEYSTORE_PASSWORD") ?: "owenclave"
+         keyAlias = System.getenv("KEY_ALIAS") ?: "owenclave"
+         keyPassword = System.getenv("KEY_PASSWORD") ?: "owenclave"
+      }
     }
 }
 

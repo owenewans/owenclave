@@ -93,6 +93,19 @@ fun GroupScreen(
     var showAddPicker by remember { mutableStateOf(false) }
     var showQuickAdd by remember { mutableStateOf(false) }
     var quickAddUrl by remember { mutableStateOf("") }
+    var quickAddSendHwid by remember { mutableStateOf(DataStore.sendHwid) }
+
+    // Picked up from an owenclave://add-subscription deep link (see
+    // ComposeMainActivity.handleAddSubscriptionDeepLink / PendingDeepLink).
+    val pendingAdd = io.nekohasekai.sagernet.ui.compose.PendingDeepLink.pendingSubscriptionAdd.value
+    androidx.compose.runtime.LaunchedEffect(pendingAdd) {
+        if (pendingAdd != null) {
+            quickAddUrl = pendingAdd.url
+            quickAddSendHwid = pendingAdd.sendHwid ?: DataStore.sendHwid
+            showQuickAdd = true
+            io.nekohasekai.sagernet.ui.compose.PendingDeepLink.pendingSubscriptionAdd.value = null
+        }
+    }
 
     fun reloadGroups() {
         scope.launch(Dispatchers.IO) {
@@ -282,7 +295,9 @@ fun GroupScreen(
                 }
             }
         }
-        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = { showQuickAdd = false; quickAddUrl = "" }) {
+        io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(
+            onDismissRequest = { showQuickAdd = false; quickAddUrl = ""; quickAddSendHwid = DataStore.sendHwid },
+        ) {
             Text(
                 text = "Add subscription",
                 style = MaterialTheme.typography.headlineSmall,
@@ -301,16 +316,29 @@ fun GroupScreen(
                 label = "Subscription URL",
                 singleLine = true,
             )
+            // owenkey:// links already carry their own fully-formed profile(s),
+            // so the HWID choice made here wouldn't apply to them.
+            if (!quickAddUrl.trim().startsWith("owenkey://", ignoreCase = true)) {
+                Spacer(Modifier.height(8.dp))
+                io.nekohasekai.sagernet.ui.compose.components.SwitchPreferenceItem(
+                    title = "Send HWID",
+                    subtitle = "Report a device identifier to this subscription's provider, even if disabled globally in Settings",
+                    checked = quickAddSendHwid,
+                    onCheckedChange = { quickAddSendHwid = it },
+                )
+            }
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                TextButton(onClick = { showQuickAdd = false; quickAddUrl = "" }) { Text("Cancel") }
+                TextButton(onClick = { showQuickAdd = false; quickAddUrl = ""; quickAddSendHwid = DataStore.sendHwid }) { Text("Cancel") }
                 Spacer(Modifier.width(8.dp))
                 TextButton(
                     enabled = quickAddUrl.isNotBlank(),
                     onClick = {
                         val url = quickAddUrl.trim()
+                        val sendHwid = quickAddSendHwid
                         showQuickAdd = false
                         quickAddUrl = ""
+                        quickAddSendHwid = DataStore.sendHwid
                         scope.launch(Dispatchers.IO) {
                             if (url.startsWith("owenkey://", ignoreCase = true)) {
                                 val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(url)
@@ -338,6 +366,7 @@ fun GroupScreen(
                                     group.subscription = SubscriptionBean().applyDefaultValues().apply {
                                         link = url
                                         type = SubscriptionType.RAW
+                                        this.sendHwid = sendHwid
                                     }
                                     GroupManager.createGroup(group)
                                     val created = SagerDatabase.groupDao.getById(group.id)

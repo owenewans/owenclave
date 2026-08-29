@@ -18,3 +18,7 @@ go.work.sum
 owenclave.jks
 .pi/
 .signing.env
+# Local development
+gradle/gradle-daemon-jvm.properties
+owenclave-full-combined.patch
+.env
