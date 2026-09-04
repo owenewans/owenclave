@@ -55,11 +55,13 @@ object Hwid {
 
     /**
      * Headers to attach to subscription requests when HWID reporting is
-     * enabled in settings. Empty when disabled. Device fields fall back to
-     * the real device unless overridden in settings (fingerprint spoofing).
+     * enabled, either globally in settings or, via [subscriptionOverride],
+     * for this one subscription only. Empty when neither is enabled. Device
+     * fields fall back to the real device unless overridden in settings
+     * (fingerprint spoofing).
      */
-    fun headers(): Map<String, String> {
-        if (!DataStore.sendHwid) return emptyMap()
+    fun headers(subscriptionOverride: Boolean = false): Map<String, String> {
+        if (!DataStore.sendHwid && !subscriptionOverride) return emptyMap()
         return mapOf(
             "x-hwid" to current(),
             "x-device-os" to DataStore.spoofDeviceOs.ifEmpty { "Android" },
