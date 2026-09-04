@@ -48,6 +48,12 @@ public class SubscriptionBean extends Serializable {
     public String httpHeaders;
     public String agePrivateKey;
 
+    // Per-subscription opt-in for the x-hwid device header, on top of the
+    // global "Send HWID" setting (i.e. sent when either is enabled). Lets a
+    // provider that requires it be turned on for just this subscription
+    // without reporting the device to every other subscription too.
+    public Boolean sendHwid;
+
     public SubscriptionBean() {
     }
 
@@ -70,6 +76,7 @@ public class SubscriptionBean extends Serializable {
         output.writeString(httpHeaders);
         output.writeString(agePrivateKey);
         output.writeBoolean(autoSwitchToNewest);
+        output.writeBoolean(sendHwid);
     }
 
     public void serializeForShare(ByteBufferOutput output) {
@@ -165,6 +172,7 @@ public class SubscriptionBean extends Serializable {
 
         if (version >= 10) {
             autoSwitchToNewest = input.readBoolean();
+            sendHwid = input.readBoolean();
         }
     }
 
@@ -253,6 +261,7 @@ public class SubscriptionBean extends Serializable {
 
         if (httpHeaders == null) httpHeaders = "";
         if (agePrivateKey == null) agePrivateKey = "";
+        if (sendHwid == null) sendHwid = false;
     }
 
     public static final Creator<SubscriptionBean> CREATOR = new CREATOR<>() {

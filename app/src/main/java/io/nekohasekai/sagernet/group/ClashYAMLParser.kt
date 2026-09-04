@@ -28,6 +28,8 @@ import io.nekohasekai.sagernet.fmt.anytls.AnyTLSBean
 import io.nekohasekai.sagernet.fmt.http.HttpBean
 import io.nekohasekai.sagernet.fmt.hysteria2.Hysteria2Bean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
+import io.nekohasekai.sagernet.fmt.naive.NaiveBean
+import io.nekohasekai.sagernet.fmt.olcrtc.OLCRTCBean
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowquic.supportedShadowQUICCongestionControl
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
@@ -984,6 +986,49 @@ fun parseClashProxy(proxy: Map<String, Any?>): List<AbstractBean> {
                     in supportedShadowQUICCongestionControl -> controller
                     else -> "cubic"
                 }
+                name = proxy.getString("name")
+            })
+        }
+        // Not a standard mihomo/clash-meta proxy type. mihomo itself will refuse to
+        // load a profile containing these, but owenclave ships its own plugin/core
+        // support for them (see NaiveBean / OLCRTCBean), so accept the extension here
+        // so subscriptions can carry olcrtc/naive alongside regular mihomo proxies.
+        "naive" -> {
+            return listOf(NaiveBean().apply {
+                serverAddress = proxy.getString("server") ?: return listOf()
+                serverPort = proxy.getInt("port")?.takeIf { it > 0 } ?: return listOf()
+                proto = when (proxy.getString("proto")?.lowercase()) {
+                    null, "https", "http" -> "https"
+                    "quic" -> "quic"
+                    else -> return listOf()
+                }
+                username = proxy.getString("username")
+                password = proxy.getString("password")
+                sni = proxy.getString("sni")
+                extraHeaders = proxy.getString("extra-headers")?.replace("\r\n", "\n")
+                insecureConcurrency = proxy.getInt("insecure-concurrency")
+                noPostQuantum = proxy.getBoolean("no-post-quantum")
+                val cert = proxy.getString("certificate")?.takeIf {
+                    it.contains("-----BEGIN ") && it.contains("-----END ") && it.contains(" CERTIFICATE-----")
+                }
+                if (cert != null) {
+                    certificate = cert
+                }
+                singUoT = proxy.getBoolean("udp-over-tcp")
+                name = proxy.getString("name")
+            })
+        }
+        "olcrtc" -> {
+            return listOf(OLCRTCBean().apply {
+                // room-id is the closest thing olcrtc has to a server+port identifier;
+                // without it there's nothing to actually connect to.
+                roomId = proxy.getString("room-id") ?: return listOf()
+                authProvider = proxy.getString("auth-provider")
+                transport = proxy.getString("transport")
+                encryptionKey = proxy.getString("encryption-key")
+                dnsServer = proxy.getString("dns-server")
+                socksHost = proxy.getString("socks-host")
+                socksPort = proxy.getInt("socks-port")
                 name = proxy.getString("name")
             })
         }

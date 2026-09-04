@@ -75,7 +75,7 @@ object RawUpdater : GroupUpdater() {
                 }
             }.newRequest().apply {
                 setURL(subscription.link)
-                for ((name, value) in Hwid.headers()) {
+                for ((name, value) in Hwid.headers(subscription.sendHwid)) {
                     setHeader(name, value)
                 }
                 if (subscription.customUserAgent.isNotEmpty()) {
