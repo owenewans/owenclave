@@ -121,6 +121,7 @@ fun SettingsScreen(
     var grpcServiceNameCompat by remember { mutableStateOf(DataStore.grpcServiceNameCompat) }
     var enableFragmentForDirect by remember { mutableStateOf(DataStore.enableFragmentForDirect) }
     var persistAcrossReboot by remember { mutableStateOf(DataStore.persistAcrossReboot) }
+    var presetProfileFields by remember { mutableStateOf(DataStore.presetProfileFields) }
     var sendHwid by remember { mutableStateOf(DataStore.sendHwid) }
     var showHwidConsentDialog by remember { mutableStateOf(false) }
     var spoofDeviceOs by remember { mutableStateOf(DataStore.spoofDeviceOs) }
@@ -673,6 +674,15 @@ fun SettingsScreen(
                             subtitle = "Restore connection after device boot",
                             checked = persistAcrossReboot,
                             onCheckedChange = { persistAcrossReboot = it; DataStore.persistAcrossReboot = it },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        SwitchPreferenceItem(
+                            title = "Preset Profile Fields",
+                            subtitle = "Pick known values from a list instead of typing them",
+                            checked = presetProfileFields,
+                            onCheckedChange = { presetProfileFields = it; DataStore.presetProfileFields = it },
                             shape = shape,
                         )
                     }

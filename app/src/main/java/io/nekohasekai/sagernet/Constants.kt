@@ -78,6 +78,7 @@ object Key {
     const val ALLOW_ACCESS = "allowAccess"
     const val SPEED_INTERVAL = "speedInterval"
     const val SHOW_DIRECT_SPEED = "showDirectSpeed"
+    const val PRESET_PROFILE_FIELDS = "presetProfileFields"
     const val LOCAL_DNS_PORT = "portLocalDns"
     const val REQUIRE_DNS_INBOUND = "requireDnsInbound"
 

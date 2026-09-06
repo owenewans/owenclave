@@ -279,6 +279,9 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var individual by configurationStore.string(Key.INDIVIDUAL)
     var showDirectSpeed by configurationStore.boolean(Key.SHOW_DIRECT_SPEED)
 
+    /** Offer known values as a list in the profile editor instead of a blank text field. */
+    var presetProfileFields by configurationStore.boolean(Key.PRESET_PROFILE_FIELDS) { true }
+
     var persistAcrossReboot by configurationStore.boolean(Key.PERSIST_ACROSS_REBOOT)
 
     var requireSocks by configurationStore.boolean(Key.REQUIRE_SOCKS) { true }
