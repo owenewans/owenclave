@@ -6,7 +6,7 @@ fork of [exclave](https://github.com/exclavenetwork/exclave) with custom feature
 
 <a href="https://count.owenewans.org/owenewans/owenclave?theme=moebooru-h&notitle"><img src="https://count.owenewans.org/owenewans/owenclave?theme=moebooru-h&notitle" alt="repository views"></a>
 
-`kotlin` `java` `go` `android-sdk` `gradle` `nix` `gpl-3.0`
+`kotlin` `proxy` `android`
 
 </div>
 
