@@ -1,31 +1,47 @@
 name: Release Build
 on:
   push:
-    branches:
-      - dev*
-    paths:
-      - "app/**"
-      - "buildSrc/**"
-      - "library/**"
-      - ".github/workflows/release.yml"
+    tags:
+      - "v[0-9]*"
+      - "[0-9]*"
   workflow_dispatch:
     inputs:
-      release:
-        description: 'Release (y/n)'
-        required: false
-      prerelease:
-        description: 'Mark as pre-release (y/n)'
-        required: false
       tag:
-        description: 'Release Tag'
-        required: false
+        description: 'Existing tag to build and publish'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+      - name: Check tag matches version.properties
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/^VERSION_NAME=//p' version.properties | tr -d '[:space:]')"
+          # Accept both tagging styles already in use: v0.17.57 and 0.17.47-beta.2
+          tagged="${TAG#v}"
+          if [ "$tagged" != "$version" ]; then
+              printf 'tag %s does not match VERSION_NAME=%s in version.properties\n' "$TAG" "$version" >&2
+              printf 'bump VERSION_NAME (and VERSION_CODE) and tag that commit as v%s\n' "$version" >&2
+              exit 1
+          fi
+          printf 'building %s\n' "$TAG"
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
@@ -96,13 +112,11 @@ jobs:
           path: app/build/outputs/apk/legacy/release
   publish:
     name: Publish Release
-    if: github.event.inputs.release == 'y' && github.event.inputs.tag != ''
     runs-on: ubuntu-latest
     needs: build
+    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ github.token }}
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -120,10 +134,10 @@ jobs:
           path: artifacts/legacy
       - name: Build release notes
         env:
-          TAG: ${{ github.event.inputs.tag }}
+          TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           set -euo pipefail
-          previous="$(git tag --sort=-creatordate | grep -Fxv "$TAG" | head -n1 || true)"
+          previous="$(git tag --list 'v[0-9]*' '[0-9]*' --sort=-creatordate | grep -Fxv "$TAG" | head -n1 || true)"
           repo="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
           if [ -n "$previous" ]; then
               link="${repo}/compare/${previous}...${TAG}"
@@ -132,15 +146,27 @@ jobs:
           fi
           printf '**Full Changelog**: %s\n' "$link" > release-notes.md
           cat release-notes.md
-      - name: Publish Pre-release
-        if: github.event.inputs.prerelease == 'y'
-        run: |
-          mkdir apks
-          find artifacts -name "*.apk" -exec cp {} apks \;
-          gh release create "${{ github.event.inputs.tag }}" --notes-file release-notes.md --title="${{ github.event.inputs.tag }}" --prerelease ./apks/*
       - name: Publish Release
-        if: github.event.inputs.prerelease != 'y'
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
         run: |
+          set -euo pipefail
           mkdir apks
           find artifacts -name "*.apk" -exec cp {} apks \;
-          gh release create "${{ github.event.inputs.tag }}" --notes-file release-notes.md --title="${{ github.event.inputs.tag }}" ./apks/*
+          ls -la apks
+
+          # A tag carrying a suffix such as v1.2.3-beta.1 is a pre-release.
+          prerelease=""
+          case "$TAG" in
+              *-*) prerelease="--prerelease" ;;
+          esac
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+              gh release edit "$TAG" --title "Owenclave $TAG" --notes-file release-notes.md
+              gh release upload "$TAG" ./apks/* --clobber
+          else
+              gh release create "$TAG" ./apks/* \
+                  --title "Owenclave $TAG" \
+                  --notes-file release-notes.md \
+                  $prerelease
+          fi
