@@ -430,6 +430,7 @@ object Action {
     const val CLOSE = "io.nekohasekai.sagernet.CLOSE"
     const val RELOAD = "io.nekohasekai.sagernet.RELOAD"
     const val ABORT = "io.nekohasekai.sagernet.ABORT"
+    const val URL_TEST = "io.nekohasekai.sagernet.URL_TEST"
 
     const val THEME_CHANGED = "io.nekohasekai.sagernet.THEME_CHANGED"
 
