@@ -637,6 +637,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 val b = entity.tuic5Bean ?: return s
                 s.copy(uuid = b.uuid ?: "", password = b.password ?: "",
                     sni = b.sni ?: "", alpn = b.alpn ?: "",
+                    udpRelayMode = b.udpRelayMode ?: "native",
                     congestionControl = b.congestionControl ?: "cubic",
                     certificates = b.certificates ?: "", allowInsecure = b.allowInsecure ?: false,
                     disableSNI = b.disableSNI ?: false, zeroRTT = b.zeroRTTHandshake ?: false,
@@ -877,6 +878,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.password = state.password
                 b.sni = state.sni
                 b.alpn = state.alpn
+                b.udpRelayMode = state.udpRelayMode
                 b.congestionControl = state.congestionControl
                 b.certificates = state.certificates
                 b.allowInsecure = state.allowInsecure

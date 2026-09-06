@@ -37,6 +37,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,12 +49,16 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
 import io.nekohasekai.sagernet.R
+import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.ui.compose.components.DividerItem
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceHeader
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceItem
 import io.nekohasekai.sagernet.ui.compose.components.SectionCard
+
+/** Whether the profile editor offers known values as lists. */
+private val LocalPresetProfileFields = staticCompositionLocalOf { true }
 
 data class ProfileFieldState(
     val name: String = "",
@@ -115,6 +121,7 @@ data class ProfileFieldState(
     val configContent: String = "{}",
     val configType: String = "v2ray",
     // Misc
+    val udpRelayMode: String = "",
     val singUot: Boolean = false,
     val singMux: Boolean = false,
     val mux: Boolean = false,
@@ -138,6 +145,7 @@ fun UniversalProfileSettingsScreen(
     onSave: (ProfileFieldState) -> Unit,
 ) {
     var s by remember { mutableStateOf(initialState) }
+    val presetFields = remember { DataStore.presetProfileFields }
 
     val protocolName = when (profileType) {
         ProxyEntity.TYPE_SOCKS -> "SOCKS"
@@ -173,6 +181,7 @@ fun UniversalProfileSettingsScreen(
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
+    CompositionLocalProvider(LocalPresetProfileFields provides presetFields) {
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -323,6 +332,7 @@ fun UniversalProfileSettingsScreen(
         }
     }
 }
+}
 
 @Composable
 private fun ProfileTextField(
@@ -406,12 +416,38 @@ private fun ProfileDropdownField(
     }
 }
 
+/**
+ * A field whose valid values are known. Offers them as a list, unless the
+ * user turned that off in settings, in which case it falls back to a plain
+ * text field. The list is never a restriction: it always carries a custom
+ * entry, so an unusual value can still be typed either way.
+ */
+@Composable
+private fun ProfileChoiceField(
+    label: String,
+    value: String,
+    optionsRes: Int,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    onValueChange: (String) -> Unit = {},
+) {
+    if (LocalPresetProfileFields.current) {
+        ProfileDropdownField(
+            label = label,
+            value = value,
+            options = stringArrayResource(optionsRes).toList(),
+            onValueChange = onValueChange,
+        )
+    } else {
+        ProfileTextField(label, value, keyboardType = keyboardType, onValueChange = onValueChange)
+    }
+}
+
 @Composable
 private fun UtlsFingerprintField(value: String, onValueChange: (String) -> Unit) {
-    ProfileDropdownField(
+    ProfileChoiceField(
         label = "uTLS Fingerprint",
         value = value,
-        options = stringArrayResource(R.array.reality_fingerprint_value).toList(),
+        optionsRes = R.array.reality_fingerprint_value,
         onValueChange = onValueChange,
     )
 }
@@ -484,7 +520,7 @@ private fun HttpFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit
 private fun ShadowsocksFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
     PreferenceHeader("Encryption")
     SectionCard {
-        ProfileTextField("Encryption Method", s.method) { update(s.copy(method = it)) }
+        ProfileChoiceField("Encryption Method", s.method, R.array.enc_method_value) { update(s.copy(method = it)) }
         DividerItem()
         ProfileTextField("Password", s.password, password = true) { update(s.copy(password = it)) }
     }
@@ -497,13 +533,13 @@ private fun ShadowsocksRFields(s: ProfileFieldState, update: (ProfileFieldState)
     SectionCard {
         ProfileTextField("Password", s.password, password = true) { update(s.copy(password = it)) }
         DividerItem()
-        ProfileTextField("Method", s.method) { update(s.copy(method = it)) }
+        ProfileChoiceField("Method", s.method, R.array.ssr_enc_method_value) { update(s.copy(method = it)) }
         DividerItem()
-        ProfileTextField("Protocol", s.ssrProtocol) { update(s.copy(ssrProtocol = it)) }
+        ProfileChoiceField("Protocol", s.ssrProtocol, R.array.protocol_value) { update(s.copy(ssrProtocol = it)) }
         DividerItem()
         ProfileTextField("Protocol Param", s.protocolParam) { update(s.copy(protocolParam = it)) }
         DividerItem()
-        ProfileTextField("Obfs", s.obfs) { update(s.copy(obfs = it)) }
+        ProfileChoiceField("Obfs", s.obfs, R.array.obfs_value) { update(s.copy(obfs = it)) }
         DividerItem()
         ProfileTextField("Obfs Param", s.obfsParam) { update(s.copy(obfsParam = it)) }
     }
@@ -515,7 +551,7 @@ private fun VmessFields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
     SectionCard {
         ProfileTextField("UUID", s.uuid, password = true) { update(s.copy(uuid = it)) }
         DividerItem()
-        ProfileTextField("Encryption", s.encryption) { update(s.copy(encryption = it)) }
+        ProfileChoiceField("Encryption", s.encryption, R.array.vmess_encryption_value) { update(s.copy(encryption = it)) }
         DividerItem()
         ProfileTextField("Alter ID", s.serverPort) { update(s.copy(serverPort = it)) }
     }
@@ -528,9 +564,9 @@ private fun VlessFields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
     SectionCard {
         ProfileTextField("UUID", s.uuid, password = true) { update(s.copy(uuid = it)) }
         DividerItem()
-        ProfileTextField("Flow", s.flow) { update(s.copy(flow = it)) }
+        ProfileChoiceField("Flow", s.flow, R.array.xtls_flow_value) { update(s.copy(flow = it)) }
         DividerItem()
-        ProfileTextField("Encryption", s.encryption) { update(s.copy(encryption = it)) }
+        ProfileChoiceField("Encryption", s.encryption, R.array.vless_encryption_value) { update(s.copy(encryption = it)) }
     }
     TlsTransportFields(s, update)
 }
@@ -548,7 +584,7 @@ private fun TrojanFields(s: ProfileFieldState, update: (ProfileFieldState) -> Un
 private fun NaiveFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
     PreferenceHeader("NaiveProxy Settings")
     SectionCard {
-        ProfileTextField("Protocol (https/quic)", s.network) { update(s.copy(network = it)) }
+        ProfileChoiceField("Protocol", s.network, R.array.naive_proto_value) { update(s.copy(network = it)) }
         DividerItem()
         ProfileTextField("Username", s.username) { update(s.copy(username = it)) }
         DividerItem()
@@ -568,7 +604,7 @@ private fun Hysteria2Fields(s: ProfileFieldState, update: (ProfileFieldState) ->
         DividerItem()
         ProfileTextField("SNI", s.sni) { update(s.copy(sni = it)) }
         DividerItem()
-        ProfileTextField("Obfs Type (none/salamander/gecko)", s.obfsType) { update(s.copy(obfsType = it)) }
+        ProfileChoiceField("Obfs Type", s.obfsType, R.array.hysteria2_obfs_type) { update(s.copy(obfsType = it)) }
         if (s.obfsType.isNotEmpty()) {
             DividerItem()
             ProfileTextField("Obfs Password", s.obfsPassword, password = true) { update(s.copy(obfsPassword = it)) }
@@ -578,7 +614,7 @@ private fun Hysteria2Fields(s: ProfileFieldState, update: (ProfileFieldState) ->
         DividerItem()
         ProfileTextField("Download Speed (Mbps)", s.downloadSpeed) { update(s.copy(downloadSpeed = it)) }
         DividerItem()
-        ProfileTextField("Congestion Control", s.congestionControl) { update(s.copy(congestionControl = it)) }
+        ProfileChoiceField("Congestion Control", s.congestionControl, R.array.hysteria2_congestion_control) { update(s.copy(congestionControl = it)) }
         DividerItem()
         ProfileTextField("Certificates", s.certificates) { update(s.copy(certificates = it)) }
     }
@@ -662,9 +698,9 @@ private fun Tuic5Fields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
         DividerItem()
         ProfileTextField("ALPN", s.alpn) { update(s.copy(alpn = it)) }
         DividerItem()
-        ProfileTextField("UDP Relay Mode (native/quic)", s.congestionControl) { update(s.copy(congestionControl = it)) }
+        ProfileChoiceField("UDP Relay Mode", s.udpRelayMode, R.array.tuic_udp_relay_mode_value) { update(s.copy(udpRelayMode = it)) }
         DividerItem()
-        ProfileTextField("Congestion Control", s.congestionControl) { update(s.copy(congestionControl = it)) }
+        ProfileChoiceField("Congestion Control", s.congestionControl, R.array.tuic_congestion_controller_value) { update(s.copy(congestionControl = it)) }
         DividerItem()
         ProfileTextField("Certificates", s.certificates) { update(s.copy(certificates = it)) }
     }
@@ -738,7 +774,7 @@ private fun AnyTlsFields(s: ProfileFieldState, update: (ProfileFieldState) -> Un
     SectionCard {
         ProfileTextField("Password", s.password, password = true) { update(s.copy(password = it)) }
         DividerItem()
-        ProfileTextField("Security (tls/reality)", s.security) { update(s.copy(security = it)) }
+        ProfileChoiceField("Security", s.security, R.array.transport_layer_encryption_value) { update(s.copy(security = it)) }
         DividerItem()
         ProfileTextField("SNI", s.sni) { update(s.copy(sni = it)) }
         DividerItem()
@@ -780,7 +816,7 @@ private fun ShadowQuicFields(s: ProfileFieldState, update: (ProfileFieldState) -
         DividerItem()
         ProfileTextField("ALPN", s.alpn) { update(s.copy(alpn = it)) }
         DividerItem()
-        ProfileTextField("Congestion Control", s.congestionControl) { update(s.copy(congestionControl = it)) }
+        ProfileChoiceField("Congestion Control", s.congestionControl, R.array.shadowquic_congestion_control_value) { update(s.copy(congestionControl = it)) }
     }
     PreferenceHeader("Options")
     SectionCard {
@@ -794,7 +830,7 @@ private fun ShadowQuicFields(s: ProfileFieldState, update: (ProfileFieldState) -
 private fun TrustTunnelFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
     PreferenceHeader("TrustTunnel Settings")
     SectionCard {
-        ProfileTextField("Protocol (https/socks)", s.network) { update(s.copy(network = it)) }
+        ProfileChoiceField("Protocol", s.network, R.array.trusttunnel_protocol_entry) { update(s.copy(network = it)) }
         DividerItem()
         ProfileTextField("Username", s.username) { update(s.copy(username = it)) }
         DividerItem()
@@ -891,9 +927,9 @@ private fun ConfigFields(s: ProfileFieldState, update: (ProfileFieldState) -> Un
 private fun TlsTransportFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
     PreferenceHeader("Transport")
     SectionCard {
-        ProfileTextField("Network (tcp/ws/grpc/quic/kcp/splithttp/httpupgrade)", s.network) { update(s.copy(network = it)) }
+        ProfileChoiceField("Network", s.network, R.array.networks_value) { update(s.copy(network = it)) }
         DividerItem()
-        ProfileTextField("Security (none/tls/reality)", s.security) { update(s.copy(security = it)) }
+        ProfileChoiceField("Security", s.security, R.array.transport_layer_encryption_value) { update(s.copy(security = it)) }
         if (s.network == "ws" || s.network == "splithttp" || s.network == "httpupgrade") {
             DividerItem()
             ProfileTextField("Path", s.path) { update(s.copy(path = it)) }
