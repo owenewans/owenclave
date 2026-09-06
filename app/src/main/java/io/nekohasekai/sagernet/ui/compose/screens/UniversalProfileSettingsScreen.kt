@@ -22,6 +22,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,11 +44,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.unit.dp
+import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.ui.compose.components.DividerItem
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceHeader
+import io.nekohasekai.sagernet.ui.compose.components.PreferenceItem
 import io.nekohasekai.sagernet.ui.compose.components.SectionCard
 
 data class ProfileFieldState(
@@ -113,6 +118,12 @@ data class ProfileFieldState(
     val singUot: Boolean = false,
     val singMux: Boolean = false,
     val mux: Boolean = false,
+    val muxConcurrency: String = "",
+    val muxPacketEncoding: String = "",
+    val singMuxProtocol: String = "",
+    val singMuxMaxConnections: String = "",
+    val singMuxMinStreams: String = "",
+    val singMuxPadding: Boolean = false,
     val disableSNI: Boolean = false,
     val zeroRTT: Boolean = false,
     val noPostQuantum: Boolean = false,
@@ -260,6 +271,18 @@ fun UniversalProfileSettingsScreen(
                             checked = s.mux,
                             onCheckedChange = { s = s.copy(mux = it) },
                         )
+                        if (s.mux) {
+                            ProfileTextField(
+                                "Mux concurrency",
+                                s.muxConcurrency,
+                                keyboardType = KeyboardType.Number,
+                            ) { s = s.copy(muxConcurrency = it) }
+                            ProfileDropdownField(
+                                label = "Packet encoding",
+                                value = s.muxPacketEncoding,
+                                options = stringArrayResource(R.array.packet_encoding_value).toList(),
+                            ) { s = s.copy(muxPacketEncoding = it) }
+                        }
                         DividerItem()
                         ProfileSwitchItem(
                             title = "UDP over TCP",
@@ -272,6 +295,28 @@ fun UniversalProfileSettingsScreen(
                             checked = s.singMux,
                             onCheckedChange = { s = s.copy(singMux = it) },
                         )
+                        if (s.singMux) {
+                            ProfileDropdownField(
+                                label = "Sing mux protocol",
+                                value = s.singMuxProtocol,
+                                options = stringArrayResource(R.array.sing_mux_protocol_value).toList(),
+                            ) { s = s.copy(singMuxProtocol = it) }
+                            ProfileTextField(
+                                "Max connections",
+                                s.singMuxMaxConnections,
+                                keyboardType = KeyboardType.Number,
+                            ) { s = s.copy(singMuxMaxConnections = it) }
+                            ProfileTextField(
+                                "Min streams",
+                                s.singMuxMinStreams,
+                                keyboardType = KeyboardType.Number,
+                            ) { s = s.copy(singMuxMinStreams = it) }
+                            ProfileSwitchItem(
+                                title = "Padding",
+                                checked = s.singMuxPadding,
+                                onCheckedChange = { s = s.copy(singMuxPadding = it) },
+                            )
+                        }
                     }
                 }
             }
@@ -297,6 +342,77 @@ private fun ProfileTextField(
         singleLine = singleLine,
         keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = if (password) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None,
+    )
+}
+
+/**
+ * Picks one of [options], or lets the value be typed in. A value that is not
+ * in the list, which is what an imported profile usually carries, opens in
+ * custom mode so it stays visible and editable instead of being silently
+ * replaced by the first option.
+ */
+@Composable
+private fun ProfileDropdownField(
+    label: String,
+    value: String,
+    options: List<String>,
+    defaultLabel: String = "Default",
+    onValueChange: (String) -> Unit = {},
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var custom by remember { mutableStateOf(value.isNotEmpty() && value !in options) }
+
+    Box {
+        PreferenceItem(
+            title = label,
+            subtitle = when {
+                custom -> "Custom"
+                value.isEmpty() -> defaultLabel
+                else -> value
+            },
+            onClick = { expanded = true },
+            trailingContent = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
+        )
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text(defaultLabel) },
+                onClick = {
+                    custom = false
+                    onValueChange("")
+                    expanded = false
+                },
+            )
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        custom = false
+                        onValueChange(option)
+                        expanded = false
+                    },
+                )
+            }
+            DropdownMenuItem(
+                text = { Text("Custom") },
+                onClick = {
+                    custom = true
+                    expanded = false
+                },
+            )
+        }
+    }
+    if (custom) {
+        ProfileTextField(label, value, onValueChange = onValueChange)
+    }
+}
+
+@Composable
+private fun UtlsFingerprintField(value: String, onValueChange: (String) -> Unit) {
+    ProfileDropdownField(
+        label = "uTLS Fingerprint",
+        value = value,
+        options = stringArrayResource(R.array.reality_fingerprint_value).toList(),
+        onValueChange = onValueChange,
     )
 }
 
@@ -630,7 +746,7 @@ private fun AnyTlsFields(s: ProfileFieldState, update: (ProfileFieldState) -> Un
         DividerItem()
         ProfileTextField("Certificates", s.certificates) { update(s.copy(certificates = it)) }
         DividerItem()
-        ProfileTextField("uTLS Fingerprint", s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
+        UtlsFingerprintField(s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
     }
     if (s.security == "reality") {
         PreferenceHeader("Reality")
@@ -688,7 +804,7 @@ private fun TrustTunnelFields(s: ProfileFieldState, update: (ProfileFieldState) 
         DividerItem()
         ProfileTextField("Certificate", s.certificates) { update(s.copy(certificates = it)) }
         DividerItem()
-        ProfileTextField("uTLS Fingerprint", s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
+        UtlsFingerprintField(s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
     }
     PreferenceHeader("TLS")
     SectionCard {
@@ -796,7 +912,7 @@ private fun TlsTransportFields(s: ProfileFieldState, update: (ProfileFieldState)
             DividerItem()
             ProfileTextField("ALPN", s.alpn) { update(s.copy(alpn = it)) }
             DividerItem()
-            ProfileTextField("uTLS Fingerprint", s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
+            UtlsFingerprintField(s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
             DividerItem()
             ProfileTextField("Certificates", s.certificates) { update(s.copy(certificates = it)) }
             DividerItem()

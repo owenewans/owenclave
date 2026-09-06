@@ -40,8 +40,12 @@ import io.nekohasekai.sagernet.aidl.AppStatsList
 import io.nekohasekai.sagernet.aidl.ISagerNetServiceCallback
 import io.nekohasekai.sagernet.aidl.TrafficStats
 import io.nekohasekai.sagernet.database.DataStore
+import io.nekohasekai.sagernet.ktx.Logs
 import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.ktx.getColorAttr
+import io.nekohasekai.sagernet.ktx.onMainDispatcher
+import io.nekohasekai.sagernet.ktx.readableMessage
+import io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher
 import io.nekohasekai.sagernet.ui.compose.ComposeQuickToggleActivity
 import io.nekohasekai.sagernet.utils.FormatFileSizeCompat
 import io.nekohasekai.sagernet.utils.Theme
@@ -57,12 +61,27 @@ import io.nekohasekai.sagernet.utils.Theme
  * See also: https://github.com/aosp-mirror/platform_frameworks_base/commit/070d142993403cc2c42eca808ff3fafcee220ac4
  */
 class ServiceNotification(
-    private val service: BaseService.Interface, profileName: String,
+    private val service: BaseService.Interface, private val profileName: String,
     channel: String, visible: Boolean = false,
 ) : BroadcastReceiver() {
     companion object {
         const val notificationId = 1
         val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_IMMUTABLE else 0
+    }
+
+    /**
+     * Shown after the profile name in the notification title: the connection
+     * state, or the result of a url test started from the notification. Null
+     * while connected and idle, where the traffic line already says enough.
+     */
+    private var statusText: String? = null
+    private var testing = false
+
+    /** Handles the url test action. Not exported: only our own pending intent may start a test. */
+    private val testReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Action.URL_TEST) urlTest()
+        }
     }
 
     val trafficStatistics = DataStore.profileTrafficStatistics
@@ -167,6 +186,13 @@ class ServiceNotification(
                 addAction(Action.THEME_CHANGED)
             })
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            service.registerReceiver(
+                testReceiver, IntentFilter(Action.URL_TEST), Context.RECEIVER_NOT_EXPORTED
+            )
+        } else {
+            service.registerReceiver(testReceiver, IntentFilter(Action.URL_TEST))
+        }
         show()
     }
 
@@ -183,6 +209,15 @@ class ServiceNotification(
         }.build()
         builder.addAction(closeAction)
 
+        val testAction = NotificationCompat.Action.Builder(
+            0, service.getText(R.string.connection_test_url_test), PendingIntent.getBroadcast(
+                service, 0, Intent(Action.URL_TEST).setPackage(service.packageName), flags
+            )
+        ).apply {
+            setShowsUserInterface(false)
+        }.build()
+        builder.addAction(testAction)
+
         val switchAction = NotificationCompat.Action.Builder(
             0, service.getString(R.string.quick_toggle), PendingIntent.getActivity(
                 service, 0, Intent(service, ComposeQuickToggleActivity::class.java), flags
@@ -191,6 +226,54 @@ class ServiceNotification(
             setShowsUserInterface(false)
         }.build()
         builder.addAction(switchAction)
+    }
+
+    /**
+     * Reflects the service state in the notification. Connected deliberately
+     * clears the line: the traffic text below already shows the connection is
+     * live, and repeating it only costs room in the shade.
+     */
+    fun setState(state: BaseService.State) {
+        service as Context
+        statusText = when (state) {
+            BaseService.State.Connecting -> service.getString(R.string.connecting)
+            BaseService.State.Stopping -> service.getString(R.string.stopping)
+            BaseService.State.Stopped -> service.getString(R.string.not_connected)
+            else -> null
+        }
+        applyStatus()
+        update()
+    }
+
+    private fun applyStatus() {
+        val status = statusText
+        builder.setContentTitle(if (status == null) profileName else "$profileName • $status")
+    }
+
+    private fun setStatus(text: String?) {
+        statusText = text
+        applyStatus()
+        update()
+    }
+
+    private fun urlTest() {
+        service as Context
+        if (testing) return
+        if (service.data.state != BaseService.State.Connected) return
+        testing = true
+        setStatus(service.getString(R.string.connection_test_testing))
+        runOnDefaultDispatcher {
+            val result = try {
+                service.getString(
+                    R.string.connection_test_available, service.data.binder.urlTest()
+                )
+            } catch (e: Exception) {
+                Logs.w(e)
+                service.getString(R.string.connection_test_error, e.readableMessage)
+            }
+            testing = false
+            onMainDispatcher { setStatus(result) }
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -225,7 +308,8 @@ class ServiceNotification(
         NotificationManagerCompat.from(service as Service).notify(notificationId, builder.build())
 
     fun destroy() {
-        (service as Service).unregisterReceiver(this)
+        (service as Service).unregisterReceiver(testReceiver)
+        service.unregisterReceiver(this)
         updateCallback(false)
         ServiceCompat.stopForeground(service, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }

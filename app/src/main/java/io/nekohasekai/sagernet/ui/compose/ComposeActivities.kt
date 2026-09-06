@@ -41,6 +41,7 @@ import io.nekohasekai.sagernet.fmt.socks.SOCKSBean
 import io.nekohasekai.sagernet.fmt.ssh.SSHBean
 import io.nekohasekai.sagernet.fmt.trusttunnel.TrustTunnelBean
 import io.nekohasekai.sagernet.fmt.trojan.TrojanBean
+import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean
 import io.nekohasekai.sagernet.fmt.tuic5.Tuic5Bean
 import io.nekohasekai.sagernet.fmt.v2ray.VLESSBean
 import io.nekohasekai.sagernet.fmt.v2ray.VMessBean
@@ -519,6 +520,43 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
         }
     }
 
+    /**
+     * TLS and multiplex settings shared by every StandardV2RayBean subclass.
+     * These used to be written on save but never read back, so opening a
+     * profile and saving it silently reset them.
+     */
+    private fun ProfileFieldState.withV2RayCommon(b: StandardV2RayBean) = copy(
+        utlsFingerprint = b.utlsFingerprint ?: "",
+        allowInsecure = b.allowInsecure ?: false,
+        echEnabled = b.echEnabled ?: false,
+        echConfig = b.echConfigList ?: "",
+        mux = b.mux ?: false,
+        muxConcurrency = b.muxConcurrency?.takeIf { it > 0 }?.toString() ?: "",
+        muxPacketEncoding = b.muxPacketEncoding ?: "",
+        singMux = b.singMux ?: false,
+        singMuxProtocol = b.singMuxProtocol ?: "",
+        singMuxMaxConnections = b.singMuxMaxConnections?.takeIf { it > 0 }?.toString() ?: "",
+        singMuxMinStreams = b.singMuxMinStreams?.takeIf { it > 0 }?.toString() ?: "",
+        singMuxPadding = b.singMuxPadding ?: false,
+    )
+
+    private fun applyV2RayCommon(b: StandardV2RayBean, state: ProfileFieldState) {
+        b.utlsFingerprint = state.utlsFingerprint
+        b.allowInsecure = state.allowInsecure
+        b.echEnabled = state.echEnabled
+        b.echConfigList = state.echConfig
+        b.mux = state.mux
+        // Keep the bean's own default rather than writing 0, which would mean
+        // "no concurrency" to the core.
+        b.muxConcurrency = state.muxConcurrency.toIntOrNull()?.takeIf { it > 0 } ?: 8
+        b.muxPacketEncoding = state.muxPacketEncoding
+        b.singMux = state.singMux
+        b.singMuxProtocol = state.singMuxProtocol
+        b.singMuxMaxConnections = state.singMuxMaxConnections.toIntOrNull() ?: 0
+        b.singMuxMinStreams = state.singMuxMinStreams.toIntOrNull() ?: 0
+        b.singMuxPadding = state.singMuxPadding
+    }
+
     private fun beanToState(entity: ProxyEntity, type: Int): ProfileFieldState {
         val bean = entity.requireBean()
         val s = ProfileFieldState(
@@ -538,7 +576,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
             }
             ProxyEntity.TYPE_SS -> {
                 val b = entity.ssBean ?: return s
-                s.copy(method = b.method ?: "", password = b.password ?: "")
+                s.copy(method = b.method ?: "", password = b.password ?: "",
+                    singUot = b.singUoT ?: false).withV2RayCommon(b)
             }
             ProxyEntity.TYPE_SSR -> {
                 val b = entity.ssrBean ?: return s
@@ -551,18 +590,21 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 s.copy(uuid = b.uuid ?: "", encryption = b.encryption ?: "auto",
                     network = b.type ?: "tcp", security = b.security ?: "none",
                     sni = b.sni ?: "", alpn = b.alpn ?: "", host = b.host ?: "", path = b.path ?: "")
+                    .withV2RayCommon(b)
             }
             ProxyEntity.TYPE_VLESS -> {
                 val b = entity.vlessBean ?: return s
                 s.copy(uuid = b.uuid ?: "", flow = b.flow ?: "", encryption = b.encryption ?: "none",
                     network = b.type ?: "tcp", security = b.security ?: "none",
                     sni = b.sni ?: "", alpn = b.alpn ?: "", host = b.host ?: "", path = b.path ?: "")
+                    .withV2RayCommon(b)
             }
             ProxyEntity.TYPE_TROJAN -> {
                 val b = entity.trojanBean ?: return s
                 s.copy(password = b.password ?: "",
                     network = b.type ?: "tcp", security = b.security ?: "none",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "")
+                    sni = b.sni ?: "", alpn = b.alpn ?: "",
+                    host = b.host ?: "", path = b.path ?: "").withV2RayCommon(b)
             }
             ProxyEntity.TYPE_NAIVE -> {
                 val b = entity.naiveBean ?: return s
@@ -706,6 +748,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.serverPort = state.serverPort.toIntOrNull() ?: 8388
                 b.method = state.method
                 b.password = state.password
+                b.singUoT = state.singUot
+                applyV2RayCommon(b, state)
                 entity.ssBean = b
             }
             ProxyEntity.TYPE_SSR -> {
@@ -734,12 +778,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.alpn = state.alpn
                 b.host = state.host
                 b.path = state.path
-                b.allowInsecure = state.allowInsecure
-                b.utlsFingerprint = state.utlsFingerprint
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                b.mux = state.mux
-                b.singMux = state.singMux
+                applyV2RayCommon(b, state)
                 entity.vmessBean = b
             }
             ProxyEntity.TYPE_VLESS -> {
@@ -756,12 +795,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.alpn = state.alpn
                 b.host = state.host
                 b.path = state.path
-                b.allowInsecure = state.allowInsecure
-                b.utlsFingerprint = state.utlsFingerprint
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                b.mux = state.mux
-                b.singMux = state.singMux
+                applyV2RayCommon(b, state)
                 entity.vlessBean = b
             }
             ProxyEntity.TYPE_TROJAN -> {
@@ -776,12 +810,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.alpn = state.alpn
                 b.host = state.host
                 b.path = state.path
-                b.allowInsecure = state.allowInsecure
-                b.utlsFingerprint = state.utlsFingerprint
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                b.mux = state.mux
-                b.singMux = state.singMux
+                applyV2RayCommon(b, state)
                 entity.trojanBean = b
             }
             ProxyEntity.TYPE_NAIVE -> {

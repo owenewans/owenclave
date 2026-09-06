@@ -89,6 +89,9 @@ class BaseService {
             if (state == s && msg == null) return
             binder.stateChanged(s, msg)
             state = s
+            // The notification registers its callback only when traffic
+            // statistics are on, so tell it directly instead.
+            notification?.setState(s)
         }
     }
 
