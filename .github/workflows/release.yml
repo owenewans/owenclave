@@ -106,6 +106,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
       - name: Download Artifacts
         uses: actions/download-artifact@v8
         with:
@@ -116,15 +118,29 @@ jobs:
         with:
           name: APKs-legacy
           path: artifacts/legacy
+      - name: Build release notes
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+        run: |
+          set -euo pipefail
+          previous="$(git tag --sort=-creatordate | grep -Fxv "$TAG" | head -n1 || true)"
+          repo="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+          if [ -n "$previous" ]; then
+              link="${repo}/compare/${previous}...${TAG}"
+          else
+              link="${repo}/commits/${TAG}"
+          fi
+          printf '**Full Changelog**: %s\n' "$link" > release-notes.md
+          cat release-notes.md
       - name: Publish Pre-release
         if: github.event.inputs.prerelease == 'y'
         run: |
           mkdir apks
           find artifacts -name "*.apk" -exec cp {} apks \;
-          gh release create ${{ github.event.inputs.tag }} --notes="" --title=${{ github.event.inputs.tag }} --prerelease ./apks/*
+          gh release create "${{ github.event.inputs.tag }}" --notes-file release-notes.md --title="${{ github.event.inputs.tag }}" --prerelease ./apks/*
       - name: Publish Release
         if: github.event.inputs.prerelease != 'y'
         run: |
           mkdir apks
           find artifacts -name "*.apk" -exec cp {} apks \;
-          gh release create ${{ github.event.inputs.tag }} --notes="" --title=${{ github.event.inputs.tag }} ./apks/*
+          gh release create "${{ github.event.inputs.tag }}" --notes-file release-notes.md --title="${{ github.event.inputs.tag }}" ./apks/*
