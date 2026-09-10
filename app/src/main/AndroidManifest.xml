@@ -162,6 +162,11 @@
                 <data android:scheme="sq" />
                 <data android:scheme="shadowquic" />
                 <data android:scheme="owenkey" />
+                <!-- happ://crypt.../crypt2.../crypt3.../crypt4.../crypt5/...
+                     RSA (+ ChaCha20-Poly1305 for crypt5) wrapped subscription
+                     links from the Happ client; decrypted locally in
+                     ComposeMainActivity.handleHappCryptLink, see HappLink.kt. -->
+                <data android:scheme="happ" />
             </intent-filter>
 
             <!-- owenclave://add-subscription?url=<encoded subscription URL>[&hwid=1]

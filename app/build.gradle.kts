@@ -24,6 +24,14 @@ android {
 
 android.buildTypes["release"].signingConfig = android.signingConfigs["release"]
 
+android.testOptions {
+    // Lets plain JVM unit tests link against android.jar's stub methods
+    // (e.g. android.util.Log.*, called from Logs.kt) without throwing, for
+    // code paths a test happens to touch indirectly. HappLinkTest itself
+    // never calls into Android APIs at all.
+    unitTests.isReturnDefaultValues = true
+}
+
 ksp {
     arg("room.incremental", "true")
     arg("room.schemaLocation", "$projectDir/schemas")
@@ -115,4 +123,6 @@ dependencies {
     "kspLegacy"(libs.room.compiler.minSdk21)
     "legacyImplementation"(libs.room.ktx.minSdk21)
     "legacyImplementation"(libs.material.minSdk21)
+
+    testImplementation(libs.junit)
 }

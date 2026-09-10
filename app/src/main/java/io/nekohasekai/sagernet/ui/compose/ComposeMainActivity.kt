@@ -202,6 +202,10 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
             handleAddSubscriptionDeepLink(uri)
             return
         }
+        if (io.nekohasekai.sagernet.ktx.HappLink.isHappCryptLink(link)) {
+            handleHappCryptLink(link)
+            return
+        }
         io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
                 if (link.startsWith("owenkey://", ignoreCase = true)) {
@@ -254,6 +258,25 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
             else -> null
         }
         PendingDeepLink.pendingSubscriptionAdd.value = PendingSubscriptionAdd(url, sendHwid)
+        PendingDeepLink.pendingDestination.value = NavDestination.GROUP
+    }
+
+    /**
+     * `happ://crypt/...`, `crypt2/...`, `crypt3/...`, `crypt4/...` and
+     * `crypt5/...` links carry an RSA (+ ChaCha20-Poly1305 for crypt5)
+     * wrapped subscription URL -- see [io.nekohasekai.sagernet.ktx.HappLink].
+     * Decryption is local and instant (no network round-trip), so this just
+     * unwraps the link and hands the resulting URL to the same "Add
+     * subscription from URL" dialog flow as `owenclave://add-subscription`,
+     * letting the person review it before it's saved.
+     */
+    private fun handleHappCryptLink(link: String) {
+        val url = io.nekohasekai.sagernet.ktx.HappLink.decrypt(link)
+        if (url.isNullOrEmpty()) {
+            io.nekohasekai.sagernet.ktx.Logs.w("failed to decrypt happ link (unknown marker/key or malformed payload)")
+            return
+        }
+        PendingDeepLink.pendingSubscriptionAdd.value = PendingSubscriptionAdd(url, sendHwid = null)
         PendingDeepLink.pendingDestination.value = NavDestination.GROUP
     }
 
