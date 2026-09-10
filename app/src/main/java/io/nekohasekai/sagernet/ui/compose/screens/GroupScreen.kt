@@ -288,9 +288,13 @@ fun GroupScreen(
             if (showQuickAdd && quickAddUrl.isBlank()) {
                 val clip = clipboardManager.getText()
                 if (clip != null) {
-                    val text = clip.text
+                    val text = clip.text?.trim()
                     if (text != null && (text.startsWith("https://", ignoreCase = true) || text.startsWith("http://", ignoreCase = true) || text.startsWith("owenkey://", ignoreCase = true))) {
-                        quickAddUrl = text.trim()
+                        quickAddUrl = text
+                    } else if (text != null && io.nekohasekai.sagernet.ktx.HappLink.isHappCryptLink(text)) {
+                        // happ://crypt.../... is decrypted eagerly so the person
+                        // reviews the real subscription URL, not an opaque blob.
+                        quickAddUrl = io.nekohasekai.sagernet.ktx.HappLink.decrypt(text) ?: text
                     }
                 }
             }
@@ -305,7 +309,7 @@ fun GroupScreen(
                 modifier = Modifier.padding(bottom = 4.dp),
             )
             Text(
-                text = "Paste subscription link or owenkey:// link to import",
+                text = "Paste subscription link, happ:// link, or owenkey:// link to import",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 16.dp),
@@ -359,12 +363,23 @@ fun GroupScreen(
                                 }
                             } else {
                                 try {
+                                    // happ://crypt.../... links carry an RSA/ChaCha20-Poly1305
+                                    // wrapped subscription URL (see HappLink). Decrypt once,
+                                    // here, so the group's stored link is always a plain,
+                                    // directly-fetchable URL (matches what the deep-link path
+                                    // in ComposeMainActivity already prefills the dialog with).
+                                    val resolvedUrl = if (io.nekohasekai.sagernet.ktx.HappLink.isHappCryptLink(url)) {
+                                        io.nekohasekai.sagernet.ktx.HappLink.decrypt(url)
+                                            ?: throw Exception("Failed to decrypt happ link (unknown marker/key or malformed payload)")
+                                    } else {
+                                        url
+                                    }
                                     val group = ProxyGroup(
                                         name = "Subscription",
                                         type = GroupType.SUBSCRIPTION,
                                     )
                                     group.subscription = SubscriptionBean().applyDefaultValues().apply {
-                                        link = url
+                                        link = resolvedUrl
                                         type = SubscriptionType.RAW
                                         this.sendHwid = sendHwid
                                     }
