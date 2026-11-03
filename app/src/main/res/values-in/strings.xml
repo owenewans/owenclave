@@ -554,4 +554,20 @@
     <string name="hysteria_bbr_profile">Profil BBR</string>
     <string name="custom_package_name_or_uid">Nama paket atau UID kustom</string>
     <string name="socks5_udp_authentication_warning">SOCKS5 UDP tidak di proteksi otentifikasi nama dan Sandi. jika UDP di aktifkan, otentifikasi dapat di lewati dengan mudah.</string>
+    <string name="enable_hysteria2_omit_max_datagram_frame_size">Aktifkan Hysteria 2 OmitMaxDatagramFrameSize</string>
+    <string name="hysteria2_omit_max_datagram_frame_size_sum">Jika server Hysteria 2 tidak mendukung perubahan merusak ini, UDP tidak akan dapat digunakan. Ini adalah opsi sementara dan dapat dihapus di masa mendatang.</string>
+    <string name="ssh_keepalive_interval">Interval keepalive (d)</string>
+    <string name="custom_outbound">Outbound kustom</string>
+    <string name="hysteria2_gecko_max_packet_size">Ukuran paket maksimum</string>
+    <string name="hysteria2_gecko_min_packet_size">Ukuran paket minimum</string>
+    <string name="nearby_devices_permission_notice">Opsi ini memerlukan izin “perangkat di sekitar” agar berfungsi, tetapi izin tersebut belum diberikan.</string>
+    <string name="snell_reuse">Penggunaan ulang koneksi</string>
+    <string name="pre_shared_key">Kunci pra-bagi</string>
+    <string name="snell_obfs_mode">Mode obfuskasi</string>
+    <string name="snell_obfs_host">Host obfuskasi</string>
+    <string name="snell_mode">Mode</string>
+    <string name="anytls_disable_reuse">Nonaktifkan penggunaan ulang koneksi</string>
+    <string name="chrome_parrot_summary">Tiru QUIC Client Hello Chrome</string>
+    <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">Opsi ini dinonaktifkan agar sesuai dengan perilaku Chrome.</string>
+    <string name="option_globally_enabled">Opsi ini telah diaktifkan secara global dan nilainya akan diabaikan.</string>
 </resources>

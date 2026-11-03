@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import io.nekohasekai.sagernet.ktx.app
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -112,10 +113,10 @@ fun StunScreen(
                                         val stunClient = Libexclavecore.newStunClient()
                                         if (SagerNet.started && DataStore.startedProfile > 0) {
                                             stunClient.useUDS(
-                                                SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock"
+                                                app.cacheDir.toString() + "/ipc.sock"
                                             )
                                             stunClient.useDNSUDS(
-                                                SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc_dns.sock"
+                                                app.cacheDir.toString() + "/ipc_dns.sock"
                                             )
                                         }
                                         if (testMode == 0) {

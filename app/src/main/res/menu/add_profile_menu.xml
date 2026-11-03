@@ -84,9 +84,6 @@
                                 android:id="@+id/action_new_snell"
                                 android:title="@string/action_snell" />
                             <item
-                                android:id="@+id/action_new_olcrtc"
-                                android:title="@string/action_olcrtc" />
-                            <item
                                 android:id="@+id/action_new_ssh"
                                 android:title="@string/action_ssh" />
                             <item
@@ -98,6 +95,9 @@
                             <item
                                 android:id="@+id/action_new_ssr"
                                 android:title="@string/action_shadowsocksr" />
+                            <item
+                                android:id="@+id/action_new_masque"
+                                android:title="@string/action_masque" />
                         </menu>
                     </item>
                 </menu>

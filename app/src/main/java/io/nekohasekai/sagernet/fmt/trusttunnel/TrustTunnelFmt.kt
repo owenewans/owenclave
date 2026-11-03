@@ -23,12 +23,20 @@ import io.nekohasekai.sagernet.ktx.applyDefaultValues
 import io.nekohasekai.sagernet.ktx.joinHostPort
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
 import libexclavecore.Libexclavecore
+import org.bouncycastle.cert.X509CertificateHolder
+import org.bouncycastle.openssl.PEMParser
+import org.bouncycastle.util.io.pem.PemObject
+import org.bouncycastle.util.io.pem.PemWriter
 import java.io.ByteArrayOutputStream
+import java.io.StringReader
+import java.io.StringWriter
+import java.security.cert.CertificateFactory
 import kotlin.io.encoding.Base64
 
 // https://github.com/TrustTunnel/TrustTunnel/blob/8856e7ba83ae0c9faace78aaf9a95b1b291cd3ed/DEEP_LINK.md
 // https://github.com/TrustTunnel/TrustTunnel/blob/8ba8f34da84b54ff49c248ec8c940c38010b511e/DEEP_LINK.md
 // https://github.com/TrustTunnel/TrustTunnel/blob/9e144fe4bcd0c2cf8f6690a97ba9b4df571a8ec0/DEEP_LINK.md
+// https://github.com/TrustTunnel/TrustTunnel/blob/3470404b7fca8187772b57c6641a0c571e0c165f/DEEP_LINK.md
 
 private enum class Tag(val code: Long) {
     Version(0x00),
@@ -45,11 +53,14 @@ private enum class Tag(val code: Long) {
     ClientRandomPrefix(0x0B),
     Name(0x0C),
     DNSUptreams(0x0D),
+    SubscriptionURL(0x0E),
+    ClientRandomAuthKey(0x0F),
 }
 
 private enum class Version(val code: Byte) {
     Version0(0x00),
     Version1(0x01),
+    Version2(0x02),
 }
 
 private enum class HasIPv6(val code: Byte) {
@@ -106,14 +117,28 @@ fun TrustTunnelBean.toUri(): String {
             "quic" -> writeTLV(Tag.UpstreamProtocol.code, byteArrayOf(UpstreamProtocol.HTTP3.code))
         }
         if (certificate.isNotEmpty()) {
-            val der = Libexclavecore.pemToDer(certificate)
-            require(der.isNotEmpty())
-            writeTLV(Tag.Certificate.code, der)
+            val derArray = ByteArrayOutputStream()
+            val pemParser = PEMParser(StringReader(certificate))
+            while (true) {
+                try {
+                    val obj = pemParser.readPemObject() ?: break
+                    if (obj.type != "CERTIFICATE" || obj.headers.isNotEmpty()) {
+                        continue
+                    }
+                    X509CertificateHolder(obj.content)
+                    derArray.write(obj.content)
+                } catch (_: Exception) {
+                    continue
+                }
+            }
+            if (derArray.size() > 0) {
+                writeTLV(Tag.Certificate.code, derArray.toByteArray())
+            }
         }
         if (name.isNotEmpty()) {
             writeTLV(Tag.Name.code, name.toByteArray())
         }
-        writeTLV(Tag.Version.code, byteArrayOf(Version.Version1.code))
+        writeTLV(Tag.Version.code, byteArrayOf(Version.Version2.code))
     }
     return "tt://?" + Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT).encode(byteArrayStream.toByteArray())
 }
@@ -131,6 +156,10 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
         var hasPassword = false
         var hostname = ""
         var customSNI = ""
+        var version: Byte = 0
+        var hasDNSUpstream = false
+        var hasName = false
+        var hasSubscriptionURL = false
         var offset = 0
         while (offset < data.size) {
             val tlv = data.readTLV(offset)
@@ -151,7 +180,9 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
             when (tlv.tag) {
                 Tag.Version.code -> {
                     require(length == 1) { "invalid Version" }
-                    require(value[0] == Version.Version0.code || value[0] == Version.Version1.code)
+                    version = value[0]
+                    require(version == Version.Version0.code || version == Version.Version1.code
+                            || version == Version.Version2.code)
                 }
                 Tag.Hostname.code -> {
                     require(value.isNotEmpty()) { "empty Hostname" }
@@ -186,9 +217,15 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                     bean.allowInsecure = value[0] == SkipVerification.True.code
                 }
                 Tag.Certificate.code -> {
-                    val pem = Libexclavecore.derToPem(value)
-                    require(pem.isNotEmpty()) { "invalid Certificate" }
-                    bean.certificate = pem
+                    val certs = CertificateFactory.getInstance("X.509").generateCertificates(value.inputStream())
+                    val stringWriter = StringWriter()
+                    val pemWriter = PemWriter(stringWriter)
+                    for (cert in certs) {
+                        pemWriter.writeObject(PemObject("CERTIFICATE", cert.encoded))
+                    }
+                    pemWriter.close()
+                    bean.certificate = stringWriter.toString()
+                    require(!bean.certificate.isNullOrEmpty()) { "invalid Certificate" }
                 }
                 Tag.UpstreamProtocol.code -> {
                     require(length == 1) { "invalid UpstreamProtocol" }
@@ -199,18 +236,36 @@ fun parseTrustTunnel(url: String): List<TrustTunnelBean> {
                     require(value[0] == AntiDPI.False.code || value[0] == AntiDPI.True.code) { "invalid AntiDPI" }
                 }
                 Tag.ClientRandomPrefix.code -> {
-                    // ignored
+                    error("client random prefix unsupported")
                 }
                 Tag.Name.code -> {
                     bean.name = String(value)
+                    hasName = true
                 }
                 Tag.DNSUptreams.code -> {
+                    hasDNSUpstream = true
                     // ignored
+                }
+                Tag.SubscriptionURL.code -> {
+                    hasSubscriptionURL = true
+                    // ignored, what the fuck is this
+                }
+                Tag.ClientRandomAuthKey.code -> {
+                    error("client random auth key unsupported")
                 }
                 else -> {
                     // "A parser MUST ignore unknown tags to allow forward-compatible extensions."
                 }
             }
+        }
+        if (version < 1 && hasDNSUpstream) {
+            error("version 0 can not have DNS upstream")
+        }
+        if (version < 1 && hasName) {
+            error("version 0 can not have name")
+        }
+        if (version < 2 && hasSubscriptionURL) {
+            error("version 0 or 1 can not have subscription url")
         }
         require(hasHostName) { "missing hostname" }
         require(hasAddresses) { "missing addresses" }

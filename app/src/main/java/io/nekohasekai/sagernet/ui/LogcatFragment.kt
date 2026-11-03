@@ -90,7 +90,6 @@ class LogcatFragment : ToolbarFragment(R.layout.layout_logcat),
                         "libexclavecore:D",
                         "libnaive:D",
                         "libshadowquic:D",
-                        "libolcrtc:D",
                         "Owenclave:D",
                         "*:S",
                     ).joinToString(",")

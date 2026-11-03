@@ -206,7 +206,7 @@
         },
         {
             "uniqueId": "androidx.databinding:viewbinding",
-            "artifactVersion": "9.3.2"
+            "artifactVersion": "9.5.0"
         },
         {
             "uniqueId": "androidx.drawerlayout:drawerlayout",
@@ -450,7 +450,7 @@
         },
         {
             "uniqueId": "com.esotericsoftware:kryo",
-            "artifactVersion": "5.6.2"
+            "artifactVersion": "5.7.1"
         },
         {
             "uniqueId": "com.esotericsoftware:minlog",
@@ -478,11 +478,11 @@
         },
         {
             "uniqueId": "com.google.code.gson:gson",
-            "artifactVersion": "2.14.0"
+            "artifactVersion": "2.15.0"
         },
         {
             "uniqueId": "com.google.errorprone:error_prone_annotations",
-            "artifactVersion": "2.48.0"
+            "artifactVersion": "2.50.0"
         },
         {
             "uniqueId": "com.google.guava:listenablefuture",
@@ -490,7 +490,7 @@
         },
         {
             "uniqueId": "com.google.protobuf:protobuf-java",
-            "artifactVersion": "4.36.0"
+            "artifactVersion": "4.36.2"
         },
         {
             "uniqueId": "com.google.zxing:core",
@@ -513,20 +513,32 @@
             "artifactVersion": "4.6.2"
         },
         {
+            "uniqueId": "org.bouncycastle:bcpkix-jdk18on",
+            "artifactVersion": "1.86"
+        },
+        {
+            "uniqueId": "org.bouncycastle:bcprov-jdk18on",
+            "artifactVersion": "1.86"
+        },
+        {
+            "uniqueId": "org.bouncycastle:bcutil-jdk18on",
+            "artifactVersion": "1.86"
+        },
+        {
             "uniqueId": "org.jetbrains.kotlin:kotlin-bom",
             "artifactVersion": "1.8.22"
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-parcelize-runtime",
-            "artifactVersion": "2.4.10"
+            "artifactVersion": "2.4.21"
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib",
-            "artifactVersion": "2.4.10"
+            "artifactVersion": "2.4.21"
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib-common",
-            "artifactVersion": "2.4.10"
+            "artifactVersion": "2.4.21"
         },
         {
             "uniqueId": "org.jetbrains.kotlin:kotlin-stdlib-jdk7",
@@ -562,11 +574,11 @@
         },
         {
             "uniqueId": "org.objenesis:objenesis",
-            "artifactVersion": "3.4"
+            "artifactVersion": "3.6"
         },
         {
             "uniqueId": "org.yaml:snakeyaml",
-            "artifactVersion": "2.6"
+            "artifactVersion": "2.7"
         }
     ]
 }

@@ -31,8 +31,8 @@ import io.nekohasekai.sagernet.fmt.http3.Http3Bean
 import io.nekohasekai.sagernet.fmt.anytls.AnyTLSBean
 import io.nekohasekai.sagernet.fmt.juicity.JuicityBean
 import io.nekohasekai.sagernet.fmt.mieru.MieruBean
+import io.nekohasekai.sagernet.fmt.masque.MASQUEBean
 import io.nekohasekai.sagernet.fmt.naive.NaiveBean
-import io.nekohasekai.sagernet.fmt.olcrtc.OLCRTCBean
 import io.nekohasekai.sagernet.fmt.shadowquic.ShadowQUICBean
 import io.nekohasekai.sagernet.fmt.shadowsocks.ShadowsocksBean
 import io.nekohasekai.sagernet.fmt.shadowsocksr.ShadowsocksRBean
@@ -492,7 +492,11 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
         val profileType = intent.getIntExtra(EXTRA_PROFILE_TYPE, ProxyEntity.TYPE_SOCKS)
 
         var entity: ProxyEntity? = null
-        var initialState = ProfileFieldState()
+        var initialState = ProfileFieldState(
+            network = if (profileType == ProxyEntity.TYPE_NAIVE || profileType == ProxyEntity.TYPE_TRUSTTUNNEL) "https" else "tcp",
+            security = if (profileType in listOf(ProxyEntity.TYPE_MASQUE, ProxyEntity.TYPE_ANYTLS, ProxyEntity.TYPE_TROJAN)) "tls" else "none",
+            alpn = if (profileType == ProxyEntity.TYPE_SHADOWQUIC) "h3" else "",
+        )
 
         if (profileId > 0L) {
             runBlocking {
@@ -572,7 +576,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
             }
             ProxyEntity.TYPE_HTTP -> {
                 val b = entity.httpBean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "")
+                s.copy(username = b.username ?: "", password = b.password ?: "",
+                    connectUDP = b.connectUDP ?: false, uriTemplate = b.uriTemplate ?: "")
             }
             ProxyEntity.TYPE_SS -> {
                 val b = entity.ssBean ?: return s
@@ -609,7 +614,9 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
             ProxyEntity.TYPE_NAIVE -> {
                 val b = entity.naiveBean ?: return s
                 s.copy(network = b.proto ?: "https", username = b.username ?: "",
-                    password = b.password ?: "", sni = b.sni ?: "", certificates = b.certificate ?: "")
+                    password = b.password ?: "", sni = b.sni ?: "", certificates = b.certificate ?: "",
+                    tunnelTimeout = b.tunnelTimeout?.toString() ?: "", idleTimeout = b.idleTimeout?.toString() ?: "",
+                    extraHeaders = b.extraHeaders ?: "")
             }
             ProxyEntity.TYPE_HYSTERIA2 -> {
                 val b = entity.hysteria2Bean ?: return s
@@ -653,6 +660,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
             ProxyEntity.TYPE_HTTP3 -> {
                 val b = entity.http3Bean ?: return s
                 s.copy(username = b.username ?: "", password = b.password ?: "",
+                    connectUDP = b.connectUDP ?: false, uriTemplate = b.uriTemplate ?: "",
                     sni = b.sni ?: "", certificates = b.certificates ?: "",
                     allowInsecure = b.allowInsecure ?: false,
                     echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
@@ -671,7 +679,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 s.copy(username = b.username ?: "", password = b.password ?: "",
                     sni = b.sni ?: "", alpn = b.alpn ?: "",
                     congestionControl = b.congestionControl ?: "bbr",
-                    zeroRTT = b.zeroRTT ?: false, disableSNI = b.disableALPN ?: false)
+                    zeroRTT = b.zeroRTT ?: false, udpOverStream = b.udpOverStream ?: false)
             }
             ProxyEntity.TYPE_TRUSTTUNNEL -> {
                 val b = entity.trustTunnelBean ?: return s
@@ -684,20 +692,22 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
             ProxyEntity.TYPE_SNELL -> {
                 val b = entity.snellBean ?: return s
                 s.copy(psk = b.psk ?: "", snellVersion = b.version ?: 4,
-                    obfsType = b.obfsMode ?: "none", host = b.obfsHost ?: "")
-            }
-            ProxyEntity.TYPE_OLCRTC -> {
-                val b = entity.olcrtcBean ?: return s
-                s.copy(authProvider = b.authProvider ?: "jitsi", transport = b.transport ?: "datachannel",
-                    roomId = b.roomId ?: "", encryptionKey = b.encryptionKey ?: "",
-                    dnsServer = b.dnsServer ?: "8.8.8.8:53", socksHost = b.socksHost ?: "127.0.0.1",
-                    socksPort = b.socksPort?.toString() ?: "8808")
+                    obfsType = b.obfsMode ?: "none", host = b.obfsHost ?: "", path = b.obfsURI ?: "")
             }
             ProxyEntity.TYPE_MIERU -> {
                 val b = entity.mieruBean ?: return s
                 s.copy(username = b.username ?: "", password = b.password ?: "",
                     network = if (b.protocol == MieruBean.PROTOCOL_UDP) "udp" else "tcp",
                     serverPorts = b.portRange ?: "")
+            }
+            ProxyEntity.TYPE_MASQUE -> {
+                val b = entity.masqueBean ?: return s
+                s.copy(username = b.username ?: "", password = b.password ?: "",
+                    uriTemplate = b.uriTemplate ?: "", http3 = b.http3 ?: true,
+                    mtu = b.mtu?.toString() ?: "", security = b.security ?: "tls",
+                    sni = b.sni ?: "", certificates = b.certificates ?: "",
+                    allowInsecure = b.allowInsecure ?: false, utlsFingerprint = b.utlsFingerprint ?: "",
+                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
             }
             ProxyEntity.TYPE_CONFIG -> {
                 val b = entity.configBean ?: return s
@@ -740,6 +750,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.serverPort = state.serverPort.toIntOrNull() ?: 8080
                 b.username = state.username
                 b.password = state.password
+                b.connectUDP = state.connectUDP
+                b.uriTemplate = state.uriTemplate
                 entity.httpBean = b
             }
             ProxyEntity.TYPE_SS -> {
@@ -824,6 +836,9 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.password = state.password
                 b.sni = state.sni
                 b.certificate = state.certificates
+                b.tunnelTimeout = state.tunnelTimeout.toIntOrNull() ?: 0
+                b.idleTimeout = state.idleTimeout.toIntOrNull() ?: 0
+                b.extraHeaders = state.extraHeaders
                 entity.naiveBean = b
             }
             ProxyEntity.TYPE_HYSTERIA2 -> {
@@ -914,6 +929,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.allowInsecure = state.allowInsecure
                 b.echEnabled = state.echEnabled
                 b.echConfigList = state.echConfig
+                b.connectUDP = state.connectUDP
+                b.uriTemplate = state.uriTemplate
                 entity.http3Bean = b
             }
             ProxyEntity.TYPE_ANYTLS -> {
@@ -945,7 +962,7 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.alpn = state.alpn
                 b.congestionControl = state.congestionControl
                 b.zeroRTT = state.zeroRTT
-                b.disableALPN = state.disableSNI
+                b.udpOverStream = state.udpOverStream
                 entity.shadowquicBean = b
             }
             ProxyEntity.TYPE_TRUSTTUNNEL -> {
@@ -973,19 +990,8 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.version = state.snellVersion
                 b.obfsMode = state.obfsType
                 b.obfsHost = state.host
+                b.obfsURI = state.path
                 entity.snellBean = b
-            }
-            ProxyEntity.TYPE_OLCRTC -> {
-                val b = entity.olcrtcBean ?: OLCRTCBean().applyDefaultValues()
-                b.name = state.name
-                b.authProvider = state.authProvider
-                b.transport = state.transport
-                b.roomId = state.roomId
-                b.encryptionKey = state.encryptionKey
-                b.dnsServer = state.dnsServer
-                b.socksHost = state.socksHost
-                b.socksPort = state.socksPort.toIntOrNull() ?: 8808
-                entity.olcrtcBean = b
             }
             ProxyEntity.TYPE_MIERU -> {
                 val b = entity.mieruBean ?: MieruBean().applyDefaultValues()
@@ -997,6 +1003,25 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
                 b.protocol = if (state.network == "udp") MieruBean.PROTOCOL_UDP else MieruBean.PROTOCOL_TCP
                 b.portRange = state.serverPorts
                 entity.mieruBean = b
+            }
+            ProxyEntity.TYPE_MASQUE -> {
+                val b = entity.masqueBean ?: MASQUEBean().applyDefaultValues()
+                b.name = state.name
+                b.serverAddress = state.serverAddress
+                b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                b.username = state.username
+                b.password = state.password
+                b.uriTemplate = state.uriTemplate
+                b.http3 = state.http3
+                b.mtu = state.mtu.toIntOrNull() ?: 0
+                b.security = state.security.ifEmpty { "tls" }
+                b.sni = state.sni
+                b.certificates = state.certificates
+                b.allowInsecure = state.allowInsecure
+                b.utlsFingerprint = state.utlsFingerprint
+                b.echEnabled = state.echEnabled
+                b.echConfigList = state.echConfig
+                entity.masqueBean = b
             }
             ProxyEntity.TYPE_CONFIG -> {
                 val b = entity.configBean ?: ConfigBean().applyDefaultValues()

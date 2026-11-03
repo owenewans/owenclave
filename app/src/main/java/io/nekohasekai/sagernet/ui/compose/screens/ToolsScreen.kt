@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import io.nekohasekai.sagernet.ktx.app
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

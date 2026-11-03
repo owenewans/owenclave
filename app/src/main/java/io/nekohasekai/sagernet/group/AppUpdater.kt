@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.group
 
+import io.nekohasekai.sagernet.ktx.app
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -74,7 +75,7 @@ object AppUpdater {
         val client = Libexclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
-                useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                useUDS(app.cacheDir.toString() + "/ipc.sock")
             }
         }
 
@@ -125,7 +126,7 @@ object AppUpdater {
         val client = Libexclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
-                useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                useUDS(app.cacheDir.toString() + "/ipc.sock")
             }
         }
 

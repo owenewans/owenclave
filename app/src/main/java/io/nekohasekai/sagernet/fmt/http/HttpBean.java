@@ -26,6 +26,7 @@ import com.esotericsoftware.kryo.io.ByteBufferOutput;
 
 import org.jetbrains.annotations.NotNull;
 
+import io.nekohasekai.sagernet.fmt.AbstractBean;
 import io.nekohasekai.sagernet.fmt.KryoConverters;
 import io.nekohasekai.sagernet.fmt.v2ray.StandardV2RayBean;
 
@@ -33,21 +34,26 @@ public class HttpBean extends StandardV2RayBean {
 
     public String username;
     public String password;
+    public Boolean connectUDP;
+    public String uriTemplate;
 
     @Override
     public void initializeDefaultValues() {
         super.initializeDefaultValues();
         if (username == null) username = "";
         if (password == null) password = "";
+        if (connectUDP == null) connectUDP = false;
+        if (uriTemplate == null) uriTemplate = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(4);
+        output.writeInt(5);
         super.serialize(output);
         output.writeString(username);
         output.writeString(password);
-        output.writeBoolean(false); // trustTunnelUot, removed
+        output.writeBoolean(connectUDP);
+        output.writeString(uriTemplate);
     }
 
     @Override
@@ -68,8 +74,12 @@ public class HttpBean extends StandardV2RayBean {
             sni = input.readString();
             utlsFingerprint = input.readString();
         }
-        if (version >= 3) {
+        if (version >= 3 && version <= 4) {
             input.readBoolean(); // trustTunnelUot, removed
+        }
+        if (version >= 5) {
+            connectUDP = input.readBoolean();
+            uriTemplate = input.readString();
         }
     }
 
@@ -79,6 +89,13 @@ public class HttpBean extends StandardV2RayBean {
         } else {
             return "HTTP";
         }
+    }
+
+    @Override
+    public void applyFeatureSettings(AbstractBean other) {
+        if (!(other instanceof HttpBean bean)) return;
+        bean.connectUDP = connectUDP;
+        bean.uriTemplate = uriTemplate;
     }
 
     @NotNull

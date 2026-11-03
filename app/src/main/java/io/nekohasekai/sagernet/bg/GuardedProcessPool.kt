@@ -28,8 +28,8 @@ import android.system.Os
 import android.system.OsConstants
 import android.util.Log
 import androidx.annotation.MainThread
-import io.nekohasekai.sagernet.SagerNet
 import io.nekohasekai.sagernet.ktx.Logs
+import io.nekohasekai.sagernet.ktx.app
 import io.nekohasekai.sagernet.utils.Commandline
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -55,7 +55,7 @@ class GuardedProcessPool(private val onFatal: suspend (IOException) -> Unit) : C
         }    // ignore
 
         fun start() {
-            process = ProcessBuilder(cmd).directory(SagerNet.deviceStorage.noBackupFilesDir).apply {
+            process = ProcessBuilder(cmd).directory(app.cacheDir).apply {
                 environment().putAll(env)
             }.start()
         }
@@ -91,7 +91,7 @@ class GuardedProcessPool(private val onFatal: suspend (IOException) -> Unit) : C
                 }
             } catch (e: IOException) {
                 Logs.w("error occurred. stop guard: ${Commandline.toString(cmd)}")
-                GlobalScope.launch(Dispatchers.Default) { onFatal(e) }
+                GlobalScope.launch(Dispatchers.Main) { onFatal(e) }
             } finally {
                 if (running) withContext(NonCancellable) {  // clean-up cannot be cancelled
                     if (Build.VERSION.SDK_INT < 24) {

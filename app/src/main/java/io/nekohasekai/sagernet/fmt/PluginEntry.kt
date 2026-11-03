@@ -26,8 +26,7 @@ enum class PluginEntry(
     val pluginId: String,
     @StringRes val nameId: Int,
 ) {
-    NaiveProxy("naive-plugin", R.string.action_naive),
-    ShadowQUIC("shadowquic-plugin", R.string.action_shadowquic);
+    NaiveProxy("naive-plugin", R.string.action_naive);
 
     companion object {
 

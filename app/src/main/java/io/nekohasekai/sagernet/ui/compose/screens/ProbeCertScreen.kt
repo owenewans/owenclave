@@ -1,5 +1,6 @@
 package io.nekohasekai.sagernet.ui.compose.screens
 
+import io.nekohasekai.sagernet.ktx.app
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -144,7 +145,7 @@ fun ProbeCertScreen(
                                         val certProber = Libexclavecore.newCertProber()
                                         if (SagerNet.started && DataStore.startedProfile > 0) {
                                             certProber.useUDS(
-                                                SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock"
+                                                app.cacheDir.toString() + "/ipc.sock"
                                             )
                                         }
                                         val result = if (protocol == 0) {

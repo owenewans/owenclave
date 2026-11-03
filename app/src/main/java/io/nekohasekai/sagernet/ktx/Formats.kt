@@ -61,8 +61,8 @@ fun String.decodeBase64(): String {
 }
 
 fun parseShareLinks(text: String): List<AbstractBean> {
-    val links = text.split('\n').flatMap { it.trim().split(' ') }
-    val linksByLine = text.split('\n').map { it.trim() }
+    val linksByLine = text.split('\n').mapNotNull { it.trim().takeIf { !it.startsWith('#') } }
+    val links = linksByLine.flatMap { it.split(' ') }
 
     val entities = ArrayList<AbstractBean>()
     val entitiesByLine = ArrayList<AbstractBean>()
@@ -137,10 +137,6 @@ fun parseShareLinks(text: String): List<AbstractBean> {
         } else if (startsWith("sq://", ignoreCase = true) || startsWith("shadowquic://", ignoreCase = true)) {
             runCatching {
                 entities.add(parseShadowQUIC(this))
-            }
-        } else if (startsWith("olcrtc://", ignoreCase = true)) {
-            runCatching {
-                entities.add(io.nekohasekai.sagernet.fmt.olcrtc.parseOLCRTCLink(this))
             }
         }
     }

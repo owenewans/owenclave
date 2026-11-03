@@ -329,7 +329,7 @@ class AssetsActivity : ThemedActivity() {
         val client = Libexclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
-                useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                useUDS(app.cacheDir.toString() + "/ipc.sock")
             }
         }
 
@@ -390,7 +390,7 @@ class AssetsActivity : ThemedActivity() {
         val client = Libexclavecore.newHttpClient().apply {
             keepAlive()
             if (SagerNet.started && DataStore.startedProfile > 0) {
-                useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                useUDS(app.cacheDir.toString() + "/ipc.sock")
             }
         }
         try {

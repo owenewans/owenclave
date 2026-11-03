@@ -84,6 +84,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             is HttpBean -> {
                 DataStore.serverUserId = password
                 DataStore.serverUsername = username
+                DataStore.serverHTTPConnectUDP = connectUDP
+                DataStore.serverHTTPConnectUDPURITemplate = uriTemplate
             }
             is SOCKSBean -> {
                 DataStore.serverUserId = password
@@ -199,6 +201,8 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             is HttpBean -> {
                 password = DataStore.serverUserId
                 username = DataStore.serverUsername
+                connectUDP = DataStore.serverHTTPConnectUDP
+                uriTemplate = DataStore.serverHTTPConnectUDPURITemplate
             }
             is SOCKSBean -> {
                 password = DataStore.serverUserId
@@ -341,6 +345,9 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
     lateinit var splithttpExtra: EditTextPreference
     lateinit var grpcCategory: PreferenceCategory
     lateinit var ssExperimentsCategory: PreferenceCategory
+    lateinit var httpConnectUDPCategory: PreferenceCategory
+    lateinit var connectUDP: SwitchPreference
+    lateinit var uriTemplate: EditTextPreference
 
     lateinit var plugin: PluginPreference
     lateinit var pluginConfigure: EditTextPreference
@@ -400,6 +407,11 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
             true
         }
         serverNameToVerify = findPreference(Key.SERVER_SERVER_NAME_TO_VERIFY)!!
+
+        httpConnectUDPCategory = findPreference(Key.SERVER_HTTP_CONNECT_UDP_CATEGORY)!!
+        httpConnectUDPCategory.isVisible = bean is HttpBean
+        connectUDP = findPreference(Key.SERVER_HTTP_CONNECT_UDP)!!
+        uriTemplate = findPreference(Key.SERVER_HTTP_CONNECT_UDP_URI_TEMPLATE)!!
 
         realityPublicKey = findPreference(Key.SERVER_REALITY_PUBLIC_KEY)!!
         realityShortId = findPreference(Key.SERVER_REALITY_SHORT_ID)!!
@@ -480,6 +492,15 @@ abstract class StandardV2RaySettingsActivity : ProfileSettingsActivity<StandardV
                 val sev = resources.getStringArray(R.array.enc_method_value)
                 if (encryption.value !in sev) {
                     encryption.value = "none"
+                }
+            }
+            is HttpBean -> {
+                encryption.isVisible = false
+                vlessEncryption.isVisible = false
+                uriTemplate.isEnabled = connectUDP.isChecked
+                connectUDP.setOnPreferenceChangeListener { _, newValue ->
+                    uriTemplate.isEnabled = newValue as Boolean
+                    true
                 }
             }
             else -> {

@@ -120,5 +120,11 @@ fun NaiveBean.buildNaiveConfig(port: Int, username: String = "", password: Strin
         if (noPostQuantum) {
             addProperty("no-post-quantum", true)
         }
+        if (tunnelTimeout > 0) {
+            addProperty("tunnel-timeout", tunnelTimeout)
+        }
+        if (idleTimeout > 0) {
+            addProperty("idle-timeout", idleTimeout)
+        }
     })
 }

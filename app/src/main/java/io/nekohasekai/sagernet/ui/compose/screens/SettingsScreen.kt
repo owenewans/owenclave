@@ -199,6 +199,8 @@ fun SettingsScreen(
     var httpPassword by remember { mutableStateOf(DataStore.httpPassword ?: "") }
     var httpProxyException by remember { mutableStateOf(DataStore.httpProxyException ?: "") }
     var stunServers by remember { mutableStateOf(DataStore.stunServers ?: "") }
+    var goDebug by remember { mutableStateOf(DataStore.goDebug) }
+    var environmentVariables by remember { mutableStateOf(DataStore.environmentVariables) }
     var pprofServer by remember { mutableStateOf(DataStore.pprofServer ?: "") }
     var experimentalFlags by remember { mutableStateOf(DataStore.experimentalFlags ?: "") }
     var rulesGeositeUrl by remember { mutableStateOf(DataStore.rulesGeositeUrl) }
@@ -319,7 +321,7 @@ fun SettingsScreen(
     if (showRootCaPicker) {
         SingleChoiceDialog(
             title = "Root CA Provider",
-            items = listOf("Mozilla" to 0, "System" to 1, "System & User" to 2, "Custom" to 3),
+            items = listOf("Mozilla" to 0, "Go" to 1, "Android" to 2, "Custom" to 3),
             selected = DataStore.providerRootCA,
             onSelect = { DataStore.providerRootCA = it; providerRootCA = it; showRootCaPicker = false },
             onDismiss = { showRootCaPicker = false },
@@ -511,7 +513,7 @@ fun SettingsScreen(
             io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField(
                 value = editingTextValue,
                 onValueChange = { editingTextValue = it },
-                singleLine = editingTextKey != "hosts" && editingTextKey != "httpProxyException",
+                singleLine = editingTextKey !in listOf("hosts", "httpProxyException", "environmentVariables"),
             )
             Spacer(Modifier.height(16.dp))
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
@@ -539,6 +541,8 @@ fun SettingsScreen(
                         "transproxyPort" -> { DataStore.transproxyPort = editingTextValue.toIntOrNull() ?: 9200; transproxyPort = DataStore.transproxyPort }
                         "localDNSPort" -> { DataStore.localDNSPort = editingTextValue.toIntOrNull() ?: 6450; localDNSPort = DataStore.localDNSPort }
                         "stunServers" -> { DataStore.stunServers = editingTextValue; stunServers = editingTextValue }
+                        "goDebug" -> { DataStore.goDebug = editingTextValue; goDebug = editingTextValue }
+                        "environmentVariables" -> { DataStore.environmentVariables = editingTextValue; environmentVariables = editingTextValue }
                         "pprofServer" -> { DataStore.pprofServer = editingTextValue; pprofServer = editingTextValue }
                         "experimentalFlags" -> { DataStore.experimentalFlags = editingTextValue; experimentalFlags = editingTextValue }
                         "rulesGeositeUrl" -> { DataStore.rulesGeositeUrl = editingTextValue; rulesGeositeUrl = editingTextValue }
@@ -838,7 +842,7 @@ fun SettingsScreen(
                     item { shape ->
                         PreferenceItem(
                             title = "Root CA Provider",
-                            subtitle = when (providerRootCA) { 0 -> "Mozilla"; 1 -> "System"; 2 -> "System & User"; 3 -> "Custom"; else -> "Unknown" },
+                            subtitle = when (providerRootCA) { 0 -> "Mozilla"; 1 -> "Go"; 2 -> "Android"; 3 -> "Custom"; else -> "Unknown" },
                             icon = Icons.Filled.Security,
                             onClick = { showRootCaPicker = true },
                             shape = shape,
@@ -1665,6 +1669,32 @@ fun SettingsScreen(
                                 editingTextKey = "rulesGeoipUrl"
                                 editingTextValue = rulesGeoipUrl
                                 editingText = Pair("geoip.dat URL", editingTextValue)
+                                showTextEditDialog = true
+                            },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "GODEBUG",
+                            subtitle = goDebug.ifEmpty { "None" },
+                            onClick = {
+                                editingTextKey = "goDebug"
+                                editingTextValue = goDebug
+                                editingText = Pair("GODEBUG (restart required)", editingTextValue)
+                                showTextEditDialog = true
+                            },
+                            shape = shape,
+                        )
+                    }
+                    item { shape ->
+                        PreferenceItem(
+                            title = "Environment variables",
+                            subtitle = environmentVariables.ifEmpty { "None" },
+                            onClick = {
+                                editingTextKey = "environmentVariables"
+                                editingTextValue = environmentVariables
+                                editingText = Pair("Environment variables (restart required)", editingTextValue)
                                 showTextEditDialog = true
                             },
                             shape = shape,

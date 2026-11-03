@@ -99,4 +99,18 @@
             app:useSimpleSummaryProvider="true" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:key="serverHTTPConnectUDPCategory"
+        app:title="@string/experimental_settings">
+        <SwitchPreference
+            app:icon="@drawable/ic_baseline_compare_arrows_24"
+            app:key="serverHTTPConnectUDP"
+            app:title="@string/udp" />
+        <EditTextPreference
+            app:icon="@drawable/ic_baseline_color_lens_24"
+            app:key="serverHTTPConnectUDPURITemplate"
+            app:title="@string/uri_template"
+            app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

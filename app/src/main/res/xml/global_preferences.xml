@@ -525,6 +525,16 @@
             app:title="pprof server listening address"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
+            app:dialogMessage="Applied after Go runtime initialization. Restart the app after changing this value."
+            app:key="goDebug"
+            app:title="GODEBUG"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
+            app:dialogMessage="One KEY=value per line. Restart the app after changing these values."
+            app:key="environmentVariables"
+            app:title="Environment variables"
+            app:useSimpleSummaryProvider="true" />
+        <EditTextPreference
             app:dialogMessage="For testing purpose only.\nBreaking changes are expected.\nNo guarantee of existence."
             app:key="experimentalFlags"
             app:title="Experimental flags" />

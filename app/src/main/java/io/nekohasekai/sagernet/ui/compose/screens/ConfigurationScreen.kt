@@ -485,7 +485,7 @@ private fun ProtocolPickerDialog(
         "ShadowQUIC" to ProxyEntity.TYPE_SHADOWQUIC,
         "TrustTunnel" to ProxyEntity.TYPE_TRUSTTUNNEL,
         "Snell" to ProxyEntity.TYPE_SNELL,
-        "OLCRTC" to ProxyEntity.TYPE_OLCRTC,
+        "MASQUE" to ProxyEntity.TYPE_MASQUE,
         "Chain" to ProxyEntity.TYPE_CHAIN,
         "Balancer" to ProxyEntity.TYPE_BALANCER,
         "Custom Config" to ProxyEntity.TYPE_CONFIG,

@@ -32,8 +32,6 @@ import androidx.core.text.isDigitsOnly
 object Executable {
     private val EXECUTABLES = setOf(
         "libnaive.so",
-        "libshadowquic.so",
-        "libolcrtc.so",
     )
 
     fun killAll() {
@@ -51,7 +49,7 @@ object Executable {
                 Logs.w("SIGKILL ${exe.nameWithoutExtension} (${process.name}) succeed")
             } catch (e: ErrnoException) {
                 if (e.errno != OsConstants.ESRCH) {
-                    Logs.w("SIGKILL ${exe.absolutePath} (${process.name}) failed")
+                    Logs.w("SIGKILL ${exe.canonicalPath} (${process.name}) failed")
                     Logs.w(e)
                 }
             }

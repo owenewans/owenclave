@@ -33,8 +33,7 @@ fun parseJuicity(url: String): JuicityBean {
             !link.hasPort() -> error("invalid port")
             else -> link.port
         }
-        require(Uuid.parseHexDashOrNull(link.username) != null) { "invalid uuid" }
-        uuid = link.username
+        uuid = parseUUID(link.username)?.toHexDashString() ?: error("invalid uuid")
         password = link.password
         link.queryParameter("sni")?.also {
             sni = it

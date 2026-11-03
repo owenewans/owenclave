@@ -156,8 +156,8 @@
     <string name="route_opt_bypass_lan">Bypass private addresses</string>
     <string name="domain_strategy">Domain strategy</string>
     <string name="traffic_sniffing">Enable sniffing</string>
-    <string name="enable_mux">Enable Mux</string>
-    <string name="mux_concurrency">Mux concurrent Connections</string>
+    <string name="enable_mux">Enable Mux.Cool</string>
+    <string name="mux_concurrency">Maximum concurrent connections</string>
     <string name="proxied_apps">Per-app VPN</string>
     <string name="proxied_apps_summary">Exclude selected apps from VPN or include selected apps in VPN</string>
     <string name="off">Off</string>
@@ -203,7 +203,6 @@
     <string name="action_tuic5" translatable="false">TUIC</string>
     <string name="action_http3" translatable="false">HTTP/3</string>
     <string name="action_anytls" translatable="false">AnyTLS</string>
-    <string name="action_olcrtc" translatable="false">olcrtc</string>
     <string name="proxy_chain">Proxy chain</string>
     <string name="custom_config">Custom config</string>
     <string name="balancer">Balancer</string>
@@ -476,7 +475,7 @@
     <string name="rules_geosite_url">geosite.dat URL</string>
     <string name="rules_geoip_url">geoip.dat URL</string>
     <string name="http_proxy_exception_list">HTTP proxy exception list</string>
-    <string name="mux_settings">Mux settings</string>
+    <string name="mux_settings">Mux.Cool settings</string>
     <string name="update_subscription">Update subscription</string>
     <string name="group_not_a_subscription">This group is not a subscription.</string>
     <string name="enable_fragment">Enable TLS Client Hello fragmentation</string>
@@ -642,16 +641,15 @@
     <string name="enable_unlock_ru_sum">Apply routing rules to bypass blocks on AI and EN services in Russia</string>
     <string name="direct_proxy_mode">Direct proxy mode</string>
     <string name="direct_proxy_mode_sum">Direct traffic through the device itself using zapret2 and unlock rules</string>
-    <string name="olcrtc_auth_provider">Auth provider</string>
-    <string name="olcrtc_transport">Transport</string>
-    <string name="olcrtc_room_id">Room ID</string>
-    <string name="olcrtc_encryption_key">Encryption key (hex)</string>
-    <string name="olcrtc_dns">DNS server</string>
-    <string name="olcrtc_socks_host">SOCKS host</string>
-    <string name="olcrtc_socks_port">SOCKS port</string>
     <string name="chrome_parrot" translatable="false">Chrome parrot</string>
     <string name="chrome_parrot_summary">Imitate Chrome\'s QUIC Client Hello</string>
     <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">This option is disabled to match Chrome\'s behavior.</string>
     <string name="option_globally_enabled">This option has been enabled globally and the value will be omitted.</string>
     <string name="ech_query_name" translatable="false">ECHQueryName</string>
+    <string name="action_masque" translatable="false">MASQUE</string>
+    <string name="ssh_host_key">Host key</string>
+    <string name="snell_obfs_uri">Obfuscation URI</string>
+    <string name="naiveproxy_tunnel_timeout">Tunnel timeout (s)</string>
+    <string name="naiveproxy_idle_timeout">Idle timeout (s)</string>
+    <string name="uri_template">URI Template</string>
 </resources>

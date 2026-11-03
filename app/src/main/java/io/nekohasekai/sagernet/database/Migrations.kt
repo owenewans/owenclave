@@ -26,6 +26,7 @@ import androidx.room.DeleteTable
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import io.nekohasekai.sagernet.fmt.KryoConverters
 
 object SagerDatabase_Migration_1_2 : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase): Unit {
@@ -170,3 +171,49 @@ class SagerDatabase_Migration_33_34 : AutoMigrationSpec
     ),
 )
 class SagerDatabase_Migration_35_36 : AutoMigrationSpec
+
+object SagerDatabase_Migration_40_41 : Migration(40, 41) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val removedIds = mutableSetOf<Long>()
+        database.query("SELECT `id` FROM `proxy_entities` WHERE `type` = 31").use { cursor ->
+            while (cursor.moveToNext()) removedIds.add(cursor.getLong(0))
+        }
+        val lastId = database.query("SELECT `seq` FROM `sqlite_sequence` WHERE `name` = 'proxy_entities'").use { cursor ->
+            if (cursor.moveToFirst()) cursor.getLong(0) else 0L
+        }
+        // remove dependent chains rather than silently routing without a required hop
+        var changed: Boolean
+        do {
+            changed = false
+            if (removedIds.isEmpty()) break
+            database.query("SELECT `id`, `chainBean`, `balancerBean` FROM `proxy_entities` WHERE `type` IN (8, 14)").use { cursor ->
+                while (cursor.moveToNext()) {
+                    val id = cursor.getLong(0)
+                    if (id in removedIds) continue
+                    val proxies = if (!cursor.isNull(1)) {
+                        KryoConverters.chainDeserialize(cursor.getBlob(1))?.proxies
+                    } else if (!cursor.isNull(2)) {
+                        KryoConverters.balancerBeanDeserialize(cursor.getBlob(2))?.proxies
+                    } else null
+                    if (proxies?.any { it in removedIds } == true) {
+                        removedIds.add(id)
+                        changed = true
+                    }
+                }
+            }
+        } while (changed)
+        for (id in removedIds) {
+            database.execSQL("UPDATE `proxy_groups` SET `frontProxy` = -1 WHERE `frontProxy` = ?", arrayOf(id))
+            database.execSQL("UPDATE `proxy_groups` SET `landingProxy` = -1 WHERE `landingProxy` = ?", arrayOf(id))
+            database.execSQL("UPDATE `rules` SET `enabled` = 0, `outbound` = 0 WHERE `outbound` = ?", arrayOf(id))
+            database.execSQL("DELETE FROM `proxy_entities` WHERE `id` = ?", arrayOf(id))
+        }
+        database.execSQL("""CREATE TABLE IF NOT EXISTS `proxy_entities_new` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `groupId` INTEGER NOT NULL, `type` INTEGER NOT NULL, `userOrder` INTEGER NOT NULL, `tx` INTEGER NOT NULL, `rx` INTEGER NOT NULL, `status` INTEGER NOT NULL, `ping` INTEGER NOT NULL, `connectedTime` INTEGER NOT NULL DEFAULT 0, `uuid` TEXT NOT NULL, `error` TEXT, `socksBean` BLOB, `httpBean` BLOB, `ssBean` BLOB, `ssrBean` BLOB, `vmessBean` BLOB, `vlessBean` BLOB, `trojanBean` BLOB, `naiveBean` BLOB, `hysteria2Bean` BLOB, `mieruBean` BLOB, `tuic5Bean` BLOB, `sshBean` BLOB, `wgBean` BLOB, `juicityBean` BLOB, `http3Bean` BLOB, `anytlsBean` BLOB, `shadowquicBean` BLOB, `trustTunnelBean` BLOB, `snellBean` BLOB, `masqueBean` BLOB, `configBean` BLOB, `chainBean` BLOB, `balancerBean` BLOB, `iconIndex` INTEGER NOT NULL DEFAULT -1)""")
+        database.execSQL("""INSERT INTO `proxy_entities_new` (`id`,`groupId`,`type`,`userOrder`,`tx`,`rx`,`status`,`ping`,`connectedTime`,`uuid`,`error`,`socksBean`,`httpBean`,`ssBean`,`ssrBean`,`vmessBean`,`vlessBean`,`trojanBean`,`naiveBean`,`hysteria2Bean`,`mieruBean`,`tuic5Bean`,`sshBean`,`wgBean`,`juicityBean`,`http3Bean`,`anytlsBean`,`shadowquicBean`,`trustTunnelBean`,`snellBean`,`configBean`,`chainBean`,`balancerBean`,`iconIndex`) SELECT `id`,`groupId`,`type`,`userOrder`,`tx`,`rx`,`status`,`ping`,`connectedTime`,`uuid`,`error`,`socksBean`,`httpBean`,`ssBean`,`ssrBean`,`vmessBean`,`vlessBean`,`trojanBean`,`naiveBean`,`hysteria2Bean`,`mieruBean`,`tuic5Bean`,`sshBean`,`wgBean`,`juicityBean`,`http3Bean`,`anytlsBean`,`shadowquicBean`,`trustTunnelBean`,`snellBean`,`configBean`,`chainBean`,`balancerBean`,`iconIndex` FROM `proxy_entities` WHERE `type` != 31""")
+        database.execSQL("""DROP TABLE `proxy_entities`""")
+        database.execSQL("""ALTER TABLE `proxy_entities_new` RENAME TO `proxy_entities`""")
+        database.execSQL("UPDATE `sqlite_sequence` SET `seq` = ? WHERE `name` = 'proxy_entities'", arrayOf(lastId))
+        database.execSQL("INSERT INTO `sqlite_sequence` (`name`, `seq`) SELECT 'proxy_entities', ? WHERE NOT EXISTS (SELECT 1 FROM `sqlite_sequence` WHERE `name` = 'proxy_entities')", arrayOf(lastId))
+        database.execSQL("""CREATE INDEX IF NOT EXISTS `groupId` ON `proxy_entities` (`groupId`)""")
+    }
+}

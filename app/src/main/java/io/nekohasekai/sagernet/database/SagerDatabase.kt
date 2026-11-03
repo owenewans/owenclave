@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [ProxyGroup::class, ProxyEntity::class, RuleEntity::class, StatsEntity::class, AssetEntity::class],
-    version = 40,
+    version = 41,
     autoMigrations = [AutoMigration(
         from = 12,
         to = 14,
@@ -138,7 +138,8 @@ abstract class SagerDatabase : RoomDatabase() {
                     SagerDatabase_Migration_8_9,
                     SagerDatabase_Migration_9_10,
                     SagerDatabase_Migration_10_11,
-                    SagerDatabase_Migration_11_12
+                    SagerDatabase_Migration_11_12,
+                    SagerDatabase_Migration_40_41
                 )
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .allowMainThreadQueries()

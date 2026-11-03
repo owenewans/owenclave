@@ -135,8 +135,8 @@
     <string name="off">Apagado</string>
     <string name="proxied_apps_summary">Excluir aplicaciones seleccionadas de la VPN o incluir aplicaciones seleccionadas en la VPN</string>
     <string name="proxied_apps">VPN por aplicación</string>
-    <string name="mux_concurrency">Conexiones simultáneas de Mux</string>
-    <string name="enable_mux">Activar Mux</string>
+    <string name="mux_concurrency">Máximo de conexiones simultáneas</string>
+    <string name="enable_mux">Activar Mux.Cool</string>
     <string name="traffic_sniffing">Activar escaneo</string>
     <string name="domain_strategy">Estrategia de dominio</string>
     <string name="route_not_asset">No es un archivo de recurso: Se esperaba .dat, pero se obtuvo %s</string>
@@ -418,7 +418,7 @@
     <string name="action_flash_on">Encender flash</string>
     <string name="action_camera_switch">Cambiar cámara</string>
     <string name="hysteria_hop_interval">Intervalo de salto de puerto (s)</string>
-    <string name="mux_settings">Ajustes de Mux</string>
+    <string name="mux_settings">Ajustes de Mux.Cool</string>
     <string name="wireguard_reserved">Reservado</string>
     <string name="bootstrap_dns">DNS de arranque</string>
     <string name="brook_fragment">Fragmento</string>
@@ -589,4 +589,9 @@
     <string name="chrome_parrot_summary">Imita el QUIC Client Hello de Chrome</string>
     <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">Esta opción está desactivada para que coincida con el comportamiento de Chrome.</string>
     <string name="option_globally_enabled">Esta opción se ha activado globalmente y el valor se omitirá.</string>
+    <string name="snell_obfs_uri">URI de ofuscación</string>
+    <string name="ssh_host_key">Clave del host</string>
+    <string name="naiveproxy_tunnel_timeout">Tiempo de espera del túnel</string>
+    <string name="naiveproxy_idle_timeout">Tiempo de espera inactivo</string>
+    <string name="uri_template">Plantilla de URI</string>
 </resources>

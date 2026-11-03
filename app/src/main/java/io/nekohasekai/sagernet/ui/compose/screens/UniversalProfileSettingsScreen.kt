@@ -21,13 +21,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -52,9 +54,9 @@ import io.nekohasekai.sagernet.R
 import io.nekohasekai.sagernet.database.DataStore
 import io.nekohasekai.sagernet.database.ProxyEntity
 import io.nekohasekai.sagernet.ui.compose.components.DividerItem
+import io.nekohasekai.sagernet.ui.compose.components.ExpressiveTextField
 import io.nekohasekai.sagernet.ui.compose.components.OwenclaveTopAppBar
 import io.nekohasekai.sagernet.ui.compose.components.PreferenceHeader
-import io.nekohasekai.sagernet.ui.compose.components.PreferenceItem
 import io.nekohasekai.sagernet.ui.compose.components.SectionCard
 
 /** Whether the profile editor offers known values as lists. */
@@ -65,6 +67,13 @@ data class ProfileFieldState(
     val serverAddress: String = "",
     val serverPort: String = "",
     val iconIndex: Int = -1,
+    val uriTemplate: String = "",
+    val http3: Boolean = true,
+    val connectUDP: Boolean = false,
+    val udpOverStream: Boolean = false,
+    val tunnelTimeout: String = "",
+    val idleTimeout: String = "",
+    val extraHeaders: String = "",
     val username: String = "",
     val password: String = "",
     val uuid: String = "",
@@ -90,14 +99,6 @@ data class ProfileFieldState(
     val serverPorts: String = "",
     val obfsType: String = "",
     val obfsPassword: String = "",
-    // OLCRTC
-    val authProvider: String = "jitsi",
-    val transport: String = "datachannel",
-    val roomId: String = "",
-    val encryptionKey: String = "",
-    val dnsServer: String = "8.8.8.8:53",
-    val socksHost: String = "127.0.0.1",
-    val socksPort: String = "8808",
     // SSH
     val authType: Int = 0,
     val privateKey: String = "",
@@ -167,7 +168,7 @@ fun UniversalProfileSettingsScreen(
         ProxyEntity.TYPE_SHADOWQUIC -> "ShadowQUIC"
         ProxyEntity.TYPE_TRUSTTUNNEL -> "TrustTunnel"
         ProxyEntity.TYPE_SNELL -> "Snell"
-        ProxyEntity.TYPE_OLCRTC -> "OLCRTC"
+        ProxyEntity.TYPE_MASQUE -> "MASQUE"
         ProxyEntity.TYPE_CHAIN -> "Chain"
         ProxyEntity.TYPE_CONFIG -> "Custom Config"
         ProxyEntity.TYPE_BALANCER -> "Balancer"
@@ -175,7 +176,7 @@ fun UniversalProfileSettingsScreen(
     }
 
     val showServerAddress = profileType !in listOf(
-        ProxyEntity.TYPE_OLCRTC, ProxyEntity.TYPE_CONFIG,
+        ProxyEntity.TYPE_CONFIG,
         ProxyEntity.TYPE_CHAIN, ProxyEntity.TYPE_BALANCER,
     )
 
@@ -242,7 +243,6 @@ fun UniversalProfileSettingsScreen(
                 }
 
                 when (profileType) {
-                    ProxyEntity.TYPE_OLCRTC -> OlcrtcFields(s) { s = it }
                     ProxyEntity.TYPE_SOCKS -> SocksFields(s) { s = it }
                     ProxyEntity.TYPE_HTTP -> HttpFields(s) { s = it }
                     ProxyEntity.TYPE_SS -> ShadowsocksFields(s) { s = it }
@@ -262,6 +262,7 @@ fun UniversalProfileSettingsScreen(
                     ProxyEntity.TYPE_SHADOWQUIC -> ShadowQuicFields(s) { s = it }
                     ProxyEntity.TYPE_TRUSTTUNNEL -> TrustTunnelFields(s) { s = it }
                     ProxyEntity.TYPE_SNELL -> SnellFields(s) { s = it }
+                    ProxyEntity.TYPE_MASQUE -> MasqueFields(s) { s = it }
                     ProxyEntity.TYPE_CONFIG -> ConfigFields(s) { s = it }
                     ProxyEntity.TYPE_CHAIN -> ChainFields(s) { s = it }
                     ProxyEntity.TYPE_BALANCER -> BalancerFields(s) { s = it }
@@ -355,73 +356,61 @@ private fun ProfileTextField(
     )
 }
 
-/**
- * Picks one of [options], or lets the value be typed in. A value that is not
- * in the list, which is what an imported profile usually carries, opens in
- * custom mode so it stays visible and editable instead of being silently
- * replaced by the first option.
- */
+// presets and manual input share the same field so custom values stay visible.
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileDropdownField(
     label: String,
     value: String,
     options: List<String>,
     defaultLabel: String = "Default",
+    keyboardType: KeyboardType = KeyboardType.Text,
     onValueChange: (String) -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var custom by remember { mutableStateOf(value.isNotEmpty() && value !in options) }
+    val choices = remember(options) { listOf("") + options.filter { it.isNotEmpty() }.distinct() }
 
-    Box {
-        PreferenceItem(
-            title = label,
-            subtitle = when {
-                custom -> "Custom"
-                value.isEmpty() -> defaultLabel
-                else -> value
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+    ) {
+        ExpressiveTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = label,
+            placeholder = defaultLabel,
+            modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable),
+            keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(keyboardType = keyboardType),
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded,
+                    modifier = Modifier.menuAnchor(ExposedDropdownMenuAnchorType.SecondaryEditable),
+                )
             },
-            onClick = { expanded = true },
-            trailingContent = { Icon(Icons.Filled.ArrowDropDown, contentDescription = null) },
         )
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            DropdownMenuItem(
-                text = { Text(defaultLabel) },
-                onClick = {
-                    custom = false
-                    onValueChange("")
-                    expanded = false
-                },
-            )
-            options.forEach { option ->
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(20.dp),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ) {
+            choices.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option) },
+                    text = { Text(option.ifEmpty { defaultLabel }) },
+                    trailingIcon = if (value == option) {
+                        { Icon(Icons.Filled.Check, contentDescription = null) }
+                    } else null,
                     onClick = {
-                        custom = false
                         onValueChange(option)
                         expanded = false
                     },
                 )
             }
-            DropdownMenuItem(
-                text = { Text("Custom") },
-                onClick = {
-                    custom = true
-                    expanded = false
-                },
-            )
         }
-    }
-    if (custom) {
-        ProfileTextField(label, value, onValueChange = onValueChange)
     }
 }
 
-/**
- * A field whose valid values are known. Offers them as a list, unless the
- * user turned that off in settings, in which case it falls back to a plain
- * text field. The list is never a restriction: it always carries a custom
- * entry, so an unusual value can still be typed either way.
- */
 @Composable
 private fun ProfileChoiceField(
     label: String,
@@ -435,6 +424,7 @@ private fun ProfileChoiceField(
             label = label,
             value = value,
             options = stringArrayResource(optionsRes).toList(),
+            keyboardType = keyboardType,
             onValueChange = onValueChange,
         )
     } else {
@@ -475,26 +465,6 @@ private fun ProfileSwitchItem(
 }
 
 @Composable
-private fun OlcrtcFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
-    PreferenceHeader("OLCRTC Settings")
-    SectionCard {
-        ProfileTextField("Auth Provider", s.authProvider) { update(s.copy(authProvider = it)) }
-        DividerItem()
-        ProfileTextField("Transport", s.transport) { update(s.copy(transport = it)) }
-        DividerItem()
-        ProfileTextField("Room ID", s.roomId) { update(s.copy(roomId = it)) }
-        DividerItem()
-        ProfileTextField("Encryption Key", s.encryptionKey, password = true) { update(s.copy(encryptionKey = it)) }
-        DividerItem()
-        ProfileTextField("DNS Server", s.dnsServer) { update(s.copy(dnsServer = it)) }
-        DividerItem()
-        ProfileTextField("SOCKS Host", s.socksHost) { update(s.copy(socksHost = it)) }
-        DividerItem()
-        ProfileTextField("SOCKS Port", s.socksPort, keyboardType = KeyboardType.Number) { update(s.copy(socksPort = it.filter { c -> c.isDigit() })) }
-    }
-}
-
-@Composable
 private fun SocksFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
     PreferenceHeader("Authentication")
     SectionCard {
@@ -512,6 +482,13 @@ private fun HttpFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit
         ProfileTextField("Username", s.username) { update(s.copy(username = it)) }
         DividerItem()
         ProfileTextField("Password", s.password, password = true) { update(s.copy(password = it)) }
+    }
+    SectionCard {
+        ProfileSwitchItem("CONNECT-UDP", s.connectUDP) { update(s.copy(connectUDP = it)) }
+        if (s.connectUDP) {
+            DividerItem()
+            ProfileTextField("URI template", s.uriTemplate) { update(s.copy(uriTemplate = it)) }
+        }
     }
     TlsTransportFields(s, update)
 }
@@ -593,6 +570,12 @@ private fun NaiveFields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
         ProfileTextField("SNI", s.sni) { update(s.copy(sni = it)) }
         DividerItem()
         ProfileTextField("Certificate", s.certificates) { update(s.copy(certificates = it)) }
+        DividerItem()
+        ProfileTextField("Extra headers", s.extraHeaders, singleLine = false) { update(s.copy(extraHeaders = it)) }
+        DividerItem()
+        ProfileTextField("Tunnel timeout (s)", s.tunnelTimeout, keyboardType = KeyboardType.Number) { update(s.copy(tunnelTimeout = it)) }
+        DividerItem()
+        ProfileTextField("Idle timeout (s)", s.idleTimeout, keyboardType = KeyboardType.Number) { update(s.copy(idleTimeout = it)) }
     }
 }
 
@@ -756,6 +739,13 @@ private fun Http3Fields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
         DividerItem()
         ProfileTextField("Certificates", s.certificates) { update(s.copy(certificates = it)) }
     }
+    SectionCard {
+        ProfileSwitchItem("CONNECT-UDP", s.connectUDP) { update(s.copy(connectUDP = it)) }
+        if (s.connectUDP) {
+            DividerItem()
+            ProfileTextField("URI template", s.uriTemplate) { update(s.copy(uriTemplate = it)) }
+        }
+    }
     PreferenceHeader("TLS")
     SectionCard {
         ProfileSwitchItem("Allow Insecure", s.allowInsecure) { update(s.copy(allowInsecure = it)) }
@@ -822,7 +812,7 @@ private fun ShadowQuicFields(s: ProfileFieldState, update: (ProfileFieldState) -
     SectionCard {
         ProfileSwitchItem("Zero RTT", s.zeroRTT) { update(s.copy(zeroRTT = it)) }
         DividerItem()
-        ProfileSwitchItem("Disable ALPN", s.disableSNI) { update(s.copy(disableSNI = it)) }
+        ProfileSwitchItem("UDP over stream", s.udpOverStream) { update(s.copy(udpOverStream = it)) }
     }
 }
 
@@ -867,6 +857,46 @@ private fun SnellFields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
         ProfileTextField("Obfs Mode", s.obfsType) { update(s.copy(obfsType = it)) }
         DividerItem()
         ProfileTextField("Obfs Host", s.host) { update(s.copy(host = it)) }
+        DividerItem()
+        ProfileTextField("Obfs URI", s.path) { update(s.copy(path = it)) }
+    }
+}
+
+@Composable
+private fun MasqueFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit) {
+    PreferenceHeader("MASQUE")
+    SectionCard {
+        ProfileTextField("Username", s.username) { update(s.copy(username = it)) }
+        DividerItem()
+        ProfileTextField("Password", s.password, password = true) { update(s.copy(password = it)) }
+        DividerItem()
+        ProfileTextField("URI template", s.uriTemplate) { update(s.copy(uriTemplate = it)) }
+        DividerItem()
+        ProfileSwitchItem("HTTP/3", s.http3) { update(s.copy(http3 = it)) }
+        DividerItem()
+        ProfileTextField("MTU", s.mtu, keyboardType = KeyboardType.Number) { update(s.copy(mtu = it)) }
+        DividerItem()
+        ProfileChoiceField("Security", s.security, R.array.masque_transport_layer_encryption_value) { update(s.copy(security = it)) }
+    }
+    if (s.security == "tls") {
+        PreferenceHeader("TLS")
+        SectionCard {
+            ProfileTextField("SNI", s.sni) { update(s.copy(sni = it)) }
+            DividerItem()
+            ProfileTextField("Certificates", s.certificates, singleLine = false) { update(s.copy(certificates = it)) }
+            DividerItem()
+            ProfileSwitchItem("Allow insecure", s.allowInsecure) { update(s.copy(allowInsecure = it)) }
+            if (!s.http3) {
+                DividerItem()
+                UtlsFingerprintField(s.utlsFingerprint) { update(s.copy(utlsFingerprint = it)) }
+            }
+            DividerItem()
+            ProfileSwitchItem("ECH enabled", s.echEnabled) { update(s.copy(echEnabled = it)) }
+            if (s.echEnabled) {
+                DividerItem()
+                ProfileTextField("ECH config", s.echConfig) { update(s.copy(echConfig = it)) }
+            }
+        }
     }
 }
 

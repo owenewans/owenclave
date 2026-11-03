@@ -149,8 +149,8 @@
     <string name="route_opt_bypass_lan">Obejít soukromé adresy</string>
     <string name="domain_strategy">Strategie překladu domén</string>
     <string name="traffic_sniffing">Povolit detekci síťového provozu</string>
-    <string name="enable_mux">Povolit Mux</string>
-    <string name="mux_concurrency">Počet souběžných spojení Mux</string>
+    <string name="enable_mux">Povolit Mux.Cool</string>
+    <string name="mux_concurrency">Maximální počet souběžných spojení</string>
     <string name="proxied_apps">Režim VPN pro aplikace</string>
     <string name="proxied_apps_summary">Vyloučit vybrané aplikace z VPN nebo je do VPN zahrnout</string>
     <string name="off">Vypnuto</string>
@@ -449,7 +449,7 @@
     <string name="rules_geosite_url">Adresa URL souboru geosite.dat</string>
     <string name="rules_geoip_url">Adresa URL souboru geoip.dat</string>
     <string name="http_proxy_exception_list">Seznam výjimek proxy HTTP</string>
-    <string name="mux_settings">Nastavení Mux</string>
+    <string name="mux_settings">Nastavení Mux.Cool</string>
     <string name="update_subscription">Aktualizovat odběr</string>
     <string name="group_not_a_subscription">Tato skupina není odběrem.</string>
     <string name="enable_fragment">Povolit fragmentaci ClientHello protokolu TLS</string>
@@ -597,4 +597,9 @@
     <string name="chrome_parrot_summary">Napodobit QUIC Client Hello prohlížeče Chrome</string>
     <string name="chrome_parrot_omit_max_datagram_frame_size_datagram_warning">Tato možnost je zakázána, aby odpovídala chování prohlížeče Chrome.</string>
     <string name="option_globally_enabled">Tato možnost je globálně povolena a hodnota bude vynechána.</string>
+    <string name="ssh_host_key">Hostitelský klíč</string>
+    <string name="snell_obfs_uri">URI maskování</string>
+    <string name="naiveproxy_tunnel_timeout">Časový limit tunelu (s)</string>
+    <string name="naiveproxy_idle_timeout">Časový limit nečinnosti (s)</string>
+    <string name="uri_template">Šablona URI</string>
 </resources>

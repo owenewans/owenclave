@@ -262,6 +262,8 @@
             android:launchMode="singleTask"
             android:taskAffinity="" />
 
+        <activity android:name="io.nekohasekai.sagernet.ui.profile.MASQUESettingsActivity" android:exported="false" />
+
         <!-- Special Activities (not replaced by Compose) -->
         <activity
             android:name="io.nekohasekai.sagernet.ui.VpnRequestActivity"

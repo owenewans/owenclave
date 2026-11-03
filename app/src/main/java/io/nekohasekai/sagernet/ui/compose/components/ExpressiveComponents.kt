@@ -231,6 +231,7 @@ fun ExpressiveTextField(
     keyboardOptions: androidx.compose.foundation.text.KeyboardOptions = androidx.compose.foundation.text.KeyboardOptions.Default,
     visualTransformation: androidx.compose.ui.text.input.VisualTransformation = androidx.compose.ui.text.input.VisualTransformation.None,
     textStyle: androidx.compose.ui.text.TextStyle? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     androidx.compose.material3.OutlinedTextField(
         value = value,
@@ -243,6 +244,7 @@ fun ExpressiveTextField(
                 androidx.compose.material3.Icon(it, contentDescription = null)
             }
         },
+        trailingIcon = trailingIcon,
         singleLine = singleLine,
         shape = RoundedCornerShape(20.dp),
         keyboardOptions = keyboardOptions,

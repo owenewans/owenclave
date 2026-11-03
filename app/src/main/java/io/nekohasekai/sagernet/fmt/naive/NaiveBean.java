@@ -43,6 +43,8 @@ public class NaiveBean extends AbstractBean {
     public String sni;
     public String certificate;
     public Boolean singUoT; // Invented by sing-box, not part of NaïveProxy. This may get removed at any time.
+    public Integer tunnelTimeout; // temporary
+    public Integer idleTimeout; // temporary
 
     @Override
     public void initializeDefaultValues() {
@@ -57,11 +59,13 @@ public class NaiveBean extends AbstractBean {
         if (sni == null) sni = "";
         if (certificate == null) certificate = "";
         if (singUoT == null) singUoT = false;
+        if (tunnelTimeout == null) tunnelTimeout = 0;
+        if (idleTimeout == null) idleTimeout = 0;
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(7);
+        output.writeInt(8);
         super.serialize(output);
         output.writeString(proto);
         output.writeString(username);
@@ -72,6 +76,8 @@ public class NaiveBean extends AbstractBean {
         output.writeString(sni);
         output.writeString(certificate);
         output.writeBoolean(singUoT);
+        output.writeInt(tunnelTimeout);
+        output.writeInt(idleTimeout);
     }
 
     @Override
@@ -100,6 +106,10 @@ public class NaiveBean extends AbstractBean {
         if (version >= 7) {
             singUoT = input.readBoolean();
         }
+        if (version >= 8) {
+            tunnelTimeout = input.readInt();
+            idleTimeout = input.readInt();
+        }
     }
 
     @Override
@@ -117,6 +127,8 @@ public class NaiveBean extends AbstractBean {
         bean.certificate = certificate;
         bean.insecureConcurrency = insecureConcurrency;
         bean.singUoT = singUoT;
+        bean.tunnelTimeout = tunnelTimeout;
+        bean.idleTimeout = idleTimeout;
     }
 
     @NotNull

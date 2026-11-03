@@ -2,112 +2,63 @@
 
 # owenclave
 
-fork of exclave, an android proxy client with naiveproxy, olcrtc and dpi bypass.
+android proxy client based on exclave, with bundled naiveproxy and a Compose UI.
 
 <a href="https://count.owenewans.org/owenewans/owenclave?theme=moebooru-h&notitle"><img src="https://count.owenewans.org/owenewans/owenclave?theme=moebooru-h&notitle" alt="repository views"></a>
 
-`kotlin` `proxy` `android`
+`kotlin` `go` `android`
 
 </div>
 
 ## features
 
-- group and subscription management, with flexible routing rules
-- proxy chaining and SOCKS proxy chaining (`proxy -> proxy -> site`)
-- NaiveProxy and OLCRTC support, including import from Clash/Mihomo YAML
-- `owenclave://` deep links for adding subscriptions
-- per-subscription Send HWID option alongside the global setting
-- TWPS2 (zapret2) global DPI bypass
-- unlock AI and EN services for Russia
-- direct proxy mode
-- Material 3 Expressive UI
-
-protocols:
-
-- Shadowsocks and Shadowsocks 2022, with SIP003 plugin support
-- VMess and VLESS, with the usual sub-protocols
-- Trojan, Hysteria 2, TUIC, Juicity, AnyTLS, Mieru, ShadowQuic
-- Snell v4 and v6, TrustTunnel (no ICMP echo)
-- NaiveProxy, as a standalone plugin
-- OLCRTC
-- WireGuard, TCP and UDP only
-- SSH dynamic port forwarding
-- HTTP CONNECT over HTTP/1.1, HTTP/1.1 with TLS, HTTP/2 and HTTP/3
-- SOCKS4, SOCKS4a and SOCKS5
+- subscriptions, groups, routing rules and proxy chains
+- Shadowsocks and Shadowsocks 2022 with SIP003 plugins, plus ShadowsocksR
+- VMess, VLESS and Trojan, including TLS, REALITY and transport settings
+- Hysteria 2, TUIC, Juicity, AnyTLS, Mieru and ShadowQUIC
+- Snell v4/v6, TrustTunnel and MASQUE
+- bundled NaiveProxy with HTTPS and QUIC, including Clash/Mihomo YAML import
+- WireGuard (TCP and UDP), SSH, HTTP CONNECT and SOCKS4/4a/5
+- local decryption of supported `happ://` subscription links
+- `owenclave://` subscription links and optional per-subscription HWID
+- TLS ClientHello fragmentation, direct proxy mode and Russia-specific routing presets
+- Material 3 Expressive UI with editable profile field presets
 
 ## install
 
-Download the APK from
-[releases](https://github.com/owenewans/owenclave/releases).
+Download an APK for your device from [releases](https://github.com/owenewans/owenclave/releases).
+Main builds require Android 7.0+; legacy builds support Android 5.0+.
+NaiveProxy requires Android 7.0+.
 
-To build it instead, install JDK 21, Go 1.26 with gomobile, Android SDK
-Platform and Build-Tools 37.0, Platform-Tools and NDK r29, or use the Nix
-flake. Then:
+To build, install JDK 25, Go 1.27.3+, gomobile and gobind, Android SDK
+Platform 37.2, Build-Tools 37.0.0 and NDK r29. Then:
 
 ```sh
-git clone https://github.com/owenewans/owenclave --recurse-submodules
+git clone https://github.com/owenewans/owenclave
 cd owenclave
+export ANDROID_HOME=/path/to/android-sdk
+export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/29.0.14206865"
+printf 'sdk.dir=%s\n' "$ANDROID_HOME" > local.properties
 ./run lib core
+./bin/lib/naive/download.sh
+./gradlew :app:downloadAssets
 ./gradlew :app:assembleOssRelease
 ```
 
-The APK lands in `app/build/outputs/apk/oss/release`. Signing reads
-`local.properties`:
+Signing uses `KEYSTORE_PATH`, `KEYSTORE_PASSWORD`, `KEY_ALIAS` and
+`KEY_PASSWORD`. Use the same keystore as your installed build to keep
+updates installable. APKs are written to `app/build/outputs/apk/oss/release/`.
 
-```properties
-KEYSTORE_PASS=your_keystore_pass
-ALIAS_NAME=your_alias_name
-ALIAS_PASS=your_alias_pass
-```
+The Nix environment is available through `nix develop`, then `owenclave-fhs`.
 
 ## usage
 
-Add servers by importing a subscription URL, pasting a share link, or
-scanning a QR code, then pick one and connect.
+Import a subscription URL, paste a share link or scan a QR code. Select a
+profile and connect.
 
-A `owenclave://` link opens the app on the Groups screen with the
-**Add subscription from URL** dialog pre-filled, so the URL and the Send HWID
-option can be reviewed before importing:
+See [configuration](docs/configuration.md) for subscription deep links,
+HWID and NaiveProxy YAML fields.
 
-```text
-owenclave://add-subscription?url=<encoded URL>&hwid=1
-```
+## license
 
-`hwid` is optional and accepts `1`/`true`/`yes`/`on` or `0`/`false`/`no`/`off`.
-
-## configuration
-
-Send HWID can be set per subscription in the add-subscription dialog, and
-defaults to the global setting. The effective value is the global setting OR
-the per-subscription one, so a subscription can opt in but cannot turn the
-global setting off. It is not included in exported share links.
-
-Clash and Mihomo YAML subscriptions can carry NaiveProxy and OLCRTC entries:
-
-```yaml
-proxies:
-  - name: My Naive
-    type: naive
-    server: example.com
-    port: 443
-    proto: https
-    username: user
-    password: pass
-    sni: example.com
-    extra-headers: "X-Header: value"
-    insecure-concurrency: 1
-    no-post-quantum: false
-
-  - name: My OLCRTC
-    type: olcrtc
-    room-id: some-room-id
-    auth-provider: jitsi
-    transport: datachannel
-    encryption-key: base64key
-    dns-server: 8.8.8.8:53
-    socks-host: 127.0.0.1
-    socks-port: 8808
-```
-
-`proto` selects `https` or `quic`. These two types are read by owenclave's
-parser; a standard Mihomo installation handles them by its own rules.
+[GPL-3.0](LICENSE)

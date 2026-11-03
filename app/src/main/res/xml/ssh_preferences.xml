@@ -57,7 +57,7 @@
         <EditTextPreference
             app:icon="@drawable/ic_action_copyright"
             app:key="serverCertificates"
-            app:title="@string/ssh_public_key"
+            app:title="@string/ssh_host_key"
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference

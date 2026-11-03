@@ -628,6 +628,8 @@ class SettingsPreferenceFragment : PreferenceFragmentCompat() {
             onPreferenceChangeListener = reloadListener
         }
 
+        findPreference<EditTextPreference>(Key.GODEBUG)!!.isVisible = DataStore.enableDebug
+        findPreference<EditTextPreference>(Key.ENVIRONMENT_VARIABLES)!!.isVisible = DataStore.enableDebug
         findPreference<EditTextPreference>(Key.EXPERIMENTAL_FLAGS)!!.isVisible = DataStore.enableDebug
 
         // misc settings

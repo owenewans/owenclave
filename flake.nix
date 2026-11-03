@@ -21,7 +21,7 @@
           androidComposition = pkgs.androidenv.composeAndroidPackages {
             includeNDK = true;
             ndkVersions = [ "29.0.14206865" ];
-            platformVersions = [ "37" ];
+            platformVersions = [ "37.2" ];
             buildToolsVersions = [ "37.0.0" ];
             includeEmulator = false;
             includeSystemImages = false;
@@ -30,8 +30,8 @@
           fhsEnv = pkgs.buildFHSEnv {
             name = "owenclave-fhs";
             targetPkgs = pkgs: with pkgs; [
-              jdk21
-              go_1_26
+              jdk25
+              go_1_27
               golangci-lint
               gradle
               android-tools
@@ -48,7 +48,7 @@
             ];
             runScript = "bash";
             profile = ''
-              export JAVA_HOME="${pkgs.jdk21}"
+              export JAVA_HOME="${pkgs.jdk25}"
               export ANDROID_HOME="${androidComposition.androidsdk}/libexec/android-sdk"
               export ANDROID_SDK_ROOT="${androidComposition.androidsdk}/libexec/android-sdk"
               export ANDROID_NDK_HOME="${androidComposition.androidsdk}/libexec/android-sdk/ndk-bundle"

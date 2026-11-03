@@ -64,7 +64,9 @@ import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import libexclavecore.AndroidCAStore
 import libexclavecore.Libexclavecore
 import libexclavecore.UidDumper
-import java.io.ByteArrayOutputStream
+import org.bouncycastle.util.io.pem.PemObject
+import org.bouncycastle.util.io.pem.PemWriter
+import java.io.StringWriter
 import java.net.Inet6Address
 import java.net.InetSocketAddress
 import java.security.KeyStore
@@ -90,6 +92,20 @@ class SagerNet : Application(),
         DataStore.init()
         updateNotificationChannels()
         Seq.setContext(this)
+
+        if (DataStore.goDebug.isNotEmpty()) {
+            // This is set after Go runtime initialization. Therefore, not all GODEBUG can take effect.
+            Libexclavecore.setenv("GODEBUG", DataStore.goDebug)
+        }
+        if (DataStore.environmentVariables.isNotEmpty()) {
+            for (variable in DataStore.environmentVariables.split("\n")) {
+                if (!variable.contains("=")) continue
+                Libexclavecore.setenv(
+                    variable.substringBefore("="),
+                    variable.substringAfter("=")
+                )
+            }
+        }
 
         if (DataStore.getInstalledPackagesInited) {
             runOnDefaultDispatcher {
@@ -123,16 +139,15 @@ class SagerNet : Application(),
             }
         }
 
-        Libexclavecore.setenv("owenclave.conf.geoloader", "memconservative")
+        Libexclavecore.setenv("exclave.conf.geoloader", "memconservative")
         externalAssets.mkdirs()
         Libexclavecore.initializeV2Ray(
-            filesDir.absolutePath + "/",
-            externalAssets.absolutePath + "/",
+            externalAssets.canonicalPath + "/",
             "owenclave-core/",
         )
 
         try {
-            if (DataStore.providerRootCA == RootCAProvider.SYSTEM_AND_USER) {
+            if (DataStore.providerRootCA == RootCAProvider.ANDROID) {
                 Libexclavecore.registerAndroidCAStore(this)
             }
             Libexclavecore.updateSystemRoots(DataStore.providerRootCA)
@@ -156,13 +171,15 @@ class SagerNet : Application(),
     override fun certificates(): ByteArray {
         try {
             val keyStore = KeyStore.getInstance("AndroidCAStore")
-            val byteArrayStream = ByteArrayOutputStream()
             keyStore.load(null, null)
+            val stringWriter = StringWriter()
+            val pemWriter = PemWriter(stringWriter)
             val aliases = keyStore.aliases()
             while (aliases.hasMoreElements()) {
-                byteArrayStream.write(keyStore.getCertificate(aliases.nextElement()).encoded)
+                pemWriter.writeObject(PemObject("CERTIFICATE", keyStore.getCertificate(aliases.nextElement()).encoded))
             }
-            return byteArrayStream.toByteArray()
+            pemWriter.close()
+            return stringWriter.toString().toByteArray()
         } catch (e: Exception) {
             throw e
         }

@@ -19,19 +19,21 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v7
         with:
-          go-version: 1.27.0
+          go-version: 1.27.3
           cache-dependency-path: "library/core/go.sum"
       - name: Setup Go Mobile
         # https://github.com/golang/mobile/blob/c31d5b91ecc32c0d598b8fe8457d244ca0b4e815/cmd/gomobile/init.go#L83
         run: |
-          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20260821190718-4776eadac327
-          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20260821190718-4776eadac327
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20261011034528-197770444867
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20261011034528-197770444867
       - name: Setup Java
         uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 25
           cache: 'gradle'
+      - name: Setup Android SDK
+        run: sdkmanager "platforms;android-37.2" "build-tools;37.0.0"
       - name: Setup Android NDK
         id: setup-ndk
         uses: nttld/setup-ndk@v1
@@ -40,19 +42,19 @@ jobs:
       - name: Native Build
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          GOFLAGS: -p=2
+          GOMAXPROCS: 2
         run: |
           ./run lib core debug
-          ./bin/lib/olcrtc/build.sh
           ./bin/lib/naive/download.sh
           for abi in arm64-v8a armeabi-v7a x86_64 x86; do
-            test -s "app/src/main/jniLibs/$abi/libolcrtc.so"
             test -s "app/src/main/jniLibs/$abi/libnaive.so"
           done
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
-          path: app/libs/libowenclavecore.aar
-          name: "LibExclaveCore"
+          path: app/libs/libexclavecore.aar
+          name: "LibOwenclaveCore"
       - name: Gradle Cache
         uses: actions/cache@v6
         with:

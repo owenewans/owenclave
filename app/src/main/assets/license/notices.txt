@@ -354,6 +354,36 @@ github.com/exclavenetwork/libexclavecore
       You should have received a copy of the GNU General Public License
       along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+github.com/exclavenetwork/hysteria/core/v2
+
+      Copyright 2009 The Go Authors.
+
+      Redistribution and use in source and binary forms, with or without
+      modification, are permitted provided that the following conditions are
+      met:
+
+         * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+         * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following disclaimer
+      in the documentation and/or other materials provided with the
+      distribution.
+         * Neither the name of Google LLC nor the names of its
+      contributors may be used to endorse or promote products derived from
+      this software without specific prior written permission.
+
+      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+      A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 github.com/exclavenetwork/sing-juicity
 
       Copyright (C) 2025  dyhkwong
@@ -1179,6 +1209,34 @@ github.com/xtaci/smux
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
       SOFTWARE.
 
+github.com/yosida95/uritemplate/v3
+
+      Copyright (C) 2016, Kohei YOSHIDA <https://yosida95.com/>. All rights reserved.
+
+      Redistribution and use in source and binary forms, with or without
+      modification, are permitted provided that the following conditions are met:
+
+          * Redistributions of source code must retain the above copyright
+            notice, this list of conditions and the following disclaimer.
+          * Redistributions in binary form must reproduce the above copyright
+            notice, this list of conditions and the following disclaimer in the
+            documentation and/or other materials provided with the distribution.
+          * Neither the name of the copyright holder nor the names of its
+            contributors may be used to endorse or promote products derived from
+            this software without specific prior written permission.
+
+      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+      A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+      HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 go4.org/netipx
 
       Copyright (c) 2020 The Inet.af AUTHORS. All rights reserved.
@@ -1717,7 +1775,7 @@ com.blacksquircle.ui:language-json
 
 com.esotericsoftware:kryo
 
-      Copyright (c) 2008-2025, Nathan Sweet All rights reserved.
+      Copyright (c) 2008-2026, Nathan Sweet All rights reserved.
 
       Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
@@ -2061,6 +2119,26 @@ javax.inject:javax.inject
       See the License for the specific language governing permissions and
       limitations under the License.
 
+org.bouncycastle:bcpkix-jdk18on
+org.bouncycastle:bcprov-jdk18on
+org.bouncycastle:bcutil-jdk18on
+
+      MIT License (https://opensource.org/licenses/MIT)
+
+      Copyright (c) 2000-2026 The Legion of the Bouncy Castle Inc. (https://www.bouncycastle.org).
+      Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+      associated documentation files (the "Software"), to deal in the Software without restriction,
+      including without limitation the rights to use, copy, modify, merge, publish, distribute,
+      sub license, and/or sell copies of the Software, and to permit persons to whom the Software is
+      furnished to do so, subject to the following conditions: The above copyright notice and this
+      permission notice shall be included in all copies or substantial portions of the Software.
+
+      **THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+      NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+      NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+      DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+      OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.**
+
 org.checkerframework:checker-qual
 
       Checker Framework qualifiers
@@ -2192,6 +2270,8 @@ org.jetbrains.kotlinx:atomicfu
 org.jetbrains.kotlinx:kotlinx-coroutines-android
 org.jetbrains.kotlinx:kotlinx-coroutines-bom
 org.jetbrains.kotlinx:kotlinx-coroutines-core
+org.jetbrains.kotlinx:kotlinx-serialization-bom
+org.jetbrains.kotlinx:kotlinx-serialization-core
 
       Copyright 2016-2025 JetBrains s.r.o and contributors
 
@@ -2291,19 +2371,9 @@ androidx.camera:camera-core, libyuv
       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
       OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-mozilla_included.pem (https://www.ccadb.org/resources)
+mozilla_included.pem (https://curl.se/docs/caextract.html)
 
-      CCADB Data Usage Terms
-
-      The data in this repository is licensed under the Community Data License Agreement – Permissive, Version 2.0 (CDLA-2.0 Permissive).
-
-      Key Terms:
-
-      1. You may use, modify, and redistribute the data freely, provided that you comply with the terms of the CDLA-2.0 Permissive license.
-      2. Attribution to the Common CA Database (CCADB) is required when redistributing or using this data in derived works.
-      3. The names and trademarks of the CCADB or any contributors may not be used to endorse or promote products derived from this data without prior written permission.
-
-      For the full license text, visit the CDLA website (https://cdla.dev/permissive-2-0/).
+      Mozilla Public License, version 2.0
 
 geosite.dat (https://github.com/v2fly/domain-list-community)
 

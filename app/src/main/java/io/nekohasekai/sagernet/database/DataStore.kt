@@ -190,6 +190,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var logLevelDebugWarningDisable by configurationStore.boolean(Key.LOG_LEVEL_DEBUG_WARNING_DISABLE)
     var enableDebug by configurationStore.boolean(Key.ENABLE_DEBUG) { BuildConfig.DEBUG }
     var pprofServer by configurationStore.string(Key.PPROF_SERVER)
+    var goDebug by configurationStore.string(Key.GODEBUG)
+    var environmentVariables by configurationStore.string(Key.ENVIRONMENT_VARIABLES)
     var enablePcap by configurationStore.boolean(Key.ENABLE_PCAP)
     var allowAppsBypassVpn by configurationStore.boolean(Key.ALLOW_APPS_BYPASS_VPN)
     var acquireWakeLock by configurationStore.boolean(Key.ACQUIRE_WAKE_LOCK)
@@ -392,15 +394,8 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverSnellUserKey by profileCacheStore.string(Key.SERVER_SNELL_USER_KEY)
     var serverSnellObfsMode by profileCacheStore.string(Key.SERVER_SNELL_OBFS_MODE)
     var serverSnellObfsHost by profileCacheStore.string(Key.SERVER_SNELL_OBFS_HOST)
+    var serverSnellObfsUri by profileCacheStore.string(Key.SERVER_SNELL_OBFS_URI)
     var serverSnellMode by profileCacheStore.string(Key.SERVER_SNELL_MODE)
-
-    var serverOlcrtcAuthProvider by profileCacheStore.string(Key.SERVER_OLCRTC_AUTH_PROVIDER) { "jitsi" }
-    var serverOlcrtcTransport by profileCacheStore.string(Key.SERVER_OLCRTC_TRANSPORT) { "datachannel" }
-    var serverOlcrtcRoomId by profileCacheStore.string(Key.SERVER_OLCRTC_ROOM_ID)
-    var serverOlcrtcEncryptionKey by profileCacheStore.string(Key.SERVER_OLCRTC_ENCRYPTION_KEY)
-    var serverOlcrtcDnsServer by profileCacheStore.string(Key.SERVER_OLCRTC_DNS_SERVER) { "8.8.8.8:53" }
-    var serverOlcrtcSocksHost by profileCacheStore.string(Key.SERVER_OLCRTC_SOCKS_HOST) { "127.0.0.1" }
-    var serverOlcrtcSocksPort by profileCacheStore.stringToInt(Key.SERVER_OLCRTC_SOCKS_PORT) { 8808 }
 
     var serverVMessExperimentalAuthenticatedLength by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_AUTHENTICATED_LENGTH)
     var serverVMessExperimentalNoTerminationSignal by profileCacheStore.boolean(Key.SERVER_VMESS_EXPERIMENTAL_NO_TERMINATION_SIGNAL)
@@ -436,17 +431,25 @@ object DataStore : OnPreferenceDataStoreChangeListener {
     var serverAnyTLSDisableReuse by profileCacheStore.boolean(Key.SERVER_ANYTLS_DISABLE_REUSE)
     var serverServerNameToVerify by profileCacheStore.string(Key.SERVER_SERVER_NAME_TO_VERIFY)
     var serverHysteria2OmitMaxDatagramFrameSize by profileCacheStore.boolean(Key.SERVER_HYSTERIA2_OMIT_MAX_DATAGRAM_FRAME_SIZE)
-    var serverSSHKeepaliveInterval by profileCacheStore.stringToInt(Key.SERVER_SSH_KEEPALIVE_INTERVAL)
+    var serverSSHKeepaliveInterval by profileCacheStore.stringToIntIfExists(Key.SERVER_SSH_KEEPALIVE_INTERVAL)
+
+    var serverHTTPConnectUDP by profileCacheStore.boolean(Key.SERVER_HTTP_CONNECT_UDP)
+    var serverHTTPConnectUDPURITemplate by profileCacheStore.string(Key.SERVER_HTTP_CONNECT_UDP_URI_TEMPLATE)
+    var serverMASQUEURITemplate by profileCacheStore.string(Key.SERVER_MASQUE_URI_TEMPLATE)
+    var serverMASQUEMTU by profileCacheStore.stringToIntIfExists(Key.SERVER_MASQUE_MTU)
+    var serverMASQUEHTTP3 by profileCacheStore.boolean(Key.SERVER_MASQUE_HTTP3)
 
     var serverNaiveNoPostQuantum by profileCacheStore.boolean(Key.SERVER_NAIVE_NO_POST_QUANTUM)
+    var serverNaiveTunnelTimeout by profileCacheStore.stringToIntIfExists(Key.SERVER_NAIVE_TUNNEL_TIMEOUT)
+    var serverNaiveIdleTimeout by profileCacheStore.stringToIntIfExists(Key.SERVER_NAIVE_IDLE_TIMEOUT)
     var serverShadowQUICDisableALPN by profileCacheStore.boolean(Key.SERVER_SHADOWQUIC_DISABLE_ALPN)
     var serverShadowQUICUseSunnyQUIC by profileCacheStore.boolean(Key.SERVER_SHADOWQUIC_USE_SUNNYQUIC)
     var serverSingUot by profileCacheStore.boolean(Key.SERVER_SING_UOT)
     var serverSingMux by profileCacheStore.boolean(Key.SERVER_SING_MUX)
     var serverSingMuxProtocol by profileCacheStore.string(Key.SERVER_SING_MUX_PROTOCOL)
-    var serverSingMuxMaxConnections by profileCacheStore.stringToInt(Key.SERVER_SING_MUX_MAX_CONNECTIONS)
-    var serverSingMuxMinStreams by profileCacheStore.stringToInt(Key.SERVER_SING_MUX_MIN_STREAMS)
-    var serverSingMuxMaxStreams by profileCacheStore.stringToInt(Key.SERVER_SING_MUX_MAX_STREAMS)
+    var serverSingMuxMaxConnections by profileCacheStore.stringToIntIfExists(Key.SERVER_SING_MUX_MAX_CONNECTIONS)
+    var serverSingMuxMinStreams by profileCacheStore.stringToIntIfExists(Key.SERVER_SING_MUX_MIN_STREAMS)
+    var serverSingMuxMaxStreams by profileCacheStore.stringToIntIfExists(Key.SERVER_SING_MUX_MAX_STREAMS)
     var serverSingMuxPadding by profileCacheStore.boolean(Key.SERVER_SING_MUX_PADDING)
 
     var experimentalFlags by configurationStore.string(Key.EXPERIMENTAL_FLAGS)

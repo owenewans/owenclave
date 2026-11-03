@@ -25,15 +25,12 @@ class SnellSettingsActivity : ProfileSettingsActivity<SnellBean>() {
         DataStore.serverSnellUserKey = userKey
         DataStore.serverSnellReuse = reuse
         DataStore.serverSnellVersion = version
-        when (version) {
-            4 -> {
-                DataStore.serverSnellObfsMode = obfsMode
-                DataStore.serverSnellObfsHost = obfsHost
-            }
-            6 -> {
-                DataStore.serverSnellMode = mode
-            }
-        }
+        DataStore.serverSnellObfsMode = if (version == SnellBean.VERSION_4) obfsMode else SnellBean.OBFS_NONE
+        DataStore.serverSnellObfsHost = if (version == SnellBean.VERSION_4 && (obfsMode == SnellBean.OBFS_HTTP || obfsMode == SnellBean.OBFS_TLS)) {
+            obfsHost
+        } else ""
+        DataStore.serverSnellObfsUri = if (version == SnellBean.VERSION_4 && obfsMode == SnellBean.OBFS_HTTP) obfsURI else ""
+        DataStore.serverSnellMode = if (version == SnellBean.VERSION_6) mode else SnellBean.MODE_DEFAULT
     }
 
     override fun SnellBean.serialize() {
@@ -44,15 +41,12 @@ class SnellSettingsActivity : ProfileSettingsActivity<SnellBean>() {
         userKey = DataStore.serverSnellUserKey
         reuse = DataStore.serverSnellReuse
         version = DataStore.serverSnellVersion
-        when (version) {
-            4 -> {
-                obfsMode = DataStore.serverSnellObfsMode
-                obfsHost = DataStore.serverSnellObfsHost
-            }
-            6 -> {
-                mode = DataStore.serverSnellMode
-            }
-        }
+        obfsMode = if (version == SnellBean.VERSION_4) DataStore.serverSnellObfsMode else SnellBean.OBFS_NONE
+        obfsHost = if (version == SnellBean.VERSION_4 && (DataStore.serverSnellObfsMode == SnellBean.OBFS_HTTP || DataStore.serverSnellObfsMode == SnellBean.OBFS_TLS)) {
+            DataStore.serverSnellObfsHost
+        } else ""
+        obfsURI = if (version == SnellBean.VERSION_4 && DataStore.serverSnellObfsMode == SnellBean.OBFS_HTTP) DataStore.serverSnellObfsUri else ""
+        mode = if (version == SnellBean.VERSION_6) DataStore.serverSnellMode else SnellBean.MODE_DEFAULT
     }
 
     override fun PreferenceFragmentCompat.createPreferences(
@@ -75,22 +69,20 @@ class SnellSettingsActivity : ProfileSettingsActivity<SnellBean>() {
         val modePref = findPreference<ListPreference>(Key.SERVER_SNELL_MODE)!!
         val obfsPref = findPreference<ListPreference>(Key.SERVER_SNELL_OBFS_MODE)!!
         val obfsHostPref = findPreference<EditTextPreference>(Key.SERVER_SNELL_OBFS_HOST)!!
-        obfsHostPref.isVisible = obfsPref.value != "none"
-        fun updateVisibility(v: Int) {
-            val isV6 = v == 6
-            modePref.isVisible = isV6
-            obfsPref.isVisible = !isV6
-            obfsHostPref.isVisible = !isV6 && obfsPref.value != "none"
+        val obfsUriPref = findPreference<EditTextPreference>(Key.SERVER_SNELL_OBFS_URI)!!
+        fun updateVisibility(version: Int, obfs: String) {
+            obfsPref.isVisible = version == SnellBean.VERSION_4
+            obfsHostPref.isVisible = version == SnellBean.VERSION_4 && (obfs == SnellBean.OBFS_HTTP || obfs == SnellBean.OBFS_TLS)
+            obfsUriPref.isVisible = version == SnellBean.VERSION_4 && obfs == SnellBean.OBFS_HTTP
+            modePref.isVisible = version == SnellBean.VERSION_6
         }
-        val cur = versionPref.value.toInt()
-        updateVisibility(cur)
+        updateVisibility(versionPref.value.toInt(), obfsPref.value)
         versionPref.setOnPreferenceChangeListener { _, newValue ->
-            updateVisibility((newValue as String).toInt())
+            updateVisibility((newValue as String).toInt(), obfsPref.value)
             true
         }
         obfsPref.setOnPreferenceChangeListener { _, newValue ->
-            newValue to String
-            obfsHostPref.isVisible = newValue != "none"
+            updateVisibility(versionPref.value.toInt(), newValue as String)
             true
         }
     }

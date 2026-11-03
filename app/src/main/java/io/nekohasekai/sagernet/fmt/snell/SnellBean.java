@@ -1,6 +1,6 @@
 /******************************************************************************
  *                                                                            *
- * Copyright (C) 2026  Snell support for Owenclave                              *
+ * Copyright (C) 2026  Snell support for Exclave                              *
  *                                                                            *
  * This program is free software: you can redistribute it and/or modify       *
  * it under the terms of the GNU General Public License as published by       *
@@ -50,6 +50,7 @@ public class SnellBean extends AbstractBean {
     public Boolean reuse;
     public String obfsMode;
     public String obfsHost;
+    public String obfsURI; // See https://manual.nssurge.com/policies/snell.html#obfs-uri
     public String mode;
     public String userKey;
 
@@ -61,13 +62,14 @@ public class SnellBean extends AbstractBean {
         if (reuse == null) reuse = true;
         if (obfsMode == null) obfsMode = OBFS_NONE;
         if (obfsHost == null) obfsHost = "";
+        if (obfsURI == null) obfsURI = "";
         if (mode == null) mode = MODE_DEFAULT;
         if (userKey == null) userKey = "";
     }
 
     @Override
     public void serialize(ByteBufferOutput output) {
-        output.writeInt(0);
+        output.writeInt(1);
         super.serialize(output);
         output.writeString(psk);
         output.writeInt(version);
@@ -76,6 +78,7 @@ public class SnellBean extends AbstractBean {
         output.writeString(obfsHost);
         output.writeString(mode);
         output.writeString(userKey);
+        output.writeString(obfsURI);
     }
 
     @Override
@@ -89,6 +92,9 @@ public class SnellBean extends AbstractBean {
         obfsHost = input.readString();
         mode = input.readString();
         userKey = input.readString();
+        if (version >= 1) {
+            obfsURI = input.readString();
+        }
     }
 
     public String protocolName() {

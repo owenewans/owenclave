@@ -21,6 +21,7 @@ package io.nekohasekai.sagernet.fmt.tuic5
 
 import io.nekohasekai.sagernet.fmt.AbstractBean
 import io.nekohasekai.sagernet.ktx.listByLineOrComma
+import io.nekohasekai.sagernet.ktx.parseUUID
 import io.nekohasekai.sagernet.ktx.queryParameter
 import libexclavecore.Libexclavecore
 import kotlin.uuid.Uuid
@@ -39,18 +40,62 @@ fun parseTuic(server: String): AbstractBean {
             !link.hasPort() -> 443
             else -> link.port
         }
-        if (!link.hasPassword() && link.username.length >= 37 && link.username[36] == ':'
-            && Uuid.parseHexDashOrNull(link.username.substring(0, 36)) != null) {
-            // v2rayN broken format
-            uuid = link.username.substring(0, 36)
-            if (link.username.length >= 38) {
-                password = link.username.substring(37)
+        val u = when {
+            // BEGIN v2rayN broken format
+            !link.hasPassword() && link.username.length >= 33 && link.username[32] == ':'
+                    && Uuid.parseHexOrNull(link.username.substring(0, 32)) != null -> {
+                if (link.username.length >= 34) {
+                    password = link.username.substring(33)
+                }
+                Uuid.parseHex(link.username.substring(0, 32))
             }
-        } else {
-            require(Uuid.parseHexDashOrNull(link.username) != null) { "invalid uuid" }
-            uuid = link.username
-            password = link.password
+            !link.hasPassword() && link.username.length >= 35 && link.username[34] == ':'
+                    && link.username[0] == '{' && link.username[33] == '}'
+                    && Uuid.parseHexOrNull(link.username.substring(1, 33)) != null -> {
+                if (link.username.length >= 36) {
+                    password = link.username.substring(35)
+                }
+                Uuid.parseHex(link.username.substring(1, 33))
+            }
+            !link.hasPassword() && link.username.length >= 37 && link.username[36] == ':'
+                    && Uuid.parseHexDashOrNull(link.username.substring(0, 36)) != null -> {
+                if (link.username.length >= 38) {
+                    password = link.username.substring(37)
+                }
+                Uuid.parseHexDash(link.username.substring(0, 36))
+            }
+            !link.hasPassword() && link.username.length >= 39 && link.username[38] == ':'
+                    && link.username[0] == '{' && link.username[37] == '}'
+                    && Uuid.parseHexDashOrNull(link.username.substring(1, 37)) != null -> {
+                if (link.username.length >= 40) {
+                    password = link.username.substring(39)
+                }
+                Uuid.parseHexDash(link.username.substring(1, 37))
+            }
+            !link.hasPassword() && link.username.length >= 42 && link.username[41] == ':'
+                    && link.username.substring(0, 9) == "urn:uuid:"
+                    && Uuid.parseHexOrNull(link.username.substring(9, 41)) != null -> {
+                if (link.username.length >= 42) {
+                    password = link.username.substring(41)
+                }
+                Uuid.parseHex(link.username.substring(9, 41))
+            }
+            !link.hasPassword() && link.username.length >= 46 && link.username[45] == ':'
+                    && link.username.substring(0, 9) == "urn:uuid:"
+                    && Uuid.parseHexDashOrNull(link.username.substring(9, 45)) != null -> {
+                if (link.username.length >= 47) {
+                    password = link.username.substring(46)
+                }
+                Uuid.parseHexDash(link.username.substring(9, 45))
+            }
+            // END v2rayN broken format
+            else -> {
+                password = link.password
+                parseUUID(link.username)
+            }
         }
+        require(u != null) { "invalid uuid" }
+        uuid = u.toHexDashString()
         link.queryParameter("sni")?.let {
             sni = it
         }

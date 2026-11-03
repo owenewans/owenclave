@@ -6,6 +6,6 @@ plugins {
 dependencies {
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
-    implementation(libs.github.api)
+    implementation(libs.gson)
     implementation(libs.okhttp)
 }

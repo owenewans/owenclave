@@ -87,8 +87,8 @@ fun AboutScreen(
 
                 Spacer(Modifier.height(16.dp))
                 AboutSection(title = "Components", items = listOf(
-                    "Core" to "libowenclavecore",
-                    "Protocols" to "SOCKS, HTTP, SS, SSR, VMess, VLESS, Trojan, Naive, Hysteria2, SSH, WireGuard, Mieru, TUIC, Juicity, HTTP/3, AnyTLS, ShadowQUIC, TrustTunnel, Snell, OLCRTC",
+                    "Core" to "libexclavecore",
+                    "Protocols" to "SOCKS, HTTP, SS, SSR, VMess, VLESS, Trojan, Naive, Hysteria2, SSH, WireGuard, Mieru, TUIC, Juicity, HTTP/3, AnyTLS, ShadowQUIC, TrustTunnel, Snell, MASQUE",
                 ))
 
                 Spacer(Modifier.height(16.dp))

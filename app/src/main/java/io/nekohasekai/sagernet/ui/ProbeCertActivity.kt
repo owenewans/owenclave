@@ -20,6 +20,7 @@
 
 package io.nekohasekai.sagernet.ui
 
+import io.nekohasekai.sagernet.ktx.app
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.graphics.Typeface
@@ -214,7 +215,7 @@ class ProbeCertActivity : ThemedActivity() {
         runOnDefaultDispatcher {
             val certProber = Libexclavecore.newCertProber().apply {
                 if (SagerNet.started && DataStore.startedProfile > 0) {
-                    useUDS(SagerNet.deviceStorage.noBackupFilesDir.toString() + "/ipc.sock")
+                    useUDS(app.cacheDir.toString() + "/ipc.sock")
                 }
             }
             val result = when (binding.probeCertProtocol.selectedItemPosition) {

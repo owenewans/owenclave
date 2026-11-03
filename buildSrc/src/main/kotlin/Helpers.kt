@@ -67,7 +67,11 @@ fun Project.requireLocalProperties(): Properties {
 fun Project.setupCommon(projectName: String = "") {
     android.apply {
         buildToolsVersion = "37.0.0"
-        compileSdk = 37
+        compileSdk {
+            version = release(37) {
+                minorApiLevel = 2
+            }
+        }
         defaultConfig.minSdk = if (projectName.lowercase() == "naive") 24 else 23
         compileOptions.sourceCompatibility = JavaVersion.VERSION_21
         compileOptions.targetCompatibility = JavaVersion.VERSION_21
@@ -86,6 +90,8 @@ fun Project.setupCommon(projectName: String = "") {
                 "/META-INF/native/**",
                 "/META-INF/native-image/**",
                 "/META-INF/INDEX.LIST",
+                "/META-INF/LICENSE.md",
+                "/META-INF/NOTICE.md",
                 "DebugProbesKt.bin",
                 "com/**",
                 "org/**",
@@ -160,6 +166,9 @@ fun Project.setupPlugin(projectName: String) {
         productFlavors.create("oss")
     }
     androidComponents.apply {
+        beforeVariants { variant ->
+            variant.hostTests[com.android.build.api.variant.HostTestBuilder.UNIT_TEST_TYPE]?.enable = true
+        }
         onVariants { variant ->
             variant.outputs.forEach { output ->
                 (output as? VariantOutputImpl)?.let { variantOutputImpl ->
@@ -199,21 +208,25 @@ fun Project.setupApp() {
         compileOptions.isCoreLibraryDesugaringEnabled = true
         flavorDimensions.add("vendor")
         productFlavors.create("oss") {
-            minSdk = 23
+            minSdk = 24
         }
         productFlavors.create("legacy") {
             minSdk = 21
-            proguardFiles("proguard-rules-legacy.pro")
         }
         tasks.register("downloadAssets") {
-            downloadAssets(update = false)
+            doLast { downloadAssets(update = false) }
         }
         tasks.register("updateAssets") {
-            downloadRootCAList()
-            downloadAssets(update = true)
+            doLast {
+                downloadRootCAList()
+                downloadAssets(update = true)
+            }
         }
     }
     androidComponents.apply {
+        beforeVariants { variant ->
+            variant.hostTests[com.android.build.api.variant.HostTestBuilder.UNIT_TEST_TYPE]?.enable = true
+        }
         onVariants { variant ->
             variant.outputs.forEach { output ->
                 when (output.filters.find { it.filterType == FilterConfiguration.FilterType.ABI }?.identifier) {
