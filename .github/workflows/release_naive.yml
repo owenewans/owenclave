@@ -96,6 +96,11 @@ jobs:
           distribution: 'temurin'
           java-version: 25
           cache: 'gradle'
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-37.2 build-tools;37.0.0'
+          log-accepted-android-sdk-licenses: false
       - name: Gradle Build
         run: |
           echo "sdk.dir=${ANDROID_HOME}" > local.properties

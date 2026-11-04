@@ -58,7 +58,10 @@ jobs:
           java-version: 25
           cache: 'gradle'
       - name: Setup Android SDK
-        run: sdkmanager "platforms;android-37.2" "build-tools;37.0.0"
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-37.2 build-tools;37.0.0'
+          log-accepted-android-sdk-licenses: false
       - name: Setup Android NDK
         id: setup-ndk
         uses: nttld/setup-ndk@v1
