@@ -173,12 +173,32 @@ jobs:
               *-*) prerelease="--prerelease" ;;
           esac
 
+          merge_with_existing_desktop_notes() {
+            local existing_body
+            existing_body="$(gh release view "$TAG" --json body --jq '.body' 2>/dev/null || true)"
+            python3 - "$existing_body" <<'PY'
+          import re, sys
+          existing = sys.argv[1]
+          with open("release-notes.md", "r", encoding="utf-8") as f:
+              base = f.read().rstrip()
+          m = re.search(r"<!-- desktop-notes -->.*?<!-- /desktop-notes -->", existing, re.S)
+          out = f"{base}\n\n{m.group(0)}\n" if m else f"{base}\n"
+          with open("combined-release-notes.md", "w", encoding="utf-8") as f:
+              f.write(out)
+          PY
+          }
+
           if gh release view "$TAG" >/dev/null 2>&1; then
-              gh release edit "$TAG" --title "Owenclave $TAG" --notes-file release-notes.md
+              merge_with_existing_desktop_notes
               gh release upload "$TAG" ./apks/* --clobber
+              gh release edit "$TAG" --title "Owenclave $TAG" --notes-file combined-release-notes.md
           else
-              gh release create "$TAG" ./apks/* \
+              if ! gh release create "$TAG" ./apks/* \
                   --title "Owenclave $TAG" \
                   --notes-file release-notes.md \
-                  $prerelease
+                  $prerelease; then
+                  merge_with_existing_desktop_notes
+                  gh release upload "$TAG" ./apks/* --clobber
+                  gh release edit "$TAG" --title "Owenclave $TAG" --notes-file combined-release-notes.md
+              fi
           fi

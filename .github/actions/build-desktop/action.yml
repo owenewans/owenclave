@@ -1,0 +1,367 @@
+name: Build and Verify Desktop Target
+description: Builds Owenclave desktop binaries, runs unit/protocol/SystemProxy/VPN-e2e self-tests, and uploads verified artifacts.
+inputs:
+  target:
+    description: "Go/desktop target tuple (e.g. linux/amd64, darwin/arm64, darwin/amd64, windows/amd64)"
+    required: true
+  artifact:
+    description: "Artifact suffix (e.g. linux-x64, macos-arm64, macos-x64, windows-x64)"
+    required: true
+  tag:
+    description: "Platform tag (e.g. linux-amd64, darwin-arm64, darwin-amd64, windows-amd64)"
+    required: true
+outputs:
+  started:
+    description: "Set to true as soon as a hosted runner begins executing this job"
+    value: ${{ steps.mark_started.outputs.started }}
+  succeeded:
+    description: "Set to true only after all builds, packaging, and e2e tests succeed and artifacts are uploaded"
+    value: ${{ steps.mark_succeeded.outputs.succeeded }}
+
+runs:
+  using: composite
+  steps:
+    - name: Mark runner acquired
+      id: mark_started
+      shell: bash
+      run: echo "started=true" >> "$GITHUB_OUTPUT"
+    - name: Setup Go
+      uses: actions/setup-go@v7
+      with:
+        go-version: 1.27.3
+        cache-dependency-path: "library/core/go.sum"
+    - name: Setup Java
+      uses: actions/setup-java@v6
+      with:
+        distribution: 'temurin'
+        java-version: 21
+    - name: Install WiX (Windows MSI)
+      if: runner.os == 'Windows'
+      shell: pwsh
+      run: choco install wixtoolset --no-progress -y
+    - name: Install Skiko runtime libraries (Linux)
+      if: runner.os == 'Linux'
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends libgl1 libfontconfig1
+    - name: Warm Go module cache
+      shell: bash
+      env:
+        GOPROXY: "https://proxy.golang.org|https://goproxy.io|direct"
+      run: |
+        set -uo pipefail
+        for attempt in 1 2 3 4; do
+          echo "::group::go mod download (attempt $attempt)"
+          if (cd library/core && go mod download); then
+            echo "module cache is warm"
+            echo "::endgroup::"
+            exit 0
+          fi
+          echo "::endgroup::"
+          echo "attempt $attempt failed, retrying in 20s"
+          sleep 20
+        done
+        echo "::error::go mod download failed after 4 attempts"
+        exit 1
+    - name: Build core
+      shell: bash
+      env:
+        GOPROXY: "https://proxy.golang.org|https://goproxy.io|direct"
+      run: |
+        set -uo pipefail
+        for attempt in 1 2 3; do
+          if TARGETS="${{ inputs.target }}" bash bin/desktop/core/build.sh > /tmp/core-build.log 2>&1; then
+            cat /tmp/core-build.log
+            exit 0
+          fi
+          cat /tmp/core-build.log
+          echo "core build attempt $attempt failed, retrying in 20s"
+          sleep 20
+        done
+        tail -25 /tmp/core-build.log | while IFS= read -r line; do echo "::error::core-build $line"; done
+        echo "::error::core build failed after 3 attempts"
+        exit 1
+    - name: Download NaiveProxy
+      shell: bash
+      run: TARGETS="${{ inputs.target }}" bash bin/desktop/naive/download.sh
+    - name: Download tun2socks (transparent mode)
+      shell: bash
+      run: TARGETS="${{ inputs.target }}" bash bin/desktop/tun2socks/download.sh
+    - name: Verify binaries
+      shell: bash
+      run: |
+        tag="${{ inputs.target }}"
+        tag="${tag//\//-}"
+        ls -la "desktop/core/dist/$tag" "desktop/naive/dist/$tag" "desktop/tun2socks/dist/$tag"
+    - name: Gradle cache
+      uses: actions/cache@v6
+      with:
+        path: ~/.gradle
+        key: gradle-desktop-${{ inputs.artifact }}-${{ hashFiles('**/*.gradle.kts', 'gradle/libs.versions.toml') }}
+        restore-keys: |
+          gradle-desktop-${{ inputs.artifact }}-
+    - name: Build the Arch package and repository
+      if: runner.os == 'Linux' && inputs.tag == 'linux-amd64'
+      shell: bash
+      run: |
+        set -euo pipefail
+        ./gradlew :desktop:app:createDistributable --console=plain
+        docker run --rm -v "$PWD":/work -w /work archlinux:latest bash -c "
+          pacman -Sy --noconfirm --needed base-devel >/dev/null &&
+          bash bin/desktop/arch/package.sh
+        "
+        sudo chown -R "$(id -u):$(id -g)" desktop/arch
+        ls -la desktop/arch/dist
+    - name: Unit tests (importers + config builder)
+      shell: bash
+      run: |
+        set -uo pipefail
+        source bin/desktop/ci-report.sh
+        if ! ./gradlew :desktop:app:test :desktop:shared:test --console=plain > /tmp/unit-tests.log 2>&1; then
+          cat /tmp/unit-tests.log
+          report_test_failures "Unit tests" /tmp/unit-tests.log
+          exit 1
+        fi
+        cat /tmp/unit-tests.log
+    - name: Build portable archive and application image
+      shell: bash
+      run: |
+        set -uo pipefail
+        source bin/desktop/ci-report.sh
+        echo "--- createDistributable ---"
+        if ! ./gradlew :desktop:app:createDistributable --console=plain > /tmp/create.log 2>&1; then
+          tail -30 /tmp/create.log
+          dump_jpackage_logs desktop/app/build/compose/logs
+          dump_jpackage_args desktop/app/build/compose/tmp/createDistributable.args.txt
+          report_gradle_failure "createDistributable" /tmp/create.log
+          exit 1
+        fi
+        tail -3 /tmp/create.log
+        echo "--- packagePortable ---"
+        if ! ./gradlew :desktop:app:packagePortable --console=plain > /tmp/portable.log 2>&1; then
+          tail -30 /tmp/portable.log
+          dump_jpackage_logs desktop/app/build/compose/logs
+          report_gradle_failure "packagePortable" /tmp/portable.log
+          exit 1
+        fi
+        tail -3 /tmp/portable.log
+    - name: Verify the bundled runtime
+      shell: bash
+      run: |
+        set -uo pipefail
+        jar="$(find desktop/app/build/compose/binaries/main/app -type f -name 'app-*.jar' | head -1)"
+        echo "application jar: $jar"
+        listing=""
+        if command -v unzip >/dev/null 2>&1; then
+          listing="$(unzip -Z1 "$jar" | grep -a '^bin/' || true)"
+        fi
+        if [ -z "$listing" ] && command -v python3 >/dev/null 2>&1; then
+          listing="$(python3 -c 'import sys,zipfile;print("\n".join(n for n in zipfile.ZipFile(sys.argv[1]).namelist() if n.startswith("bin/")))' "$jar" 2>/dev/null || true)"
+        fi
+        if [ -z "$listing" ]; then
+          echo "::error::cannot read the contents of $jar"
+          exit 1
+        fi
+        printf '%s\n' "$listing"
+        missing=0
+        for name in owenclave-core naive tun2socks; do
+          fileName="$name"
+          if [ "$RUNNER_OS" = "Windows" ]; then fileName="$name.exe"; fi
+          if ! printf '%s\n' "$listing" | grep -qx "bin/$fileName"; then
+            echo "::error::bin/$fileName is missing from the application image"
+            missing=1
+          fi
+        done
+        jniName="libgojni.so"
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          jniName="gojni.dll"
+        elif [ "$RUNNER_OS" = "macOS" ]; then
+          jniName="libgojni.dylib"
+        fi
+        if ! printf '%s\n' "$listing" | grep -qx "bin/$jniName"; then
+          echo "::error::bin/$jniName is missing from the application image"
+          missing=1
+        fi
+        if [ "$RUNNER_OS" = "Linux" ] && ! printf '%s\n' "$listing" | grep -qx 'bin/owenclave-tun-helper'; then
+          echo "::error::bin/owenclave-tun-helper is missing from the Linux application image"
+          missing=1
+        fi
+        if [ "$RUNNER_OS" = "Windows" ] && ! printf '%s\n' "$listing" | grep -qx 'bin/wintun.dll'; then
+          echo "::error::bin/wintun.dll is missing from the Windows application image"
+          missing=1
+        fi
+        runtime="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type d -name runtime | head -1)"
+        if [ -n "$runtime" ] && [ -f "$runtime/release" ]; then
+          found="$(grep -o 'java.net.http\|jdk.crypto.ec\|java.sql\|jdk.unsupported' "$runtime/release" | sort -u | tr '\n' ' ')"
+          echo "::notice::jlink runtime modules: $found"
+          for module in java.net.http jdk.crypto.ec java.sql jdk.unsupported; do
+            if ! grep -q "$module" "$runtime/release"; then
+              echo "::error::the bundled runtime is missing $module, so subscriptions, DB or TLS would fail at runtime"
+              missing=1
+            fi
+          done
+        else
+          echo "::warning::no bundled runtime release file found to check"
+        fi
+        exit "$missing"
+    - name: Development self test (core tunnel)
+      shell: bash
+      run: ./gradlew :desktop:app:run --args="--selftest" --console=plain
+    - name: Packaged self test (bundled core tunnel + System Proxy)
+      shell: bash
+      run: |
+        set -uo pipefail
+        source bin/desktop/ci-report.sh
+        if [ "$RUNNER_OS" = "Windows" ]; then name="Owenclave.exe"; else name="Owenclave"; fi
+        launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name "$name" | sort | head -1)"
+        echo "launcher: $launcher"
+        for flag in --version --selftest --selftest-gui --selftest-system-proxy; do
+          if ! "$launcher" "$flag" > "/tmp/selftest${flag}.log" 2>&1; then
+            cat "/tmp/selftest${flag}.log"
+            report_test_failures "Packaged self test ($flag)" "/tmp/selftest${flag}.log"
+            exit 1
+          fi
+          cat "/tmp/selftest${flag}.log"
+        done
+    - name: Protocol self tests (bundled core, every protocol family)
+      shell: bash
+      run: |
+        set -euo pipefail
+        if [ "$RUNNER_OS" = "Windows" ]; then name="Owenclave.exe"; else name="Owenclave"; fi
+        launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name "$name" | sort | head -1)"
+        "$launcher" --selftest-protocols
+    - name: Subscription download self test (bundled runtime)
+      shell: bash
+      run: |
+        set -euo pipefail
+        if [ "$RUNNER_OS" = "Windows" ]; then name="Owenclave.exe"; else name="Owenclave"; fi
+        launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name "$name" | sort | head -1)"
+        "$launcher" --selftest-subscription
+    - name: NaiveProxy plugin self test
+      shell: bash
+      continue-on-error: true
+      run: |
+        set -euo pipefail
+        if [ "$RUNNER_OS" = "Windows" ]; then name="Owenclave.exe"; else name="Owenclave"; fi
+        launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name "$name" | sort | head -1)"
+        "$launcher" --selftest-naive
+    - name: Package installer
+      shell: bash
+      run: |
+        set -uo pipefail
+        source bin/desktop/ci-report.sh
+        if ./gradlew :desktop:app:packageDistributionForCurrentOS --console=plain > /tmp/installer.log 2>&1; then
+          tail -5 /tmp/installer.log
+          find desktop/app/build/compose/binaries/main -maxdepth 2 -type f \
+            \( -name '*.deb' -o -name '*.rpm' -o -name '*.dmg' -o -name '*.msi' -o -name '*.pkg' \) \
+            | while IFS= read -r file; do echo "::notice::installer $file"; done
+        else
+          tail -25 /tmp/installer.log
+          dump_jpackage_logs desktop/app/build/compose/logs
+          report_gradle_failure "packageDistributionForCurrentOS" /tmp/installer.log
+          exit 1
+        fi
+    - name: End-to-end VPN / TUN service self test (Windows, macOS & Linux, authoritative)
+      shell: bash
+      run: |
+        set -uo pipefail
+        run_with_timeout() {
+          local secs="$1"; shift
+          "$@" &
+          local pid=$!
+          ( sleep "$secs"; kill -9 "$pid" 2>/dev/null ) &
+          local watcher=$!
+          wait "$pid"
+          local rc=$?
+          kill "$watcher" 2>/dev/null || true
+          return $rc
+        }
+        if [ "${RUNNER_OS}" = "Windows" ]; then
+          launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name 'Owenclave.exe' | sort | head -1)"
+        else
+          launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name 'Owenclave' | sort | head -1)"
+        fi
+        echo "launcher: $launcher"
+        log=/tmp/vpn-e2e.log
+        if [ "${RUNNER_OS}" = "Windows" ]; then
+          e2e_ok=0
+          run_with_timeout 180 "$launcher" --selftest-vpn-e2e >"$log" 2>&1 && e2e_ok=1
+        else
+          e2e_ok=0
+          run_with_timeout 180 sudo -E "$launcher" --selftest-vpn-e2e >"$log" 2>&1 && e2e_ok=1
+        fi
+        if [ "$e2e_ok" != "1" ]; then
+          cat "$log"
+          tail -25 "$log" | while IFS= read -r line; do echo "::error::vpn-e2e $line"; done
+          exit 1
+        fi
+        cat "$log"
+        if ! grep -q '\[selftest-vpn-e2e\] PASS' "$log"; then
+          tail -25 "$log" | while IFS= read -r line; do echo "::error::vpn-e2e $line"; done
+          exit 1
+        fi
+        echo "::notice::vpn-e2e (${RUNNER_OS}): PASS"
+    - name: Upload the Arch repository
+      if: runner.os == 'Linux' && inputs.tag == 'linux-amd64'
+      uses: actions/upload-artifact@v7
+      with:
+        name: owenclave-arch-repo
+        path: desktop/arch/dist/**
+        if-no-files-found: warn
+    - name: Upload desktop artifacts
+      uses: actions/upload-artifact@v7
+      with:
+        name: owenclave-desktop-${{ inputs.artifact }}
+        path: desktop/app/build/compose/binaries/main/**
+        if-no-files-found: error
+    - name: Upload platform binaries
+      uses: actions/upload-artifact@v7
+      with:
+        name: owenclave-binaries-${{ inputs.artifact }}
+        path: |
+          desktop/core/dist/${{ inputs.tag }}
+          desktop/naive/dist/${{ inputs.tag }}
+        if-no-files-found: warn
+    - name: Mark build and verification succeeded
+      id: mark_succeeded
+      shell: bash
+      run: echo "succeeded=true" >> "$GITHUB_OUTPUT"
+    - name: Transparent mode self test (real, takes over the default route)
+      shell: bash
+      continue-on-error: true
+      run: |
+        set -uo pipefail
+        run_with_timeout() {
+          local secs="$1"; shift
+          "$@" &
+          local pid=$!
+          ( sleep "$secs"; kill -9 "$pid" 2>/dev/null ) &
+          local watcher=$!
+          wait "$pid"
+          local rc=$?
+          kill "$watcher" 2>/dev/null || true
+          return $rc
+        }
+        if [ "${RUNNER_OS}" = "Windows" ]; then
+          launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name 'Owenclave.exe' | head -1)"
+        else
+          launcher="$(find desktop/app/build/compose/binaries/main/app -maxdepth 4 -type f -name 'Owenclave' | head -1)"
+        fi
+        echo "launcher: $launcher"
+        log=/tmp/tun-real.log
+        if [ "${RUNNER_OS}" = "Windows" ]; then
+          run_with_timeout 180 "$launcher" --selftest-tun >"$log" 2>&1 || true
+        else
+          run_with_timeout 180 sudo -E "$launcher" --selftest-tun >"$log" 2>&1 || true
+        fi
+        tail -25 "$log"
+        if grep -q '\[selftest-tun\] PASS' "$log"; then
+          echo "::notice::transparent mode, real run: PASS"
+        else
+          echo "::warning::transparent mode, real run: did not pass"
+          grep -aE 'selftest-tun|Exception|denied|failed|error' "$log" | tail -10 | while IFS= read -r line; do
+            echo "::warning::tun-real $line"
+          done
+        fi
+        exit 0
