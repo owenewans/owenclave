@@ -1,0 +1,567 @@
+#!/bin/sh
+# Owenclave privileged TUN & policy-routing supervisor for Linux.
+# Launched via pkexec (Polkit) when Service Mode is VPN and Owenclave runs as an
+# unprivileged desktop user. Holds the tunnel open until stdin closes ("STOP" or
+# parent exit/SIGKILL) and tears down all routes, firewall rules and interfaces
+# without requiring a second authentication prompt.
+
+set -eu
+
+OWENCLAVE_PID=""
+SOCKS_PORT=""
+DNS_PORT="0"
+MTU="1500"
+TUN_DEV="owenclave-tun"
+ENABLE_IPV6="0"
+BYPASS_LAN="1"
+TUN2SOCKS_ARG=""
+BYPASS_IPS=""
+
+is_uint() {
+  case "$1" in
+    ''|*[!0-9]*) return 1 ;;
+    *) return 0 ;;
+  esac
+}
+
+is_safe_ifname() {
+  case "$1" in
+    ''|*[!a-zA-Z0-9_-]*) return 1 ;;
+    *) [ "${#1}" -le 15 ] ;;
+  esac
+}
+
+is_ipv4() {
+  case "$1" in
+    ''|*[!0-9.]*) return 1 ;;
+    *.*.*.*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+is_ipv6() {
+  case "$1" in
+    ''|*[!0-9a-fA-F:]*) return 1 ;;
+    *:*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --pid)
+      OWENCLAVE_PID="${2:-}"
+      shift 2
+      ;;
+    --socks-port)
+      SOCKS_PORT="${2:-}"
+      shift 2
+      ;;
+    --dns-port)
+      DNS_PORT="${2:-0}"
+      shift 2
+      ;;
+    --mtu)
+      MTU="${2:-1500}"
+      shift 2
+      ;;
+    --tun-dev)
+      TUN_DEV="${2:-owenclave-tun}"
+      shift 2
+      ;;
+    --ipv6)
+      ENABLE_IPV6="${2:-0}"
+      shift 2
+      ;;
+    --bypass-lan)
+      BYPASS_LAN="${2:-1}"
+      shift 2
+      ;;
+    --tun2socks)
+      TUN2SOCKS_ARG="${2:-}"
+      shift 2
+      ;;
+    --bypass-ip)
+      ip_val="${2:-}"
+      if is_ipv4 "$ip_val" || is_ipv6 "$ip_val"; then
+        BYPASS_IPS="$BYPASS_IPS $ip_val"
+      fi
+      shift 2
+      ;;
+    *)
+      echo "owenclave-tun-helper: unknown argument: $1" >&2
+      exit 2
+      ;;
+  esac
+done
+
+if [ "$(id -u)" != "0" ]; then
+  echo "owenclave-tun-helper: root privileges required" >&2
+  exit 1
+fi
+
+if ! is_uint "$OWENCLAVE_PID" || [ ! -d "/proc/$OWENCLAVE_PID" ]; then
+  echo "owenclave-tun-helper: invalid --pid '$OWENCLAVE_PID'" >&2
+  exit 2
+fi
+
+if ! is_uint "$SOCKS_PORT" || [ "$SOCKS_PORT" -lt 1 ] || [ "$SOCKS_PORT" -gt 65535 ]; then
+  echo "owenclave-tun-helper: invalid --socks-port '$SOCKS_PORT'" >&2
+  exit 2
+fi
+
+if ! is_uint "$DNS_PORT" || [ "$DNS_PORT" -gt 65535 ]; then
+  echo "owenclave-tun-helper: invalid --dns-port '$DNS_PORT'" >&2
+  exit 2
+fi
+
+if ! is_uint "$MTU" || [ "$MTU" -lt 576 ] || [ "$MTU" -gt 9000 ]; then
+  MTU="1500"
+fi
+
+if ! is_safe_ifname "$TUN_DEV"; then
+  echo "owenclave-tun-helper: invalid --tun-dev '$TUN_DEV'" >&2
+  exit 2
+fi
+
+# Prefer the root-owned package binary when installed; fall back to --tun2socks for portable/dev builds.
+TUN2SOCKS_BIN=""
+if [ -x "/opt/owenclave/bin/tun2socks" ] && [ -O "/opt/owenclave/bin/tun2socks" ]; then
+  TUN2SOCKS_BIN="/opt/owenclave/bin/tun2socks"
+elif [ -n "$TUN2SOCKS_ARG" ] && [ -x "$TUN2SOCKS_ARG" ]; then
+  TUN2SOCKS_BIN="$TUN2SOCKS_ARG"
+fi
+
+if [ -z "$TUN2SOCKS_BIN" ]; then
+  echo "owenclave-tun-helper: tun2socks binary not found" >&2
+  exit 2
+fi
+
+CGROUP_ROOT="/sys/fs/cgroup"
+SLICE_NAME="owenclave_bypass.slice"
+SLICE_PATH="$CGROUP_ROOT/$SLICE_NAME"
+FWMARK="0x1ee7"
+ROUTE_TABLE="1188"
+TUN_NET4="198.19.254.0/30"
+TUN_CIDR4="198.19.254.1/30"
+TUN_DNS4="198.19.254.2"
+TUN_CIDR6="fdfe:dcba:9876::1/126"
+TUN_NET6="fdfe:dcba:9876::/126"
+
+select_tun_subnet4() {
+  existing_v4="$(ip -4 addr show 2>/dev/null; ip -4 route show table main 2>/dev/null || true)"
+  for prefix in 198.19.254 198.19.253 198.19.252 198.19.251 172.31.254 10.255.254; do
+    case "$existing_v4" in
+      *"$prefix."*) continue ;;
+    esac
+    TUN_NET4="$prefix.0/30"
+    TUN_CIDR4="$prefix.1/30"
+    TUN_DNS4="$prefix.2"
+    return 0
+  done
+}
+
+TUN2SOCKS_PID=""
+RUNTIME_DIR="/run/owenclave-tun.$$"
+CONFIG_YAML=""
+ORIG_CGROUP=""
+ORIG_RP_ALL=""
+ORIG_RP_DEV=""
+PHYS_DEV=""
+PHYS_GW=""
+ADDED_HOST_ROUTES4=""
+ADDED_HOST_ROUTES6=""
+CLEANED_UP="0"
+
+del_rule_loop() {
+  fam="$1"
+  pref="$2"
+  i=0
+  while [ "$i" -lt 8 ]; do
+    if ! ip "$fam" rule del pref "$pref" 2>/dev/null; then
+      break
+    fi
+    i=$((i + 1))
+  done
+}
+
+cleanup_stale() {
+  del_rule_loop -4 90
+  del_rule_loop -4 95
+  del_rule_loop -4 100
+  del_rule_loop -6 90
+  del_rule_loop -6 95
+  del_rule_loop -6 100
+  ip -4 route flush table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -6 route flush table "$ROUTE_TABLE" 2>/dev/null || true
+  nft delete table inet owenclave_bypass 2>/dev/null || true
+  iptables -t mangle -D OUTPUT -j OWENCLAVE_BYPASS 2>/dev/null || true
+  iptables -t mangle -F OWENCLAVE_BYPASS 2>/dev/null || true
+  iptables -t mangle -X OWENCLAVE_BYPASS 2>/dev/null || true
+  iptables -t nat -D OUTPUT -j OWENCLAVE_DNS 2>/dev/null || true
+  iptables -t nat -F OWENCLAVE_DNS 2>/dev/null || true
+  iptables -t nat -X OWENCLAVE_DNS 2>/dev/null || true
+  iptables -t nat -D POSTROUTING -m mark --mark "$FWMARK" ! -o lo -j MASQUERADE 2>/dev/null || true
+  ip6tables -t mangle -D OUTPUT -j OWENCLAVE_BYPASS 2>/dev/null || true
+  ip6tables -t mangle -F OWENCLAVE_BYPASS 2>/dev/null || true
+  ip6tables -t mangle -X OWENCLAVE_BYPASS 2>/dev/null || true
+  ip6tables -t filter -D OUTPUT -j OWENCLAVE_DNS6 2>/dev/null || true
+  ip6tables -t filter -F OWENCLAVE_DNS6 2>/dev/null || true
+  ip6tables -t filter -X OWENCLAVE_DNS6 2>/dev/null || true
+  ip6tables -t nat -D POSTROUTING -m mark --mark "$FWMARK" ! -o lo -j MASQUERADE 2>/dev/null || true
+  ip link del "$TUN_DEV" 2>/dev/null || true
+}
+
+cleanup() {
+  if [ "$CLEANED_UP" = "1" ]; then
+    return
+  fi
+  CLEANED_UP="1"
+
+  del_rule_loop -4 90
+  del_rule_loop -4 95
+  del_rule_loop -4 100
+  del_rule_loop -6 90
+  del_rule_loop -6 95
+  del_rule_loop -6 100
+  ip -4 route flush table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -6 route flush table "$ROUTE_TABLE" 2>/dev/null || true
+
+  for ip4 in $ADDED_HOST_ROUTES4; do
+    ip -4 route del "$ip4/32" 2>/dev/null || true
+  done
+  for ip6 in $ADDED_HOST_ROUTES6; do
+    ip -6 route del "$ip6/128" 2>/dev/null || true
+  done
+
+  nft delete table inet owenclave_bypass 2>/dev/null || true
+  iptables -t mangle -D OUTPUT -j OWENCLAVE_BYPASS 2>/dev/null || true
+  iptables -t mangle -F OWENCLAVE_BYPASS 2>/dev/null || true
+  iptables -t mangle -X OWENCLAVE_BYPASS 2>/dev/null || true
+  iptables -t nat -D OUTPUT -j OWENCLAVE_DNS 2>/dev/null || true
+  iptables -t nat -F OWENCLAVE_DNS 2>/dev/null || true
+  iptables -t nat -X OWENCLAVE_DNS 2>/dev/null || true
+  iptables -t nat -D POSTROUTING -m mark --mark "$FWMARK" ! -o lo -j MASQUERADE 2>/dev/null || true
+  ip6tables -t mangle -D OUTPUT -j OWENCLAVE_BYPASS 2>/dev/null || true
+  ip6tables -t mangle -F OWENCLAVE_BYPASS 2>/dev/null || true
+  ip6tables -t mangle -X OWENCLAVE_BYPASS 2>/dev/null || true
+  ip6tables -t filter -D OUTPUT -j OWENCLAVE_DNS6 2>/dev/null || true
+  ip6tables -t filter -F OWENCLAVE_DNS6 2>/dev/null || true
+  ip6tables -t filter -X OWENCLAVE_DNS6 2>/dev/null || true
+  ip6tables -t nat -D POSTROUTING -m mark --mark "$FWMARK" ! -o lo -j MASQUERADE 2>/dev/null || true
+
+  if [ -n "$TUN2SOCKS_PID" ]; then
+    kill "$TUN2SOCKS_PID" 2>/dev/null || true
+    wait "$TUN2SOCKS_PID" 2>/dev/null || true
+  fi
+
+  ip link set dev "$TUN_DEV" down 2>/dev/null || true
+  ip link del "$TUN_DEV" 2>/dev/null || true
+
+  if [ -n "$ORIG_RP_ALL" ]; then
+    sysctl -w "net.ipv4.conf.all.rp_filter=$ORIG_RP_ALL" >/dev/null 2>&1 || true
+  fi
+  if [ -n "$PHYS_DEV" ] && [ -n "$ORIG_RP_DEV" ]; then
+    sysctl -w "net.ipv4.conf.$PHYS_DEV.rp_filter=$ORIG_RP_DEV" >/dev/null 2>&1 || true
+  fi
+
+  if [ -d "$SLICE_PATH" ]; then
+    target_cg="$CGROUP_ROOT"
+    if [ -n "$ORIG_CGROUP" ] && [ -d "$CGROUP_ROOT$ORIG_CGROUP" ]; then
+      target_cg="$CGROUP_ROOT$ORIG_CGROUP"
+    fi
+    if [ -f "$SLICE_PATH/cgroup.procs" ] && [ -w "$target_cg/cgroup.procs" ]; then
+      while IFS= read -r cpid; do
+        [ -n "$cpid" ] && printf '%s\n' "$cpid" >"$target_cg/cgroup.procs" 2>/dev/null || true
+      done <"$SLICE_PATH/cgroup.procs"
+    fi
+    rmdir "$SLICE_PATH" 2>/dev/null || true
+  fi
+
+  rm -rf "$RUNTIME_DIR" 2>/dev/null || true
+}
+
+trap cleanup EXIT INT TERM HUP
+
+attach_process_tree() {
+  root_pid="$1"
+  [ -d "$SLICE_PATH" ] || return 0
+  [ -d "/proc/$root_pid" ] || return 0
+  printf '%s\n' "$root_pid" >"$SLICE_PATH/cgroup.procs" 2>/dev/null || true
+  for children_file in /proc/"$root_pid"/task/*/children; do
+    [ -r "$children_file" ] || continue
+    for child_pid in $(cat "$children_file" 2>/dev/null || true); do
+      if is_uint "$child_pid" && [ "$child_pid" != "$$" ] && [ "$child_pid" != "${TUN2SOCKS_PID:-}" ]; then
+        attach_process_tree "$child_pid"
+      fi
+    done
+  done
+}
+
+add_bypass_ip() {
+  bip="$1"
+  if is_ipv4 "$bip"; then
+    case "$bip" in
+      127.*) return 0 ;;
+    esac
+    if [ -n "$PHYS_GW" ]; then
+      if ip -4 route replace "$bip/32" via "$PHYS_GW" dev "$PHYS_DEV" 2>/dev/null; then
+        ADDED_HOST_ROUTES4="$ADDED_HOST_ROUTES4 $bip"
+      fi
+    else
+      if ip -4 route replace "$bip/32" dev "$PHYS_DEV" 2>/dev/null; then
+        ADDED_HOST_ROUTES4="$ADDED_HOST_ROUTES4 $bip"
+      fi
+    fi
+  elif is_ipv6 "$bip"; then
+    case "$bip" in
+      ::1|fe80:*) return 0 ;;
+    esac
+    PHYS_GW6="$(ip -6 route show default 2>/dev/null | grep -v "dev $TUN_DEV" | awk '/via /{for(i=1;i<=NF;i++) if($i=="via"){print $(i+1); exit}}')"
+    if [ -n "$PHYS_GW6" ]; then
+      if ip -6 route replace "$bip/128" via "$PHYS_GW6" dev "$PHYS_DEV" 2>/dev/null; then
+        ADDED_HOST_ROUTES6="$ADDED_HOST_ROUTES6 $bip"
+      fi
+    fi
+  fi
+}
+
+cleanup_stale
+
+# 1. Read initial handshake line from Owenclave ("START" or "AUTH <b64user> <b64pass>").
+PROXY_URL="socks5://127.0.0.1:$SOCKS_PORT"
+mkdir -p "$RUNTIME_DIR"
+chmod 700 "$RUNTIME_DIR"
+
+if IFS= read -r init_line; then
+  case "$init_line" in
+    START)
+      ;;
+    AUTH\ *)
+      if command -v base64 >/dev/null 2>&1; then
+        b64_u="$(printf '%s' "$init_line" | awk '{print $2}')"
+        b64_p="$(printf '%s' "$init_line" | awk '{print $3}')"
+        dec_u="$(printf '%s' "$b64_u" | base64 -d 2>/dev/null | sed 's/\\/\\\\/g; s/"/\\"/g')"
+        dec_p="$(printf '%s' "$b64_p" | base64 -d 2>/dev/null | sed 's/\\/\\\\/g; s/"/\\"/g')"
+        CONFIG_YAML="$RUNTIME_DIR/tun2socks.yaml"
+        umask 077
+        cat >"$CONFIG_YAML" <<EOF_YAML
+tunnel:
+  name: $TUN_DEV
+  mtu: $MTU
+socks5:
+  address: 127.0.0.1
+  port: $SOCKS_PORT
+  username: "$dec_u"
+  password: "$dec_p"
+  udp: udp
+misc:
+  log-level: warn
+EOF_YAML
+      fi
+      ;;
+    STOP)
+      exit 0
+      ;;
+  esac
+else
+  exit 0
+fi
+
+# 2. Detect physical default route before installing TUN rules.
+DEF_LINE="$(ip -4 route show default 2>/dev/null | grep -v "dev $TUN_DEV" | head -n 1 || true)"
+PHYS_DEV="$(printf '%s\n' "$DEF_LINE" | awk '{for(i=1;i<=NF;i++) if($i=="dev"){print $(i+1); exit}}')"
+PHYS_GW="$(printf '%s\n' "$DEF_LINE" | awk '{for(i=1;i<=NF;i++) if($i=="via"){print $(i+1); exit}}')"
+
+if [ -z "$PHYS_DEV" ]; then
+  echo "owenclave-tun-helper: cannot detect active default network interface" >&2
+  exit 1
+fi
+
+for bip in $BYPASS_IPS; do
+  add_bypass_ip "$bip"
+done
+
+# 3. Ensure loose reverse-path filtering (rp_filter=2) if strict mode (1) is active,
+#    so kernel conntrack replies for marked bypass sockets on PHYS_DEV are never dropped.
+ORIG_RP_ALL="$(sysctl -n net.ipv4.conf.all.rp_filter 2>/dev/null || true)"
+ORIG_RP_DEV="$(sysctl -n "net.ipv4.conf.$PHYS_DEV.rp_filter" 2>/dev/null || true)"
+if [ "$ORIG_RP_ALL" = "1" ]; then
+  sysctl -w net.ipv4.conf.all.rp_filter=2 >/dev/null 2>&1 || true
+fi
+if [ "$ORIG_RP_DEV" = "1" ]; then
+  sysctl -w "net.ipv4.conf.$PHYS_DEV.rp_filter=2" >/dev/null 2>&1 || true
+fi
+
+# 4. Configure cgroup v2 bypass for Owenclave & its child plugins (NaiveProxy, etc.).
+ORIG_CGROUP="$(awk -F: '$1=="0"{print $3; exit}' "/proc/$OWENCLAVE_PID/cgroup" 2>/dev/null || true)"
+BYPASS_INSTALLED="0"
+
+if [ -f "$CGROUP_ROOT/cgroup.controllers" ]; then
+  mkdir -p "$SLICE_PATH"
+  attach_process_tree "$OWENCLAVE_PID"
+
+  if command -v nft >/dev/null 2>&1; then
+    if nft -f - <<EOF_NFT 2>/dev/null
+table inet owenclave_bypass {
+  chain output_mangle {
+    type route hook output priority mangle; policy accept;
+    ip daddr 127.0.0.0/8 return
+    ip6 daddr ::1 return
+    socket cgroupv2 level 1 "$SLICE_NAME" meta mark set $FWMARK
+  }
+  chain postrouting_nat {
+    type nat hook postrouting priority srcnat; policy accept;
+    meta mark $FWMARK oifname != "lo" masquerade
+  }
+}
+EOF_NFT
+    then
+      BYPASS_INSTALLED="1"
+      if [ "$DNS_PORT" -gt 0 ]; then
+        nft -f - <<EOF_DNS 2>/dev/null || true
+table inet owenclave_bypass {
+  chain output_dns {
+    type nat hook output priority dstnat; policy accept;
+    socket cgroupv2 level 1 "$SLICE_NAME" return
+    ip daddr 127.0.0.0/8 return
+    ip6 daddr ::1 return
+    meta nfproto ipv4 udp dport 53 redirect to :$DNS_PORT
+    meta nfproto ipv4 tcp dport 53 redirect to :$DNS_PORT
+  }
+  chain output_dns_filter {
+    type filter hook output priority filter; policy accept;
+    socket cgroupv2 level 1 "$SLICE_NAME" return
+    ip6 daddr ::1 return
+    meta nfproto ipv6 udp dport 53 reject
+    meta nfproto ipv6 tcp dport 53 reject
+  }
+}
+EOF_DNS
+      fi
+    fi
+  fi
+
+  if [ "$BYPASS_INSTALLED" = "0" ] && command -v iptables >/dev/null 2>&1; then
+    if iptables -t mangle -N OWENCLAVE_BYPASS 2>/dev/null &&
+       iptables -t mangle -A OWENCLAVE_BYPASS -d 127.0.0.0/8 -j RETURN &&
+       iptables -t mangle -A OWENCLAVE_BYPASS -m cgroup --path "$SLICE_NAME" -j MARK --set-mark "$FWMARK" &&
+       iptables -t mangle -A OUTPUT -j OWENCLAVE_BYPASS &&
+       iptables -t nat -A POSTROUTING -m mark --mark "$FWMARK" ! -o lo -j MASQUERADE; then
+      BYPASS_INSTALLED="1"
+      if command -v ip6tables >/dev/null 2>&1; then
+        ip6tables -t mangle -N OWENCLAVE_BYPASS 2>/dev/null || true
+        ip6tables -t mangle -A OWENCLAVE_BYPASS -d ::1/128 -j RETURN 2>/dev/null || true
+        ip6tables -t mangle -A OWENCLAVE_BYPASS -m cgroup --path "$SLICE_NAME" -j MARK --set-mark "$FWMARK" 2>/dev/null || true
+        ip6tables -t mangle -A OUTPUT -j OWENCLAVE_BYPASS 2>/dev/null || true
+        ip6tables -t nat -A POSTROUTING -m mark --mark "$FWMARK" ! -o lo -j MASQUERADE 2>/dev/null || true
+      fi
+      if [ "$DNS_PORT" -gt 0 ]; then
+        iptables -t nat -N OWENCLAVE_DNS 2>/dev/null || true
+        iptables -t nat -A OWENCLAVE_DNS -m cgroup --path "$SLICE_NAME" -j RETURN 2>/dev/null || true
+        iptables -t nat -A OWENCLAVE_DNS -d 127.0.0.0/8 -j RETURN 2>/dev/null || true
+        iptables -t nat -A OWENCLAVE_DNS -p udp --dport 53 -j REDIRECT --to-ports "$DNS_PORT" 2>/dev/null || true
+        iptables -t nat -A OWENCLAVE_DNS -p tcp --dport 53 -j REDIRECT --to-ports "$DNS_PORT" 2>/dev/null || true
+        iptables -t nat -A OUTPUT -j OWENCLAVE_DNS 2>/dev/null || true
+        if command -v ip6tables >/dev/null 2>&1; then
+          ip6tables -t filter -N OWENCLAVE_DNS6 2>/dev/null || true
+          ip6tables -t filter -A OWENCLAVE_DNS6 -m cgroup --path "$SLICE_NAME" -j RETURN 2>/dev/null || true
+          ip6tables -t filter -A OWENCLAVE_DNS6 -d ::1/128 -j RETURN 2>/dev/null || true
+          ip6tables -t filter -A OWENCLAVE_DNS6 -p udp --dport 53 -j REJECT 2>/dev/null || true
+          ip6tables -t filter -A OWENCLAVE_DNS6 -p tcp --dport 53 -j REJECT 2>/dev/null || true
+          ip6tables -t filter -A OUTPUT -j OWENCLAVE_DNS6 2>/dev/null || true
+        fi
+      fi
+    fi
+  fi
+fi
+
+if [ "$BYPASS_INSTALLED" = "0" ] && [ -z "$ADDED_HOST_ROUTES4" ] && [ -z "$ADDED_HOST_ROUTES6" ]; then
+  echo "owenclave-tun-helper: failed to configure cgroup socket bypass (nftables/iptables unavailable)" >&2
+  exit 1
+fi
+
+# 5. Create TUN device and start tun2socks.
+select_tun_subnet4
+ip tuntap add mode tun dev "$TUN_DEV"
+ip link set dev "$TUN_DEV" mtu "$MTU"
+ip -4 addr add "$TUN_CIDR4" dev "$TUN_DEV"
+if [ "$ENABLE_IPV6" = "1" ]; then
+  sysctl -w "net.ipv6.conf.$TUN_DEV.disable_ipv6=0" >/dev/null 2>&1 || true
+  ip -6 addr add "$TUN_CIDR6" dev "$TUN_DEV"
+fi
+ip link set dev "$TUN_DEV" up
+sysctl -w "net.ipv4.conf.$TUN_DEV.rp_filter=0" >/dev/null 2>&1 || true
+
+if [ -n "$CONFIG_YAML" ] && [ -f "$CONFIG_YAML" ]; then
+  "$TUN2SOCKS_BIN" -c "$CONFIG_YAML" >&2 &
+else
+  "$TUN2SOCKS_BIN" -d "$TUN_DEV" -p "$PROXY_URL" --mtu "$MTU" --loglevel warn >&2 &
+fi
+TUN2SOCKS_PID="$!"
+
+sleep 0.15 2>/dev/null || sleep 1
+if ! kill -0 "$TUN2SOCKS_PID" 2>/dev/null; then
+  echo "owenclave-tun-helper: tun2socks exited prematurely" >&2
+  exit 1
+fi
+[ -n "$CONFIG_YAML" ] && rm -f "$CONFIG_YAML" 2>/dev/null || true
+
+# 6. Install policy routing table & rules.
+ip -4 route replace default dev "$TUN_DEV" table "$ROUTE_TABLE"
+ip -4 route replace throw 224.0.0.0/4 table "$ROUTE_TABLE" 2>/dev/null || true
+if [ "$BYPASS_LAN" = "1" ]; then
+  ip -4 route replace throw 10.0.0.0/8 table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -4 route replace throw 172.16.0.0/12 table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -4 route replace throw 192.168.0.0/16 table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -4 route replace throw 169.254.0.0/16 table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -4 route replace throw 100.64.0.0/10 table "$ROUTE_TABLE" 2>/dev/null || true
+  ip -4 route replace "$TUN_NET4" dev "$TUN_DEV" table "$ROUTE_TABLE" 2>/dev/null || true
+fi
+
+ip -4 rule add pref 90 fwmark "$FWMARK" lookup main
+ip -4 rule add pref 95 lookup main suppress_prefixlength 0
+ip -4 rule add pref 100 lookup "$ROUTE_TABLE"
+
+if [ "$ENABLE_IPV6" = "1" ]; then
+  ip -6 route replace default dev "$TUN_DEV" table "$ROUTE_TABLE"
+  if [ "$BYPASS_LAN" = "1" ]; then
+    ip -6 route replace throw fc00::/7 table "$ROUTE_TABLE" 2>/dev/null || true
+    ip -6 route replace throw fe80::/10 table "$ROUTE_TABLE" 2>/dev/null || true
+    ip -6 route replace "$TUN_NET6" dev "$TUN_DEV" table "$ROUTE_TABLE" 2>/dev/null || true
+  fi
+else
+  # Block global IPv6 leaks on dual-stack ISP networks so Happy Eyeballs falls back immediately to IPv4 TUN.
+  ip -6 route replace unreachable default table "$ROUTE_TABLE" 2>/dev/null || true
+fi
+ip -6 rule add pref 90 fwmark "$FWMARK" lookup main 2>/dev/null || true
+ip -6 rule add pref 95 lookup main suppress_prefixlength 0 2>/dev/null || true
+ip -6 rule add pref 100 lookup "$ROUTE_TABLE" 2>/dev/null || true
+
+if command -v resolvectl >/dev/null 2>&1 && resolvectl status >/dev/null 2>&1; then
+  resolvectl dns "$TUN_DEV" "$TUN_DNS4" >/dev/null 2>&1 || true
+  resolvectl domain "$TUN_DEV" "~." >/dev/null 2>&1 || true
+fi
+
+printf 'OWENCLAVE_TUN_READY iface=%s tun=%s\n' "$PHYS_DEV" "$TUN_DEV"
+
+# 7. Hold the tunnel until Owenclave sends STOP or closes stdin (including crashes/SIGKILL).
+while IFS= read -r cmd_line; do
+  case "$cmd_line" in
+    STOP)
+      break
+      ;;
+    ATTACH_CHILDREN)
+      attach_process_tree "$OWENCLAVE_PID"
+      printf 'OK\n'
+      ;;
+    ADD_BYPASS\ *)
+      new_ip="${cmd_line#ADD_BYPASS }"
+      add_bypass_ip "$new_ip"
+      attach_process_tree "$OWENCLAVE_PID"
+      printf 'OK\n'
+      ;;
+  esac
+done
+
+exit 0

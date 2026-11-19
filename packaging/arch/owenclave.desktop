@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Owenclave
+GenericName=Proxy client
+Comment=Proxy client for NaiveProxy, Shadowsocks, VLESS, VMess and more
+Exec=owenclave %u
+Icon=owenclave
+Terminal=false
+Categories=Network;Security;
+Keywords=proxy;vpn;shadowsocks;naiveproxy;vless;vmess;hysteria;
+StartupWMClass=Owenclave
+MimeType=x-scheme-handler/owenclave;x-scheme-handler/owenkey;x-scheme-handler/happ;x-scheme-handler/vless;x-scheme-handler/vmess;x-scheme-handler/trojan;x-scheme-handler/ss;x-scheme-handler/ssr;x-scheme-handler/hysteria2;x-scheme-handler/hy2;x-scheme-handler/tuic;x-scheme-handler/juicity;x-scheme-handler/naive+https;x-scheme-handler/naive+quic;x-scheme-handler/anytls;x-scheme-handler/shadowquic;x-scheme-handler/sq;x-scheme-handler/wireguard;x-scheme-handler/wg;x-scheme-handler/socks;x-scheme-handler/socks5;
