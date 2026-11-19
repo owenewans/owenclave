@@ -2112,7 +2112,7 @@ fun buildV2RayConfig(
                     }
                 }
 
-                if (proxyEntity.needExternal() && !isBalancer && index != profileList.lastIndex) {
+                if (!needGlobal && proxyEntity.needExternal() && !isBalancer && index != profileList.lastIndex) {
                     val mappingPort = mkPort()
                     bean.finalAddress = LOCALHOST
                     bean.finalPort = mappingPort
@@ -2132,7 +2132,7 @@ fun buildV2RayConfig(
 
                         pastInboundTag = tag
                     })
-                } else if (bean.canMapping() && proxyEntity.needExternal()) {
+                } else if (!needGlobal && bean.canMapping() && proxyEntity.needExternal()) {
                     val mappingPort = mkPort()
                     bean.finalAddress = LOCALHOST
                     bean.finalPort = mappingPort
@@ -2162,6 +2162,8 @@ fun buildV2RayConfig(
                     chainOutbounds.add(currentOutbound)
                     pastExternal = proxyEntity.needExternal()
                     pastOutbound = currentOutbound
+                } else if (isBalancer) {
+                    outbounds.find { it.tag == tagIn }?.let { chainOutbounds.add(it) }
                 }
 
             }

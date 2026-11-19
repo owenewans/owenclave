@@ -265,11 +265,14 @@ fun ConfigurationScreen(
 
     if (showProtocolPicker) {
         ProtocolPickerDialog(
-            onSelect = { type ->
+            onSelect = { type, tls ->
                 showProtocolPicker = false
                 context.startActivity(
                     Intent(context, ComposeProfileSettingsActivity::class.java).apply {
                         putExtra(ComposeProfileSettingsActivity.EXTRA_PROFILE_TYPE, type)
+                        if (tls) {
+                            putExtra(ComposeProfileSettingsActivity.EXTRA_HTTP_TLS, true)
+                        }
                     }
                 )
             },
@@ -460,35 +463,38 @@ fun ConfigurationScreen(
     }
 }
 
+private data class ProtocolPickerItem(val name: String, val type: Int, val tls: Boolean = false)
+
 @Composable
 private fun ProtocolPickerDialog(
-    onSelect: (Int) -> Unit,
+    onSelect: (type: Int, tls: Boolean) -> Unit,
     onDismiss: () -> Unit,
 ) {
     val protocols = listOf(
-        "SOCKS" to ProxyEntity.TYPE_SOCKS,
-        "HTTP" to ProxyEntity.TYPE_HTTP,
-        "Shadowsocks" to ProxyEntity.TYPE_SS,
-        "ShadowsocksR" to ProxyEntity.TYPE_SSR,
-        "VMess" to ProxyEntity.TYPE_VMESS,
-        "VLESS" to ProxyEntity.TYPE_VLESS,
-        "Trojan" to ProxyEntity.TYPE_TROJAN,
-        "Naive" to ProxyEntity.TYPE_NAIVE,
-        "Hysteria 2" to ProxyEntity.TYPE_HYSTERIA2,
-        "SSH" to ProxyEntity.TYPE_SSH,
-        "WireGuard" to ProxyEntity.TYPE_WG,
-        "Mieru" to ProxyEntity.TYPE_MIERU,
-        "TUIC" to ProxyEntity.TYPE_TUIC5,
-        "Juicity" to ProxyEntity.TYPE_JUICITY,
-        "HTTP/3" to ProxyEntity.TYPE_HTTP3,
-        "AnyTLS" to ProxyEntity.TYPE_ANYTLS,
-        "ShadowQUIC" to ProxyEntity.TYPE_SHADOWQUIC,
-        "TrustTunnel" to ProxyEntity.TYPE_TRUSTTUNNEL,
-        "Snell" to ProxyEntity.TYPE_SNELL,
-        "MASQUE" to ProxyEntity.TYPE_MASQUE,
-        "Chain" to ProxyEntity.TYPE_CHAIN,
-        "Balancer" to ProxyEntity.TYPE_BALANCER,
-        "Custom Config" to ProxyEntity.TYPE_CONFIG,
+        ProtocolPickerItem("SOCKS", ProxyEntity.TYPE_SOCKS),
+        ProtocolPickerItem("HTTP", ProxyEntity.TYPE_HTTP),
+        ProtocolPickerItem("HTTPS", ProxyEntity.TYPE_HTTP, tls = true),
+        ProtocolPickerItem("Shadowsocks", ProxyEntity.TYPE_SS),
+        ProtocolPickerItem("ShadowsocksR", ProxyEntity.TYPE_SSR),
+        ProtocolPickerItem("VMess", ProxyEntity.TYPE_VMESS),
+        ProtocolPickerItem("VLESS", ProxyEntity.TYPE_VLESS),
+        ProtocolPickerItem("Trojan", ProxyEntity.TYPE_TROJAN),
+        ProtocolPickerItem("Naive", ProxyEntity.TYPE_NAIVE),
+        ProtocolPickerItem("Hysteria 2", ProxyEntity.TYPE_HYSTERIA2),
+        ProtocolPickerItem("SSH", ProxyEntity.TYPE_SSH),
+        ProtocolPickerItem("WireGuard", ProxyEntity.TYPE_WG),
+        ProtocolPickerItem("Mieru", ProxyEntity.TYPE_MIERU),
+        ProtocolPickerItem("TUIC", ProxyEntity.TYPE_TUIC5),
+        ProtocolPickerItem("Juicity", ProxyEntity.TYPE_JUICITY),
+        ProtocolPickerItem("HTTP/3", ProxyEntity.TYPE_HTTP3),
+        ProtocolPickerItem("AnyTLS", ProxyEntity.TYPE_ANYTLS),
+        ProtocolPickerItem("ShadowQUIC", ProxyEntity.TYPE_SHADOWQUIC),
+        ProtocolPickerItem("TrustTunnel", ProxyEntity.TYPE_TRUSTTUNNEL),
+        ProtocolPickerItem("Snell", ProxyEntity.TYPE_SNELL),
+        ProtocolPickerItem("MASQUE", ProxyEntity.TYPE_MASQUE),
+        ProtocolPickerItem("Chain", ProxyEntity.TYPE_CHAIN),
+        ProtocolPickerItem("Balancer", ProxyEntity.TYPE_BALANCER),
+        ProtocolPickerItem("Custom Config", ProxyEntity.TYPE_CONFIG),
     )
 
     io.nekohasekai.sagernet.ui.compose.components.ExpressiveDialog(onDismissRequest = onDismiss) {
@@ -511,12 +517,12 @@ private fun ProtocolPickerDialog(
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             items(protocols.size) { index ->
-                val (name, type) = protocols[index]
+                val item = protocols[index]
                 // Uniform small radius: the outer LazyColumn clip (24dp) defines the
                 // overall rounded group, so the first/last items no longer get their
                 // corners harshly squared off by the scroll clip.
                 androidx.compose.material3.Surface(
-                    onClick = { onSelect(type) },
+                    onClick = { onSelect(item.type, item.tls) },
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(6.dp),
                     color = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.fillMaxWidth(),
@@ -531,10 +537,10 @@ private fun ProtocolPickerDialog(
                             containerColor = MaterialTheme.colorScheme.secondaryContainer,
                             contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                             size = 40.dp,
-                            shape = io.nekohasekai.sagernet.ui.compose.components.shapeForSeed(name),
+                            shape = io.nekohasekai.sagernet.ui.compose.components.shapeForSeed(item.name),
                         )
                         Text(
-                            text = name,
+                            text = item.name,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.onSurface,
                         )

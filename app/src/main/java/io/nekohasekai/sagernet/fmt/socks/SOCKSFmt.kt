@@ -55,25 +55,36 @@ fun parseSOCKS(link: String): SOCKSBean {
         }
     }
     return SOCKSBean().apply {
-        protocol = when (url.scheme) {
+        protocol = when (url.scheme.lowercase()) {
             "socks4" -> SOCKSBean.PROTOCOL_SOCKS4
             "socks4a" -> SOCKSBean.PROTOCOL_SOCKS4A
-            "socks5", "socks5h" /* blame cURL for this */, "socks" -> SOCKSBean.PROTOCOL_SOCKS5
+            "socks5", "socks5h" /* blame cURL for this */, "socks", "socks+tls" -> SOCKSBean.PROTOCOL_SOCKS5
             else -> error("impossible")
         }
         serverAddress = url.host
         serverPort = when {
-            !url.hasPort() -> 1080
+            !url.hasPort() -> if (url.scheme.equals("socks+tls", ignoreCase = true)) 443 else 1080
             else -> url.port
         }
         username = url.username
         password = url.password
         name = url.fragment
+        if (url.scheme.equals("socks+tls", ignoreCase = true)) {
+            security = "tls"
+            url.queryParameter("sni")?.let { sni = it }
+            url.queryParameter("allowInsecure")?.let {
+                if (it == "1" || it.equals("true", ignoreCase = true)) {
+                    allowInsecure = true
+                }
+            }
+        }
     }
 }
 
 fun SOCKSBean.toUri(): String? {
-    if (security != "none") error("unsupported socks with tls")
+    if (security != "none" && !(security == "tls" && protocol == SOCKSBean.PROTOCOL_SOCKS5)) {
+        error("unsupported socks with tls")
+    }
     if (type != "tcp" || headerType != "none") error("unsupported socks with v2ray transport")
     if (protocol == SOCKSBean.PROTOCOL_SOCKS5 && username.isEmpty() && password.isNotEmpty()) {
         error("SOCKS5 Username/Password Authentication with empty username violates RFC 1929")
@@ -90,7 +101,8 @@ fun SOCKSBean.toUri(): String? {
     if (protocol == SOCKSBean.PROTOCOL_SOCKS4 || protocol == SOCKSBean.PROTOCOL_SOCKS4A && password.isNotEmpty()) {
         error("SOCKS4 and SOCKS4A do not have password field")
     }
-    val builder = Libexclavecore.newURL("socks${protocolVersion()}").apply {
+    val scheme = if (security == "tls") "socks+tls" else "socks${protocolVersion()}"
+    val builder = Libexclavecore.newURL(scheme).apply {
         setHostPort(serverAddress, serverPort)
         if (name.isNotEmpty()) fragment = name
     }
@@ -99,6 +111,14 @@ fun SOCKSBean.toUri(): String? {
     }
     if (password.isNotEmpty()) {
         builder.password = password
+    }
+    if (security == "tls") {
+        if (sni.isNotEmpty()) {
+            builder.addQueryParameter("sni", sni)
+        }
+        if (allowInsecure == true) {
+            builder.addQueryParameter("allowInsecure", "1")
+        }
     }
     return builder.string
 }

@@ -42,11 +42,34 @@ fun LogcatScreen(
     var refreshKey by remember { mutableStateOf(0) }
 
     LaunchedEffect(refreshKey) {
-        try {
-            val process = Runtime.getRuntime().exec(arrayOf("logcat", "-d", "-t", "500"))
-            logText = process.inputStream.bufferedReader().readText()
-        } catch (_: Exception) {
-            logText = "Failed to read logs"
+        logText = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            val systemLogcatBin = java.io.File("/system/bin/logcat")
+            val androidLogcat = if (systemLogcatBin.canExecute()) {
+                try {
+                    val process = Runtime.getRuntime().exec(arrayOf(systemLogcatBin.path, "-d", "-t", "500"))
+                    val out = process.inputStream.bufferedReader().readText()
+                    val exit = process.waitFor()
+                    if (exit == 0) out else null
+                } catch (_: Exception) {
+                    null
+                }
+            } else {
+                null
+            }
+            if (androidLogcat != null) {
+                androidLogcat
+            } else {
+                val logFile = java.io.File(context.filesDir, "logcat.log")
+                if (logFile.isFile) {
+                    runCatching {
+                        val lines = logFile.readLines()
+                        if (lines.size > 500) lines.takeLast(500).joinToString("\n")
+                        else lines.joinToString("\n")
+                    }.getOrDefault("Failed to read logs")
+                } else {
+                    ""
+                }
+            }
         }
     }
 
@@ -70,9 +93,16 @@ fun LogcatScreen(
                         Icon(Icons.Filled.Send, contentDescription = "Share")
                     }
                     IconButton(onClick = {
-                        try {
-                            Runtime.getRuntime().exec(arrayOf("logcat", "-c"))
-                        } catch (_: Exception) {}
+                        val systemLogcatBin = java.io.File("/system/bin/logcat")
+                        if (systemLogcatBin.canExecute()) {
+                            try {
+                                Runtime.getRuntime().exec(arrayOf(systemLogcatBin.path, "-c"))
+                            } catch (_: Exception) {}
+                        }
+                        runCatching {
+                            val logFile = java.io.File(context.filesDir, "logcat.log")
+                            if (logFile.isFile) logFile.writeText("")
+                        }
                         refreshKey++
                     }) {
                         Icon(Icons.Filled.Delete, contentDescription = "Clear")
