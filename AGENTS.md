@@ -30,6 +30,23 @@ owenclave-fhs
 
 ### Testing
 - `./gradlew test`
+- Desktop smoke test: `./gradlew :desktop:app:run --args="--selftest"`
+- Desktop naive plugin test: `./gradlew :desktop:app:run --args="--selftest-naive"`
+- Desktop protocol tests (real core as local server, end to end):
+  `./gradlew :desktop:app:run --args="--selftest-protocols"` covers
+  vless, vmess, trojan, anytls, shadowsocks, socks, http and https;
+  `--selftest-vless` and `--selftest-protocol <name>` run a single one.
+- Desktop settings parity: `./gradlew :desktop:app:run --args="--print-settings"`
+
+### Desktop & Docker Server
+- `./run desktop build` - core + naive + tun2socks + portable/installer for the current OS
+- `./run desktop build all` - cross platform binaries in `desktop/core/dist`,
+  `desktop/naive/dist` and `desktop/tun2socks/dist`
+- `./gradlew :desktop:app:prepareServerDist` + `docker build -t owenclave:latest .` -
+  Mihomo-compatible headless server + Web UI (`/ui/`)
+- `:desktop:shared` compiles the Android `fmt`/`group`/`ktx` sources read-only; keep
+  both Android and desktop compiling when touching shared model code.
+- Docs: `desktop/README.md`, `docker/README.md`
 
 ### Key files
 - `Constants.kt` - connection test URL, key constants

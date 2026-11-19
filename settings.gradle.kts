@@ -6,6 +6,9 @@ include(":plugin:naive")
 
 include(":app")
 
+include(":desktop:shared")
+include(":desktop:app")
+
 rootProject.name = "Owenclave"
 
 dependencyResolutionManagement {

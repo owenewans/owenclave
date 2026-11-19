@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC
+ "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<policyconfig>
+  <vendor>Owenclave</vendor>
+  <vendor_url>https://github.com/owenewans/owenclave</vendor_url>
+  <icon_name>owenclave</icon_name>
+
+  <action id="org.owenewans.owenclave.tun-helper">
+    <description>Configure Owenclave VPN network tunnel</description>
+    <description xml:lang="ru">Настройка сетевого VPN-туннеля Owenclave</description>
+    <message>Authentication is required to start the Owenclave VPN network tunnel.</message>
+    <message xml:lang="ru">Требуется аутентификация для запуска VPN-туннеля Owenclave.</message>
+    <defaults>
+      <allow_any>auth_admin_keep</allow_any>
+      <allow_inactive>auth_admin_keep</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/opt/owenclave/bin/owenclave-tun-helper</annotate>
+  </action>
+</policyconfig>

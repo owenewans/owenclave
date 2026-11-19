@@ -77,6 +77,7 @@ data class ProfileFieldState(
     val username: String = "",
     val password: String = "",
     val uuid: String = "",
+    val alterId: String = "0",
     val method: String = "",
     val encryption: String = "",
     val flow: String = "",
@@ -150,7 +151,7 @@ fun UniversalProfileSettingsScreen(
 
     val protocolName = when (profileType) {
         ProxyEntity.TYPE_SOCKS -> "SOCKS"
-        ProxyEntity.TYPE_HTTP -> "HTTP"
+        ProxyEntity.TYPE_HTTP -> if (s.security == "tls") "HTTPS" else "HTTP"
         ProxyEntity.TYPE_SS -> "Shadowsocks"
         ProxyEntity.TYPE_SSR -> "ShadowsocksR"
         ProxyEntity.TYPE_VMESS -> "VMess"
@@ -269,6 +270,7 @@ fun UniversalProfileSettingsScreen(
                 }
 
                 if (profileType in listOf(
+                        ProxyEntity.TYPE_SOCKS, ProxyEntity.TYPE_HTTP,
                         ProxyEntity.TYPE_VMESS, ProxyEntity.TYPE_VLESS,
                         ProxyEntity.TYPE_TROJAN, ProxyEntity.TYPE_SS,
                     )
@@ -484,6 +486,19 @@ private fun HttpFields(s: ProfileFieldState, update: (ProfileFieldState) -> Unit
         ProfileTextField("Password", s.password, password = true) { update(s.copy(password = it)) }
     }
     SectionCard {
+        ProfileSwitchItem(
+            title = "HTTPS (TLS)",
+            checked = s.security == "tls",
+            subtitle = "Encrypt proxy connection over TLS",
+        ) { enabled ->
+            val nextPort = when {
+                enabled && (s.serverPort.isEmpty() || s.serverPort == "80" || s.serverPort == "8080") -> "443"
+                !enabled && s.serverPort == "443" -> "8080"
+                else -> s.serverPort
+            }
+            update(s.copy(security = if (enabled) "tls" else "none", serverPort = nextPort))
+        }
+        DividerItem()
         ProfileSwitchItem("CONNECT-UDP", s.connectUDP) { update(s.copy(connectUDP = it)) }
         if (s.connectUDP) {
             DividerItem()
@@ -530,7 +545,9 @@ private fun VmessFields(s: ProfileFieldState, update: (ProfileFieldState) -> Uni
         DividerItem()
         ProfileChoiceField("Encryption", s.encryption, R.array.vmess_encryption_value) { update(s.copy(encryption = it)) }
         DividerItem()
-        ProfileTextField("Alter ID", s.serverPort) { update(s.copy(serverPort = it)) }
+        ProfileTextField("Alter ID", s.alterId, keyboardType = KeyboardType.Number) {
+            update(s.copy(alterId = it.filter { c -> c.isDigit() }))
+        }
     }
     TlsTransportFields(s, update)
 }

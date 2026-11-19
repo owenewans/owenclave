@@ -23,6 +23,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -73,6 +74,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
@@ -197,19 +200,32 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
 
     private fun handleViewIntent(intent: Intent) {
         val uri = intent.data ?: return
-        val link = uri.toString()
-        if (link.startsWith("owenclave://", ignoreCase = true)) {
-            handleAddSubscriptionDeepLink(uri)
+        val link = uri.toString().trim()
+        if (link.isEmpty()) return
+
+        val subAdd = parseSubscriptionDeepLink(uri)
+        if (subAdd != null) {
+            PendingDeepLink.pendingSubscriptionAdd.value = subAdd
+            PendingDeepLink.pendingDestination.value = NavDestination.GROUP
             return
         }
         if (io.nekohasekai.sagernet.ktx.HappLink.isHappCryptLink(link)) {
             handleHappCryptLink(link)
             return
         }
+
+        val effectiveLink = if (link.startsWith("owenclave://", ignoreCase = true)) {
+            val inner = link.substringAfter("://", "").trim()
+            if (inner.isEmpty()) return
+            inner
+        } else {
+            link
+        }
+
         io.nekohasekai.sagernet.ktx.runOnDefaultDispatcher {
             try {
-                if (link.startsWith("owenkey://", ignoreCase = true)) {
-                    val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(link)
+                if (effectiveLink.startsWith("owenkey://", ignoreCase = true)) {
+                    val import = io.nekohasekai.sagernet.ktx.parseOwenkeyLink(effectiveLink)
                     if (import != null) {
                         io.nekohasekai.sagernet.database.GroupManager.createGroup(import.group)
                         import.profiles.forEach { profile ->
@@ -222,6 +238,15 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                             io.nekohasekai.sagernet.database.DataStore.selectedProxy = import.profiles.first().id
                         }
                         io.nekohasekai.sagernet.database.DataStore.selectedGroup = import.group.id
+                        io.nekohasekai.sagernet.ktx.runOnMainDispatcher {
+                            PendingDeepLink.pendingDestination.value =
+                                if (import.profiles.isNotEmpty()) NavDestination.CONFIGURATION else NavDestination.GROUP
+                            android.widget.Toast.makeText(
+                                this@ComposeMainActivity,
+                                "Imported ${import.group.displayName()}",
+                                android.widget.Toast.LENGTH_SHORT,
+                            ).show()
+                        }
                         if (import.group.type == io.nekohasekai.sagernet.GroupType.SUBSCRIPTION && import.group.subscription?.link?.isNotEmpty() == true) {
                             val created = io.nekohasekai.sagernet.database.SagerDatabase.groupDao.getById(import.group.id)
                             if (created != null) {
@@ -230,14 +255,34 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
                         }
                     }
                 } else {
-                    val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(link)
+                    val beans = io.nekohasekai.sagernet.ktx.parseShareLinks(effectiveLink)
                     if (beans.isNotEmpty()) {
                         val groupId = io.nekohasekai.sagernet.database.DataStore.selectedGroupForImport()
-                        val profile = io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, beans[0])
-                        io.nekohasekai.sagernet.database.DataStore.selectedProxy = profile.id
+                        var firstId = 0L
+                        beans.forEachIndexed { idx, bean ->
+                            val profile = io.nekohasekai.sagernet.database.ProfileManager.createProfile(groupId, bean)
+                            if (idx == 0) firstId = profile.id
+                        }
+                        if (firstId > 0L) {
+                            io.nekohasekai.sagernet.database.DataStore.selectedProxy = firstId
+                        }
+                        io.nekohasekai.sagernet.ktx.runOnMainDispatcher {
+                            PendingDeepLink.pendingDestination.value = NavDestination.CONFIGURATION
+                            val summary = if (beans.size == 1) {
+                                "Imported ${beans[0].displayName()}"
+                            } else {
+                                "Imported ${beans.size} profiles"
+                            }
+                            android.widget.Toast.makeText(
+                                this@ComposeMainActivity,
+                                summary,
+                                android.widget.Toast.LENGTH_SHORT,
+                            ).show()
+                        }
                     }
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                io.nekohasekai.sagernet.ktx.Logs.w(e)
             }
         }
     }
@@ -250,14 +295,8 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
      * still review/edit before confirming the add.
      */
     private fun handleAddSubscriptionDeepLink(uri: android.net.Uri) {
-        val url = uri.getQueryParameter("url")?.trim()
-        if (url.isNullOrEmpty()) return
-        val sendHwid = when (uri.getQueryParameter("hwid")?.trim()?.lowercase()) {
-            "1", "true", "yes", "on" -> true
-            "0", "false", "no", "off" -> false
-            else -> null
-        }
-        PendingDeepLink.pendingSubscriptionAdd.value = PendingSubscriptionAdd(url, sendHwid)
+        val pending = parseSubscriptionDeepLink(uri) ?: return
+        PendingDeepLink.pendingSubscriptionAdd.value = pending
         PendingDeepLink.pendingDestination.value = NavDestination.GROUP
     }
 
@@ -293,6 +332,9 @@ class ComposeMainActivity : ComponentActivity(), SagerConnection.Callback {
     override fun stateChanged(state: BaseService.State, profileName: String?, msg: String?) {
         serviceState.value = state
         serviceMessage.value = msg
+        if (!msg.isNullOrBlank()) {
+            android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun trafficUpdated(profileId: Long, stats: TrafficStats, isCurrent: Boolean) {
@@ -508,6 +550,67 @@ fun MainScreen(
     }
 }
 
+internal fun parseSubscriptionDeepLink(uri: android.net.Uri): PendingSubscriptionAdd? {
+    val scheme = uri.scheme?.lowercase() ?: return null
+    val raw = uri.toString().trim()
+    if (scheme == "happ") {
+        if (io.nekohasekai.sagernet.ktx.HappLink.isHappCryptLink(raw)) {
+            val decrypted = io.nekohasekai.sagernet.ktx.HappLink.decrypt(raw)
+            if (decrypted.isNullOrEmpty()) return null
+            return PendingSubscriptionAdd(decrypted, sendHwid = null)
+        }
+        val afterAdd = if (raw.startsWith("happ://add/", ignoreCase = true)) {
+            raw.substring("happ://add/".length).trim()
+        } else {
+            null
+        }
+        if (!afterAdd.isNullOrEmpty()) {
+            val decoded = if (afterAdd.startsWith("http%3A", ignoreCase = true) || afterAdd.startsWith("https%3A", ignoreCase = true)) {
+                runCatching { java.net.URLDecoder.decode(afterAdd, "UTF-8") }.getOrDefault(afterAdd)
+            } else {
+                afterAdd
+            }
+            if (decoded.startsWith("http://", ignoreCase = true) || decoded.startsWith("https://", ignoreCase = true)) {
+                return PendingSubscriptionAdd(decoded, sendHwid = null)
+            }
+        }
+        return null
+    }
+    if (scheme != "owenclave" && scheme != "exclave" && scheme != "sn" && scheme != "clash") {
+        return null
+    }
+    val sendHwid = when (uri.getQueryParameter("hwid")?.trim()?.lowercase()) {
+        "1", "true", "yes", "on" -> true
+        "0", "false", "no", "off" -> false
+        else -> null
+    }
+    val queryUrl = (uri.getQueryParameter("url") ?: uri.getQueryParameter("config"))?.trim()
+    if (!queryUrl.isNullOrEmpty()) {
+        return PendingSubscriptionAdd(queryUrl, sendHwid)
+    }
+    val afterScheme = raw.substringAfter("://", "").trim()
+    val candidate = when {
+        afterScheme.startsWith("http://", ignoreCase = true) ||
+            afterScheme.startsWith("https://", ignoreCase = true) -> afterScheme
+        afterScheme.startsWith("import/", ignoreCase = true) -> afterScheme.substring("import/".length).trim()
+        afterScheme.startsWith("add/", ignoreCase = true) -> afterScheme.substring("add/".length).trim()
+        afterScheme.startsWith("add-subscription/", ignoreCase = true) -> afterScheme.substring("add-subscription/".length).trim()
+        else -> null
+    }?.let { extracted ->
+        if (extracted.startsWith("http%3A", ignoreCase = true) || extracted.startsWith("https%3A", ignoreCase = true)) {
+            runCatching { java.net.URLDecoder.decode(extracted, "UTF-8") }.getOrDefault(extracted)
+        } else {
+            extracted
+        }
+    }
+    if (!candidate.isNullOrEmpty() &&
+        (candidate.startsWith("http://", ignoreCase = true) || candidate.startsWith("https://", ignoreCase = true))
+    ) {
+        return PendingSubscriptionAdd(candidate, sendHwid)
+    }
+    return null
+}
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun UnifiedBottomBar(
@@ -532,7 +635,8 @@ private fun UnifiedBottomBar(
     }
     val itemSize = (48 * navScale).dp
     val iconSize = (24 * navScale).dp
-    val navRowWidth = (160 * navScale).dp
+    val compactNavWidth = (160 * navScale).dp
+    val fullNavWidth = itemSize * items.size + 2.dp * (items.size - 1).coerceAtLeast(0) + 8.dp
     val containerColor by animateColorAsState(
         targetValue = if (testing)
             MaterialTheme.colorScheme.primaryContainer
@@ -541,103 +645,139 @@ private fun UnifiedBottomBar(
         animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "unifiedContainer",
     )
-    val scope = rememberCoroutineScope()
+    val navListState = rememberLazyListState()
 
-    Surface(
-        modifier = modifier
-            .padding(horizontal = 16.dp)
-            .padding(bottom = 24.dp)
-            .navigationBarsPadding(),
-        shape = RoundedCornerShape(32.dp),
-        color = containerColor,
-        tonalElevation = 6.dp,
-        shadowElevation = if (testing) 12.dp else 8.dp,
+    BoxWithConstraints(
+        modifier = modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center,
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        val navRowWidth = if (maxWidth >= 560.dp) {
+            minOf(fullNavWidth, (maxWidth - 184.dp).coerceAtLeast(compactNavWidth))
+        } else {
+            compactNavWidth
+        }
+
+        LaunchedEffect(selected, navRowWidth < fullNavWidth) {
+            if (navRowWidth < fullNavWidth) {
+                val idx = items.indexOf(selected)
+                if (idx >= 0) {
+                    navListState.animateScrollToItem(idx)
+                }
+            }
+        }
+
+        Surface(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 24.dp)
+                .navigationBarsPadding(),
+            shape = RoundedCornerShape(32.dp),
+            color = containerColor,
+            tonalElevation = 6.dp,
+            shadowElevation = if (testing) 12.dp else 8.dp,
         ) {
-            // ── Left: Status ──
-            StatusSection(
-                connected = connected,
-                connecting = connecting,
-                testProgress = testProgress,
-                modifier = Modifier.padding(start = 10.dp, end = 8.dp),
-            )
-
-            // ── Divider ──
-            Box(
-                modifier = Modifier
-                    .size(width = 1.dp, height = 32.dp)
-                    .padding(horizontal = 4.dp)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)),
-            )
-
-            // ── Center: Nav (scrollable, no auto-scroll) ──
-            LazyRow(
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp),
-                modifier = Modifier
-                    .width(navRowWidth)
-                    .clip(RoundedCornerShape(24.dp)),
+            Row(
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                items(items) { destination ->
-                    val isSelected = destination == selected
-                    val itemColor by animateColorAsState(
-                        targetValue = if (isSelected) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent,
-                        label = "navItemColor",
-                    )
-                    val iconColor by animateColorAsState(
-                        targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                        label = "navItemIcon",
-                    )
-                    val scale by animateFloatAsState(
-                        targetValue = if (isSelected) 1.15f else 1f,
-                        animationSpec = spring(
-                            dampingRatio = Spring.DampingRatioMediumBouncy,
-                            stiffness = Spring.StiffnessMedium,
-                        ),
-                        label = "navItemScale",
-                    )
-                    Surface(
-                        onClick = { onSelect(destination) },
-                        shape = if (isSelected) MaterialShapes.Cookie9Sided.toShape() else RoundedCornerShape(24.dp),
-                        color = itemColor,
-                        modifier = Modifier.size(itemSize),
-                    ) {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.graphicsLayer {
-                                scaleX = scale
-                                scaleY = scale
-                            },
+                // ── Left: Status ──
+                StatusSection(
+                    connected = connected,
+                    connecting = connecting,
+                    testProgress = testProgress,
+                    modifier = Modifier.padding(start = 10.dp, end = 8.dp),
+                )
+
+                // ── Divider ──
+                Box(
+                    modifier = Modifier
+                        .size(width = 1.dp, height = 32.dp)
+                        .padding(horizontal = 4.dp)
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)),
+                )
+
+                // ── Center: Nav (all 7 tabs on desktop/tablet, scrollable pill on compact phones) ──
+                LazyRow(
+                    state = navListState,
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    modifier = Modifier
+                        .width(navRowWidth)
+                        .clip(RoundedCornerShape(24.dp))
+                        .pointerInput(navListState) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    val event = awaitPointerEvent()
+                                    if (event.type == PointerEventType.Scroll) {
+                                        val delta = event.changes.fold(0f) { acc, change ->
+                                            acc + change.scrollDelta.x + change.scrollDelta.y
+                                        }
+                                        if (delta != 0f) {
+                                            navListState.dispatchRawDelta(delta * 36f)
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                ) {
+                    items(items) { destination ->
+                        val isSelected = destination == selected
+                        val itemColor by animateColorAsState(
+                            targetValue = if (isSelected) MaterialTheme.colorScheme.primaryContainer else androidx.compose.ui.graphics.Color.Transparent,
+                            label = "navItemColor",
+                        )
+                        val iconColor by animateColorAsState(
+                            targetValue = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                            label = "navItemIcon",
+                        )
+                        val scale by animateFloatAsState(
+                            targetValue = if (isSelected) 1.15f else 1f,
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessMedium,
+                            ),
+                            label = "navItemScale",
+                        )
+                        Surface(
+                            onClick = { onSelect(destination) },
+                            shape = if (isSelected) MaterialShapes.Cookie9Sided.toShape() else RoundedCornerShape(24.dp),
+                            color = itemColor,
+                            modifier = Modifier.size(itemSize),
                         ) {
-                            Icon(
-                                imageVector = destination.icon,
-                                contentDescription = stringResource(destination.labelRes),
-                                tint = iconColor,
-                                modifier = Modifier.size(iconSize),
-                            )
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.graphicsLayer {
+                                    scaleX = scale
+                                    scaleY = scale
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = destination.icon,
+                                    contentDescription = stringResource(destination.labelRes),
+                                    tint = iconColor,
+                                    modifier = Modifier.size(iconSize),
+                                )
+                            }
                         }
                     }
                 }
+
+                // ── Divider ──
+                Box(
+                    modifier = Modifier
+                        .size(width = 1.dp, height = 32.dp)
+                        .padding(horizontal = 4.dp)
+                        .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)),
+                )
+
+                // ── Right: Power button ──
+                PowerButton(
+                    connected = connected,
+                    connecting = connecting,
+                    onClick = onPowerClick,
+                    modifier = Modifier.padding(start = 4.dp, end = 6.dp),
+                )
             }
-
-            // ── Divider ──
-            Box(
-                modifier = Modifier
-                    .size(width = 1.dp, height = 32.dp)
-                    .padding(horizontal = 4.dp)
-                    .background(MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.15f)),
-            )
-
-            // ── Right: Power button ──
-            PowerButton(
-                connected = connected,
-                connecting = connecting,
-                onClick = onPowerClick,
-                modifier = Modifier.padding(start = 4.dp, end = 6.dp),
-            )
         }
     }
 }

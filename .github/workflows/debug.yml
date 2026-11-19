@@ -9,6 +9,11 @@ on:
       - "library/**"
       - ".github/workflows/debug.yml"
   workflow_dispatch:
+
+concurrency:
+  group: debug-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build

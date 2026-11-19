@@ -27,19 +27,25 @@ fun parseHttp(link: String): HttpBean {
     if (url.path != "/" && url.path != "") error("Not http proxy")
 
     return HttpBean().apply {
+        val isHttps = url.scheme.equals("https", ignoreCase = true)
         serverAddress = url.host
         serverPort = when {
-            !url.hasPort() -> if (url.scheme == "https") 443 else 80
+            !url.hasPort() -> if (isHttps) 443 else 80
             else -> url.port
         }
         username = url.username
         password = url.password
         name = url.fragment
-        if (url.scheme == "https") {
+        if (isHttps) {
             // non-standard
             security = "tls"
             url.queryParameter("sni")?.let {
                 sni = it
+            }
+            url.queryParameter("allowInsecure")?.let {
+                if (it == "1" || it.equals("true", ignoreCase = true)) {
+                    allowInsecure = true
+                }
             }
         }
     }
@@ -62,9 +68,14 @@ fun HttpBean.toUri(): String? {
         builder.password = password
     }
 
-    if (security == "tls" && sni.isNotEmpty()) {
+    if (security == "tls") {
         // non-standard
-        builder.addQueryParameter("sni", sni)
+        if (sni.isNotEmpty()) {
+            builder.addQueryParameter("sni", sni)
+        }
+        if (allowInsecure == true) {
+            builder.addQueryParameter("allowInsecure", "1")
+        }
     }
 
     return builder.string

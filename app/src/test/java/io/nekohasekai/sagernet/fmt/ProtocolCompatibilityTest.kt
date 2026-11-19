@@ -156,4 +156,38 @@ class ProtocolCompatibilityTest {
         }
         assertNull(parseUUID("not-a-uuid"))
     }
+
+    @Test
+    fun httpAndHttpsBeanProtocolNamesAndTlsFieldsSurviveClone() {
+        val plain = HttpBean().apply {
+            initializeDefaultValues()
+            serverAddress = "proxy.example.com"
+            serverPort = 8080
+            username = "alice"
+            password = "secret"
+        }.clone()
+        assertEquals("HTTP", plain.protocolName())
+        assertEquals("none", plain.security)
+        assertEquals("alice", plain.username)
+
+        val https = HttpBean().apply {
+            initializeDefaultValues()
+            serverAddress = "secure-proxy.example.com"
+            serverPort = 443
+            username = "alice"
+            password = "secret"
+            security = "tls"
+            sni = "cdn.example.com"
+            alpn = "h2,http/1.1"
+            allowInsecure = true
+            connectUDP = true
+            uriTemplate = "https://secure-proxy.example.com/.well-known/masque/udp/{target_host}/{target_port}/"
+        }.clone()
+        assertEquals("HTTPS", https.protocolName())
+        assertEquals("tls", https.security)
+        assertEquals("cdn.example.com", https.sni)
+        assertEquals("h2,http/1.1", https.alpn)
+        assertTrue(https.allowInsecure)
+        assertTrue(https.connectUDP)
+    }
 }

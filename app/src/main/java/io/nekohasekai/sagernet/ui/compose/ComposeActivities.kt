@@ -483,6 +483,664 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
     companion object {
         const val EXTRA_PROFILE_ID = "profileId"
         const val EXTRA_PROFILE_TYPE = "profileType"
+        const val EXTRA_HTTP_TLS = "httpTls"
+
+        fun defaultInitialState(profileType: Int, httpTls: Boolean = false): ProfileFieldState {
+            val useTls = profileType in listOf(
+                ProxyEntity.TYPE_MASQUE,
+                ProxyEntity.TYPE_ANYTLS,
+                ProxyEntity.TYPE_TROJAN,
+            ) || (profileType == ProxyEntity.TYPE_HTTP && httpTls)
+            return ProfileFieldState(
+                serverPort = when {
+                    profileType == ProxyEntity.TYPE_HTTP && httpTls -> "443"
+                    profileType == ProxyEntity.TYPE_HTTP -> "8080"
+                    else -> ""
+                },
+                network = if (profileType == ProxyEntity.TYPE_NAIVE || profileType == ProxyEntity.TYPE_TRUSTTUNNEL) "https" else "tcp",
+                security = if (useTls) "tls" else "none",
+                alpn = if (profileType == ProxyEntity.TYPE_SHADOWQUIC) "h3" else "",
+            )
+        }
+
+        /**
+         * Transport, TLS, REALITY and multiplex settings shared by every
+         * [StandardV2RayBean] subclass (`SOCKS`, `HTTP`/`HTTPS`, `Shadowsocks`,
+         * `VMess`, `VLESS`, `Trojan`).
+         */
+        private fun ProfileFieldState.withV2RayCommon(b: StandardV2RayBean): ProfileFieldState {
+            val net = b.type ?: "tcp"
+            return copy(
+                network = net,
+                security = b.security ?: "none",
+                sni = b.sni ?: "",
+                alpn = b.alpn ?: "",
+                host = b.host ?: "",
+                path = if (net == "grpc") (b.grpcServiceName ?: "") else (b.path ?: ""),
+                certificates = b.certificates ?: "",
+                realityPublicKey = b.realityPublicKey ?: "",
+                realityShortId = b.realityShortId ?: "",
+                utlsFingerprint = b.utlsFingerprint ?: "",
+                allowInsecure = b.allowInsecure ?: false,
+                echEnabled = b.echEnabled ?: false,
+                echConfig = b.echConfigList ?: "",
+                mux = b.mux ?: false,
+                muxConcurrency = b.muxConcurrency?.takeIf { it > 0 }?.toString() ?: "",
+                muxPacketEncoding = b.muxPacketEncoding ?: "",
+                singMux = b.singMux ?: false,
+                singMuxProtocol = b.singMuxProtocol ?: "",
+                singMuxMaxConnections = b.singMuxMaxConnections?.takeIf { it > 0 }?.toString() ?: "",
+                singMuxMinStreams = b.singMuxMinStreams?.takeIf { it > 0 }?.toString() ?: "",
+                singMuxPadding = b.singMuxPadding ?: false,
+            )
+        }
+
+        private fun applyV2RayCommon(b: StandardV2RayBean, state: ProfileFieldState) {
+            b.type = state.network.ifEmpty { "tcp" }
+            b.security = state.security.ifEmpty { "none" }
+            b.sni = state.sni
+            b.alpn = state.alpn
+            b.host = state.host
+            if (b.type == "grpc") {
+                b.grpcServiceName = state.path
+            } else {
+                b.path = state.path
+            }
+            b.certificates = state.certificates
+            b.realityPublicKey = state.realityPublicKey
+            b.realityShortId = state.realityShortId
+            b.utlsFingerprint = state.utlsFingerprint
+            b.allowInsecure = state.allowInsecure
+            b.echEnabled = state.echEnabled
+            b.echConfigList = state.echConfig
+            b.mux = state.mux
+            // Keep the bean's own default rather than writing 0, which would mean
+            // "no concurrency" to the core.
+            b.muxConcurrency = state.muxConcurrency.toIntOrNull()?.takeIf { it > 0 } ?: 8
+            b.muxPacketEncoding = state.muxPacketEncoding
+            b.singMux = state.singMux
+            b.singMuxProtocol = state.singMuxProtocol
+            b.singMuxMaxConnections = state.singMuxMaxConnections.toIntOrNull() ?: 0
+            b.singMuxMinStreams = state.singMuxMinStreams.toIntOrNull() ?: 0
+            b.singMuxPadding = state.singMuxPadding
+        }
+
+        fun profileEntityToState(entity: ProxyEntity, type: Int = entity.type): ProfileFieldState {
+            val bean = entity.requireBean()
+            val s = ProfileFieldState(
+                name = bean.name ?: "",
+                serverAddress = bean.serverAddress ?: "",
+                serverPort = bean.serverPort?.toString() ?: "",
+                iconIndex = entity.iconIndex,
+            )
+            return when (type) {
+                ProxyEntity.TYPE_SOCKS -> {
+                    val b = entity.socksBean ?: return s
+                    s.copy(
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        singUot = b.singUoT ?: false,
+                    ).withV2RayCommon(b)
+                }
+                ProxyEntity.TYPE_HTTP -> {
+                    val b = entity.httpBean ?: return s
+                    s.copy(
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        connectUDP = b.connectUDP ?: false,
+                        uriTemplate = b.uriTemplate ?: "",
+                    ).withV2RayCommon(b)
+                }
+                ProxyEntity.TYPE_SS -> {
+                    val b = entity.ssBean ?: return s
+                    s.copy(
+                        method = b.method ?: "",
+                        password = b.password ?: "",
+                        singUot = b.singUoT ?: false,
+                    ).withV2RayCommon(b)
+                }
+                ProxyEntity.TYPE_SSR -> {
+                    val b = entity.ssrBean ?: return s
+                    s.copy(
+                        password = b.password ?: "",
+                        method = b.method ?: "",
+                        ssrProtocol = b.protocol ?: "origin",
+                        protocolParam = b.protocolParam ?: "",
+                        obfs = b.obfs ?: "plain",
+                        obfsParam = b.obfsParam ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_VMESS -> {
+                    val b = entity.vmessBean ?: return s
+                    s.copy(
+                        uuid = b.uuid ?: "",
+                        alterId = (b.alterId ?: 0).toString(),
+                        encryption = b.encryption ?: "auto",
+                    ).withV2RayCommon(b)
+                }
+                ProxyEntity.TYPE_VLESS -> {
+                    val b = entity.vlessBean ?: return s
+                    s.copy(
+                        uuid = b.uuid ?: "",
+                        flow = b.flow ?: "",
+                        encryption = b.encryption ?: "none",
+                    ).withV2RayCommon(b)
+                }
+                ProxyEntity.TYPE_TROJAN -> {
+                    val b = entity.trojanBean ?: return s
+                    s.copy(password = b.password ?: "").withV2RayCommon(b)
+                }
+                ProxyEntity.TYPE_NAIVE -> {
+                    val b = entity.naiveBean ?: return s
+                    s.copy(
+                        network = b.proto ?: "https",
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        sni = b.sni ?: "",
+                        certificates = b.certificate ?: "",
+                        tunnelTimeout = b.tunnelTimeout?.toString() ?: "",
+                        idleTimeout = b.idleTimeout?.toString() ?: "",
+                        extraHeaders = b.extraHeaders ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_HYSTERIA2 -> {
+                    val b = entity.hysteria2Bean ?: return s
+                    s.copy(
+                        password = b.auth ?: "",
+                        sni = b.sni ?: "",
+                        serverPorts = b.serverPorts ?: "",
+                        obfsType = b.obfsType ?: "",
+                        obfsPassword = b.obfsPassword ?: "",
+                        uploadSpeed = b.uploadMbps?.toString() ?: "",
+                        downloadSpeed = b.downloadMbps?.toString() ?: "",
+                        congestionControl = b.congestionControl ?: "bbr",
+                        certificates = b.certificates ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_SSH -> {
+                    val b = entity.sshBean ?: return s
+                    s.copy(
+                        username = b.username ?: "root",
+                        authType = b.authType ?: 0,
+                        password = b.password ?: "",
+                        privateKey = b.privateKey ?: "",
+                        publicKey = b.publicKey ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_WG -> {
+                    val b = entity.wgBean ?: return s
+                    s.copy(
+                        localAddress = b.localAddress ?: "",
+                        privateKeyWg = b.privateKey ?: "",
+                        peerPublicKey = b.peerPublicKey ?: "",
+                        peerPreSharedKey = b.peerPreSharedKey ?: "",
+                        mtu = b.mtu?.toString() ?: "1420",
+                        reserved = b.reserved ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_TUIC5 -> {
+                    val b = entity.tuic5Bean ?: return s
+                    s.copy(
+                        uuid = b.uuid ?: "",
+                        password = b.password ?: "",
+                        sni = b.sni ?: "",
+                        alpn = b.alpn ?: "",
+                        udpRelayMode = b.udpRelayMode ?: "native",
+                        congestionControl = b.congestionControl ?: "cubic",
+                        certificates = b.certificates ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        disableSNI = b.disableSNI ?: false,
+                        zeroRTT = b.zeroRTTHandshake ?: false,
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_JUICITY -> {
+                    val b = entity.juicityBean ?: return s
+                    s.copy(
+                        uuid = b.uuid ?: "",
+                        password = b.password ?: "",
+                        sni = b.sni ?: "",
+                        certificates = b.certificates ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_HTTP3 -> {
+                    val b = entity.http3Bean ?: return s
+                    s.copy(
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        connectUDP = b.connectUDP ?: false,
+                        uriTemplate = b.uriTemplate ?: "",
+                        sni = b.sni ?: "",
+                        certificates = b.certificates ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_ANYTLS -> {
+                    val b = entity.anytlsBean ?: return s
+                    s.copy(
+                        password = b.password ?: "",
+                        security = b.security ?: "tls",
+                        sni = b.sni ?: "",
+                        alpn = b.alpn ?: "",
+                        certificates = b.certificates ?: "",
+                        utlsFingerprint = b.utlsFingerprint ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                        realityPublicKey = b.realityPublicKey ?: "",
+                        realityShortId = b.realityShortId ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_SHADOWQUIC -> {
+                    val b = entity.shadowquicBean ?: return s
+                    s.copy(
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        sni = b.sni ?: "",
+                        alpn = b.alpn ?: "",
+                        congestionControl = b.congestionControl ?: "bbr",
+                        zeroRTT = b.zeroRTT ?: false,
+                        udpOverStream = b.udpOverStream ?: false,
+                    )
+                }
+                ProxyEntity.TYPE_TRUSTTUNNEL -> {
+                    val b = entity.trustTunnelBean ?: return s
+                    s.copy(
+                        network = b.protocol ?: "https",
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        sni = b.sni ?: "",
+                        certificates = b.certificate ?: "",
+                        utlsFingerprint = b.utlsFingerprint ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_SNELL -> {
+                    val b = entity.snellBean ?: return s
+                    s.copy(
+                        psk = b.psk ?: "",
+                        snellVersion = b.version ?: 4,
+                        obfsType = b.obfsMode ?: "none",
+                        host = b.obfsHost ?: "",
+                        path = b.obfsURI ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_MIERU -> {
+                    val b = entity.mieruBean ?: return s
+                    s.copy(
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        network = if (b.protocol == MieruBean.PROTOCOL_UDP) "udp" else "tcp",
+                        serverPorts = b.portRange ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_MASQUE -> {
+                    val b = entity.masqueBean ?: return s
+                    s.copy(
+                        username = b.username ?: "",
+                        password = b.password ?: "",
+                        uriTemplate = b.uriTemplate ?: "",
+                        http3 = b.http3 ?: true,
+                        mtu = b.mtu?.toString() ?: "",
+                        security = b.security ?: "tls",
+                        sni = b.sni ?: "",
+                        certificates = b.certificates ?: "",
+                        allowInsecure = b.allowInsecure ?: false,
+                        utlsFingerprint = b.utlsFingerprint ?: "",
+                        echEnabled = b.echEnabled ?: false,
+                        echConfig = b.echConfigList ?: "",
+                    )
+                }
+                ProxyEntity.TYPE_CONFIG -> {
+                    val b = entity.configBean ?: return s
+                    s.copy(configContent = b.content ?: "", configType = b.type ?: "v2ray")
+                }
+                ProxyEntity.TYPE_CHAIN -> {
+                    val b = entity.chainBean ?: return s
+                    s.copy(serverPorts = b.proxies?.joinToString(",") ?: "")
+                }
+                ProxyEntity.TYPE_BALANCER -> {
+                    val b = entity.balancerBean ?: return s
+                    s.copy(
+                        congestionControl = b.strategy.ifEmpty { "random" },
+                        network = (b.type ?: 0).toString(),
+                        serverPorts = b.proxies?.joinToString(",") ?: "",
+                        uuid = b.groupId?.toString() ?: "",
+                        path = b.nameFilter ?: "",
+                    )
+                }
+                else -> s
+            }
+        }
+
+        fun applyStateToProfileEntity(entity: ProxyEntity, type: Int, state: ProfileFieldState) {
+            entity.type = type
+            when (type) {
+                ProxyEntity.TYPE_SOCKS -> {
+                    val b = entity.socksBean ?: SOCKSBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: if (state.security == "tls") 443 else 1080
+                    b.username = state.username
+                    b.password = state.password
+                    b.singUoT = state.singUot
+                    applyV2RayCommon(b, state)
+                    entity.socksBean = b
+                }
+                ProxyEntity.TYPE_HTTP -> {
+                    val b = entity.httpBean ?: HttpBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: if (state.security == "tls") 443 else 8080
+                    b.username = state.username
+                    b.password = state.password
+                    b.connectUDP = state.connectUDP
+                    b.uriTemplate = state.uriTemplate
+                    applyV2RayCommon(b, state)
+                    entity.httpBean = b
+                }
+                ProxyEntity.TYPE_SS -> {
+                    val b = entity.ssBean ?: ShadowsocksBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 8388
+                    b.method = state.method
+                    b.password = state.password
+                    b.singUoT = state.singUot
+                    applyV2RayCommon(b, state)
+                    entity.ssBean = b
+                }
+                ProxyEntity.TYPE_SSR -> {
+                    val b = entity.ssrBean ?: ShadowsocksRBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 8388
+                    b.password = state.password
+                    b.method = state.method
+                    b.protocol = state.ssrProtocol
+                    b.protocolParam = state.protocolParam
+                    b.obfs = state.obfs
+                    b.obfsParam = state.obfsParam
+                    entity.ssrBean = b
+                }
+                ProxyEntity.TYPE_VMESS -> {
+                    val b = entity.vmessBean ?: VMessBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.uuid = state.uuid
+                    b.alterId = state.alterId.toIntOrNull() ?: 0
+                    b.encryption = state.encryption.ifEmpty { "auto" }
+                    applyV2RayCommon(b, state)
+                    entity.vmessBean = b
+                }
+                ProxyEntity.TYPE_VLESS -> {
+                    val b = entity.vlessBean ?: VLESSBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.uuid = state.uuid
+                    b.flow = state.flow
+                    b.encryption = state.encryption.ifEmpty { "none" }
+                    applyV2RayCommon(b, state)
+                    entity.vlessBean = b
+                }
+                ProxyEntity.TYPE_TROJAN -> {
+                    val b = entity.trojanBean ?: TrojanBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.password = state.password
+                    applyV2RayCommon(b, state)
+                    entity.trojanBean = b
+                }
+                ProxyEntity.TYPE_NAIVE -> {
+                    val b = entity.naiveBean ?: NaiveBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.proto = state.network.ifEmpty { "https" }
+                    b.username = state.username
+                    b.password = state.password
+                    b.sni = state.sni
+                    b.certificate = state.certificates
+                    b.tunnelTimeout = state.tunnelTimeout.toIntOrNull() ?: 0
+                    b.idleTimeout = state.idleTimeout.toIntOrNull() ?: 0
+                    b.extraHeaders = state.extraHeaders
+                    entity.naiveBean = b
+                }
+                ProxyEntity.TYPE_HYSTERIA2 -> {
+                    val b = entity.hysteria2Bean ?: Hysteria2Bean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPorts = state.serverPorts.ifEmpty { state.serverPort }
+                    b.auth = state.password
+                    b.sni = state.sni
+                    b.obfsType = state.obfsType
+                    b.obfsPassword = state.obfsPassword
+                    b.uploadMbps = state.uploadSpeed.toLongOrNull() ?: 0L
+                    b.downloadMbps = state.downloadSpeed.toLongOrNull() ?: 0L
+                    b.congestionControl = state.congestionControl
+                    b.certificates = state.certificates
+                    b.allowInsecure = state.allowInsecure
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    entity.hysteria2Bean = b
+                }
+                ProxyEntity.TYPE_SSH -> {
+                    val b = entity.sshBean ?: SSHBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 22
+                    b.username = state.username
+                    b.authType = state.authType
+                    b.password = state.password
+                    b.privateKey = state.privateKey
+                    b.publicKey = state.publicKey
+                    entity.sshBean = b
+                }
+                ProxyEntity.TYPE_WG -> {
+                    val b = entity.wgBean ?: WireGuardBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 51820
+                    b.localAddress = state.localAddress
+                    b.privateKey = state.privateKeyWg
+                    b.peerPublicKey = state.peerPublicKey
+                    b.peerPreSharedKey = state.peerPreSharedKey
+                    b.mtu = state.mtu.toIntOrNull() ?: 1420
+                    b.reserved = state.reserved
+                    entity.wgBean = b
+                }
+                ProxyEntity.TYPE_TUIC5 -> {
+                    val b = entity.tuic5Bean ?: Tuic5Bean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.uuid = state.uuid
+                    b.password = state.password
+                    b.sni = state.sni
+                    b.alpn = state.alpn
+                    b.udpRelayMode = state.udpRelayMode
+                    b.congestionControl = state.congestionControl
+                    b.certificates = state.certificates
+                    b.allowInsecure = state.allowInsecure
+                    b.disableSNI = state.disableSNI
+                    b.zeroRTTHandshake = state.zeroRTT
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    entity.tuic5Bean = b
+                }
+                ProxyEntity.TYPE_JUICITY -> {
+                    val b = entity.juicityBean ?: JuicityBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.uuid = state.uuid
+                    b.password = state.password
+                    b.sni = state.sni
+                    b.certificates = state.certificates
+                    b.allowInsecure = state.allowInsecure
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    entity.juicityBean = b
+                }
+                ProxyEntity.TYPE_HTTP3 -> {
+                    val b = entity.http3Bean ?: Http3Bean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.username = state.username
+                    b.password = state.password
+                    b.sni = state.sni
+                    b.certificates = state.certificates
+                    b.allowInsecure = state.allowInsecure
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    b.connectUDP = state.connectUDP
+                    b.uriTemplate = state.uriTemplate
+                    entity.http3Bean = b
+                }
+                ProxyEntity.TYPE_ANYTLS -> {
+                    val b = entity.anytlsBean ?: AnyTLSBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.password = state.password
+                    b.security = state.security
+                    b.sni = state.sni
+                    b.alpn = state.alpn
+                    b.certificates = state.certificates
+                    b.utlsFingerprint = state.utlsFingerprint
+                    b.allowInsecure = state.allowInsecure
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    b.realityPublicKey = state.realityPublicKey
+                    b.realityShortId = state.realityShortId
+                    entity.anytlsBean = b
+                }
+                ProxyEntity.TYPE_SHADOWQUIC -> {
+                    val b = entity.shadowquicBean ?: ShadowQUICBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.username = state.username
+                    b.password = state.password
+                    b.sni = state.sni
+                    b.alpn = state.alpn
+                    b.congestionControl = state.congestionControl
+                    b.zeroRTT = state.zeroRTT
+                    b.udpOverStream = state.udpOverStream
+                    entity.shadowquicBean = b
+                }
+                ProxyEntity.TYPE_TRUSTTUNNEL -> {
+                    val b = entity.trustTunnelBean ?: TrustTunnelBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.protocol = state.network.ifEmpty { "https" }
+                    b.username = state.username
+                    b.password = state.password
+                    b.sni = state.sni
+                    b.certificate = state.certificates
+                    b.utlsFingerprint = state.utlsFingerprint
+                    b.allowInsecure = state.allowInsecure
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    entity.trustTunnelBean = b
+                }
+                ProxyEntity.TYPE_SNELL -> {
+                    val b = entity.snellBean ?: SnellBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 8388
+                    b.psk = state.psk
+                    b.version = state.snellVersion
+                    b.obfsMode = state.obfsType
+                    b.obfsHost = state.host
+                    b.obfsURI = state.path
+                    entity.snellBean = b
+                }
+                ProxyEntity.TYPE_MIERU -> {
+                    val b = entity.mieruBean ?: MieruBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 8964
+                    b.username = state.username
+                    b.password = state.password
+                    b.protocol = if (state.network == "udp") MieruBean.PROTOCOL_UDP else MieruBean.PROTOCOL_TCP
+                    b.portRange = state.serverPorts
+                    entity.mieruBean = b
+                }
+                ProxyEntity.TYPE_MASQUE -> {
+                    val b = entity.masqueBean ?: MASQUEBean().applyDefaultValues()
+                    b.name = state.name
+                    b.serverAddress = state.serverAddress
+                    b.serverPort = state.serverPort.toIntOrNull() ?: 443
+                    b.username = state.username
+                    b.password = state.password
+                    b.uriTemplate = state.uriTemplate
+                    b.http3 = state.http3
+                    b.mtu = state.mtu.toIntOrNull() ?: 0
+                    b.security = state.security.ifEmpty { "tls" }
+                    b.sni = state.sni
+                    b.certificates = state.certificates
+                    b.allowInsecure = state.allowInsecure
+                    b.utlsFingerprint = state.utlsFingerprint
+                    b.echEnabled = state.echEnabled
+                    b.echConfigList = state.echConfig
+                    entity.masqueBean = b
+                }
+                ProxyEntity.TYPE_CONFIG -> {
+                    val b = entity.configBean ?: ConfigBean().applyDefaultValues()
+                    b.name = state.name
+                    b.type = state.configType.ifEmpty { "v2ray" }
+                    b.content = state.configContent
+                    if (state.configType == "v2ray_outbound") {
+                        b.serverAddress = state.serverAddress
+                    }
+                    entity.configBean = b
+                }
+                ProxyEntity.TYPE_CHAIN -> {
+                    val b = entity.chainBean ?: ChainBean().applyDefaultValues()
+                    b.name = state.name
+                    b.proxies = state.serverPorts.split(",")
+                        .mapNotNull { it.trim().takeIf { it.isNotEmpty() }?.toLongOrNull() }
+                        .toMutableList()
+                    entity.chainBean = b
+                }
+                ProxyEntity.TYPE_BALANCER -> {
+                    val b = entity.balancerBean ?: BalancerBean().applyDefaultValues()
+                    b.name = state.name
+                    b.strategy = when (state.congestionControl) {
+                        "random", "leastPing", "leastLoad" -> state.congestionControl
+                        else -> "random"
+                    }
+                    b.type = state.network.toIntOrNull() ?: 0
+                    if (b.type == 0) {
+                        b.proxies = state.serverPorts.split(",")
+                            .mapNotNull { it.trim().takeIf { it.isNotEmpty() }?.toLongOrNull() }
+                            .toMutableList()
+                    } else {
+                        b.groupId = state.uuid.toLongOrNull() ?: 0L
+                    }
+                    b.nameFilter = state.path
+                    entity.balancerBean = b
+                }
+            }
+            entity.iconIndex = state.iconIndex
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -490,19 +1148,16 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
         enableEdgeToEdge()
         val profileId = intent.getLongExtra(EXTRA_PROFILE_ID, 0L)
         val profileType = intent.getIntExtra(EXTRA_PROFILE_TYPE, ProxyEntity.TYPE_SOCKS)
+        val httpTls = intent.getBooleanExtra(EXTRA_HTTP_TLS, false)
 
         var entity: ProxyEntity? = null
-        var initialState = ProfileFieldState(
-            network = if (profileType == ProxyEntity.TYPE_NAIVE || profileType == ProxyEntity.TYPE_TRUSTTUNNEL) "https" else "tcp",
-            security = if (profileType in listOf(ProxyEntity.TYPE_MASQUE, ProxyEntity.TYPE_ANYTLS, ProxyEntity.TYPE_TROJAN)) "tls" else "none",
-            alpn = if (profileType == ProxyEntity.TYPE_SHADOWQUIC) "h3" else "",
-        )
+        var initialState = defaultInitialState(profileType, httpTls)
 
         if (profileId > 0L) {
             runBlocking {
                 entity = SagerDatabase.proxyDao.getById(profileId)
-                if (entity != null) {
-                    initialState = beanToState(entity!!, profileType)
+                entity?.let { loaded ->
+                    initialState = profileEntityToState(loaded, profileType)
                 }
             }
         }
@@ -524,544 +1179,9 @@ class ComposeProfileSettingsActivity : ComponentActivity() {
         }
     }
 
-    /**
-     * TLS and multiplex settings shared by every StandardV2RayBean subclass.
-     * These used to be written on save but never read back, so opening a
-     * profile and saving it silently reset them.
-     */
-    private fun ProfileFieldState.withV2RayCommon(b: StandardV2RayBean) = copy(
-        utlsFingerprint = b.utlsFingerprint ?: "",
-        allowInsecure = b.allowInsecure ?: false,
-        echEnabled = b.echEnabled ?: false,
-        echConfig = b.echConfigList ?: "",
-        mux = b.mux ?: false,
-        muxConcurrency = b.muxConcurrency?.takeIf { it > 0 }?.toString() ?: "",
-        muxPacketEncoding = b.muxPacketEncoding ?: "",
-        singMux = b.singMux ?: false,
-        singMuxProtocol = b.singMuxProtocol ?: "",
-        singMuxMaxConnections = b.singMuxMaxConnections?.takeIf { it > 0 }?.toString() ?: "",
-        singMuxMinStreams = b.singMuxMinStreams?.takeIf { it > 0 }?.toString() ?: "",
-        singMuxPadding = b.singMuxPadding ?: false,
-    )
-
-    private fun applyV2RayCommon(b: StandardV2RayBean, state: ProfileFieldState) {
-        b.utlsFingerprint = state.utlsFingerprint
-        b.allowInsecure = state.allowInsecure
-        b.echEnabled = state.echEnabled
-        b.echConfigList = state.echConfig
-        b.mux = state.mux
-        // Keep the bean's own default rather than writing 0, which would mean
-        // "no concurrency" to the core.
-        b.muxConcurrency = state.muxConcurrency.toIntOrNull()?.takeIf { it > 0 } ?: 8
-        b.muxPacketEncoding = state.muxPacketEncoding
-        b.singMux = state.singMux
-        b.singMuxProtocol = state.singMuxProtocol
-        b.singMuxMaxConnections = state.singMuxMaxConnections.toIntOrNull() ?: 0
-        b.singMuxMinStreams = state.singMuxMinStreams.toIntOrNull() ?: 0
-        b.singMuxPadding = state.singMuxPadding
-    }
-
-    private fun beanToState(entity: ProxyEntity, type: Int): ProfileFieldState {
-        val bean = entity.requireBean()
-        val s = ProfileFieldState(
-            name = bean.name ?: "",
-            serverAddress = bean.serverAddress ?: "",
-            serverPort = bean.serverPort?.toString() ?: "",
-            iconIndex = entity.iconIndex,
-        )
-        return when (type) {
-            ProxyEntity.TYPE_SOCKS -> {
-                val b = entity.socksBean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "")
-            }
-            ProxyEntity.TYPE_HTTP -> {
-                val b = entity.httpBean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "",
-                    connectUDP = b.connectUDP ?: false, uriTemplate = b.uriTemplate ?: "")
-            }
-            ProxyEntity.TYPE_SS -> {
-                val b = entity.ssBean ?: return s
-                s.copy(method = b.method ?: "", password = b.password ?: "",
-                    singUot = b.singUoT ?: false).withV2RayCommon(b)
-            }
-            ProxyEntity.TYPE_SSR -> {
-                val b = entity.ssrBean ?: return s
-                s.copy(password = b.password ?: "", method = b.method ?: "",
-                    ssrProtocol = b.protocol ?: "origin", protocolParam = b.protocolParam ?: "",
-                    obfs = b.obfs ?: "plain", obfsParam = b.obfsParam ?: "")
-            }
-            ProxyEntity.TYPE_VMESS -> {
-                val b = entity.vmessBean ?: return s
-                s.copy(uuid = b.uuid ?: "", encryption = b.encryption ?: "auto",
-                    network = b.type ?: "tcp", security = b.security ?: "none",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "", host = b.host ?: "", path = b.path ?: "")
-                    .withV2RayCommon(b)
-            }
-            ProxyEntity.TYPE_VLESS -> {
-                val b = entity.vlessBean ?: return s
-                s.copy(uuid = b.uuid ?: "", flow = b.flow ?: "", encryption = b.encryption ?: "none",
-                    network = b.type ?: "tcp", security = b.security ?: "none",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "", host = b.host ?: "", path = b.path ?: "")
-                    .withV2RayCommon(b)
-            }
-            ProxyEntity.TYPE_TROJAN -> {
-                val b = entity.trojanBean ?: return s
-                s.copy(password = b.password ?: "",
-                    network = b.type ?: "tcp", security = b.security ?: "none",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "",
-                    host = b.host ?: "", path = b.path ?: "").withV2RayCommon(b)
-            }
-            ProxyEntity.TYPE_NAIVE -> {
-                val b = entity.naiveBean ?: return s
-                s.copy(network = b.proto ?: "https", username = b.username ?: "",
-                    password = b.password ?: "", sni = b.sni ?: "", certificates = b.certificate ?: "",
-                    tunnelTimeout = b.tunnelTimeout?.toString() ?: "", idleTimeout = b.idleTimeout?.toString() ?: "",
-                    extraHeaders = b.extraHeaders ?: "")
-            }
-            ProxyEntity.TYPE_HYSTERIA2 -> {
-                val b = entity.hysteria2Bean ?: return s
-                s.copy(password = b.auth ?: "", sni = b.sni ?: "",
-                    serverPorts = b.serverPorts ?: "",
-                    obfsType = b.obfsType ?: "", obfsPassword = b.obfsPassword ?: "",
-                    uploadSpeed = b.uploadMbps?.toString() ?: "", downloadSpeed = b.downloadMbps?.toString() ?: "",
-                    congestionControl = b.congestionControl ?: "bbr",
-                    certificates = b.certificates ?: "", allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
-            }
-            ProxyEntity.TYPE_SSH -> {
-                val b = entity.sshBean ?: return s
-                s.copy(username = b.username ?: "root", authType = b.authType ?: 0,
-                    password = b.password ?: "", privateKey = b.privateKey ?: "",
-                    publicKey = b.publicKey ?: "")
-            }
-            ProxyEntity.TYPE_WG -> {
-                val b = entity.wgBean ?: return s
-                s.copy(localAddress = b.localAddress ?: "", privateKeyWg = b.privateKey ?: "",
-                    peerPublicKey = b.peerPublicKey ?: "", peerPreSharedKey = b.peerPreSharedKey ?: "",
-                    mtu = b.mtu?.toString() ?: "1420", reserved = b.reserved ?: "")
-            }
-            ProxyEntity.TYPE_TUIC5 -> {
-                val b = entity.tuic5Bean ?: return s
-                s.copy(uuid = b.uuid ?: "", password = b.password ?: "",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "",
-                    udpRelayMode = b.udpRelayMode ?: "native",
-                    congestionControl = b.congestionControl ?: "cubic",
-                    certificates = b.certificates ?: "", allowInsecure = b.allowInsecure ?: false,
-                    disableSNI = b.disableSNI ?: false, zeroRTT = b.zeroRTTHandshake ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
-            }
-            ProxyEntity.TYPE_JUICITY -> {
-                val b = entity.juicityBean ?: return s
-                s.copy(uuid = b.uuid ?: "", password = b.password ?: "",
-                    sni = b.sni ?: "", certificates = b.certificates ?: "",
-                    allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
-            }
-            ProxyEntity.TYPE_HTTP3 -> {
-                val b = entity.http3Bean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "",
-                    connectUDP = b.connectUDP ?: false, uriTemplate = b.uriTemplate ?: "",
-                    sni = b.sni ?: "", certificates = b.certificates ?: "",
-                    allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
-            }
-            ProxyEntity.TYPE_ANYTLS -> {
-                val b = entity.anytlsBean ?: return s
-                s.copy(password = b.password ?: "", security = b.security ?: "tls",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "",
-                    certificates = b.certificates ?: "", utlsFingerprint = b.utlsFingerprint ?: "",
-                    allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "",
-                    realityPublicKey = b.realityPublicKey ?: "", realityShortId = b.realityShortId ?: "")
-            }
-            ProxyEntity.TYPE_SHADOWQUIC -> {
-                val b = entity.shadowquicBean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "",
-                    sni = b.sni ?: "", alpn = b.alpn ?: "",
-                    congestionControl = b.congestionControl ?: "bbr",
-                    zeroRTT = b.zeroRTT ?: false, udpOverStream = b.udpOverStream ?: false)
-            }
-            ProxyEntity.TYPE_TRUSTTUNNEL -> {
-                val b = entity.trustTunnelBean ?: return s
-                s.copy(network = b.protocol ?: "https", username = b.username ?: "",
-                    password = b.password ?: "", sni = b.sni ?: "",
-                    certificates = b.certificate ?: "", utlsFingerprint = b.utlsFingerprint ?: "",
-                    allowInsecure = b.allowInsecure ?: false,
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
-            }
-            ProxyEntity.TYPE_SNELL -> {
-                val b = entity.snellBean ?: return s
-                s.copy(psk = b.psk ?: "", snellVersion = b.version ?: 4,
-                    obfsType = b.obfsMode ?: "none", host = b.obfsHost ?: "", path = b.obfsURI ?: "")
-            }
-            ProxyEntity.TYPE_MIERU -> {
-                val b = entity.mieruBean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "",
-                    network = if (b.protocol == MieruBean.PROTOCOL_UDP) "udp" else "tcp",
-                    serverPorts = b.portRange ?: "")
-            }
-            ProxyEntity.TYPE_MASQUE -> {
-                val b = entity.masqueBean ?: return s
-                s.copy(username = b.username ?: "", password = b.password ?: "",
-                    uriTemplate = b.uriTemplate ?: "", http3 = b.http3 ?: true,
-                    mtu = b.mtu?.toString() ?: "", security = b.security ?: "tls",
-                    sni = b.sni ?: "", certificates = b.certificates ?: "",
-                    allowInsecure = b.allowInsecure ?: false, utlsFingerprint = b.utlsFingerprint ?: "",
-                    echEnabled = b.echEnabled ?: false, echConfig = b.echConfigList ?: "")
-            }
-            ProxyEntity.TYPE_CONFIG -> {
-                val b = entity.configBean ?: return s
-                s.copy(configContent = b.content ?: "", configType = b.type ?: "v2ray")
-            }
-            ProxyEntity.TYPE_CHAIN -> {
-                val b = entity.chainBean ?: return s
-                s.copy(serverPorts = b.proxies?.joinToString(",") ?: "")
-            }
-            ProxyEntity.TYPE_BALANCER -> {
-                val b = entity.balancerBean ?: return s
-                s.copy(congestionControl = b.strategy.ifEmpty { "random" },
-                    network = (b.type ?: 0).toString(),
-                    serverPorts = b.proxies?.joinToString(",") ?: "",
-                    uuid = b.groupId?.toString() ?: "",
-                    path = b.nameFilter ?: "")
-            }
-            else -> s
-        }
-    }
-
     private suspend fun saveProfile(existing: ProxyEntity?, profileId: Long, type: Int, state: ProfileFieldState) {
         val entity = existing ?: ProxyEntity(type = type)
-        entity.type = type
-
-        when (type) {
-            ProxyEntity.TYPE_SOCKS -> {
-                val b = entity.socksBean ?: SOCKSBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 1080
-                b.username = state.username
-                b.password = state.password
-                entity.socksBean = b
-            }
-            ProxyEntity.TYPE_HTTP -> {
-                val b = entity.httpBean ?: HttpBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 8080
-                b.username = state.username
-                b.password = state.password
-                b.connectUDP = state.connectUDP
-                b.uriTemplate = state.uriTemplate
-                entity.httpBean = b
-            }
-            ProxyEntity.TYPE_SS -> {
-                val b = entity.ssBean ?: ShadowsocksBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 8388
-                b.method = state.method
-                b.password = state.password
-                b.singUoT = state.singUot
-                applyV2RayCommon(b, state)
-                entity.ssBean = b
-            }
-            ProxyEntity.TYPE_SSR -> {
-                val b = entity.ssrBean ?: ShadowsocksRBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 8388
-                b.password = state.password
-                b.method = state.method
-                b.protocol = state.ssrProtocol
-                b.protocolParam = state.protocolParam
-                b.obfs = state.obfs
-                b.obfsParam = state.obfsParam
-                entity.ssrBean = b
-            }
-            ProxyEntity.TYPE_VMESS -> {
-                val b = entity.vmessBean ?: VMessBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.uuid = state.uuid
-                b.encryption = state.encryption.ifEmpty { "auto" }
-                b.type = state.network
-                b.security = state.security
-                b.sni = state.sni
-                b.alpn = state.alpn
-                b.host = state.host
-                b.path = state.path
-                applyV2RayCommon(b, state)
-                entity.vmessBean = b
-            }
-            ProxyEntity.TYPE_VLESS -> {
-                val b = entity.vlessBean ?: VLESSBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.uuid = state.uuid
-                b.flow = state.flow
-                b.encryption = state.encryption.ifEmpty { "none" }
-                b.type = state.network
-                b.security = state.security
-                b.sni = state.sni
-                b.alpn = state.alpn
-                b.host = state.host
-                b.path = state.path
-                applyV2RayCommon(b, state)
-                entity.vlessBean = b
-            }
-            ProxyEntity.TYPE_TROJAN -> {
-                val b = entity.trojanBean ?: TrojanBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.password = state.password
-                b.type = state.network
-                b.security = state.security
-                b.sni = state.sni
-                b.alpn = state.alpn
-                b.host = state.host
-                b.path = state.path
-                applyV2RayCommon(b, state)
-                entity.trojanBean = b
-            }
-            ProxyEntity.TYPE_NAIVE -> {
-                val b = entity.naiveBean ?: NaiveBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.proto = state.network.ifEmpty { "https" }
-                b.username = state.username
-                b.password = state.password
-                b.sni = state.sni
-                b.certificate = state.certificates
-                b.tunnelTimeout = state.tunnelTimeout.toIntOrNull() ?: 0
-                b.idleTimeout = state.idleTimeout.toIntOrNull() ?: 0
-                b.extraHeaders = state.extraHeaders
-                entity.naiveBean = b
-            }
-            ProxyEntity.TYPE_HYSTERIA2 -> {
-                val b = entity.hysteria2Bean ?: Hysteria2Bean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPorts = state.serverPorts.ifEmpty { state.serverPort }
-                b.auth = state.password
-                b.sni = state.sni
-                b.obfsType = state.obfsType
-                b.obfsPassword = state.obfsPassword
-                b.uploadMbps = state.uploadSpeed.toLongOrNull() ?: 0L
-                b.downloadMbps = state.downloadSpeed.toLongOrNull() ?: 0L
-                b.congestionControl = state.congestionControl
-                b.certificates = state.certificates
-                b.allowInsecure = state.allowInsecure
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                entity.hysteria2Bean = b
-            }
-            ProxyEntity.TYPE_SSH -> {
-                val b = entity.sshBean ?: SSHBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 22
-                b.username = state.username
-                b.authType = state.authType
-                b.password = state.password
-                b.privateKey = state.privateKey
-                b.publicKey = state.publicKey
-                entity.sshBean = b
-            }
-            ProxyEntity.TYPE_WG -> {
-                val b = entity.wgBean ?: WireGuardBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 51820
-                b.localAddress = state.localAddress
-                b.privateKey = state.privateKeyWg
-                b.peerPublicKey = state.peerPublicKey
-                b.peerPreSharedKey = state.peerPreSharedKey
-                b.mtu = state.mtu.toIntOrNull() ?: 1420
-                b.reserved = state.reserved
-                entity.wgBean = b
-            }
-            ProxyEntity.TYPE_TUIC5 -> {
-                val b = entity.tuic5Bean ?: Tuic5Bean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.uuid = state.uuid
-                b.password = state.password
-                b.sni = state.sni
-                b.alpn = state.alpn
-                b.udpRelayMode = state.udpRelayMode
-                b.congestionControl = state.congestionControl
-                b.certificates = state.certificates
-                b.allowInsecure = state.allowInsecure
-                b.disableSNI = state.disableSNI
-                b.zeroRTTHandshake = state.zeroRTT
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                entity.tuic5Bean = b
-            }
-            ProxyEntity.TYPE_JUICITY -> {
-                val b = entity.juicityBean ?: JuicityBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.uuid = state.uuid
-                b.password = state.password
-                b.sni = state.sni
-                b.certificates = state.certificates
-                b.allowInsecure = state.allowInsecure
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                entity.juicityBean = b
-            }
-            ProxyEntity.TYPE_HTTP3 -> {
-                val b = entity.http3Bean ?: Http3Bean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.username = state.username
-                b.password = state.password
-                b.sni = state.sni
-                b.certificates = state.certificates
-                b.allowInsecure = state.allowInsecure
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                b.connectUDP = state.connectUDP
-                b.uriTemplate = state.uriTemplate
-                entity.http3Bean = b
-            }
-            ProxyEntity.TYPE_ANYTLS -> {
-                val b = entity.anytlsBean ?: AnyTLSBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.password = state.password
-                b.security = state.security
-                b.sni = state.sni
-                b.alpn = state.alpn
-                b.certificates = state.certificates
-                b.utlsFingerprint = state.utlsFingerprint
-                b.allowInsecure = state.allowInsecure
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                b.realityPublicKey = state.realityPublicKey
-                b.realityShortId = state.realityShortId
-                entity.anytlsBean = b
-            }
-            ProxyEntity.TYPE_SHADOWQUIC -> {
-                val b = entity.shadowquicBean ?: ShadowQUICBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.username = state.username
-                b.password = state.password
-                b.sni = state.sni
-                b.alpn = state.alpn
-                b.congestionControl = state.congestionControl
-                b.zeroRTT = state.zeroRTT
-                b.udpOverStream = state.udpOverStream
-                entity.shadowquicBean = b
-            }
-            ProxyEntity.TYPE_TRUSTTUNNEL -> {
-                val b = entity.trustTunnelBean ?: TrustTunnelBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.protocol = state.network.ifEmpty { "https" }
-                b.username = state.username
-                b.password = state.password
-                b.sni = state.sni
-                b.certificate = state.certificates
-                b.utlsFingerprint = state.utlsFingerprint
-                b.allowInsecure = state.allowInsecure
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                entity.trustTunnelBean = b
-            }
-            ProxyEntity.TYPE_SNELL -> {
-                val b = entity.snellBean ?: SnellBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 8388
-                b.psk = state.psk
-                b.version = state.snellVersion
-                b.obfsMode = state.obfsType
-                b.obfsHost = state.host
-                b.obfsURI = state.path
-                entity.snellBean = b
-            }
-            ProxyEntity.TYPE_MIERU -> {
-                val b = entity.mieruBean ?: MieruBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 8964
-                b.username = state.username
-                b.password = state.password
-                b.protocol = if (state.network == "udp") MieruBean.PROTOCOL_UDP else MieruBean.PROTOCOL_TCP
-                b.portRange = state.serverPorts
-                entity.mieruBean = b
-            }
-            ProxyEntity.TYPE_MASQUE -> {
-                val b = entity.masqueBean ?: MASQUEBean().applyDefaultValues()
-                b.name = state.name
-                b.serverAddress = state.serverAddress
-                b.serverPort = state.serverPort.toIntOrNull() ?: 443
-                b.username = state.username
-                b.password = state.password
-                b.uriTemplate = state.uriTemplate
-                b.http3 = state.http3
-                b.mtu = state.mtu.toIntOrNull() ?: 0
-                b.security = state.security.ifEmpty { "tls" }
-                b.sni = state.sni
-                b.certificates = state.certificates
-                b.allowInsecure = state.allowInsecure
-                b.utlsFingerprint = state.utlsFingerprint
-                b.echEnabled = state.echEnabled
-                b.echConfigList = state.echConfig
-                entity.masqueBean = b
-            }
-            ProxyEntity.TYPE_CONFIG -> {
-                val b = entity.configBean ?: ConfigBean().applyDefaultValues()
-                b.name = state.name
-                b.type = state.configType.ifEmpty { "v2ray" }
-                b.content = state.configContent
-                if (state.configType == "v2ray_outbound") {
-                    b.serverAddress = state.serverAddress
-                }
-                entity.configBean = b
-            }
-            ProxyEntity.TYPE_CHAIN -> {
-                val b = entity.chainBean ?: ChainBean().applyDefaultValues()
-                b.name = state.name
-                b.proxies = state.serverPorts.split(",")
-                    .mapNotNull { it.trim().takeIf { it.isNotEmpty() }?.toLongOrNull() }
-                    .toMutableList()
-                entity.chainBean = b
-            }
-            ProxyEntity.TYPE_BALANCER -> {
-                val b = entity.balancerBean ?: BalancerBean().applyDefaultValues()
-                b.name = state.name
-                b.strategy = when (state.congestionControl) {
-                    "random", "leastPing", "leastLoad" -> state.congestionControl
-                    else -> "random"
-                }
-                b.type = state.network.toIntOrNull() ?: 0
-                if (b.type == 0) {
-                    b.proxies = state.serverPorts.split(",")
-                        .mapNotNull { it.trim().takeIf { it.isNotEmpty() }?.toLongOrNull() }
-                        .toMutableList()
-                } else {
-                    b.groupId = state.uuid.toLongOrNull() ?: 0L
-                }
-                b.nameFilter = state.path
-                entity.balancerBean = b
-            }
-        }
-
-        entity.iconIndex = state.iconIndex
+        applyStateToProfileEntity(entity, type, state)
 
         if (profileId > 0L) {
             ProfileManager.updateProfile(entity)

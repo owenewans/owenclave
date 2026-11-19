@@ -1,0 +1,24 @@
+services:
+  owenclave:
+    image: owenclave:latest
+    build:
+      context: .
+    container_name: owenclave
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      TZ: ${TZ:-UTC}
+      CONFIG_FILE: /config/config.yaml
+      DATA_DIR: /data
+      EXTERNAL_CONTROLLER: ${EXTERNAL_CONTROLLER:-0.0.0.0:9090}
+      SECRET: ${SECRET:-}
+      SUBSCRIPTION_URL: ${SUBSCRIPTION_URL:-}
+      INTERFACE_NAME: ${INTERFACE_NAME:-}
+      FALLBACK_TO_DIRECT: ${FALLBACK_TO_DIRECT:-true}
+    volumes:
+      - ./docker/config:/config
+      - ./docker/data:/data
+

@@ -18,7 +18,8 @@ android proxy client based on exclave, with bundled naiveproxy and a Compose UI.
 - Hysteria 2, TUIC, Juicity, AnyTLS, Mieru and ShadowQUIC
 - Snell v4/v6, TrustTunnel and MASQUE
 - bundled NaiveProxy with HTTPS and QUIC, including Clash/Mihomo YAML import
-- WireGuard (TCP and UDP), SSH, HTTP CONNECT and SOCKS4/4a/5
+- WireGuard (TCP and UDP), SSH, HTTP/HTTPS CONNECT, HTTP/3 and SOCKS4/4a/5
+- desktop client (Linux, macOS, Windows) and Dockerized Mihomo-compatible server with Web UI (`/ui/`)
 - local decryption of supported `happ://` subscription links
 - `owenclave://` subscription links and optional per-subscription HWID
 - TLS ClientHello fragmentation, direct proxy mode and Russia-specific routing presets
@@ -57,7 +58,9 @@ Import a subscription URL, paste a share link or scan a QR code. Select a
 profile and connect.
 
 See [configuration](docs/configuration.md) for subscription deep links,
-HWID and NaiveProxy YAML fields.
+HWID and NaiveProxy YAML fields, [desktop/README.md](desktop/README.md) for
+desktop builds, and [docker/README.md](docker/README.md) for the Mihomo-style
+Docker server and Web UI.
 
 ## license
 

@@ -22,3 +22,15 @@ gradle/gradle-daemon-jvm.properties
 owenclave-full-combined.patch
 .env
 release.keystore
+# Desktop build outputs
+/desktop/core/dist/
+/desktop/naive/dist/
+/desktop/naive/cache/
+/desktop/tun2socks/dist/
+/desktop/tun2socks/cache/
+/desktop/arch/dist/
+/desktop/arch/build/
+/desktop/*/bin/
+/library/*/bin/
+/library/core/.gobind-work-*
+/library/core/.core-patch-work-*
